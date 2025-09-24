@@ -91,7 +91,11 @@ input
 
 </head>
 
-<body class="box-gradient">
+<body class="box-gradient" style="display: flex; flex-direction: column;">
+ 
+  <img src="https://techclassofeducation.com/logo.jpg" height="150" style="display: block;border-radius: 100%;">
+ 
+ 
   <form id="loginForm" class="transparent-bg" action="/usr_admin/login_auth" method="post">
     {% csrf_token %}
     <div class="card box-bg text-white border-0">
@@ -135,6 +139,8 @@ input
     </ul>
     {% endif %}
   </form>
+ 
+
 </body>
 
 </html>
