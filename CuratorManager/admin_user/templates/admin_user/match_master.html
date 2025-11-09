@@ -2722,7 +2722,9 @@
                 console.log(result.data.grounds)
                 $("#pitch_id").html("")
                 $("#pitch_id").append(`<option value=''>Select Pitch</option>`)
-                //                    $("#pitch_id").append(`<option value='all'>All Pitches</option>`)
+                //$("#pitch_id").append(`<option value='all'>All Pitches</option>`)
+
+                localStorage.setItem("city",result.data.grounds[0].city);
 
                 result.data.grounds.forEach(function (p) {
                     $("#pitch_id").append(`<option value='${p.pitch[0]}'>${p.pitch[14]}  ${p.pitch[5]}</option>`)

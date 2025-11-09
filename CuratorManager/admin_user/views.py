@@ -31,18 +31,19 @@ def reportMatch(request):
 
 
 def fetch_tournaments(request):
+    org_id = request.session.get('org_id')
     match_type = request.GET.get("match_type")
     season_year = request.GET.get("season_year")
     if(match_type!="Multidays"):
-        query = """
+        query = f"""
         SELECT DISTINCT name_tournament
-        FROM vca_match_master
+        FROM {org_id}_match_master
         WHERE match_type = %s AND (YEAR(match_date) = %s OR YEAR(match_date) = %s)
     """
     else:
-        query = """
+        query = f"""
         SELECT DISTINCT name_tournament
-        FROM vca_match_master
+        FROM {org_id}_match_master
         WHERE match_type = %s AND (YEAR(from_date) = %s OR YEAR(from_date) = %s)
     """
 
@@ -54,11 +55,12 @@ def fetch_tournaments(request):
 
 
 def fetch_cities(request):
+    org_id = request.session.get('org_id')
     tournament = request.GET.get("name_tournament")
-    query = """
+    query = f"""
         SELECT DISTINCT vgm.city_name
-        FROM vca_match_master vmm
-        JOIN vca_ground_master vgm ON vmm.ground_id = vgm.id
+        FROM {org_id}_match_master vmm
+        JOIN {org_id}_ground_master vgm ON vmm.ground_id = vgm.id
         WHERE vmm.name_tournament = %s
     """
 
@@ -70,13 +72,14 @@ def fetch_cities(request):
 
 
 def fetch_grounds(request):
+    org_id = request.session.get('org_id')
     tournament = request.GET.get("name_tournament")
     city = request.GET.get("city_name")
     
-    query = """
+    query = f"""
         SELECT DISTINCT vgm.id, vgm.ground_name
-        FROM vca_match_master vmm
-        JOIN vca_ground_master vgm ON vmm.ground_id = vgm.id
+        FROM {org_id}_match_master vmm
+        JOIN {org_id}_ground_master vgm ON vmm.ground_id = vgm.id
         WHERE vmm.name_tournament = %s AND vgm.city_name = %s
     """
 
@@ -90,11 +93,12 @@ def fetch_grounds(request):
 
 
 def fetch_matches(request):
+    org_id = request.session.get('org_id')
     ground_id = request.GET.get("ground_id")
     tournament = request.GET.get("name_tournament")
-    query = """
+    query = f"""
         SELECT id, team1, team2, match_date,from_date,to_date,match_type
-        FROM vca_match_master
+        FROM {org_id}_match_master
         WHERE ground_id = %s AND name_tournament = %s
     """
 
@@ -119,9 +123,10 @@ def fetch_matches(request):
 
 
 def fetch_match_report(request):
+    org_id = request.session.get('org_id')
     match_id = request.GET.get("match_id")
-    query = """
-        SELECT * FROM vca_match_master WHERE id = %s
+    query = f"""
+        SELECT * FROM {org_id}_match_master WHERE id = %s
     """
 
     with connection.cursor() as cursor:
@@ -134,6 +139,7 @@ def fetch_match_report(request):
 
 
 def fetch_match_records(request):
+    org_id = request.session.get('org_id')
     match_id = request.GET.get("match_id")
     team1 = request.GET.get("team1")
     team2 = request.GET.get("team2")
@@ -263,10 +269,10 @@ def fetch_match_records(request):
           sau.id AS admin_id,sau.address AS admin_address,sau.name AS admin_name, 
           sau.email AS admin_email,sau.username AS admin_username, sau.mobile AS admin_mobile
           
-        FROM vca_match_master vmm
-        LEFT JOIN vca_ground_master vgm ON vmm.ground_id = vgm.id
+        FROM {org_id}_match_master vmm
+        LEFT JOIN {org_id}_ground_master vgm ON vmm.ground_id = vgm.id
         LEFT JOIN super_admin_user_adminuserlist sau ON vgm.org_id = sau.org_id
-        LEFT JOIN vca_pitch_master vpm ON vmm.pitch_id = vpm.id
+        LEFT JOIN {org_id}_pitch_master vpm ON vmm.pitch_id = vpm.id
        
         {where_clause}
     """
@@ -287,6 +293,7 @@ def fetch_match_records(request):
 
 
 def download_pdf(request):
+    org_id = request.session.get('org_id')
     match_id = request.GET.get("match_id")
     team1 = request.GET.get("team1")
     team2 = request.GET.get("team2")
@@ -334,16 +341,16 @@ def download_pdf(request):
           vfm2.chemical_name AS out_fertilizers_chemical_name,
           sau.name AS admin_name, sau.email AS admin_email,
           sau.username AS admin_username, sau.mobile AS admin_mobile
-        FROM vca_match_master vmm
-        LEFT JOIN vca_ground_master vgm ON vmm.ground_id = vgm.id
+        FROM {org_id}_match_master vmm
+        LEFT JOIN {org_id}_ground_master vgm ON vmm.ground_id = vgm.id
         LEFT JOIN super_admin_user_adminuserlist sau ON vgm.org_id = sau.org_id
-        LEFT JOIN vca_pitch_master vpm ON vmm.pitch_id = vpm.id
-        LEFT JOIN vca_machinery_master vm1 ON vmm.machinery_id = vm1.id
-        LEFT JOIN vca_machinery_master vm2 ON vmm.mover_machinery_id = vm2.id
-        LEFT JOIN vca_machinery_master vm3 ON vmm.out_machinery_id = vm3.id
-        LEFT JOIN vca_machinery_master vm4 ON vmm.out_mover_machinery_id = vm4.id
-        LEFT JOIN vca_fertilizer_master vfm1 ON vmm.fertilizers_details = vfm1.id
-        LEFT JOIN vca_fertilizer_master vfm2 ON vmm.out_fertilizers_details = vfm2.id
+        LEFT JOIN {org_id}_pitch_master vpm ON vmm.pitch_id = vpm.id
+        LEFT JOIN {org_id}_machinery_master vm1 ON vmm.machinery_id = vm1.id
+        LEFT JOIN {org_id}_machinery_master vm2 ON vmm.mover_machinery_id = vm2.id
+        LEFT JOIN {org_id}_machinery_master vm3 ON vmm.out_machinery_id = vm3.id
+        LEFT JOIN {org_id}_machinery_master vm4 ON vmm.out_mover_machinery_id = vm4.id
+        LEFT JOIN {org_id}_fertilizer_master vfm1 ON vmm.fertilizers_details = vfm1.id
+        LEFT JOIN {org_id}_fertilizer_master vfm2 ON vmm.out_fertilizers_details = vfm2.id
         {where_clause}
     """
     with connection.cursor() as cursor:
@@ -362,6 +369,7 @@ def download_pdf(request):
 
 
 def download_csv(request):
+    org_id = request.session.get('org_id')
     match_id = request.GET.get("match_id")
     team1 = request.GET.get("team1")
     team2 = request.GET.get("team2")
@@ -409,16 +417,16 @@ def download_csv(request):
           vfm2.chemical_name AS out_fertilizers_chemical_name,
           sau.id AS admin_id, sau.name AS admin_name, sau.email AS admin_email,
           sau.username AS admin_username, sau.mobile AS admin_mobile, sau.address AS admin_address
-        FROM vca_match_master vmm
-        LEFT JOIN vca_ground_master vgm ON vmm.ground_id = vgm.id
+        FROM {org_id}_match_master vmm
+        LEFT JOIN {org_id}_ground_master vgm ON vmm.ground_id = vgm.id
         LEFT JOIN super_admin_user_adminuserlist sau ON vgm.org_id = sau.org_id
-        LEFT JOIN vca_pitch_master vpm ON vmm.pitch_id = vpm.id
-        LEFT JOIN vca_machinery_master vm1 ON vmm.machinery_id = vm1.id
-        LEFT JOIN vca_machinery_master vm2 ON vmm.mover_machinery_id = vm2.id
-        LEFT JOIN vca_machinery_master vm3 ON vmm.out_machinery_id = vm3.id
-        LEFT JOIN vca_machinery_master vm4 ON vmm.out_mover_machinery_id = vm4.id
-        LEFT JOIN vca_fertilizer_master vfm1 ON vmm.fertilizers_details = vfm1.id
-        LEFT JOIN vca_fertilizer_master vfm2 ON vmm.out_fertilizers_details = vfm2.id
+        LEFT JOIN {org_id}_pitch_master vpm ON vmm.pitch_id = vpm.id
+        LEFT JOIN {org_id}_machinery_master vm1 ON vmm.machinery_id = vm1.id
+        LEFT JOIN {org_id}_machinery_master vm2 ON vmm.mover_machinery_id = vm2.id
+        LEFT JOIN {org_id}_machinery_master vm3 ON vmm.out_machinery_id = vm3.id
+        LEFT JOIN {org_id}_machinery_master vm4 ON vmm.out_mover_machinery_id = vm4.id
+        LEFT JOIN {org_id}_fertilizer_master vfm1 ON vmm.fertilizers_details = vfm1.id
+        LEFT JOIN {org_id}_fertilizer_master vfm2 ON vmm.out_fertilizers_details = vfm2.id
         {where_clause}
     """
 
@@ -459,6 +467,7 @@ def download_csv(request):
 
 
 def daily_download_csv(request):
+    org_id = request.session.get('org_id')
     from_date = request.GET.get('from_date')
     to_date = request.GET.get('to_date')
 
@@ -475,7 +484,7 @@ def daily_download_csv(request):
 
     query = f"""
         SELECT *
-        FROM vca_curator_daily_recording_master
+        FROM {org_id}_curator_daily_recording_master
         {where_clause}
         ORDER BY rolling_start_date DESC
     """
@@ -496,6 +505,7 @@ def daily_download_csv(request):
 
 
 def match_download_csv(request):
+    org_id = request.session.get('org_id')
     from_date = request.GET.get('from_date')
     to_date = request.GET.get('to_date')
 
@@ -512,7 +522,7 @@ def match_download_csv(request):
 
     query = f"""
         SELECT *
-        FROM vca_match_master
+        FROM {org_id}_match_master
         {where_clause}
         ORDER BY match_date DESC
     """
@@ -536,6 +546,7 @@ def curator_recording_report_page(request):
     return render(request,"admin_user/reports/curator_records_report.html",{"records": "none"})
 
 def curator_recording_report(request):
+    org_id = request.session.get('org_id')
     ground_id = request.GET.get("id")
     from_date = request.GET.get('from_date')
     to_date = request.GET.get('to_date')
@@ -557,7 +568,7 @@ def curator_recording_report(request):
 
     query = f"""
         SELECT *
-        FROM vca_curator_daily_recording_master
+        FROM {org_id}_curator_daily_recording_master
         {where_clause}
         ORDER BY rolling_start_date DESC
     """
@@ -581,6 +592,7 @@ def match_report_page(request):
     
 
 def match_report(request):
+    org_id = request.session.get('org_id')
     ground_id=request.GET.get("id")
     from_date = request.GET.get('from_date')
     to_date = request.GET.get('to_date')
@@ -601,7 +613,7 @@ def match_report(request):
 
     query = f"""
         SELECT *
-        FROM vca_match_master
+        FROM {org_id}_match_master
         {where_clause}
         ORDER BY match_date DESC
     """
@@ -619,6 +631,7 @@ def chemicalsReport(request):
 
 
 def fertilizer_usage_report(request):
+    org_id = request.session.get('org_id')
     ground_id = request.GET.get("ground_id")
     from_date = request.GET.get("from_date")
     to_date = request.GET.get("to_date")
@@ -630,7 +643,7 @@ def fertilizer_usage_report(request):
 
     # 1. Fetch fertilizer ID to chemical name mapping
     with connection.cursor() as cursor:
-        cursor.execute("SELECT id, chemical_name FROM vca_fertilizer_master")
+        cursor.execute(f"SELECT id, chemical_name FROM {org_id}_fertilizer_master")
         fert_map = {str(row[0]): row[1] for row in cursor.fetchall()}
 
     query=""
@@ -638,24 +651,24 @@ def fertilizer_usage_report(request):
     if chemical=="" or chemical=="all":
         
     # 2. Fetch relevant fertilizer usage data from curator table
-        query = """
+        query = f"""
             SELECT 
                 fertilizers_details, pitch_main_chemical_weight, pitch_main_chemical_unit,
                 out_fertilizers_details, outfield_chemical_weight, outfield_chemical_unit,
                 practice_fertilizers_details, pitch_practice_chemical_weight, pitch_practice_chemical_unit,
                 pp_fertilizers_details, practice_area_chemical_weight, practice_area_chemical_unit
-            FROM vca_curator_daily_recording_master
+            FROM {org_id}_curator_daily_recording_master
             WHERE ground_id = %s AND rolling_start_date BETWEEN %s AND %s
         """
         value.extend([ground_id, from_date, to_date])
     else:
-        query = """
+        query = f"""
             SELECT 
                 fertilizers_details, pitch_main_chemical_weight, pitch_main_chemical_unit,
                 out_fertilizers_details, outfield_chemical_weight, outfield_chemical_unit,
                 practice_fertilizers_details, pitch_practice_chemical_weight, pitch_practice_chemical_unit,
                 pp_fertilizers_details, practice_area_chemical_weight, practice_area_chemical_unit
-            FROM vca_curator_daily_recording_master
+            FROM {org_id}_curator_daily_recording_master
             WHERE ground_id = %s AND rolling_start_date BETWEEN %s AND %s 
         """
         value.extend([ground_id, from_date, to_date])
@@ -682,7 +695,7 @@ def fertilizer_usage_report(request):
                 f_weight = weight[i].strip("_#").strip()
                 f_unit = unit[i].strip("_#").strip()
 
-                # ✅ Blank skip karne ke liye condition
+                # âœ… Blank skip karne ke liye condition
                 if f_id or f_weight or f_unit:
                     if(f_id==chemical):
                         usageList.append({
@@ -696,7 +709,7 @@ def fertilizer_usage_report(request):
                 f_weight = weight[i].strip("_#").strip()
                 f_unit = unit[i].strip("_#").strip()
 
-                # ✅ Blank skip karne ke liye condition
+                # âœ… Blank skip karne ke liye condition
                 if f_id or f_weight or f_unit:
                     usageList.append({
                             "id": f_id,
@@ -831,6 +844,7 @@ def parse_pass_data(data,unit):
 
 
 def machinery_pass_report(request):
+    org_id = request.session.get('org_id')
     total_passes = 0
     total_minutes = 0
     ground_id = request.GET.get("ground_id")
@@ -862,8 +876,8 @@ def machinery_pass_report(request):
         #         vcd.practice_mover_machinery_name_operator, vcd.pp_mover_machinery_name_operator,
         #         vcd.mover_machinery_name_operator, vcd.out_mover_machinery_name_operator,
         #         vcd.moving_passes_unit, vcd.out_moving_passes_unit, vcd.practice_moving_passes_unit, vcd.pp_moving_passes_unit
-        #     FROM vca_curator_daily_recording_master vcd
-        #     JOIN vca_ground_master vgm ON vcd.ground_id = vgm.id
+        #     FROM {org_id}_curator_daily_recording_master vcd
+        #     JOIN {org_id}_ground_master vgm ON vcd.ground_id = vgm.id
         #     WHERE {final_where_clause}
  
         # query = f"""SELECT  
@@ -874,8 +888,8 @@ def machinery_pass_report(request):
         #         vcd.moving_passes_unit, vcd.out_moving_passes_unit, vcd.practice_moving_passes_unit, vcd.pp_moving_passes_unit,
         #         vcd.machinery_id, vcd.out_machinery_id, vcd.practice_machinery_id, vcd.pp_machinery_id,
         #         vcd.mover_machinery_id, vcd.out_mover_machinery_id, vcd.practice_mover_machinery_id, vcd.pp_mover_machinery_id
-        #     FROM vca_curator_daily_recording_master vcd
-        #     JOIN vca_ground_master vgm ON vcd.ground_id = vgm.id
+        #     FROM {org_id}_curator_daily_recording_master vcd
+        #     JOIN {org_id}_ground_master vgm ON vcd.ground_id = vgm.id
         #     WHERE {final_where_clause}"""
             
         query = f"""SELECT  
@@ -903,8 +917,8 @@ def machinery_pass_report(request):
                 
                 
               
-            FROM vca_curator_daily_recording_master vcd
-            JOIN vca_ground_master vgm ON vcd.ground_id = vgm.id
+            FROM {org_id}_curator_daily_recording_master vcd
+            JOIN {org_id}_ground_master vgm ON vcd.ground_id = vgm.id
             WHERE {final_where_clause}"""
         # print(query)
         with connection.cursor() as cursor:
@@ -930,7 +944,7 @@ def machinery_pass_report(request):
                         m_m = m[i].strip("_#").strip()
                         m_o = o[i].strip("_#").strip()
 
-                        # ✅ Blank skip karne ke liye condition
+                        # âœ… Blank skip karne ke liye condition
                         if m_p or m_u or m_m or m_o:
                             if(m_m==machinery_id):
                                 usageList.append({
@@ -946,7 +960,7 @@ def machinery_pass_report(request):
                         m_m = m[i].strip("_#").strip()
                         m_o = o[i].strip("_#").strip()
 
-                        # ✅ Blank skip karne ke liye condition
+                        # âœ… Blank skip karne ke liye condition
                         if m_p or m_u or m_m or m_o:
                             usageList.append({
                                     "pass": m_p,
@@ -966,7 +980,7 @@ def machinery_pass_report(request):
 
         # print(usageList)
         # if machinery_id:
-        #     id_query = f"SELECT id, print_details FROM vca_machinery_master WHERE id ='{machinery_id}'"
+        #     id_query = f"SELECT id, print_details FROM {org_id}_machinery_master WHERE id ='{machinery_id}'"
         #     with connection.cursor() as cursor:
         #             cursor.execute(id_query)
         #             row = cursor.fetchone()
@@ -978,7 +992,7 @@ def machinery_pass_report(request):
         #     machinery_name="All Machineries"
         
         with connection.cursor() as cursor:
-            cursor.execute("SELECT  id, print_details FROM vca_machinery_master")
+            cursor.execute(f"SELECT  id, print_details FROM {org_id}_machinery_master")
             mid_map = {str(row[0]): row[1] for row in cursor.fetchall()}
             # print(mid_map)
             
@@ -1008,18 +1022,18 @@ def machinery_pass_report(request):
             if mid not in result:
                 result[mid] = [0, 0]
 
-            # element-wise जोड़ना
+            # element-wise à¤œà¥‹à¤¡à¤¼à¤¨à¤¾
             result[mid][0] += pd[0]
             result[mid][1] += pd[1]
 
-        # dict से list of dict बनाना
+        # dict à¤¸à¥‡ list of dict à¤¬à¤¨à¤¾à¤¨à¤¾
         finalwithid = [{'mid': mid, 'pd': pd} for mid, pd in result.items()]
 
         # print(finalwithid)
         
         finalname = []
         for d in finalwithid:
-            name = mid_map.get(d['mid'], d['mid'])  # अगर mapping missing हो तो mid ही रखेंगे
+            name = mid_map.get(d['mid'], d['mid'])  # à¤…à¤—à¤° mapping missing à¤¹à¥‹ à¤¤à¥‹ mid à¤¹à¥€ à¤°à¤–à¥‡à¤‚à¤—à¥‡
             finalname.append({'mid': name, 'pd': d['pd']})
 
         # print(finalname)
@@ -1030,9 +1044,9 @@ def machinery_pass_report(request):
 
         for d in finalname:
             passes, minutes = d["pd"]
-            if passes > 0:   # ✅ केवल passes > 0 वाले
+            if passes > 0:   # âœ… à¤•à¥‡à¤µà¤² passes > 0 à¤µà¤¾à¤²à¥‡
                 passes_dict[d["mid"]] = passes
-            if minutes > 0:  # ✅ केवल minutes > 0 वाले
+            if minutes > 0:  # âœ… à¤•à¥‡à¤µà¤² minutes > 0 à¤µà¤¾à¤²à¥‡
                 minutes_dict[d["mid"]] = minutes
 
         print("Passes Dict:", passes_dict)
@@ -1071,8 +1085,8 @@ def machinery_pass_report(request):
 #             SELECT vgm.ground_name, 
 #                    vcd.no_of_passes, vcd.out_no_of_passes, vcd.practice_no_of_passes, vcd.pp_no_of_passes,
 #                    vcd.machinery_id, vcd.out_machinery_id, vcd.practice_machinery_id, vcd.pp_machinery_id
-#             FROM vca_curator_daily_recording_master vcd
-#             JOIN vca_ground_master vgm ON vcd.ground_id = vgm.id
+#             FROM {org_id}_curator_daily_recording_master vcd
+#             JOIN {org_id}_ground_master vgm ON vcd.ground_id = vgm.id
 #             WHERE vcd.ground_id = %s AND vcd.machinery_id=%s OR vcd.out_machinery_id=%s OR vcd.practice_machinery_id=%s OR vcd.pp_machinery_id=%s AND 
 #             roller_machinery_name_operator=%s OR pp_roller_machinery_name_operator =%s OR out_roller_machinery_name_operator=%s OR practice_roller_machinery_name_operator=%s 
             
@@ -1093,7 +1107,7 @@ def machinery_pass_report(request):
 #         # Map machinery IDs to print_details
 #         if machinery_ids:
 #             placeholders = ",".join(["%s"] * len(machinery_ids))
-#             id_query = f"SELECT id, print_details FROM vca_machinery_master WHERE id IN ({placeholders})"
+#             id_query = f"SELECT id, print_details FROM {org_id}_machinery_master WHERE id IN ({placeholders})"
 #             with connection.cursor() as cursor:
 #                 cursor.execute(id_query, list(machinery_ids))
 #                 for mid, name in cursor.fetchall():
@@ -1185,8 +1199,9 @@ def get_single_fertilizer(request, fert_id):
         return JsonResponse({"error": "Chemical not found"}, status=404)
 
 def get_unique_chemical_types(request):
+    org_id = request.session.get('org_id')
     with connection.cursor() as cursor:
-        cursor.execute("SELECT DISTINCT chemical_type FROM vca_fertilizer_master")
+        cursor.execute(f"SELECT DISTINCT chemical_type FROM {org_id}_fertilizer_master")
         rows = cursor.fetchall()
 
     types = [row[0] for row in rows]
@@ -2080,14 +2095,55 @@ def get_ground(request,ground_id):
 #         ground = cursor.fetchone()
 #     return JsonResponse({'ground': ground})
 
-def get_pitches(request,ground_id):
+# def get_pitches(request,ground_id):
+#     org_id = request.session["org_id"]
+#     # ground_id = request.session["ground_id"]
+#     # state_id = request.GET.get('state_id')
+#     with connection.cursor() as cursor:
+#         cursor.execute(f'''SELECT * FROM {org_id}_pitch_master WHERE org_id = %s and ground_id=%s order by pitch_no''', [org_id,ground_id])
+#         pitches = cursor.fetchall()
+#     return JsonResponse({'grounds': [{'pitch': pitch} for pitch in pitches]})
+
+def get_pitches(request, ground_id):
     org_id = request.session["org_id"]
-    # ground_id = request.session["ground_id"]
-    # state_id = request.GET.get('state_id')
+
     with connection.cursor() as cursor:
-        cursor.execute(f'''SELECT * FROM {org_id}_pitch_master WHERE org_id = %s and ground_id=%s order by pitch_no''', [org_id,ground_id])
+        cursor.execute(f'''
+            SELECT p.*, g.city_name 
+            FROM {org_id}_pitch_master p
+            JOIN {org_id}_ground_master g 
+            ON p.ground_id = g.id
+            WHERE p.org_id = %s AND p.ground_id = %s
+            ORDER BY p.pitch_no
+        ''', [org_id, ground_id])
+
         pitches = cursor.fetchall()
-    return JsonResponse({'grounds': [{'pitch': pitch} for pitch in pitches]})
+
+    # JsonResponse में pitch और city दोनों भेजो
+    return JsonResponse({
+        'grounds': [
+            {'pitch': pitch, 'city': pitch[-1]}  # मानते हैं city आखिरी कॉलम में है
+            for pitch in pitches
+        ]
+    })
+
+def get_admin_user_by_org(request):
+    org_id = request.session["org_id"]
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT id, name, email, username, address, mobile, org_id, state, city
+                FROM super_admin_user_adminuserlist
+                WHERE org_id = %s
+            """, [org_id])
+            rows = cursor.fetchall()
+            columns = [col[0] for col in cursor.description]
+
+        # Convert to list of dictionaries
+        data = [dict(zip(columns, row)) for row in rows]
+        return JsonResponse({"status": "success", "data": data}, safe=False)
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)})
 
 def get_pitch(request,pitch_id):
     org_id = request.session["org_id"]
@@ -3930,15 +3986,15 @@ def insert_machinery(request):
             equipment_model = request.POST.get('equipment_model')
             type_ = request.POST.get('type')
             # company = request.POST.get('company')
-            specification = request.POST.get('specification')
+            date_purchase = request.POST.get('date_purchase')
             unit = request.POST.get('unit')
             value = request.POST.get('value')
             details = request.POST.get('print_details')
 
             with connection.cursor() as cursor:
                 cursor.execute(f'''INSERT INTO {org_id}_machinery_master
-    (`equipment_name`,`type`,`specification`,`unit`,`value`,`model`,`print_details`) VALUES (%s,%s,%s,%s,%s,%s,%s)''',
-    [equipment_name, type_,specification,unit,value,equipment_model,details ])
+    (`equipment_name`,`type`,`date_purchase`,`unit`,`value`,`model`,`print_details`) VALUES (%s,%s,%s,%s,%s,%s,%s)''',
+    [equipment_name, type_,date_purchase,unit,value,equipment_model,details ])
 
             return redirect('machinery_list')
 
@@ -5294,12 +5350,12 @@ def update_match(request, match_id):
 @csrf_exempt
 def delete_match(request,match_id):
     org_id = request.session["org_id"]
-    if request.method == 'DELETE':
-        with connection.cursor() as cursor:
+   
+    with connection.cursor() as cursor:
             # Delete score by id
             cursor.execute(f"""DELETE FROM {org_id}_match_master  WHERE id = %s""", [match_id])
 
-        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'success'})
 
 
 def match_list(request):
@@ -5416,7 +5472,7 @@ def match_list(request):
 							LEFT JOIN 
 								{org_id}_machinery_master m3 ON cdr.out_machinery_id = m3.id
 							LEFT JOIN 
-								vca_machinery_master m4 ON cdr.out_mover_machinery_id = m4.id
+								{org_id}_machinery_master m4 ON cdr.out_mover_machinery_id = m4.id
 							LEFT JOIN 
 								`{org_id}_fertilizer_master` c1 ON cdr.fertilizers_details = c1.id
 							LEFT JOIN 
@@ -5510,7 +5566,9 @@ def match_list(request):
 			m1.print_details as mch1,
 			m2.print_details as mch2,
 			m3.print_details as mch3,
-			m4.print_details as mch4
+			m4.print_details as mch4,
+   `cdr`.`rolling_date`,
+   `cdr`.`out_rolling_date`
 
 		FROM {org_id}_match_master cdr
 							INNER JOIN 
@@ -5524,7 +5582,7 @@ def match_list(request):
 							LEFT JOIN 
 								{org_id}_machinery_master m3 ON cdr.out_machinery_id = m3.id
 							LEFT JOIN 
-								vca_machinery_master m4 ON cdr.out_mover_machinery_id = m4.id
+								{org_id}_machinery_master m4 ON cdr.out_mover_machinery_id = m4.id
 							LEFT JOIN 
 								`{org_id}_fertilizer_master` c1 ON cdr.fertilizers_details = c1.id
 							LEFT JOIN 
@@ -5564,3 +5622,174 @@ from django.db import connection
 #     # Convert the result into a list of dictionaries
 #     pitch_list = [{'id': row[0]} for row in rows]
 #     return JsonResponse(pitch_list, safe=False)
+
+##################### Backup data #####################
+
+import pandas as pd
+from django.db import connection
+from django.http import HttpResponse
+from io import BytesIO
+import zipfile
+
+def export_multiple_tables_to_excel(request):
+    try:
+        org_id = request.session["org_id"]
+        data = json.loads(request.body)
+        filter_date = data.get("date", None)
+        if not filter_date:
+                return JsonResponse({"error": "Date is required"}, status=400)
+        queries = {
+            'Table1': f"SELECT * FROM {org_id}_curator_daily_recording_master WHERE created_at <= '{filter_date}'",
+            'Table2': f"SELECT * FROM {org_id}_fertilizer_master",
+            'Table3': f"SELECT * FROM {org_id}_match_master WHERE created_at <= '{filter_date}'",
+            'Table4': f"SELECT * FROM {org_id}_match_scores_master WHERE created_at <= '{filter_date}'",
+            'Table5': f"SELECT * FROM {org_id}_pitch_master",
+            'Table6': f"SELECT * FROM {org_id}_ground_master",
+            'Table7': f"SELECT * FROM {org_id}_machinery_master",
+        }
+
+        print("Queries to be executed:", queries)
+        # In-memory zip buffer
+        zip_buffer = BytesIO()
+        
+        with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED) as zip_file:
+            for table_name, query in queries.items():
+                with connection.cursor() as cursor:
+                    cursor.execute(query)
+                    columns = [col[0] for col in cursor.description]
+                    data = cursor.fetchall()
+
+                # Excel file for each table
+                df = pd.DataFrame(data, columns=columns)
+                excel_buffer = BytesIO()
+                with pd.ExcelWriter(excel_buffer, engine='openpyxl') as writer:
+                    df.to_excel(writer, index=False, sheet_name=table_name)
+                excel_buffer.seek(0)
+                zip_file.writestr(f"{table_name}.xlsx", excel_buffer.read())
+
+                # SQL insert statements for each table
+                sql_content = ""
+                for row in data:
+                    values = []
+                    for val in row:
+                        if val is None:
+                            values.append('NULL')
+                        elif isinstance(val, str):
+                            values.append("'" + val.replace("'", "''") + "'")
+                        else:
+                            values.append(str(val))
+                    insert_stmt = f"INSERT INTO {table_name} ({', '.join(columns)}) VALUES ({', '.join(values)});\n"
+                    sql_content += insert_stmt
+                zip_file.writestr(f"{table_name}.sql", sql_content)
+        
+        zip_buffer.seek(0)
+        insert_export_log(filter_date, "SQL-Excel Export",org_id)
+        response = HttpResponse(zip_buffer, content_type='application/zip')
+        response['Content-Disposition'] = 'attachment; filename=multiple_tables_export.zip'
+        return response
+    except Exception as e:
+        print("Error during export:", e)
+        return JsonResponse({"error": str(e)}, status=500)
+
+
+
+
+
+from django.db import connection
+from django.http import HttpResponse
+from io import BytesIO
+import zipfile
+
+def export_multiple_sql_files_in_zip(request):
+    try:
+        org_id = request.session["org_id"]
+        data = json.loads(request.body)
+        filter_date = data.get("date", None)
+        if not filter_date:
+                return JsonResponse({"error": "Date is required"}, status=400)
+        queries = {
+            'Table1': f"SELECT * FROM {org_id}_curator_daily_recording_master WHERE created_at <= '{filter_date}'",
+            'Table2': f"SELECT * FROM {org_id}_fertilizer_master",
+            'Table3': f"SELECT * FROM {org_id}_match_master WHERE created_at <= '{filter_date}'",
+            'Table4': f"SELECT * FROM {org_id}_match_scores_master WHERE created_at <= '{filter_date}'",
+            'Table5': f"SELECT * FROM {org_id}_pitch_master",
+            'Table6': f"SELECT * FROM {org_id}_ground_master",
+            'Table7': f"SELECT * FROM {org_id}_machinery_master",
+        }
+
+        zip_buffer = BytesIO()
+
+        with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED) as zip_file:
+            for table_name, query in queries.items():
+                with connection.cursor() as cursor:
+                    cursor.execute(query)
+                    columns = [col[0] for col in cursor.description]
+                    rows = cursor.fetchall()
+
+                sql_content = ""
+                for row in rows:
+                    values = []
+                    for val in row:
+                        if val is None:
+                            values.append('NULL')
+                        elif isinstance(val, str):
+                            # Escape single quotes for SQL strings
+                            values.append("'" + val.replace("'", "''") + "'")
+                        else:
+                            values.append(str(val))
+                    insert_stmt = f"INSERT INTO {table_name} ({', '.join(columns)}) VALUES ({', '.join(values)});\n"
+                    sql_content += insert_stmt
+
+                zip_file.writestr(f"{table_name}.sql", sql_content)
+
+        zip_buffer.seek(0)
+        insert_export_log(filter_date, "SQL Export",org_id)
+        response = HttpResponse(zip_buffer, content_type='application/zip')
+        response['Content-Disposition'] = 'attachment; filename=multiple_sql_export.zip'
+
+        return response
+    except Exception as e:
+        print("Error during export:", e)
+        return JsonResponse({"error": str(e)}, status=500)
+
+
+def export_form(request):
+    # Render the export form template
+    return render(request, 'admin_user/backup/backup_form.html')
+
+from django.db import connection
+
+def insert_export_log(export_date, export_type,org_id):
+    try:
+        with connection.cursor() as cursor:
+            query = f"""
+            INSERT INTO {org_id}_export_logs_master (export_date, export_type, created_at, updated_at)
+            VALUES (%s, %s, NOW(), NOW())
+            """
+            cursor.execute(query, [export_date, export_type])
+    except Exception as e:
+        print("Error inserting export log:", e) 
+
+
+def get_export_logs(request):
+    try:
+        # SQL: DESCENDING order by created_at
+        org_id = request.session["org_id"]
+        query = f"""
+            SELECT id, export_date, export_type, created_at, updated_at
+            FROM {org_id}_export_logs_master
+            ORDER BY created_at DESC
+        """
+        with connection.cursor() as cursor:
+            cursor.execute(query)
+            columns = [col[0] for col in cursor.description]
+            rows = cursor.fetchall()
+
+        # JSON: list of dicts
+        logs = [dict(zip(columns, row)) for row in rows]
+        return JsonResponse({'logs': logs})
+    except Exception as e:
+        print("Error fetching export logs:", e)
+        return JsonResponse({"error": str(e)}, status=500)
+
+##################### Backup data #####################

@@ -2389,7 +2389,7 @@
                 // $("#pitch_id").append(`<option value='all'>All</option>`)
                 // $("#pitch_id").append(`<option value='outfield'>Outfield Area</option>`)
                 // $("#pitch_id").append(`<option value='practice'>Practice Area</option>`)
-
+localStorage.setItem("city",result.data.grounds[0].city);
                 result.data.grounds.forEach(function (p) {
                     $("#pitch_id").append(`<option value='${p.pitch[0]}'>${p.pitch[14]}  ${p.pitch[5]}</option>`)
                 })

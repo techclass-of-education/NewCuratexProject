@@ -41,14 +41,15 @@
             </h2>
 
             <div id="collapse-{{ match.0 }}" class="accordion-collapse collapse show"
-                aria-labelledby="heading{{ match.0 }}" data-bs-parent="#accordionDR">
+                aria-labelledby="heading{{ match.0 }}" data-bs-parent="#accordionDR" style="overflow-x: auto;">
                 <div class="accordion-body">
                     <a class="btn btn-success mb-2 edit-btn" data-match-date="{{ match.6 }}" 
                     data-from-date="{{ match.7 }}" href="{% url 'update_match' match.0 %}">Edit</a>
                     <a class="btn btn-warning  mb-2" href="{% url 'add_score' match.0 %}">Add Scores</a>
                     <a class="btn btn-danger  mb-2" href="{% url 'match_scores_list' match.0 %}">List Scores</a>
-                    <button class="btn btn-danger del-btn mb-2" dataid="{{match.0}}">Delete Match Recording</button>
-
+                     {% if request.session.user.role == "admin" %}
+                    <a href="{% url 'delete_match' match.0 %}" class="btn btn-danger mb-2" dataid="{{match.0}}">Delete Match Recording</a>
+                    {% endif %}
          <div class="row">
                         <div class="col">
                             <table class="table table-bordered">
@@ -220,7 +221,7 @@
                                          <td>
                                          
                                         <table>
-                                             {% for item in match.25|split_by_delimiter %}
+                                             {% for item in match.87|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
@@ -544,13 +545,28 @@
                                     Rolling
                                 </caption>
                                  <tr>
+                                     <td>Date</td>
                                     <td>Machinery</td>
                                     <td>Time</td>
                                     <td>No. of Passes</td>
                                     <td>Speed</td>
-                                    <td>Date</td>
                                 </tr>
                                 <tr>
+                                    <td>
+                                        
+                                       <table>
+                                            {% for item in match.88|split_by_delimiter %}
+                                             {% if item.strip %}
+                                           <tr>
+                                               <td>
+                                                   {{ item }}
+                                               </td>
+                                           </tr>
+                                             {% endif %}
+                                            {% endfor %}
+                                       </table>
+                                       
+                                   </td>
                                      <td>
                                          
                                         <table>
@@ -600,21 +616,6 @@
                                          
                                         <table>
                                              {% for item in match.40|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                     <td>
-                                         
-                                        <table>
-                                             {% for item in match.88|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
@@ -841,14 +842,15 @@
 
 
             <div id="collapse-{{ match.0 }}" class="accordion-collapse collapse" aria-labelledby="heading{{ match.0 }}"
-                data-bs-parent="#accordionDR">
+                data-bs-parent="#accordionDR" style="overflow-x: auto;">
                 <div class="accordion-body">
                     <a class="btn btn-success mb-2 edit-btn" data-match-date="{{ match.6 }}" 
                     data-from-date="{{ match.7 }}" href="{% url 'update_match' match.0 %}">Edit</a>
                    
                     <a class="btn btn-warning mb-2" href="{% url 'add_score' match.0 %}">Add Scores</a>
                     <a class="btn btn-danger mb-2" href="{% url 'match_scores_list' match.0 %}">List Scores</a>
-                    <button class="btn btn-danger del-btn mb-2" dataid="{{match.0}}">Delete Match Recording</button>
+                    <button type="button" class="btn btn-danger mb-2" onclick="deleteMatch('{{match.0}}')" dataid="{{match.0}}">Delete Match Recording</button>
+                    <!-- <a href="{% url 'delete_match' match.0 %}" class="btn btn-danger mb-2" dataid="{{match.0}}">Delete Match Recording</a> -->
                 
                           <div class="row">
                         <div class="col">
@@ -1022,7 +1024,7 @@
                                      <td>
                                          
                                         <table>
-                                             {% for item in match.25|split_by_delimiter %}
+                                             {% for item in match.87|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
@@ -1346,13 +1348,28 @@
                                     Rolling
                                 </caption>
                                  <tr>
+                                     <td>Date</td>
                                     <td>Machinery</td>
                                     <td>Time</td>
                                     <td>No. of Passes</td>
                                     <td>Speed</td>
-                                    <td>Date</td>
                                 </tr>
                                 <tr>
+                                     <td>
+                                         
+                                        <table>
+                                             {% for item in match.88|split_by_delimiter %}
+                                              {% if item.strip %}
+                                            <tr>
+                                                <td>
+                                                    {{ item }}
+                                                </td>
+                                            </tr>
+                                              {% endif %}
+                                             {% endfor %}
+                                        </table>
+                                        
+                                    </td>
                                      <td>
                                          
                                         <table>
@@ -1413,21 +1430,7 @@
                                         </table>
                                         
                                     </td>
-                                     <td>
-                                         
-                                        <table>
-                                             {% for item in match.88|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
+                                    
                                 </tr>
                             </table>
 </tr>
@@ -1646,15 +1649,15 @@
         }
 
 
-        $(document).ready(function () {
+        // $(document).ready(function () {
 
-            $(".del-btn").on('click', function (event) {
-                event.preventDefault();
-                // alert($(this).attr('dataid').trim())
-                deleteMatch($(this).attr('dataid').trim());
-            })
+        //     $(".del-btn").on('click', function (event) {
+        //         event.preventDefault();
+        //         alert($(this).attr('dataid').trim())
+        //         deleteMatch($(this).attr('dataid').trim());
+        //     })
 
-        })
+        // })
 
         // newRow.querySelector('.del-btn').addEventListener('click', function () {
 

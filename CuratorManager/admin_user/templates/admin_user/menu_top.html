@@ -35,10 +35,10 @@
 
   
   const getWeather = (y, m, d) => {
-
+     
     // Define your API key, location, and the date you want to get the forecast for
     const apiKey = 'f201a1e4b5cf4e87a66103535240211';
-    const loc = 'Nagpur';
+    const loc = localStorage.getItem("city").trim();
     const date = `${y}/${m}/${d}` // Replace with your desired date (YYYY-MM-DD)
 
     // Construct the API URL for the forecast

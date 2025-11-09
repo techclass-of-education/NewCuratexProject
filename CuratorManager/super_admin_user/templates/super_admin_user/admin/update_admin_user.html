@@ -1,0 +1,68 @@
+
+{% load static %}
+{% include "admin_user/headertags.html" %}
+<link href="{% static 'admin_user/css/gradient.css' %}" rel="stylesheet">
+    <div class="wrapper grass-bg">
+        {% include "super_admin_user/menu.html" %}
+
+        <!-- Page Content -->
+        <div id="content" class="bg-form-page">
+              {% include "super_admin_user/menu_top.html" %}
+            <div class="container mt-5">
+                      <div class="container mt-5">
+                <div class="card w-75 mx-auto transparent-bg">
+                    <div class="card-header box-bg text-white">
+
+                        <i class="bi bi-person-check me-2 text-info"></i>Admin User Information
+                    </div>
+    <div class="container box-gradient">
+          <div class="card-body rounded-bottom">
+<div class="container mt-4">
+    <h3>Update Admin User</h3>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="row">
+            {% for field in form %}
+            <div class="col-md-6 mb-3">
+                <label>{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <div class="text-danger">{{ field.errors|striptags }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        <button type="submit" class="btn btn-primary">Update</button>
+       
+    </form>
+  {% if messages %}
+            <div class="mt-3">
+                <ul class="list-group">
+                    {% for message in messages %}
+                        <li class="list-group-item">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+</div>
+            </div>
+
+        </div>
+        </div>
+{% include "admin_user/footertags.html" %}
+<script>
+
+
+document.querySelector("#id_superadmin_id").selectedIndex=1
+
+changeMenuTitle("Create Admin")
+
+</script>
+
+
+<script>
+  
+</script>
+</body>
+</html>

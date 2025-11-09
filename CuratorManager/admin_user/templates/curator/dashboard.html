@@ -289,6 +289,23 @@
 {% include "admin_user/footertags.html" %}
 
 <script>
+  axios.get(`/usr_admin/get-admin-users/`)
+  .then(response => {
+    if (response.data.status === "success") {
+      // console.log("Admin Users:", response.data.data);
+      // Example: show in table
+      localStorage.setItem("admin_users_data", JSON.stringify(response.data.data));
+      // console.log(response.data.data[0].city)
+      localStorage.setItem("city",response.data.data[0].city);
+      const d = new Date()
+  getWeather(d.getFullYear(), d.getMonth() + 1, d.getDate())
+      
+    } 
+  })
+  .catch(error => {
+    console.error("Axios Error:", error);
+  });
+
   if("{{userdirect.name}}"=="Curator")
 {
   document.querySelector("#dashboard-menu span").innerHTML="Admin Dashboard"
@@ -328,8 +345,8 @@
       .catch(error => console.error('Error fetching weather data:', error));
   }
 
-  const d = new Date()
-  getWeather(d.getFullYear(), d.getMonth() + 1, d.getDate())
+  // const d = new Date()
+  // getWeather(d.getFullYear(), d.getMonth() + 1, d.getDate())
 
 
   // Function to update Indian Time (AM/PM format)

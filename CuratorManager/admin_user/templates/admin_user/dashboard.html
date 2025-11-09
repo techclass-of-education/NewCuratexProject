@@ -84,7 +84,11 @@
       
       <!-- Charts Row -->
       <div class="row mt-4">
-      
+        
+        <div class="col-lg-4 col-sm-12 mb-4" style="display: flex;justify-content: center;align-items: center;">
+         <img src="https://techclassofeducation.com/logo.jpg" height="400" style="display: block;border-radius: 100%;">
+       
+        </div>
         <div class="col-lg-4 col-sm-12 mb-4">
 
 
@@ -113,58 +117,58 @@
               </div>
             </div>
           </div>
-
-
-
+          
+          
+          
         </div>
         <div class="col-lg-4 col-sm-12">
           <div class="card change-role-box">
             <div class="card-header box-bg text-white">
-             
-                <i class="bi bi-person-check me-2 text-info"></i> CURATORS 
+              
+              <i class="bi bi-person-check me-2 text-info"></i> CURATORS 
             </div>
             <div class="card-body box-gradient rounded-bottom">
-
-             
-
-
-              <ul class="list-group list-group-flush  box-gradient" id="curatorsList">
               
+              
+              
+              
+              <ul class="list-group list-group-flush  box-gradient" id="curatorsList">
+                
               </ul>
-
+              
             </div>
           </div>
           <div class="card mt-3 change-role-box">
             <div class="card-header box-bg text-white">
-               <i class="bi bi-person-check me-2  rounded text-info"></i>GROUNDMAN
+              <i class="bi bi-person-check me-2  rounded text-info"></i>GROUNDMAN
             </div>
             <div class="card-body box-gradient rounded-bottom">
-
-            
-
               
-
+              
+              
+              
+              
               <ul class="list-group list-group-flush" id="groundmansList">
-               
+                
               </ul>
-
+              
             </div>
           </div>
-         
-         
-
-
+          
+          
+          
+          
         </div>
-
+        
       </div>
-
-
-
-
-
-
+      
+      
+      
+      
+      
+      
     </div>
-  
+    
   </div>
 
 </div>
@@ -173,6 +177,24 @@
 
 
 <script>
+   // Example org_id
+axios.get(`/usr_admin/get-admin-users/`)
+  .then(response => {
+    if (response.data.status === "success") {
+      // console.log("Admin Users:", response.data.data);
+      // Example: show in table
+      localStorage.setItem("admin_users_data", JSON.stringify(response.data.data));
+      // console.log(response.data.data[0].city)
+      localStorage.setItem("city",response.data.data[0].city);
+      const d = new Date()
+  getWeather(d.getFullYear(), d.getMonth() + 1, d.getDate())
+      
+    } 
+  })
+  .catch(error => {
+    console.error("Axios Error:", error);
+  });
+
   setCurators()
   setGroundmans()
 
@@ -217,8 +239,7 @@
   // }
 
 
-  const d = new Date()
-  getWeather(d.getFullYear(), d.getMonth() + 1, d.getDate())
+  
 
 
   // Function to update Indian Time (AM/PM format)

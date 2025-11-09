@@ -52,8 +52,10 @@
                 <th>Username</th>
                 <th>Name</th>
                 <th>Email</th>
-                <th>Mobile</th>
-                <th>Actions</th>
+                <th>Organization State</th>
+                <th>Organization City</th>
+                <th>Mobile No.</th>
+                <th colspan="2">Actions</th>
             </tr>
         </thead>
         <tbody class="">
@@ -63,9 +65,14 @@
                     <td>{{ admin.username }}</td>
                     <td>{{ admin.name }}</td>
                     <td>{{ admin.email }}</td>
+                    <td>{{ admin.state }}</td>
+                    <td>{{ admin.city }}</td>
                     <td>{{ admin.mobile }}</td>
                     <td>
                         <a href="{% url 'admin_user_details' admin.id %}">View</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'update_admin_user' admin.id %}">Update</a>
                     </td>
                 </tr>
             {% endfor %}

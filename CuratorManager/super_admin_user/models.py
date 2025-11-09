@@ -20,6 +20,8 @@ class AdminUserList(models.Model):
     # logo = models.ImageField(upload_to='logos/', blank=True, null=True)
     address = models.TextField(blank=True, null=True)
     mobile = models.CharField(max_length=15, blank=True, null=True)
+    state = models.CharField(max_length=45, blank=True, null=True)
+    city = models.CharField(max_length=45, blank=True, null=True)
     superadmin_id= models.ForeignKey(SuperAdmin, on_delete=models.CASCADE, related_name='superadmins')
 
     def __str__(self):

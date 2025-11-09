@@ -91,6 +91,13 @@ path('api/machinery-data/', views.get_machinery_data, name='machinery_data'),
     path('match-report/', views.match_report, name='match_daily_records'),
     path('get-chemical-types/', views.get_unique_chemical_types, name='get_chemical_types'),
     
+    ############ Backup database ###############
+    path('export-excel/', views.export_multiple_tables_to_excel, name='export-excel'),
+    path('export-sql/', views.export_multiple_sql_files_in_zip, name='export-sql'),
+    path('export-form/', views.export_form, name='export-form'),
+    path('export-logs/', views.get_export_logs, name='get_export_logs'),
+    path('get-admin-users/', views.get_admin_user_by_org, name='get_admin_user_by_org'),
+    
 ]
 
 

@@ -58,22 +58,7 @@ changeMenuTitle("Create Admin")
 
 
 <script>
-    $(document).ready(function(){
-
-        $("form").submit(function(event){
-            event.preventDefault()
-
-            if(new RegExp(/^[a-z_]$/).test($("#id_org_id").val()))
-        {
-            $(this).submit()
-
-
-        }
-        else{
-            alert("wrong")
-        }
-        })
-    })
+  
 </script>
 </body>
 </html>
