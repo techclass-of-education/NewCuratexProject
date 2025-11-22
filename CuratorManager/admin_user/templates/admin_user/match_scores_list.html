@@ -2,7 +2,7 @@
 
 {% load static %}
 <link href="{% static 'admin_user/css/gradient.css' %}" rel="stylesheet">
-<div class="wrapper grass-bg">
+<div class="wrapper grass-bg" style="overflow-x: auto;">
   <!-- Sidebar -->
   {% include "admin_user/menu_side.html" %}
 
@@ -48,8 +48,7 @@
                     <div class="mb-3">
                       <label for="update-team" class="form-label">Team</label>
                       <select id="update-team" class="form-select" required>
-                        <option value="1">Team A</option>
-                        <option value="2">Team B</option>
+                       
                       </select>
                     </div>
 
@@ -75,15 +74,14 @@
                     <div class="mb-3">
                       <label for="update-overs" class="form-label">Overs</label>
                       <input type="number" class="form-control" id="update-overs" step="0.1" required>
+                      <input type="hidden"  id="update-day-end" required>
+                      <input type="hidden"  id="update-remark" required>
                     </div>
 
                     <div class="mb-3">
                       <label for="update-winner" class="form-label">Winner</label>
                       <select id="update-winner" class="form-select" required>
-                        <option value="-1">Not Yet</option>
-                        <option value="0">Draw</option>
-                        <option value="1">Team A</option>
-                        <option value="2">Team B</option>
+                     
                       </select>
                     </div>
 
@@ -101,20 +99,27 @@
       </div>
     </div>
 
-<div class=" bg-info py-2" style="width:70%;overflow-x: auto;">
+<div class="py-2" style="overflow-x: auto;">
     <table class="table align-middle mb-0 w-75 mx-auto chemical-remport-table">
       <thead class="bg-light fs-5 box-bg report-table-title">
         <tr>
-          <th colspan="5">
+          <th colspan="10">
+
             <h2>Match Scores List</h2>
+              <h3 class="p-2 grass-bg shadow-sm text-light rounded"
+                  style="width: fit-content;text-transform: uppercase;"><small> Won By</small> <span id="wonby-span"
+                    class="badge text-light bg-dark me-4"></span>
+
+                  <small> Elected</small> <span id="elected-span" class="badge text-light bg-dark"></span>
+                </h3>
           </th>
-          <th colspan="3">
+          <!-- <th colspan="3">
 
           </th>
 
           <th colspan="3">
-            <!-- <a class="btn btn-warning mb-2 text-left" href="{% url 'fertilizer_add' %}">Add New Chemical</a> -->
-          </th>
+          </th> -->
+          <!-- <a class="btn btn-warning mb-2 text-left" href="{% url 'fertilizer_add' %}">Add New Chemical</a> -->
         </tr>
         <tr>
           <th>#</th>
@@ -134,6 +139,41 @@
       </tbody>
     </table>
 </div>
+ <div class="container mt-4 transparent-bg p-4">
+        <h3 class="text-white text-center">Match Summary</h3>
+         <div id="match-result-summary" class="border p-3 bg-dark text-light shadow-sm text-center text-light border-bottom-0">
+              <!-- Result Summary will be displayed here -->
+              
+            </div>
+         <div id="finalSummery" class="border p-3 bg-dark text-light shadow-sm text-center text-light border-top-0">
+              <!-- Result Summary will be displayed here -->
+              
+            </div>
+
+        <div class="row">
+          <div class="col-12">
+            <table id="result-table" class="table transparent-bg table-bordered text-center ">
+              <thead class="table-dark">
+                <tr>
+                  <th>Team</th>
+                  <th>Day</th>
+                  <th>Total Runs</th>
+                  <th>Total Wickets</th>
+                  <th>Total Overs</th>
+                </tr>
+              </thead>
+              <tbody id="result-table-body"></tbody>
+            </table>
+          </div>
+          <!-- <div class="col-12">
+           
+          </div> -->
+        </div>
+
+
+
+
+      </div>
   </div>
 </div>
 
@@ -205,6 +245,8 @@
     document.getElementById('update-wickets').value = score.wickets;
     document.getElementById('update-overs').value = score.overs;
     document.getElementById('update-winner').value = score.winner;
+    document.getElementById('update-day-end').value = score.day_end;
+      document.getElementById('update-remark').value = score.remark;
 
     // Show the modal
     const updateScoreModal = new bootstrap.Modal(document.getElementById('updateScoreModal'), {});
@@ -222,7 +264,9 @@
       runs: document.getElementById('update-runs').value,
       wickets: document.getElementById('update-wickets').value,
       overs: document.getElementById('update-overs').value,
-      winner: document.getElementById('update-winner').value
+      winner: document.getElementById('update-winner').value,
+       dayEnd: document.getElementById('update-day-end').value,
+        remark: document.getElementById('update-remark').value,
     };
 
     // Send updated data to the server using Axios
@@ -241,20 +285,34 @@
         console.error('Error updating score:', error);
       });
   });
-
-
+let firstScore={}
   // Function to fetch and display scores based on match_id
   function fetchScores(matchId) {
     axios.get(`/usr_admin/get_match_scores/${matchId}/`)
       .then(function (response) {
+        console.log(response.data);
         const scores = response.data.scores;
+        const matchData = response.data.match;
+        const ground = response.data.ground;
         const tableBody = document.getElementById('score-table-body');
         tableBody.innerHTML = '';
+        firstScore = scores[0] || {}
 
+        document.getElementById('update-team').innerHTML = `
+            <option value="${firstScore.team1.trim()}">${firstScore.team1}</option>
+            <option value="${firstScore.team2.trim()}">${firstScore.team2}</option>
+        `;
+        document.getElementById('update-winner').innerHTML = `
+           <option value="-1">Not Yet</option>
+                        <option value="0">Draw</option>
+                       
+            <option value="1">${firstScore.team1}</option>
+            <option value="2">${firstScore.team2}</option>
+        `;
         scores.forEach((score, index) => {
           const newRow = document.createElement('tr');
-          const winner = {{ score.winner }
-        }
+          const winner = "{{ score.winner }}"
+        
         newRow.innerHTML = `
           <td class='bg-dark text-light'>${index + 1}</td>
           <td>${score.day}</td>
@@ -266,11 +324,31 @@
           <td>${score.overs}</td>
 
         <td>${getWinner(score.winner, score.team1, score.team2)}</td>
-          <td> 
-            <button class="btn btn-primary update-btn box-bg mb-3" data-id="${score.id}">Update</button>
+         <td> 
+            <button class="btn btn-primary update-btn box-bg" data-id="${score.id}">Update</button>
             <button class="btn btn-danger delete-btn" data-id="${score.id}">Delete</button>
           </td>
         `;
+
+        s = scores[0]
+        $("#wonby-span").html(s.wonby)
+        $("#elected-span").html(s.elected)
+        // newRow.innerHTML = `
+        //   <td class='bg-dark text-light'>${index + 1}</td>
+        //   <td>${score.day}</td>
+        //   <td>${score.inning}</td>
+        //   <td>${score.team}</td>
+        //   <td>${score.session}</td>
+        //   <td>${score.runs}</td>
+        //   <td>${score.wickets}</td>
+        //   <td>${score.overs}</td>
+
+        // <td>${getWinner(score.winner, score.team1, score.team2)}</td>
+          // <td> 
+          //   <button class="btn btn-primary update-btn box-bg mb-3" data-id="${score.id}">Update</button>
+          //   <button class="btn btn-danger delete-btn" data-id="${score.id}">Delete</button>
+          // </td>
+        // `;
         tableBody.appendChild(newRow);
 
         // Add update and delete functionality to the buttons
@@ -281,12 +359,179 @@
         newRow.querySelector('.update-btn').addEventListener('click', function () {
           openUpdateForm(score);
         });
+                 generateResultTable(scores,matchData,ground);
+
       });
   })
     .catch (function(error) {
     console.error('Error fetching scores:', error);
   });
 }
+
+
+  let winnerFinal = "";
+  let remark = "";
+  let lastSummery = ""
+    function generateResultTable(scores,matchData,ground) {
+
+    const resultTableBody = document.getElementById("result-table-body");
+    resultTableBody.innerHTML = "";
+
+
+
+    // Group data by team and day
+    const summary = {};
+
+    scores.forEach(score => {
+      const key = `${score.team}_Day${score.day}`;
+      if (!summary[key]) {
+        summary[key] = { team: score.team, day: score.day, runs: 0, wickets: 0, overs: 0 };
+      }
+      summary[key].runs += parseInt(score.runs);
+      summary[key].wickets += parseInt(score.wickets);
+      summary[key].overs += parseFloat(score.overs);
+
+      // console.log(score.winner)
+
+      winnerFinal = getWinner(score.winner,score.team1,score.team2)
+
+    });
+
+
+
+
+    // Create rows
+    Object.values(summary).forEach((s, index) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+      <td>${s.team}</td>
+      <td>${s.day}</td>
+      <td>${s.runs}</td>
+      <td>${s.wickets}</td>
+      <td>${s.overs.toFixed(1)}</td>
+    `;
+      resultTableBody.appendChild(row);
+    });
+
+    // --- Calculate and display match summary ---
+    displayMatchResult(scores,matchData,ground);
+    // console.log("Winner Final: " + winnerFinal)
+
+    if (winnerFinal.trim() !== "Not Yet" && winnerFinal.trim() !== "Draw" && winnerFinal.trim() !== "") {
+      // setLastSummery(scores)
+       document.getElementById("finalSummery").innerHTML = `<h5>WINNER ${winnerFinal}</h5>`
+
+    }
+    else if (winnerFinal.trim() == "Not Yet") {
+      lastSummery = ""
+      document.getElementById("finalSummery").innerHTML = lastSummery
+      // document.getElementById("divRemark").innerHTML = lastSummery
+      // document.getElementById("divWinner").innerHTML = "Winner: " + lastSummery
+    }
+    else if (winnerFinal.trim() == "Draw") {
+      lastSummery = "Match Drawn"
+      document.getElementById("finalSummery").innerHTML =`<h5>${lastSummery}</h5>`
+      // document.getElementById("divWinner").innerHTML = "NO Winner"
+    } else {
+      lastSummery = ""
+      document.getElementById("finalSummery").innerHTML = lastSummery
+      // document.getElementById("divWinner").innerHTML = ""
+    }
+
+  }
+
+  function setLastSummery(scores) {
+    const winningTeamArray = scores.filter(t => t.team.trim().toLowerCase() === winnerFinal.trim().toLowerCase())
+    const lossTeamArray = scores.filter(t => t.team.trim().toLowerCase() !== winnerFinal.trim().toLowerCase())
+    // console.log(winningTeamArray)
+    // console.log(lossTeamArray)
+    const winTeamLastScores = winningTeamArray[winningTeamArray.length - 1]
+    const lossTeamLastScores = lossTeamArray[lossTeamArray.length - 1]
+    // console.log(winTeamLastScores)
+    // console.log(lossTeamLastScores)
+    let wonByWickets = -1
+    let wonByRuns = winTeamLastScores.runs - lossTeamLastScores.runs
+    const lastScore = scores[scores.length - 1];
+    if (lastScore.day_end.trim() == "yes") {
+      remark = lastScore.remark
+
+      console.log(winTeamLastScores.wickets + "<" + lossTeamLastScores.wickets)
+      if (winTeamLastScores.wickets < lossTeamLastScores.wickets) {
+
+        wonByWickets = lossTeamLastScores.wickets - winTeamLastScores.wickets
+        lastSummery = `${winnerFinal} won by runs ${wonByRuns} and ${wonByWickets} wickets`
+      }
+      else {
+
+        lastSummery = `${winnerFinal} won by runs ${wonByRuns}`
+      }
+      document.getElementById("finalSummery").innerHTML = lastSummery
+      // document.getElementById("divRemark").innerHTML = lastSummery
+    }
+    else {
+      remark = ""
+    }
+  }
+
+  function displayMatchResult(scores,matchData,ground){
+    if (scores.length === 0) {
+      document.getElementById("match-result-summary").innerHTML = `<h5>No scores yet.</h5>`;
+      return;
+    }
+
+    const team1 = firstScore.team1;
+    const team2 = firstScore.team1;
+    const matchType = firstScore.match_type;
+    const matchDate = matchData[2];
+    const fromDate = matchData[3];
+    const toDate = matchData[4];
+    const days = "{{match.9}}";
+
+    // Calculate total runs by team
+    const teamTotals = {};
+    scores.forEach(score => {
+      if (!teamTotals[score.team]) {
+        teamTotals[score.team] = 0;
+      }
+      teamTotals[score.team] += parseInt(score.runs);
+    });
+
+    // Determine winner
+    // console.log(teamTotals)
+    // if (teamTotals[team1] > teamTotals[team2]) {
+    //   winner = team1;
+    //   remark = `${team1} won by ${teamTotals[team1] - teamTotals[team2]} runs`;
+    // } else if (teamTotals[team2] > teamTotals[team1]) {
+    //   winner = team2;
+    //   remark = `${team2} won by ${teamTotals[team2] - teamTotals[team1]} runs`;
+    // } else {
+    //   winner = "Draw";
+    //   remark = "Match Drawn";
+    // }
+
+    // Date text based on match type
+     let dateText = "";
+    if (matchType.toLowerCase() === "multidays") {
+      dateText = `From <strong>${fromDate}</strong> to <strong>${toDate}</strong>`;
+    } else {
+      dateText = `On <strong>${matchDate}</strong>`;
+    }
+
+    document.getElementById("match-result-summary").innerHTML = `
+    <div>
+      <h5>Match Between: ${team1} vs ${team2}</h5>
+      <h5>Match: ${matchData[1]}</h5>
+      <h5>Date: ${dateText}</h5>
+      <h5 class='text-capitalize'>played at ${ground[0]} Toss won by ${s.wonby} Elected to ${s.elected} </h5>
+      </div>
+      `;
+      // <h6 id="divRemark">Remark:</h6>
+     // <h5 class="text-success mt-2" id="divWinner"></h5>
+  }
+
+
+
+
 
   function getWinner(winner, t1, t2) {
     winner = parseInt(winner)

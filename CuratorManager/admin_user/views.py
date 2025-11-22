@@ -604,8 +604,9 @@ def match_report(request):
         params.append(ground_id)
         
     if from_date and to_date:
-        filters.append("match_date BETWEEN %s AND %s")
-        params.extend([from_date, to_date])
+        filters.append("(match_date BETWEEN %s AND %s OR from_date BETWEEN %s AND %s OR to_date BETWEEN %s AND %s)")
+        params.extend([from_date, to_date, from_date, to_date, from_date, to_date])
+
 
     where_clause = " AND ".join(filters)
     if where_clause:
@@ -3716,6 +3717,147 @@ def delete_daily(request,daily_id):
         return JsonResponse({'status': 'success'})
 
     
+def curator_daily_recording_list_filter(request):
+    org_id = request.session["org_id"]
+    ground_id = request.GET.get("ground_id")
+    with connection.cursor() as cursor:
+        try:
+            sql = f'''
+                    SELECT 
+                        cdr.id, 
+                        cdr.pitch_id, 
+                        cdr.pitch_location, 
+                        cdr.rolling_start_date, 
+                        cdr.min_temp, 
+                        cdr.max_temp, 
+                        cdr.forecast, 
+                        cdr.clagg_hammer, 
+                        cdr.moisture, 
+                        cdr.machinery_id, 
+                        cdr.no_of_passes, 
+                        cdr.rolling_speed, 
+                        cdr.last_watering_on, 
+                        cdr.quantity_of_water, 
+                        cdr.time_of_application, 
+                        cdr.time_roller, 
+                        cdr.mover_machinery_id, 
+                        cdr.date_mowing_done_last, 
+                        cdr.time_of_application_mover, 
+                        cdr.mowing_done_at_mm, 
+                        cdr.is_fertilizers_used, 
+                        cdr.fertilizers_details, 
+                        cdr.chemical_details_remark, 
+                        cdr.remark_by_groundsman, 
+                        cdr.out_machinery_id, 
+                        cdr.out_no_of_passes, 
+                        cdr.out_rolling_speed, 
+                        cdr.out_last_watering_on, 
+                        cdr.out_quantity_of_water, 
+                        cdr.out_time_of_application, 
+                        cdr.out_time_roller, 
+                        cdr.out_mover_machinery_id, 
+                        cdr.out_date_mowing_done_last, 
+                        cdr.time_of_application_out_mover, 
+                        cdr.out_mowing_done_at_mm, 
+                        cdr.out_is_fertilizers_used, 
+                        cdr.out_fertilizers_details, 
+                        cdr.out_chemical_details_remark, 
+                        cdr.out_remark_by_groundsman, 
+                        cdr.practice_machinery_id, 
+                        cdr.practice_no_of_passes, 
+                        cdr.practice_rolling_speed, 
+                        cdr.practice_last_watering_on, 
+                        cdr.practice_quantity_of_water, 
+                        cdr.practice_time_of_application, 
+                        cdr.practice_time_roller, 
+                        cdr.practice_mover_machinery_id, 
+                        cdr.practice_date_mowing_done_last, 
+                        cdr.time_of_application_practice_mover, 
+                        cdr.practice_mowing_done_at_mm, 
+                        cdr.practice_is_fertilizers_used, 
+                        cdr.practice_fertilizers_details, 
+                        cdr.practice_chemical_details_remark, 
+                        cdr.practice_remark_by_groundsman, 
+                        cdr.time_of_application_chemical, 
+                        cdr.out_time_of_application_chemical, 
+                        cdr.practice_time_of_application_chemical, 
+                        cdr.recording_type, 
+                        cdr.ground_id, 
+                        cdr.created_at, 
+                        cdr.updated_at,
+                        p.pitch_type, 
+                        p.pitch_placement, 
+                        g.ground_name AS ground_name,
+                        m1.print_details AS main_machinery,
+                        m2.print_details AS mover_machinery,
+                        m3.print_details AS out_machinery,
+                        m4.print_details AS out_mover_machinery,
+                        m5.print_details AS practice_machinery,
+                        m6.print_details AS practice_mover_machinery,
+                        cdr.pitch_main,
+                        cdr.pitch_practice,
+                        cdr.outfield,
+                        cdr.practice_area,
+                        cdr.pp_machinery_id, 
+                        cdr.pp_no_of_passes, 
+                        cdr.pp_rolling_speed, 
+                        cdr.pp_last_watering_on,
+                        cdr.pp_quantity_of_water, 
+                        cdr.pp_time_of_application, 
+                        cdr.pp_time_roller, 
+                        cdr.pp_mover_machinery_id,
+                        cdr.pp_date_mowing_done_last, 
+                        cdr.pp_time_of_application_mover, 
+                        cdr.pp_mowing_done_at_mm, 
+                        cdr.pp_is_fertilizers_used,
+                        cdr.pp_fertilizers_details, 
+                        cdr.pp_chemical_details_remark, 
+                        cdr.pp_remark_by_groundsman,
+                        cdr.pp_time_of_application_chemical,
+                        m7.print_details AS pp_machinery,
+                        m8.print_details AS pp_mover_machinery,
+                        cdr.pitch_main_chemical_unit,
+                        cdr.pitch_main_chemical_weight,
+                        cdr.pitch_practice_chemical_weight,
+                        cdr.pitch_practice_chemical_unit,
+                        cdr.outfield_chemical_weight,
+                        cdr.outfield_chemical_unit,
+                        cdr.practice_area_chemical_weight,
+                        cdr.practice_area_chemical_unit
+                    FROM 
+                        {org_id}_curator_daily_recording_master cdr
+                    INNER JOIN 
+                        {org_id}_pitch_master p ON cdr.pitch_id = p.id
+                    INNER JOIN 
+                        {org_id}_ground_master g ON cdr.ground_id = g.id
+                    LEFT JOIN 
+                        {org_id}_machinery_master m1 ON cdr.machinery_id = m1.id
+                    LEFT JOIN 
+                        {org_id}_machinery_master m2 ON cdr.mover_machinery_id = m2.id
+                    LEFT JOIN 
+                        {org_id}_machinery_master m3 ON cdr.out_machinery_id = m3.id
+                    LEFT JOIN 
+                        {org_id}_machinery_master m4 ON cdr.out_mover_machinery_id = m4.id
+                    LEFT JOIN 
+                        {org_id}_machinery_master m5 ON cdr.practice_machinery_id = m5.id
+                    LEFT JOIN 
+                        {org_id}_machinery_master m6 ON cdr.practice_mover_machinery_id = m6.id
+                        LEFT JOIN 
+                        {org_id}_machinery_master m7 ON cdr.pp_machinery_id = m7.id
+                        LEFT JOIN 
+                        {org_id}_machinery_master m8 ON cdr.pp_mover_machinery_id = m8.id
+                        WHERE cdr.ground_id = %s order by cdr.created_at desc;
+                '''
+               
+            cursor.execute(sql, [ground_id])
+            recordings = cursor.fetchall()
+            
+        except Exception as e:
+            print(e)
+            messages.error(request, e)
+        return render(request, 'admin_user/curator_daily_recording_list.html', {'recordings': recordings, "flag": True})
+
+    
 def curator_daily_recording_list(request):
     org_id = request.session["org_id"]
     with connection.cursor() as cursor:
@@ -4191,8 +4333,14 @@ def get_match_scores(request, match_id):
                 """, [match_id])
                 scores = cursor.fetchall()
                 
+                cursor.execute(f"""SELECT match_type, name_tournament, match_date, from_date, to_date ,ground_id FROM `{org_id}_match_master` WHERE id = %s""", [match_id])
+                match = cursor.fetchone()
+                print(match)
                 
-
+                cursor.execute(f"""SELECT ground_name FROM `{org_id}_ground_master` WHERE id = %s""", [match[5]])
+                ground = cursor.fetchone()
+                print(ground)
+                
             # Format the response data
             scores_data = [
                 {
@@ -4216,7 +4364,7 @@ def get_match_scores(request, match_id):
                 for row in scores
             ]
 
-            return JsonResponse({'scores': scores_data})
+            return JsonResponse({'scores': scores_data, 'match': match,'ground':ground})
     except Exception as e:
         print(e)
 
@@ -5346,7 +5494,6 @@ def update_match(request, match_id):
         return render(request, 'admin_user/error.html', {'error': str(e)})
 
 
-
 @csrf_exempt
 def delete_match(request,match_id):
     org_id = request.session["org_id"]
@@ -5356,6 +5503,128 @@ def delete_match(request,match_id):
             cursor.execute(f"""DELETE FROM {org_id}_match_master  WHERE id = %s""", [match_id])
 
     return JsonResponse({'status': 'success'})
+
+
+def match_list_filter(request):
+    try:
+        org_id = request.session["org_id"]
+        ground_id = request.GET.get("ground_id")
+        with connection.cursor() as cursor:
+            cursor.execute(f'''SELECT `cdr`.`id`,
+			`cdr`.`match_type`,
+			`cdr`.`name_tournament`,
+			`cdr`.`team1`,
+			`cdr`.`team2`,
+			`cdr`.`preparation_date`,
+			`cdr`.`match_date`,
+			`cdr`.`from_date`,
+			`cdr`.`to_date`,
+			`cdr`.`days_count`,
+			`cdr`.`start_time`,
+			`cdr`.`pitch_id`,
+			`cdr`.`ground_id`,
+			`cdr`.`is_pitch_level`,
+			`cdr`.`lawn_height`,
+			`cdr`.`grass_cover`,
+			`cdr`.`min_temp`,
+			`cdr`.`max_temp`,
+			`cdr`.`forecast`,
+			`cdr`.`moisture_upto`,
+			`cdr`.`dew_factor`,
+			`cdr`.`access_bounce`,
+			`cdr`.`machinery_id`,
+			`cdr`.`no_of_passes`,
+			`cdr`.`rolling_speed`,
+			`cdr`.`last_watering_on`,
+			`cdr`.`quantity_of_water`,
+			`cdr`.`time_of_application`,
+			`cdr`.`time_roller`,
+			`cdr`.`is_daily_watering`,
+			`cdr`.`mover_machinery_id`,
+			`cdr`.`date_mowing_done_last`,
+			`cdr`.`time_of_application_mover`,
+			`cdr`.`mowing_done_at_mm`,
+			`cdr`.`is_fertilizers_used`,
+			`cdr`.`fertilizers_details`,
+			`cdr`.`chemical_details_remark`,
+			`cdr`.`remark_by_groundsman`,
+			`cdr`.`out_machinery_id`,
+			`cdr`.`out_no_of_passes`,
+			`cdr`.`out_rolling_speed`,
+			`cdr`.`out_last_watering_on`,
+			`cdr`.`out_quantity_of_water`,
+			`cdr`.`out_time_of_application`,
+			`cdr`.`out_time_roller`,
+			`cdr`.`out_is_daily_watering`,
+			`cdr`.`out_mover_machinery_id`,
+			`cdr`.`out_date_mowing_done_last`,
+			`cdr`.`time_of_application_out_mover`,
+			`cdr`.`out_mowing_done_at_mm`,
+			`cdr`.`out_is_fertilizers_used`,
+			`cdr`.`out_fertilizers_details`,
+			`cdr`.`out_chemical_details_remark`,
+			`cdr`.`out_remark_by_groundsman`,
+			`cdr`.`brief_match_pitch_assessment`,
+			`cdr`.`time_of_application_chemical`,
+			`cdr`.`out_time_of_application_chemical`,
+			`cdr`.`created_at`,
+			`cdr`.`updated_at`,
+			`cdr`.`chemical_weight`,
+			`cdr`.`fertilizers_unit`,
+			`cdr`.`out_chemical_weight`,
+			`cdr`.`out_fertilizers_unit`,
+			`cdr`.`nuteral_curator`,
+			`cdr`.`out_mover_machine_type`,
+			`cdr`.`out_mover_machinery_name_operator`,
+			`cdr`.`out_moving_passes_unit`,
+			`cdr`.`out_mowing_duration`,
+			`cdr`.`mover_machine_type`,
+			`cdr`.`mover_machinery_name_operator`,
+			`cdr`.`moving_passes_unit`,
+			`cdr`.`mowing_duration`,
+			`cdr`.`roller_machine_type`,
+			`cdr`.`roller_machinery_name_operator`,
+			`cdr`.`out_roller_machine_type`,
+			`cdr`.`out_roller_machinery_name_operator`,
+			`cdr`.`passes_unit`,
+			`cdr`.`out_passes_unit`,
+			g.ground_name,
+			p.pitch_type, 
+			p.pitch_placement, 
+			c1.chemical_name as chem1,
+			c2.chemical_name as chem2,
+			m1.print_details as mch1,
+			m2.print_details as mch2,
+			m3.print_details as mch3,
+			m4.print_details as mch4,
+   `cdr`.`rolling_date`,
+   `cdr`.`out_rolling_date`
+	FROM {org_id}_match_master cdr
+							INNER JOIN 
+								{org_id}_pitch_master p ON cdr.pitch_id = p.id
+							INNER JOIN 
+								{org_id}_ground_master g ON cdr.ground_id = g.id
+							LEFT JOIN 
+								{org_id}_machinery_master m1 ON cdr.machinery_id = m1.id
+							LEFT JOIN 
+								{org_id}_machinery_master m2 ON cdr.mover_machinery_id = m2.id
+							LEFT JOIN 
+								{org_id}_machinery_master m3 ON cdr.out_machinery_id = m3.id
+							LEFT JOIN 
+								{org_id}_machinery_master m4 ON cdr.out_mover_machinery_id = m4.id
+							LEFT JOIN 
+								`{org_id}_fertilizer_master` c1 ON cdr.fertilizers_details = c1.id
+							LEFT JOIN 
+								`{org_id}_fertilizer_master` c2 ON cdr.out_fertilizers_details = c2.id
+						   where cdr.ground_id=%s order by cdr.created_at desc''',[ground_id])
+           		 
+                
+            matches = cursor.fetchall()
+
+
+        return render(request, 'admin_user/match_list.html', {'matches': matches})
+    except Exception as e:
+        print(e)
 
 
 def match_list(request):

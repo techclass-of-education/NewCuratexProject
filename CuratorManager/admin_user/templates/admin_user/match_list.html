@@ -1,5 +1,4 @@
-
-    <title>Match Recording List</title>
+<title>Match Recording List</title>
 {% include "admin_user/headertags.html" %}
 
 {% load static %}
@@ -13,1741 +12,1807 @@
     <div id="content" class="bg-form-page match-scores-list">
         <!-- Navbar -->
         {% include "admin_user/menu_top.html" %}
-
-
-    <div class="accordion p-4 " id="accordionDR" >
-         {% load admin_user_filters %}
-        {% for match in matches %}
-        {% if flag %}
-
-        <div class="accordion-item" onclick="getMachine(this)">
-            <h2 class="accordion-header" id="heading-{{ match.0 }}">
-                <button class="accordion-button d-flex" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#collapse-{{ match.0 }}" aria-expanded="true"
-                    aria-controls="collapse-{{ match.0 }}">
-                    <span class="px-3 py-2 rounded fs-6 text-center bg-light fw-bolder me-2 text-dark record-type" style="text-transform: uppercase;">  <b>Match Type</b> <small><br>{{ match.1 }} <span class="text-warning">({{ match.0 }})</span></small></span>
-                    <span class="pe-4 fs-6 text-center"> <b>Name of Tournament</b> <small><br>{{ match.2 }}</small></span>
-                    <span class="pe-4 fs-6 text-center"> <b>Name of Ground</b> <small><br>{{ match.78 }}</small></span>
-
-                    
-                    {% if match.1 == "Multidays" %}
-                    <span class="pe-4 fs-6 text-center"> <b>Match Date</b> <small><br>{{ match.7 }} - {{match.8}}</small></span>
-                    {% else %}
-                    <span class="pe-4 fs-6 text-center"> <b>Match Date</b><small><br> {{ match.6 }}</small></span>
-                    {% endif %}
-                    <span class="pe-4 fs-6 text-center"> <b>Match Between</b><small><br> {{ match.3 }} & {{match.4}}</small></span>
-                    <span class="pe-4 fs-6 text-center"> <b>Recording Date-time</b><small><br> {{ match.57 }}</small></span>
-                </button>
-            </h2>
-
-            <div id="collapse-{{ match.0 }}" class="accordion-collapse collapse show"
-                aria-labelledby="heading{{ match.0 }}" data-bs-parent="#accordionDR" style="overflow-x: auto;">
-                <div class="accordion-body">
-                    <a class="btn btn-success mb-2 edit-btn" data-match-date="{{ match.6 }}" 
-                    data-from-date="{{ match.7 }}" href="{% url 'update_match' match.0 %}">Edit</a>
-                    <a class="btn btn-warning  mb-2" href="{% url 'add_score' match.0 %}">Add Scores</a>
-                    <a class="btn btn-danger  mb-2" href="{% url 'match_scores_list' match.0 %}">List Scores</a>
-                     {% if request.session.user.role == "admin" %}
-                    <a href="{% url 'delete_match' match.0 %}" class="btn btn-danger mb-2" dataid="{{match.0}}">Delete Match Recording</a>
-                    {% endif %}
-         <div class="row">
-                        <div class="col">
-                            <table class="table table-bordered">
-                                <caption class="caption caption-top fw-bolder bg-dark text-white text-center">General
-                                </caption>
-                              
-                                    <tr>
-                                  <td>
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Match Type</th>
-                    <th>Name of Tournament</th>
-                    <th>Team 1</th>
-                    <th>Team 2</th>
-                    <th>Preparation Date</th>
-                    <th>Match Date</th>
-                    <th>From Date</th>
-                    <th>To Date</th>
-                    <th>Days Count</th>
-                    <th>Start Time</th>
-                    <th>Pitch ID</th>
-                    <th>Ground</th>
-                    <th>Is Pitch Level</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>{{ match.0 }}</td>
-                    <td>{{ match.1 }}</td>
-                    <td>{{ match.2 }}</td>
-                    <td>{{ match.3 }}</td>
-                    <td>{{ match.4 }}</td>
-                    <td>{{ match.5 }}</td>
-                    <td>{{ match.6 }}</td>
-                    <td>{{ match.7 }}</td>
-                    <td>{{ match.8 }}</td>
-                    <td>{{ match.9 }}</td>
-                    <td>{{ match.10 }}</td>
-                    <td>{{ match.80 }} {{ match.79 }}</td>
-                    <td>{{ match.78 }}</td>
-                    <td>
-                        {% if match.13 == "1" %}
-                            Yes
-                        {% else %}
-                            No
-                        {% endif %}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-                                  </td>
-                                  </tr>
-                                  <tr>
-                                  <td>
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>Lawn Height</th>
-                    <th>Grass Cover</th>
-                    <th>Minimum Temperature</th>
-                    <th>Maximum Temperature</th>
-                    <th>Forecast</th>
-                    <th>Moisture Upto</th>
-                    <th>Dew Factor</th>
-                    <th>Access Bounce</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>{{ match.14 }}</td>
-                    <td>{{ match.15 }}</td>
-                    <td>{{ match.16 }}</td>
-                    <td>{{ match.17 }}</td>
-                    <td>{{ match.18 }}</td>
-                    <td>{{ match.19 }}</td>
-                    <td>{{ match.20 }}</td>
-                    <td>{{ match.21 }}</td>
-                </tr>
-            </tbody>
-        </table>
-              </td>
-              </tr>
-                                
-                                </table>
-
-                           
-                        </div>
-
-
-
-                        <div class="col-sm-12 col-lg-12">
-                          <details class="summary-shadow transparent-bg  box-bg rounded">
-                                                                    <summary class="rounded-0">Pitch</summary>
-<table>
-   <tr>
-                                      <table class="table table-bordered">
-                                <caption class="caption caption-top fw-bolder bg-dark text-white text-center">Watering
-                                </caption>
-                                  <tr>
-                                    <th>Watering On</th>
-                                    <th>Time</th>
-                                    <th>Quantity (Liters)</th>
-                                </tr>
-                                <tr>
-                                    <td>
-                                         
-                                        <table>
-                                             {% for item in match.25|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                  
-                                    <td>
-                                         
-                                        <table>
-                                             {% for item in match.27|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                      <td>
-                                         
-                                        <table>
-                                             {% for item in match.26|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                </tr>
-                                </table>
-                           </tr>
-                           <tr>
-                                <table class="table table-bordered">
-                               <caption class="caption caption-top fw-bolder bg-dark text-white text-center">
-                                    Rolling
-                                </caption>
-                                 <tr>
-                                     <td>Date</td>
-                                    <td>Machinery</td>
-                                    <td>Time</td>
-                                    <td>No. of Passes</td>
-                                    <td>Speed</td>
-                                </tr>
-                                <tr>
-                                         <td>
-                                         
-                                        <table>
-                                             {% for item in match.87|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                     <td>
-                                         
-                                        <table>
-                                             {% for item in match.22|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr class="machinery-id">
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                     <td>
-                                         
-                                        <table>
-                                             {% for item in match.28|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                    <td>
-                                         
-                                        <table>
-                                             {% for item in match.23|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                     <td>
-                                         
-                                        <table>
-                                             {% for item in match.24|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                
-                                </tr>
-                            </table>
-                           </tr>
-                            <tr>
-                            <table class="table table-bordered">
-                                <caption class="caption caption-top fw-bolder bg-dark text-white text-center">
-                                    Mowing
-                                </caption>
-                                  <tr>
-                                 
-                                    <td>Mower Machinery ID</td>
-                                    <td>Date</td>
-                                    <td>Time of Application Mower</td>
-                                    <td>Mowing Done at MM</td>
-                                  
-                                </tr>
-                                <tr>
-                                      <td>
-                                          
-                                          <table>
-                                              {% for item in match.30|split_by_delimiter %}
-                                                {% if item.strip %}
-                                              <tr class="machinery-id">
-                                                  <td>
-                                                      {{ item }}
-                                                  </td>
-                                              </tr>
-                                                {% endif %}
-                                              {% endfor %}
-                                          </table>
-                                          
-                                      </td>
-                                      <td>
-                                          
-                                          <table>
-                                              {% for item in match.31|split_by_delimiter %}
-                                                {% if item.strip %}
-                                              <tr>
-                                                  <td>
-                                                      {{ item }}
-                                                  </td>
-                                              </tr>
-                                                {% endif %}
-                                              {% endfor %}
-                                          </table>
-                                          
-                                      </td>
-                                      <td>
-                                          
-                                          <table>
-                                              {% for item in match.32|split_by_delimiter %}
-                                                {% if item.strip %}
-                                              <tr>
-                                                  <td>
-                                                      {{ item }}
-                                                  </td>
-                                              </tr>
-                                                {% endif %}
-                                              {% endfor %}
-                                          </table>
-                                          
-                                      </td>
-                                      <td>
-                                          
-                                          <table>
-                                              {% for item in match.33|split_by_delimiter %}
-                                                {% if item.strip %}
-                                              <tr>
-                                                  <td>
-                                                      {{ item }}
-                                                  </td>
-                                              </tr>
-                                                {% endif %}
-                                              {% endfor %}
-                                          </table>
-                                          
-                                      </td>
-                                </tr>
-                                </table>
-                            </tr>
- <tr>
-                                <table class="table table-bordered caption-top">
- 
-                                    <caption class="caption caption-top fw-bolder bg-dark text-white text-center">
-                                    Chemicals
-                                </caption>
-                                   <tr>
-                                   
-                                   
-                                    <th colspan="3">Chemical Details</th>
-                                    <th>Time</th>
-                                    <th>Chemical Remarks</th>
-                                </tr>
-                                <tr>
-                                   <td>
-                                         
-                                        <table>
-                                             {% for item in match.35|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr class="chemical-id">
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                            
-                                            {% endif %}
-                                            {% endfor %}
-                                          </table>
-                                          </td>
-                                    <td>
-                                             <table>
-                                             {% for item in match.59|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                             </table>
-                                             </td> 
-                                    <td>
-                                              <table>
-                                             {% for item in match.60|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-
-                                    <td>
-                                       <table>
-                                             {% for item in match.55|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                    </td>
-                                    <td>
-                                       <table>
-                                             {% for item in match.36|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                    </td>
-
-
-                                </tr>
-                               
-                                <tr>
-                                    <th>Remark by Groundsman</th>
-                                    <td colspan="4">{{ match.37 }}</td>
-                                </tr>
-                           
-                              
-                            </table>
-                            </tr>
-</table>
-
-                     
-                      </details>
-                      
-                          </div>
-
-                        <div class="col-sm-12 col-lg-12">
-                          <details class="summary-shadow transparent-bg  box-bg rounded">
-                                                                    <summary class="rounded-0">Outfield</summary>
-                          <table>
-   <tr>
-                            <table class="table table-bordered">
-                                <caption class="caption caption-top fw-bolder bg-dark text-white text-center">Watering
-                                </caption>
-                                  <tr>
-                                    <th>Watering On</th>
-                                    <th>Time</th>
-                                    <th>Quantity (Liters)</th>
-                                </tr>
-                                <tr>
-                                    <td>
-                                         
-                                        <table>
-                                             {% for item in match.41|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                  
-                                    <td>
-                                         
-                                        <table>
-                                             {% for item in match.43|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                      <td>
-                                         
-                                        <table>
-                                             {% for item in match.42|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                </tr>
-                                </table>
-</tr>
-<tr>
-                            <table class="table table-bordered">
-                                 <caption class="caption caption-top fw-bolder bg-dark text-white text-center">
-                                    Rolling
-                                </caption>
-                                 <tr>
-                                     <td>Date</td>
-                                    <td>Machinery</td>
-                                    <td>Time</td>
-                                    <td>No. of Passes</td>
-                                    <td>Speed</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        
-                                       <table>
-                                            {% for item in match.88|split_by_delimiter %}
-                                             {% if item.strip %}
-                                           <tr>
-                                               <td>
-                                                   {{ item }}
-                                               </td>
-                                           </tr>
-                                             {% endif %}
-                                            {% endfor %}
-                                       </table>
-                                       
-                                   </td>
-                                     <td>
-                                         
-                                        <table>
-                                             {% for item in match.38|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr class="machinery-id">
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                     <td>
-                                         
-                                        <table>
-                                             {% for item in match.44|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                    <td>
-                                         
-                                        <table>
-                                             {% for item in match.39|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                     <td>
-                                         
-                                        <table>
-                                             {% for item in match.40|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                </tr>
-                            </table>
-</tr>
-<tr>
-                            <table class="table table-bordered">
-                                  <caption class="caption caption-top fw-bolder bg-dark text-white text-center">
-                                    Mowing
-                                </caption>
-                                  <tr>
-                                 
-                                    <td>Mower Machinery ID</td>
-                                    <td>Date</td>
-                                    <td>Time of Application Mower</td>
-                                    <td>Mowing Done at MM</td>
-                                  
-                                </tr>
-                                <tr>
-                                      <td>
-                                          
-                                          <table>
-                                              {% for item in match.46|split_by_delimiter %}
-                                                {% if item.strip %}
-                                              <tr class="machinery-id">
-                                                  <td>
-                                                      {{ item }}
-                                                  </td>
-                                              </tr>
-                                                {% endif %}
-                                              {% endfor %}
-                                          </table>
-                                          
-                                      </td>
-                                      <td>
-                                          
-                                          <table>
-                                              {% for item in match.47|split_by_delimiter %}
-                                                {% if item.strip %}
-                                              <tr>
-                                                  <td>
-                                                      {{ item }}
-                                                  </td>
-                                              </tr>
-                                                {% endif %}
-                                              {% endfor %}
-                                          </table>
-                                          
-                                      </td>
-                                      <td>
-                                          
-                                          <table>
-                                              {% for item in match.48|split_by_delimiter %}
-                                                {% if item.strip %}
-                                              <tr>
-                                                  <td>
-                                                      {{ item }}
-                                                  </td>
-                                              </tr>
-                                                {% endif %}
-                                              {% endfor %}
-                                          </table>
-                                          
-                                      </td>
-                                      <td>
-                                          
-                                          <table>
-                                              {% for item in match.49|split_by_delimiter %}
-                                                {% if item.strip %}
-                                              <tr>
-                                                  <td>
-                                                      {{ item }}
-                                                  </td>
-                                              </tr>
-                                                {% endif %}
-                                              {% endfor %}
-                                          </table>
-                                          
-                                      </td>
-                                </tr>
-                                </table>
-</tr>
-<tr>
-                                <table class="table table-bordered caption-top">
- 
-                                     <caption class="caption caption-top fw-bolder bg-dark text-white text-center">
-                                    Chemicals
-                                </caption>
-                                   <tr>
-                                   
-                                   
-                                    <th colspan="3">Chemical Details</th>
-                                    <th>Time</th>
-                                    <th>Chemical Remarks</th>
-                                </tr>
-                                <tr>
-                                   <td>
-                                         
-                                        <table>
-                                             {% for item in match.51|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr class="chemical-id">
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                            
-                                            {% endif %}
-                                            {% endfor %}
-                                          </table>
-                                          </td>
-                                    <td>
-                                             <table>
-                                             {% for item in match.61|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                             </table>
-                                             </td> 
-                                    <td>
-                                              <table>
-                                             {% for item in match.62|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-
-                                    <td>
-                                       <table>
-                                             {% for item in match.56|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                    </td>
-                                    <td>
-                                       <table>
-                                             {% for item in match.52|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                    </td>
-
-
-                                </tr>
-                               
-                                <tr>
-                                    <th>Remark by Groundsman</th>
-                                    <td colspan="4">{{ match.53 }}</td>
-                                </tr>
-                           
-                              
-                            </table>
-</tr>
-</table>
-</details>
-                        </div>
-
-
-                    </div>
-
-
-
-                </div>
-            </div>
-        </div>
-
-        {% with False as flag %}
-
-        {% endwith %}
-
-        {% else %}
-
-        <div class="accordion-item"  onclick="getMachine(this)">
-            <h2 class="accordion-header" id="heading-{{ match.0 }}">
-                <button class="accordion-button d-flex" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#collapse-{{ match.0 }}" aria-expanded="true"
-                    aria-controls="collapse-{{ match.0 }}">
-                    <span class="px-3 py-2 rounded fs-6 text-center bg-light fw-bolder me-2 text-dark record-type" style="text-transform: uppercase;"> <b>Match Type</b> <small><br>{{ match.1 }} <span class="text-warning">({{ match.0 }})</span></small></span>
-                    <span class="pe-4 fs-6 text-center"> <b>Name of Tournament</b> <small><br>{{ match.2 }}</small></span>
-                    <span class="pe-4 fs-6 text-center"> <b>Name of Ground</b> <small><br>{{ match.78 }}</small></span>
-
-                    {% if match.1 == "Multidays" %}
-                    <span class="pe-4 fs-6 text-center"> <b>Match Date</b> <small><br>{{ match.7 }} - {{match.8}}</small></span>
-                    {% else %}
-                    <span class="pe-4 fs-6 text-center"> <b>Match Date</b><small><br> {{ match.6 }}</small></span>
-                    {% endif %}
-                    <span class="pe-4 fs-6 text-center"> <b>Match Between</b><small><br> {{ match.3 }} & {{match.4}}</small></span>
-                    <span class="pe-4 fs-6 text-center"> <b>Recording Date-time</b><small><br> {{ match.57 }}</small></span>
-                </button>
-            </h2>
-
-
-            <div id="collapse-{{ match.0 }}" class="accordion-collapse collapse" aria-labelledby="heading{{ match.0 }}"
-                data-bs-parent="#accordionDR" style="overflow-x: auto;">
-                <div class="accordion-body">
-                    <a class="btn btn-success mb-2 edit-btn" data-match-date="{{ match.6 }}" 
-                    data-from-date="{{ match.7 }}" href="{% url 'update_match' match.0 %}">Edit</a>
-                   
-                    <a class="btn btn-warning mb-2" href="{% url 'add_score' match.0 %}">Add Scores</a>
-                    <a class="btn btn-danger mb-2" href="{% url 'match_scores_list' match.0 %}">List Scores</a>
-                    <button type="button" class="btn btn-danger mb-2" onclick="deleteMatch('{{match.0}}')" dataid="{{match.0}}">Delete Match Recording</button>
-                    <!-- <a href="{% url 'delete_match' match.0 %}" class="btn btn-danger mb-2" dataid="{{match.0}}">Delete Match Recording</a> -->
+        {% if request.session.user.role == "admin" %}
+        <form method="get" action="/usr_admin/matches_filter">
+            <div class="row mx-auto w-75">
+            <div class="col-lg-3 col-sm-12">
                 
-                          <div class="row">
-                        <div class="col">
-                            <table class="table table-bordered">
-                                <caption class="caption caption-top fw-bolder bg-dark text-white text-center">General
-                                </caption>
-                              
-                                    <tr>
-                                  <td>
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Match Type</th>
-                    <th>Name of Tournament</th>
-                    <th>Team 1</th>
-                    <th>Team 2</th>
-                    <th>Preparation Date</th>
-                    <th>Match Date</th>
-                    <th>From Date</th>
-                    <th>To Date</th>
-                    <th>Days Count</th>
-                    <th>Start Time</th>
-                    <th>Pitch ID</th>
-                    <th>Ground</th>
-                    <th>Is Pitch Level</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>{{ match.0 }}</td>
-                    <td>{{ match.1 }}</td>
-                    <td>{{ match.2 }}</td>
-                    <td>{{ match.3 }}</td>
-                    <td>{{ match.4 }}</td>
-                    <td>{{ match.5 }}</td>
-                    <td>{{ match.6 }}</td>
-                    <td>{{ match.7 }}</td>
-                    <td>{{ match.8 }}</td>
-                    <td>{{ match.9 }}</td>
-                    <td>{{ match.10 }}</td>
-                    <td>{{ match.80 }} {{ match.79 }}</td>
-                    <td>{{ match.78 }}</td>
-                    <td>
-                        {% if match.13 == "1" %}
-                            Yes
+                <select id="ground_id" name="ground_id" class="form-control"></select>
+
+            </div>
+             <div class="col-lg-3 col-sm-12"><button class="btn btn-primary" type="submit">Search</button></div>
+            </div>
+        </form>
+         {% endif %}
+
+        <div class="accordion p-4 " id="accordionDR">
+
+            {% load admin_user_filters %}
+            {% for match in matches %}
+            {% if flag %}
+
+            <div class="accordion-item" onclick="getMachine(this)">
+                <h2 class="accordion-header" id="heading-{{ match.0 }}">
+                    <button class="accordion-button d-flex" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapse-{{ match.0 }}" aria-expanded="true"
+                        aria-controls="collapse-{{ match.0 }}">
+                        <span class="px-3 py-2 rounded fs-6 text-center bg-light fw-bolder me-2 text-dark record-type"
+                            style="text-transform: uppercase;"> <b>Match Type</b> <small><br>{{ match.1 }} <span
+                                    class="text-warning">({{ match.0 }})</span></small></span>
+                        <span class="pe-4 fs-6 text-center"> <b>Name of Tournament</b> <small><br>{{ match.2
+                                }}</small></span>
+                        <span class="pe-4 fs-6 text-center"> <b>Name of Ground</b> <small><br>{{ match.78
+                                }}</small></span>
+
+
+                        {% if match.1 == "Multidays" %}
+                        <span class="pe-4 fs-6 text-center"> <b>Match Date</b> <small><br>{{ match.7 }} -
+                                {{match.8}}</small></span>
                         {% else %}
-                            No
+                        <span class="pe-4 fs-6 text-center"> <b>Match Date</b><small><br> {{ match.6 }}</small></span>
                         {% endif %}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-                                  </td>
-                                  </tr>
-                                  <tr>
-                                  <td>
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>Lawn Height</th>
-                    <th>Grass Cover</th>
-                    <th>Minimum Temperature</th>
-                    <th>Maximum Temperature</th>
-                    <th>Forecast</th>
-                    <th>Moisture Upto</th>
-                    <th>Dew Factor</th>
-                    <th>Access Bounce</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>{{ match.14 }}</td>
-                    <td>{{ match.15 }}</td>
-                    <td>{{ match.16 }}</td>
-                    <td>{{ match.17 }}</td>
-                    <td>{{ match.18 }}</td>
-                    <td>{{ match.19 }}</td>
-                    <td>{{ match.20 }}</td>
-                    <td>{{ match.21 }}</td>
-                </tr>
-            </tbody>
-        </table>
-              </td>
-              </tr>
-                                
-                                </table>
+                        <span class="pe-4 fs-6 text-center"> <b>Match Between</b><small><br> {{ match.3 }} &
+                                {{match.4}}</small></span>
+                        <span class="pe-4 fs-6 text-center"> <b>Recording Date-time</b><small><br> {{ match.57
+                                }}</small></span>
+                    </button>
+                </h2>
 
-                           
-                        </div>
+                <div id="collapse-{{ match.0 }}" class="accordion-collapse collapse show"
+                    aria-labelledby="heading{{ match.0 }}" data-bs-parent="#accordionDR" style="overflow-x: auto;">
+                    <div class="accordion-body">
+                        <a class="btn btn-success mb-2 edit-btn" data-match-date="{{ match.6 }}"
+                            data-from-date="{{ match.7 }}" href="{% url 'update_match' match.0 %}">Edit</a>
+                        <a class="btn btn-warning  mb-2" href="{% url 'add_score' match.0 %}">Add Scores</a>
+                        <a class="btn btn-danger  mb-2" href="{% url 'match_scores_list' match.0 %}">List Scores</a>
 
 
-
-                        <div class="col-sm-12 col-lg-12">
-                          <details class="summary-shadow transparent-bg  box-bg rounded">
-                                                                    <summary class="rounded-0">Pitch</summary>
-<table>
-   <tr>
-                                      <table class="table table-bordered">
-                                <caption class="caption caption-top fw-bolder bg-dark text-white text-center">Watering
-                                </caption>
-                                  <tr>
-                                    <th>Watering On</th>
-                                    <th>Time</th>
-                                    <th>Quantity (Liters)</th>
-                                </tr>
-                                <tr>
-                                    <td>
-                                         
-                                        <table>
-                                             {% for item in match.25|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                  
-                                    <td>
-                                         
-                                        <table>
-                                             {% for item in match.27|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                      <td>
-                                         
-                                        <table>
-                                             {% for item in match.26|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                </tr>
-                                </table>
-                           </tr>
-                           <tr>
+                        {% if request.session.user.role == "admin" %}
+                        <a href="{% url 'delete_match' match.0 %}" class="btn btn-danger mb-2"
+                            dataid="{{match.0}}">Delete Match Recording</a>
+                        {% endif %}
+                        <div class="row">
+                            <div class="col">
                                 <table class="table table-bordered">
                                     <caption class="caption caption-top fw-bolder bg-dark text-white text-center">
-                                        Rolling
+                                        General
                                     </caption>
+
                                     <tr>
-                                        <td>Date</td>
-                                        <td>Machinery</td>
-                                        <td>Time</td>
-                                        <td>No. of Passes</td>
-                                        <td>Speed</td>
+                                        <td>
+                                            <table class="table table-bordered table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>ID</th>
+                                                        <th>Match Type</th>
+                                                        <th>Name of Tournament</th>
+                                                        <th>Team 1</th>
+                                                        <th>Team 2</th>
+                                                        <th>Preparation Date</th>
+                                                        <th>Match Date</th>
+                                                        <th>From Date</th>
+                                                        <th>To Date</th>
+                                                        <th>Days Count</th>
+                                                        <th>Start Time</th>
+                                                        <th>Pitch ID</th>
+                                                        <th>Ground</th>
+                                                        <th>Is Pitch Level</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>{{ match.0 }}</td>
+                                                        <td>{{ match.1 }}</td>
+                                                        <td>{{ match.2 }}</td>
+                                                        <td>{{ match.3 }}</td>
+                                                        <td>{{ match.4 }}</td>
+                                                        <td>{{ match.5 }}</td>
+                                                        <td>{{ match.6 }}</td>
+                                                        <td>{{ match.7 }}</td>
+                                                        <td>{{ match.8 }}</td>
+                                                        <td>{{ match.9 }}</td>
+                                                        <td>{{ match.10 }}</td>
+                                                        <td>{{ match.80 }} {{ match.79 }}</td>
+                                                        <td>{{ match.78 }}</td>
+                                                        <td>
+                                                            {% if match.13 == "1" %}
+                                                            Yes
+                                                            {% else %}
+                                                            No
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
                                     </tr>
                                     <tr>
-                                    
-                                     <td>
-                                         
-                                        <table>
-                                             {% for item in match.87|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                     <td>
-                                         
-                                        <table>
-                                             {% for item in match.22|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr class="machinery-id">
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                     <td>
-                                         
-                                        <table>
-                                             {% for item in match.28|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                    <td>
-                                         
-                                        <table>
-                                             {% for item in match.23|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                     <td>
-                                         
-                                        <table>
-                                             {% for item in match.24|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                
-                           </tr>
-                           
-                            <tr>
-                            <table class="table table-bordered">
-                                <caption class="caption caption-top fw-bolder bg-dark text-white text-center">
-                                    Mowing
-                                </caption>
-                                  <tr>
-                                 
-                                    <td>Mower Machinery ID</td>
-                                    <td>Date</td>
-                                    <td>Time of Application Mower</td>
-                                    <td>Mowing Done at MM</td>
-                                  
-                                </tr>
-                                <tr>
-                                      <td>
-                                          
-                                          <table>
-                                              {% for item in match.30|split_by_delimiter %}
-                                                {% if item.strip %}
-                                              <tr class="machinery-id">
-                                                  <td>
-                                                      {{ item }}
-                                                  </td>
-                                              </tr>
-                                                {% endif %}
-                                              {% endfor %}
-                                          </table>
-                                          
-                                      </td>
-                                      <td>
-                                          
-                                          <table>
-                                              {% for item in match.31|split_by_delimiter %}
-                                                {% if item.strip %}
-                                              <tr>
-                                                  <td>
-                                                      {{ item }}
-                                                  </td>
-                                              </tr>
-                                                {% endif %}
-                                              {% endfor %}
-                                          </table>
-                                          
-                                      </td>
-                                      <td>
-                                          
-                                          <table>
-                                              {% for item in match.32|split_by_delimiter %}
-                                                {% if item.strip %}
-                                              <tr>
-                                                  <td>
-                                                      {{ item }}
-                                                  </td>
-                                              </tr>
-                                                {% endif %}
-                                              {% endfor %}
-                                          </table>
-                                          
-                                      </td>
-                                      <td>
-                                          
-                                          <table>
-                                              {% for item in match.33|split_by_delimiter %}
-                                                {% if item.strip %}
-                                              <tr>
-                                                  <td>
-                                                      {{ item }}
-                                                  </td>
-                                              </tr>
-                                                {% endif %}
-                                              {% endfor %}
-                                          </table>
-                                          
-                                      </td>
-                                </tr>
+                                        <td>
+                                            <table class="table table-bordered table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Lawn Height</th>
+                                                        <th>Grass Cover</th>
+                                                        <th>Minimum Temperature</th>
+                                                        <th>Maximum Temperature</th>
+                                                        <th>Forecast</th>
+                                                        <th>Moisture Upto</th>
+                                                        <th>Dew Factor</th>
+                                                        <th>Access Bounce</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>{{ match.14 }}</td>
+                                                        <td>{{ match.15 }}</td>
+                                                        <td>{{ match.16 }}</td>
+                                                        <td>{{ match.17 }}</td>
+                                                        <td>{{ match.18 }}</td>
+                                                        <td>{{ match.19 }}</td>
+                                                        <td>{{ match.20 }}</td>
+                                                        <td>{{ match.21 }}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+
                                 </table>
-                            </tr>
- <tr>
-                                <table class="table table-bordered caption-top">
- 
+
+
+                            </div>
+
+
+
+                            <div class="col-sm-12 col-lg-12">
+                                <details class="summary-shadow transparent-bg  box-bg rounded">
+                                    <summary class="rounded-0">Pitch</summary>
+                                    <table>
+                                        <tr>
+                                            <table class="table table-bordered">
+                                                <caption
+                                                    class="caption caption-top fw-bolder bg-dark text-white text-center">
+                                                    Watering
+                                                </caption>
+                                                <tr>
+                                                    <th>Watering On</th>
+                                                    <th>Time</th>
+                                                    <th>Quantity (Liters)</th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.25|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.27|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.26|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </tr>
+                                        <tr>
+                                            <table class="table table-bordered">
+                                                <caption
+                                                    class="caption caption-top fw-bolder bg-dark text-white text-center">
+                                                    Rolling
+                                                </caption>
+                                                <tr>
+                                                    <td>Date</td>
+                                                    <td>Machinery</td>
+                                                    <td>Time</td>
+                                                    <td>No. of Passes</td>
+                                                    <td>Speed</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.87|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.22|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr class="machinery-id">
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.28|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.23|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.24|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+
+                                                </tr>
+                                            </table>
+                                        </tr>
+                                        <tr>
+                                            <table class="table table-bordered">
+                                                <caption
+                                                    class="caption caption-top fw-bolder bg-dark text-white text-center">
+                                                    Mowing
+                                                </caption>
+                                                <tr>
+
+                                                    <td>Mower Machinery ID</td>
+                                                    <td>Date</td>
+                                                    <td>Time of Application Mower</td>
+                                                    <td>Mowing Done at MM</td>
+
+                                                </tr>
+                                                <tr>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.30|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr class="machinery-id">
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.31|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.32|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.33|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </tr>
+                                        <tr>
+                                            <table class="table table-bordered caption-top">
+
+                                                <caption
+                                                    class="caption caption-top fw-bolder bg-dark text-white text-center">
+                                                    Chemicals
+                                                </caption>
+                                                <tr>
+
+
+                                                    <th colspan="3">Chemical Details</th>
+                                                    <th>Time</th>
+                                                    <th>Chemical Remarks</th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.35|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr class="chemical-id">
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+                                                    </td>
+                                                    <td>
+                                                        <table>
+                                                            {% for item in match.59|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+                                                    </td>
+                                                    <td>
+                                                        <table>
+                                                            {% for item in match.60|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+
+                                                    <td>
+                                                        <table>
+                                                            {% for item in match.55|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+                                                    </td>
+                                                    <td>
+                                                        <table>
+                                                            {% for item in match.36|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+                                                    </td>
+
+
+                                                </tr>
+
+                                                <tr>
+                                                    <th>Remark by Groundsman</th>
+                                                    <td colspan="4">{{ match.37 }}</td>
+                                                </tr>
+
+
+                                            </table>
+                                        </tr>
+                                    </table>
+
+
+                                </details>
+
+                            </div>
+
+                            <div class="col-sm-12 col-lg-12">
+                                <details class="summary-shadow transparent-bg  box-bg rounded">
+                                    <summary class="rounded-0">Outfield</summary>
+                                    <table>
+                                        <tr>
+                                            <table class="table table-bordered">
+                                                <caption
+                                                    class="caption caption-top fw-bolder bg-dark text-white text-center">
+                                                    Watering
+                                                </caption>
+                                                <tr>
+                                                    <th>Watering On</th>
+                                                    <th>Time</th>
+                                                    <th>Quantity (Liters)</th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.41|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.43|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.42|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </tr>
+                                        <tr>
+                                            <table class="table table-bordered">
+                                                <caption
+                                                    class="caption caption-top fw-bolder bg-dark text-white text-center">
+                                                    Rolling
+                                                </caption>
+                                                <tr>
+                                                    <td>Date</td>
+                                                    <td>Machinery</td>
+                                                    <td>Time</td>
+                                                    <td>No. of Passes</td>
+                                                    <td>Speed</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.88|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.38|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr class="machinery-id">
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.44|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.39|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.40|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </tr>
+                                        <tr>
+                                            <table class="table table-bordered">
+                                                <caption
+                                                    class="caption caption-top fw-bolder bg-dark text-white text-center">
+                                                    Mowing
+                                                </caption>
+                                                <tr>
+
+                                                    <td>Mower Machinery ID</td>
+                                                    <td>Date</td>
+                                                    <td>Time of Application Mower</td>
+                                                    <td>Mowing Done at MM</td>
+
+                                                </tr>
+                                                <tr>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.46|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr class="machinery-id">
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.47|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.48|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.49|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </tr>
+                                        <tr>
+                                            <table class="table table-bordered caption-top">
+
+                                                <caption
+                                                    class="caption caption-top fw-bolder bg-dark text-white text-center">
+                                                    Chemicals
+                                                </caption>
+                                                <tr>
+
+
+                                                    <th colspan="3">Chemical Details</th>
+                                                    <th>Time</th>
+                                                    <th>Chemical Remarks</th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.51|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr class="chemical-id">
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+                                                    </td>
+                                                    <td>
+                                                        <table>
+                                                            {% for item in match.61|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+                                                    </td>
+                                                    <td>
+                                                        <table>
+                                                            {% for item in match.62|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+
+                                                    <td>
+                                                        <table>
+                                                            {% for item in match.56|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+                                                    </td>
+                                                    <td>
+                                                        <table>
+                                                            {% for item in match.52|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+                                                    </td>
+
+
+                                                </tr>
+
+                                                <tr>
+                                                    <th>Remark by Groundsman</th>
+                                                    <td colspan="4">{{ match.53 }}</td>
+                                                </tr>
+
+
+                                            </table>
+                                        </tr>
+                                    </table>
+                                </details>
+                            </div>
+
+
+                        </div>
+
+
+
+                    </div>
+                </div>
+            </div>
+
+            {% with False as flag %}
+
+            {% endwith %}
+
+            {% else %}
+
+            <div class="accordion-item" onclick="getMachine(this)">
+                <h2 class="accordion-header" id="heading-{{ match.0 }}">
+                    <button class="accordion-button d-flex" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapse-{{ match.0 }}" aria-expanded="true"
+                        aria-controls="collapse-{{ match.0 }}">
+                        <span class="px-3 py-2 rounded fs-6 text-center bg-light fw-bolder me-2 text-dark record-type"
+                            style="text-transform: uppercase;"> <b>Match Type</b> <small><br>{{ match.1 }} <span
+                                    class="text-warning">({{ match.0 }})</span></small></span>
+                        <span class="pe-4 fs-6 text-center"> <b>Name of Tournament</b> <small><br>{{ match.2 }}</small></span>
+                        <span class="pe-4 fs-6 text-center"> <b>Name of Ground</b> <small><br>{{ match.78 }}</small></span>
+
+                        {% if match.1 == "Multidays" %}
+                        <span class="pe-4 fs-6 text-center"> <b>Match Date</b> <small><br>{{ match.7 }} -
+                                {{match.8}}</small></span>
+                        {% else %}
+                        <span class="pe-4 fs-6 text-center"> <b>Match Date</b><small><br> {{ match.6 }}</small></span>
+                        {% endif %}
+                        <span class="pe-4 fs-6 text-center"> <b>Match Between</b><small><br> {{ match.3 }} &
+                                {{match.4}}</small></span>
+                        <span class="pe-4 fs-6 text-center"> <b>Recording Date-time</b><small><br> {{ match.57}}</small></span>
+                    </button>
+                </h2>
+
+
+                <div id="collapse-{{ match.0 }}" class="accordion-collapse collapse"
+                    aria-labelledby="heading{{ match.0 }}" data-bs-parent="#accordionDR" style="overflow-x: auto;">
+                    <div class="accordion-body">
+                        <a class="btn btn-success mb-2 edit-btn" data-match-date="{{ match.6 }}"
+                            data-from-date="{{ match.7 }}" href="{% url 'update_match' match.0 %}">Edit</a>
+
+                        <a class="btn btn-warning mb-2" href="{% url 'add_score' match.0 %}">Add Scores</a>
+                        <a class="btn btn-danger mb-2" href="{% url 'match_scores_list' match.0 %}">List Scores</a>
+                        {% if request.session.user.role == "admin" %}
+                        <button type="button" class="btn btn-danger mb-2" onclick="deleteMatch('{{match.0}}')"
+                            dataid="{{match.0}}">Delete Recording</button>
+                        {% endif %}
+                        <!-- <a href="{% url 'delete_match' match.0 %}" class="btn btn-danger mb-2" dataid="{{match.0}}">Delete Match Recording</a> -->
+
+                        <div class="row">
+                            <div class="col">
+                                <table class="table table-bordered">
                                     <caption class="caption caption-top fw-bolder bg-dark text-white text-center">
-                                    Chemicals
-                                </caption>
-                                   <tr>
-                                   
-                                   
-                                    <th colspan="3">Chemical Details</th>
-                                    <th>Time</th>
-                                    <th>Chemical Remarks</th>
-                                </tr>
-                                <tr>
-                                   <td>
-                                         
-                                        <table>
-                                             {% for item in match.35|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr class="chemical-id">
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                            
-                                            {% endif %}
-                                            {% endfor %}
-                                          </table>
-                                          </td>
-                                    <td>
-                                             <table>
-                                             {% for item in match.59|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                             </table>
-                                             </td> 
-                                    <td>
-                                              <table>
-                                             {% for item in match.60|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
+                                        General
+                                    </caption>
 
-                                    <td>
-                                       <table>
-                                             {% for item in match.55|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                    </td>
-                                    <td>
-                                       <table>
-                                             {% for item in match.36|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                    </td>
+                                    <tr>
+                                        <td>
+                                            <table class="table table-bordered table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>ID</th>
+                                                        <th>Match Type</th>
+                                                        <th>Name of Tournament</th>
+                                                        <th>Team 1</th>
+                                                        <th>Team 2</th>
+                                                        <th>Preparation Date</th>
+                                                        <th>Match Date</th>
+                                                        <th>From Date</th>
+                                                        <th>To Date</th>
+                                                        <th>Days Count</th>
+                                                        <th>Start Time</th>
+                                                        <th>Pitch ID</th>
+                                                        <th>Ground</th>
+                                                        <th>Is Pitch Level</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>{{ match.0 }}</td>
+                                                        <td>{{ match.1 }}</td>
+                                                        <td>{{ match.2 }}</td>
+                                                        <td>{{ match.3 }}</td>
+                                                        <td>{{ match.4 }}</td>
+                                                        <td>{{ match.5 }}</td>
+                                                        <td>{{ match.6 }}</td>
+                                                        <td>{{ match.7 }}</td>
+                                                        <td>{{ match.8 }}</td>
+                                                        <td>{{ match.9 }}</td>
+                                                        <td>{{ match.10 }}</td>
+                                                        <td>{{ match.80 }} {{ match.79 }}</td>
+                                                        <td>{{ match.78 }}</td>
+                                                        <td>
+                                                            {% if match.13 == "1" %}
+                                                            Yes
+                                                            {% else %}
+                                                            No
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <table class="table table-bordered table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Lawn Height</th>
+                                                        <th>Grass Cover</th>
+                                                        <th>Minimum Temperature</th>
+                                                        <th>Maximum Temperature</th>
+                                                        <th>Forecast</th>
+                                                        <th>Moisture Upto</th>
+                                                        <th>Dew Factor</th>
+                                                        <th>Access Bounce</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>{{ match.14 }}</td>
+                                                        <td>{{ match.15 }}</td>
+                                                        <td>{{ match.16 }}</td>
+                                                        <td>{{ match.17 }}</td>
+                                                        <td>{{ match.18 }}</td>
+                                                        <td>{{ match.19 }}</td>
+                                                        <td>{{ match.20 }}</td>
+                                                        <td>{{ match.21 }}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
 
-
-                                </tr>
-                               
-                                <tr>
-                                    <th>Remark by Groundsman</th>
-                                    <td colspan="4">{{ match.37 }}</td>
-                                </tr>
-                           
-                              
-                            </table>
-                            </tr>
-</table>
-
-              </details>       
-                      
-                      
-                          </div>
-
-                        <div class="col-sm-12 col-lg-12">
-                          <details class="summary-shadow transparent-bg  box-bg rounded">
-                                                                    <summary class="rounded-0">Outfield</summary>
-                          <table>
- 
-   <tr>
-                            <table class="table table-bordered">
-                                <caption class="caption caption-top fw-bolder bg-dark text-white text-center">Watering
-                                </caption>
-                                  <tr>
-                                    <th>Watering On</th>
-                                    <th>Time</th>
-                                    <th>Quantity (Liters)</th>
-                                </tr>
-                                <tr>
-                                    <td>
-                                         
-                                        <table>
-                                             {% for item in match.41|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                  
-                                    <td>
-                                         
-                                        <table>
-                                             {% for item in match.43|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                      <td>
-                                         
-                                        <table>
-                                             {% for item in match.42|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                </tr>
                                 </table>
-</tr>
-<tr>
-                            <table class="table table-bordered">
-                                 <caption class="caption caption-top fw-bolder bg-dark text-white text-center">
-                                    Rolling
-                                </caption>
-                                 <tr>
-                                     <td>Date</td>
-                                    <td>Machinery</td>
-                                    <td>Time</td>
-                                    <td>No. of Passes</td>
-                                    <td>Speed</td>
-                                </tr>
-                                <tr>
-                                     <td>
-                                         
-                                        <table>
-                                             {% for item in match.88|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                     <td>
-                                         
-                                        <table>
-                                             {% for item in match.38|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr class="machinery-id">
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                     <td>
-                                         
-                                        <table>
-                                             {% for item in match.44|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                    <td>
-                                         
-                                        <table>
-                                             {% for item in match.39|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                     <td>
-                                         
-                                        <table>
-                                             {% for item in match.40|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-                                    
-                                </tr>
-                            </table>
-</tr>
-<tr>
-                            <table class="table table-bordered">
-                                  <caption class="caption caption-top fw-bolder bg-dark text-white text-center">
-                                    Mowing
-                                </caption>
-                                  <tr>
-                                 
-                                    <td>Mower Machinery ID</td>
-                                    <td>Date</td>
-                                    <td>Time of Application Mower</td>
-                                    <td>Mowing Done at MM</td>
-                                  
-                                </tr>
-                                <tr>
-                                      <td>
-                                          
-                                          <table>
-                                              {% for item in match.46|split_by_delimiter %}
-                                                {% if item.strip %}
-                                              <tr class="machinery-id">
-                                                  <td>
-                                                      {{ item }}
-                                                  </td>
-                                              </tr>
-                                                {% endif %}
-                                              {% endfor %}
-                                          </table>
-                                          
-                                      </td>
-                                      <td>
-                                          
-                                          <table>
-                                              {% for item in match.47|split_by_delimiter %}
-                                                {% if item.strip %}
-                                              <tr>
-                                                  <td>
-                                                      {{ item }}
-                                                  </td>
-                                              </tr>
-                                                {% endif %}
-                                              {% endfor %}
-                                          </table>
-                                          
-                                      </td>
-                                      <td>
-                                          
-                                          <table>
-                                              {% for item in match.48|split_by_delimiter %}
-                                                {% if item.strip %}
-                                              <tr>
-                                                  <td>
-                                                      {{ item }}
-                                                  </td>
-                                              </tr>
-                                                {% endif %}
-                                              {% endfor %}
-                                          </table>
-                                          
-                                      </td>
-                                      <td>
-                                          
-                                          <table>
-                                              {% for item in match.49|split_by_delimiter %}
-                                                {% if item.strip %}
-                                              <tr>
-                                                  <td>
-                                                      {{ item }}
-                                                  </td>
-                                              </tr>
-                                                {% endif %}
-                                              {% endfor %}
-                                          </table>
-                                          
-                                      </td>
-                                </tr>
-                                </table>
-</tr>
-<tr>
-                                <table class="table table-bordered caption-top">
- 
-                                     <caption class="caption caption-top fw-bolder bg-dark text-white text-center">
-                                    Chemicals
-                                </caption>
-                                   <tr>
-                                   
-                                   
-                                    <th colspan="3">Chemical Details</th>
-                                    <th>Time</th>
-                                    <th>Chemical Remarks</th>
-                                </tr>
-                                <tr>
-                                   <td>
-                                         
-                                        <table>
-                                             {% for item in match.51|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr class="chemical-id">
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                            
-                                            {% endif %}
-                                            {% endfor %}
-                                          </table>
-                                          </td>
-                                    <td>
-                                             <table>
-                                             {% for item in match.61|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                             </table>
-                                             </td> 
-                                    <td>
-                                              <table>
-                                             {% for item in match.62|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
-
-                                    <td>
-                                       <table>
-                                             {% for item in match.56|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                    </td>
-                                    <td>
-                                       <table>
-                                             {% for item in match.52|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                    </td>
 
 
-                                </tr>
-                               
-                                <tr>
-                                    <th>Remark by Groundsman</th>
-                                    <td colspan="4">{{ match.53 }}</td>
-                                </tr>
-                           
-                              
-                            </table>
-</tr>
-</table>
-</details>
+                            </div>
+
+
+
+                            <div class="col-sm-12 col-lg-12">
+                                <details class="summary-shadow transparent-bg  box-bg rounded">
+                                    <summary class="rounded-0">Pitch</summary>
+                                    <table>
+                                        <tr>
+                                            <table class="table table-bordered">
+                                                <caption
+                                                    class="caption caption-top fw-bolder bg-dark text-white text-center">
+                                                    Watering
+                                                </caption>
+                                                <tr>
+                                                    <th>Watering On</th>
+                                                    <th>Time</th>
+                                                    <th>Quantity (Liters)</th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.25|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.27|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.26|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </tr>
+                                        <tr>
+                                            <table class="table table-bordered">
+                                                <caption
+                                                    class="caption caption-top fw-bolder bg-dark text-white text-center">
+                                                    Rolling
+                                                </caption>
+                                                <tr>
+                                                    <td>Date</td>
+                                                    <td>Machinery</td>
+                                                    <td>Time</td>
+                                                    <td>No. of Passes</td>
+                                                    <td>Speed</td>
+                                                </tr>
+                                                <tr>
+
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.87|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.22|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr class="machinery-id">
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.28|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.23|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.24|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+
+                                                </tr>
+
+                                                <tr>
+                                                    <table class="table table-bordered">
+                                                        <caption
+                                                            class="caption caption-top fw-bolder bg-dark text-white text-center">
+                                                            Mowing
+                                                        </caption>
+                                                        <tr>
+
+                                                            <td>Mower Machinery ID</td>
+                                                            <td>Date</td>
+                                                            <td>Time of Application Mower</td>
+                                                            <td>Mowing Done at MM</td>
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+
+                                                                <table>
+                                                                    {% for item in match.30|split_by_delimiter %}
+                                                                    {% if item.strip %}
+                                                                    <tr class="machinery-id">
+                                                                        <td>
+                                                                            {{ item }}
+                                                                        </td>
+                                                                    </tr>
+                                                                    {% endif %}
+                                                                    {% endfor %}
+                                                                </table>
+
+                                                            </td>
+                                                            <td>
+
+                                                                <table>
+                                                                    {% for item in match.31|split_by_delimiter %}
+                                                                    {% if item.strip %}
+                                                                    <tr>
+                                                                        <td>
+                                                                            {{ item }}
+                                                                        </td>
+                                                                    </tr>
+                                                                    {% endif %}
+                                                                    {% endfor %}
+                                                                </table>
+
+                                                            </td>
+                                                            <td>
+
+                                                                <table>
+                                                                    {% for item in match.32|split_by_delimiter %}
+                                                                    {% if item.strip %}
+                                                                    <tr>
+                                                                        <td>
+                                                                            {{ item }}
+                                                                        </td>
+                                                                    </tr>
+                                                                    {% endif %}
+                                                                    {% endfor %}
+                                                                </table>
+
+                                                            </td>
+                                                            <td>
+
+                                                                <table>
+                                                                    {% for item in match.33|split_by_delimiter %}
+                                                                    {% if item.strip %}
+                                                                    <tr>
+                                                                        <td>
+                                                                            {{ item }}
+                                                                        </td>
+                                                                    </tr>
+                                                                    {% endif %}
+                                                                    {% endfor %}
+                                                                </table>
+
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </tr>
+                                                <tr>
+                                                    <table class="table table-bordered caption-top">
+
+                                                        <caption
+                                                            class="caption caption-top fw-bolder bg-dark text-white text-center">
+                                                            Chemicals
+                                                        </caption>
+                                                        <tr>
+
+
+                                                            <th colspan="3">Chemical Details</th>
+                                                            <th>Time</th>
+                                                            <th>Chemical Remarks</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+
+                                                                <table>
+                                                                    {% for item in match.35|split_by_delimiter %}
+                                                                    {% if item.strip %}
+                                                                    <tr class="chemical-id">
+                                                                        <td>
+                                                                            {{ item }}
+                                                                        </td>
+                                                                    </tr>
+
+                                                                    {% endif %}
+                                                                    {% endfor %}
+                                                                </table>
+                                                            </td>
+                                                            <td>
+                                                                <table>
+                                                                    {% for item in match.59|split_by_delimiter %}
+                                                                    {% if item.strip %}
+                                                                    <tr>
+                                                                        <td>
+                                                                            {{ item }}
+                                                                        </td>
+                                                                    </tr>
+                                                                    {% endif %}
+                                                                    {% endfor %}
+                                                                </table>
+                                                            </td>
+                                                            <td>
+                                                                <table>
+                                                                    {% for item in match.60|split_by_delimiter %}
+                                                                    {% if item.strip %}
+                                                                    <tr>
+                                                                        <td>
+                                                                            {{ item }}
+                                                                        </td>
+                                                                    </tr>
+                                                                    {% endif %}
+                                                                    {% endfor %}
+                                                                </table>
+
+                                                            </td>
+
+                                                            <td>
+                                                                <table>
+                                                                    {% for item in match.55|split_by_delimiter %}
+                                                                    {% if item.strip %}
+                                                                    <tr>
+                                                                        <td>
+                                                                            {{ item }}
+                                                                        </td>
+                                                                    </tr>
+                                                                    {% endif %}
+                                                                    {% endfor %}
+                                                                </table>
+                                                            </td>
+                                                            <td>
+                                                                <table>
+                                                                    {% for item in match.36|split_by_delimiter %}
+                                                                    {% if item.strip %}
+                                                                    <tr>
+                                                                        <td>
+                                                                            {{ item }}
+                                                                        </td>
+                                                                    </tr>
+                                                                    {% endif %}
+                                                                    {% endfor %}
+                                                                </table>
+                                                            </td>
+
+
+                                                        </tr>
+
+                                                        <tr>
+                                                            <th>Remark by Groundsman</th>
+                                                            <td colspan="4">{{ match.37 }}</td>
+                                                        </tr>
+
+
+                                                    </table>
+                                                </tr>
+                                            </table>
+
+                                </details>
+
+
+                            </div>
+
+                            <div class="col-sm-12 col-lg-12">
+                                <details class="summary-shadow transparent-bg  box-bg rounded">
+                                    <summary class="rounded-0">Outfield</summary>
+                                    <table>
+
+                                        <tr>
+                                            <table class="table table-bordered">
+                                                <caption
+                                                    class="caption caption-top fw-bolder bg-dark text-white text-center">
+                                                    Watering
+                                                </caption>
+                                                <tr>
+                                                    <th>Watering On</th>
+                                                    <th>Time</th>
+                                                    <th>Quantity (Liters)</th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.41|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.43|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.42|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </tr>
+                                        <tr>
+                                            <table class="table table-bordered">
+                                                <caption
+                                                    class="caption caption-top fw-bolder bg-dark text-white text-center">
+                                                    Rolling
+                                                </caption>
+                                                <tr>
+                                                    <td>Date</td>
+                                                    <td>Machinery</td>
+                                                    <td>Time</td>
+                                                    <td>No. of Passes</td>
+                                                    <td>Speed</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.88|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.38|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr class="machinery-id">
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.44|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.39|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.40|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+
+                                                </tr>
+                                            </table>
+                                        </tr>
+                                        <tr>
+                                            <table class="table table-bordered">
+                                                <caption
+                                                    class="caption caption-top fw-bolder bg-dark text-white text-center">
+                                                    Mowing
+                                                </caption>
+                                                <tr>
+
+                                                    <td>Mower Machinery ID</td>
+                                                    <td>Date</td>
+                                                    <td>Time of Application Mower</td>
+                                                    <td>Mowing Done at MM</td>
+
+                                                </tr>
+                                                <tr>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.46|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr class="machinery-id">
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.47|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.48|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.49|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </tr>
+                                        <tr>
+                                            <table class="table table-bordered caption-top">
+
+                                                <caption
+                                                    class="caption caption-top fw-bolder bg-dark text-white text-center">
+                                                    Chemicals
+                                                </caption>
+                                                <tr>
+
+
+                                                    <th colspan="3">Chemical Details</th>
+                                                    <th>Time</th>
+                                                    <th>Chemical Remarks</th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+
+                                                        <table>
+                                                            {% for item in match.51|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr class="chemical-id">
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+                                                    </td>
+                                                    <td>
+                                                        <table>
+                                                            {% for item in match.61|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+                                                    </td>
+                                                    <td>
+                                                        <table>
+                                                            {% for item in match.62|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+
+                                                    </td>
+
+                                                    <td>
+                                                        <table>
+                                                            {% for item in match.56|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+                                                    </td>
+                                                    <td>
+                                                        <table>
+                                                            {% for item in match.52|split_by_delimiter %}
+                                                            {% if item.strip %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ item }}
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </table>
+                                                    </td>
+
+
+                                                </tr>
+
+                                                <tr>
+                                                    <th>Remark by Groundsman</th>
+                                                    <td colspan="4">{{ match.53 }}</td>
+                                                </tr>
+
+
+                                            </table>
+                                        </tr>
+                                    </table>
+                                </details>
+
+                            </div>
+
 
                         </div>
 
 
                     </div>
-
-
                 </div>
             </div>
+
+            {% endif %}
+            {% endfor %}
+
         </div>
-
-        {% endif %}
-        {% endfor %}
-
-    </div>
     </div>
 </div>
 
 
 {% include "admin_user/footertags.html" %}
-    <script>
-        changeMenuTitle("Match Recording List")
+<script>
+    changeMenuTitle("Match Recording List")
 
-        function deleteMatch(matchId) {
-            if (confirm('Are you sure you want to delete this match record?')) {
-                axios.delete(`/usr_admin/matches/delete/${matchId}`)
-                    .then(function (response) {
-                        // fetchScores("{{match.0}}");
-                        alert('Match deleted successfully!');
-                        // Refresh the scores list
+    function deleteMatch(matchId) {
+        if (confirm('Are you sure you want to delete this match record?')) {
+            axios.delete(`/usr_admin/matches/delete/${matchId}`)
+                .then(function (response) {
+                    // fetchScores("{{match.0}}");
+                    alert('Match deleted successfully!');
+                    // Refresh the scores list
 
-                        location.reload();
-
-                    })
-                    .catch(function (error) {
-                        console.error('Error deleting Match:', error);
-                    });
-            }
-        }
-
-
-        // $(document).ready(function () {
-
-        //     $(".del-btn").on('click', function (event) {
-        //         event.preventDefault();
-        //         alert($(this).attr('dataid').trim())
-        //         deleteMatch($(this).attr('dataid').trim());
-        //     })
-
-        // })
-
-        // newRow.querySelector('.del-btn').addEventListener('click', function () {
-
-        // });
-
-
-        function getGround() {
-            const tdGround = document.querySelectorAll(".td-ground")
-
-            tdGround.forEach(td => {
-                let id=$(td).text().trim()
-
-                axios.get(`/usr_admin/get_ground/${id}`).then((result) => {
-                    const ground = result.data.ground
-
-                    $(td).html(ground[6])
-
-                }).catch((error) => {
-                    console.log(error)
+                    location.reload();
 
                 })
-            });
-
+                .catch(function (error) {
+                    console.error('Error deleting Match:', error);
+                });
         }
+    }
 
 
-          function getChemical(div) {
-            const chemicalli = $(div).find(".chemical-id td")
+    // $(document).ready(function () {
 
-            Array.from(chemicalli).forEach(li => {
-                let id=$(li).text().trim()
+    //     $(".del-btn").on('click', function (event) {
+    //         event.preventDefault();
+    //         alert($(this).attr('dataid').trim())
+    //         deleteMatch($(this).attr('dataid').trim());
+    //     })
 
-                axios.get(`/usr_admin/get_chemical/${id}`).then((result) => {
-                    const chem = result.data
+    // })
 
-                    $(li).html(chem.name)
+    // newRow.querySelector('.del-btn').addEventListener('click', function () {
 
-                }).catch((error) => {
-                    console.log(error)
+    // });
 
-                })
-            });
 
-        }
+    function getGround() {
+        const tdGround = document.querySelectorAll(".td-ground")
 
-  function getMachine(div) {
-          console.log(div)
-            const liMach = $(div).find(".machinery-id td")
+        tdGround.forEach(td => {
+            let id = $(td).text().trim()
 
-            Array.from(liMach).forEach(li => {
-                let id=$(li).text().trim()
+            axios.get(`/usr_admin/get_ground/${id}`).then((result) => {
+                const ground = result.data.ground
 
-                axios.get(`/usr_admin/machinery/${id}`).then((result) => {
-                    const m = result.data.machinery
+                $(td).html(ground[6])
 
-                    $(li).html(m.print_details)
+            }).catch((error) => {
+                console.log(error)
 
-                }).catch((error) => {
-                    console.log(error)
+            })
+        });
 
-                })
-            });
- getChemical(div)
-            
-        }
-      
+    }
 
-        // getMachine()
-    </script>
+
+    function getChemical(div) {
+        const chemicalli = $(div).find(".chemical-id td")
+
+        Array.from(chemicalli).forEach(li => {
+            let id = $(li).text().trim()
+
+            axios.get(`/usr_admin/get_chemical/${id}`).then((result) => {
+                const chem = result.data
+
+                $(li).html(chem.name)
+
+            }).catch((error) => {
+                console.log(error)
+
+            })
+        });
+
+    }
+
+    function getMachine(div) {
+        console.log(div)
+        const liMach = $(div).find(".machinery-id td")
+
+        Array.from(liMach).forEach(li => {
+            let id = $(li).text().trim()
+
+            axios.get(`/usr_admin/machinery/${id}`).then((result) => {
+                const m = result.data.machinery
+
+                $(li).html(m.print_details)
+
+            }).catch((error) => {
+                console.log(error)
+
+            })
+        });
+        getChemical(div)
+
+    }
+
+
+    // getMachine()
+</script>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        setTimeout(()=>
-    { 
-        const today = new Date().toISOString().split("T")[0];  // Get current date in yyyy-mm-dd format
+        setTimeout(() => {
+            const today = new Date().toISOString().split("T")[0];  // Get current date in yyyy-mm-dd format
 
-document.querySelectorAll(".edit-btn").forEach(btn => {
-    const matchDate = btn.getAttribute("data-match-date");
-    const fromDate = btn.getAttribute("data-from-date");
+            document.querySelectorAll(".edit-btn").forEach(btn => {
+                const matchDate = btn.getAttribute("data-match-date");
+                const fromDate = btn.getAttribute("data-from-date");
 
-    if (matchDate === today || fromDate === today) {
-        btn.classList.add("disabled");
-        btn.classList.remove("btn-success");
-        btn.classList.add("btn-secondary");
-        btn.setAttribute("title", "Cannot edit match with today’s date.");
-        btn.href = "javascript:void(0)";
-    }
-});
-    },3000)
-      
+                if (matchDate === today || fromDate === today) {
+                    btn.classList.add("disabled");
+                    btn.classList.remove("btn-success");
+                    btn.classList.add("btn-secondary");
+                    btn.setAttribute("title", "Cannot edit match with today’s date.");
+                    btn.href = "javascript:void(0)";
+                }
+            });
+        }, 3000)
+
+    });
+
+    $(document).ready(function () {
+        axios.get("/usr_admin/get_grounds").then((result) => {
+            $("#ground_id").html("")
+            $("#ground_id").append(`<option value=''>Select Ground</option>`)
+            //                $("#ground_id").append(`<option value='all'>All Grounds</option>`)
+
+            result.data.grounds.forEach(function (g) {
+                $("#ground_id").append(`<option value='${g.ground[0]}'>${g.ground[6]}</option>`)
+            })
+
+        }).catch((error) => {
+            console.log(error)
+
+        })
     });
 </script>
 

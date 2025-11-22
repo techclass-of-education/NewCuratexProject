@@ -3,7 +3,8 @@
 {% load static %}
 
 <link href="{% static 'admin_user/css/gradient.css' %}" rel="stylesheet">
-<div class="wrapper grass-bg" style=" overflow-x: auto; ">
+<title>Curator Daily Recording List</title>
+<div class="wrapper grass-bg" style="overflow-x: auto;">
     <!-- Sidebar -->
     {% include "admin_user/menu_side.html" %}
 
@@ -25,10 +26,22 @@
 
         })
 </script>
+ {% if request.session.user.role == "admin" %}
+        <form method="get" action="/usr_admin/curator_daily_recording_list/filter">
+            <div class="row mx-auto w-75">
+            <div class="col-lg-3 col-sm-12">
+                
+                <select id="ground_id" name="ground_id" class="form-control"></select>
+
+            </div>
+             <div class="col-lg-3 col-sm-12"><button class="btn btn-primary" type="submit">Search</button></div>
+            </div>
+        </form>
+         {% endif %}
         
     {% load admin_user_filters %}
    
-    <title>Curator Daily Recording List</title>
+    
     <div class="accordion p-4">
         {% for recording in recordings %}
        
@@ -61,7 +74,9 @@
                 <div class="accordion-body">
                     <div class="table-responsive transparent-bg">
                   <a class="btn btn-success mx-2" href="{% url 'update_daily' recording.0 %}">UPDATE</a>
-                    <!-- <input class="btn btn-danger del-btn" dataid="{{recording.0}}" value="DELETE" type="button"/> -->
+                   {% if request.session.user.role == "admin" %}
+                    <input class="btn btn-danger del-btn" dataid="{{recording.0}}" value="DELETE" type="button"/>
+                     {% endif %}
                     <div class="row mt-2">
                         <div class="col-sm-12 col-lg-12">
                              <div class="bg-primary fs-5 m-0 text-center py-3">General</div>
@@ -1618,8 +1633,23 @@
 
 {% include "admin_user/footertags.html" %}
     <script>
-        changeMenuTitle("Curator Daily Recording List")
+        // changeMenuTitle("Curator Daily Recording List")
+  $(document).ready(function () {
+          
+        axios.get("/usr_admin/get_grounds").then((result) => {
+            $("#ground_id").html("")
+            $("#ground_id").append(`<option value=''>Select Ground</option>`)
+            //                $("#ground_id").append(`<option value='all'>All Grounds</option>`)
 
+            result.data.grounds.forEach(function (g) {
+                $("#ground_id").append(`<option value='${g.ground[0]}'>${g.ground[6]}</option>`)
+            })
+
+        }).catch((error) => {
+            console.log(error)
+
+        })
+    });
         function deleteDaily(dailyId) {
             if (confirm('Are you sure you want to delete this Daily Record?')) {
                 axios.delete(`/usr_admin/delete_daily/${dailyId}`)
@@ -1703,7 +1733,12 @@
 
         getGround() */
 
+       
     </script>
+
+
+
+
 
 
 
