@@ -396,7 +396,7 @@ scores.forEach(score => {
     summary[team].overs += parseFloat(score.overs);
 
     // Winner track karte rehna hai
-    winnerFinal = getWinner(score.winner);
+    winnerFinal = getWinner(score.winner,score.team1,score.team2);
 
 });
 
