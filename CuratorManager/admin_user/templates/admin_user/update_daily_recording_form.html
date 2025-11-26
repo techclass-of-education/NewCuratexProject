@@ -852,6 +852,7 @@
                                                 <div class="col-sm-12 col-lg-12">
                                                     <fieldset class="form-group border mt-4 text-dark p-3 box-bg rounded">
                                                         <legend class="w-auto px-2">Watering</legend>
+                                                        <hr>
                                                         <div class="row">
                                                             <div class="col-sm-12 col-lg-4">
                                                                 <label for="out_last_watering_on" class="form-label">Watering On:</label>
@@ -879,7 +880,7 @@
                             <button type="button" class="btn btn-primary" onclick="addOutWateringEntry()">Add Watering Entry</button>
 
                                                             </div>
-                                                            <div class="col-sm-12 col-lg-12">
+                                                            <div class="col-sm-12 col-lg-12 mt-4">
                                                                 <details>
                                                                     <summary>Watering Entries</summary>
                                                                       <div class="table-responsive transparent-bg">
@@ -912,8 +913,9 @@
                                                 <div class="col-sm-12 col-lg-12">
                                                     <fieldset class="form-group border mt-4 text-dark p-3 box-bg rounded">
                                                         <legend class="w-auto px-2">Rolling</legend>
+                                                        <hr>
                                                         <div class="row">
-                                                            <div class="col-sm-12 col-lg-2">
+                                                            <div class="col-sm-12 col-lg-3">
                                                                 <label for="out_roller_machine_type" class="form-label">Select Machine Type</label>
                                                                 <select class="form-select" id="out_roller_machine_type" name="out_roller_machine_type" required>
                                                                     <option selected>Select Type</option>
@@ -921,21 +923,21 @@
                                                                     <option value="Mechanized">Mechanized</option>
                                                                 </select>
                                                             </div>
-                                                            <div class="col-sm-12 col-lg-3 mt-4">
+                                                            <div class="col-sm-12 col-lg-6 mt-4">
                                                                 <input type="hidden" name="out_machinery_id" id="out_machinery_id">
                                                                   <div class="input-group">
                                                                 <input type="text" name="out_machinery_name" id="out_machinery_name" class="form-control" readonly placeholder="Click to select machinery">
                                                                  <span class="input-group-text bg-light" onclick="realoadMachineryList(event)">
                                                                   <i class="bi bi-arrow-clockwise text-danger"></i>
                                                                 </span>
+                                                                <button type="button" class="btn btn-dark align-self-end" style="font-size:70%;padding: 12px;" onclick="openMachineryModal('out_roller')">Select Machinery</button>
                                                                 </div>
-                                                                <button type="button" class="btn btn-dark mt-2 align-self-end" style="font-size:70%" onclick="openMachineryModal('out_roller')">Select Machinery</button>
                                                             </div>
                                                             <div class="col-sm-12 col-lg-3">
                                                                 <label for="out_roller_machinery_name_operator" class="form-label">Operator Name:</label>
                                                                 <input type="text" name="out_roller_machinery_name_operator" id="out_roller_machinery_name_operator" class="form-control">
                                                             </div>
-                                                            <div class="col-sm-12 col-lg-2">
+                                                            <div class="col-sm-12 col-lg-4 mt-4">
                                                                 <label for="out_time_roller" class="form-label">Time of Rolling:</label>
                                                                 <div class="d-flex align-items-center justify-content-center">
                                                                     <input type="time" id="out_time_roller" name="out_time_roller" class="form-control">
@@ -947,11 +949,11 @@
                                                                     </button>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-sm-12 col-lg-2">
+                                                            <div class="col-sm-12 col-lg-4 mt-4">
                                                                 <label for="out_rolling_speed" class="form-label">Rolling Speed (km/hr):</label>
                                                                 <input type="number" id="out_rolling_speed" name="out_rolling_speed" class="form-control">
                                                             </div>
-                                                            <div class="col-sm-12 col-lg-3 mt-4">
+                                                            <div class="col-sm-12 col-lg-4 mt-4">
                                                                 <label for="out_passes_unit" class="form-label">Select Unit:</label>
                                                                 <select class="form-select" id="out_passes_unit" name="out_passes_unit">
                                                                     <option selected>Select Unit</option>
@@ -965,10 +967,10 @@
                                                                 <label for="out_no_of_passes" class="form-label">Number of Passes:</label>
                                                                 <input type="text" id="out_no_of_passes" name="out_no_of_passes" class="form-control">
                                                             </div>
-                                                            <div class="col-sm-12 col-lg-3 mt-5">
+                                                            <div class="col-sm-12 col-lg-4 mt-5">
                                                                 <button type="button" class="btn btn-primary" onclick="outaddRollingEntry()">Add Rolling Entry</button>
                                                             </div>
-                                                            <div class="col-sm-12 col-lg-12">
+                                                            <div class="col-sm-12 col-lg-12 mt-4">
                                                                 <details>
                                                                     <summary>Rolling Entries</summary>
                                                                     <div class="table-responsive transparent-bg">
@@ -1009,7 +1011,7 @@
                                                                     <option value="Mechanized">Mechanized</option>
                                                                 </select>
                                                             </div>
-                                                            <div class="col-lg-4 col-sm-12">
+                                                            <div class="col-lg-6 col-sm-12">
                                                                 <label for="out_mover_machinery_id" class="form-label">Select Machinery/Mower</label>
                                                                 <input type="hidden" name="out_mover_machinery_id" id="out_mover_machinery_id">
                                                                  <div class="input-group">
@@ -1017,20 +1019,20 @@
                                                                  <span class="input-group-text bg-light" onclick="realoadMachineryList(event)">
                                                                   <i class="bi bi-arrow-clockwise text-danger"></i>
                                                                 </span>
+                                                                <button type="button" class="btn btn-dark align-self-end" style="font-size:70%;padding:12px ;" onclick="openMachineryModal('out_mover')">Select Machinery</button>
                                                                 </div>
-                                                                <button type="button" class="btn btn-dark mt-2 align-self-end" style="font-size:70%" onclick="openMachineryModal('out_mover')">Select Machinery</button>
 
                                                             </div>
                                                             <div class="col-lg-3 col-sm-12">
                                                                 <label for="out_mover_machinery_name_operator" class="form-label">Operator Name:</label>
                                                                 <input type="text" name="out_mover_machinery_name_operator" id="out_mover_machinery_name_operator" class="form-control">
                                                             </div>
-                                                            <div class="col-lg-2 col-sm-12">
+                                                            <div class="col-lg-4 col-sm-12 mt-4">
                                                                 <label for="out_date_mowing_done_last" class="form-label">Last Mowing Date:</label>
                                                                 <input type="date" id="out_date_mowing_done_last" name="out_date_mowing_done_last" class="form-control">
                                                             </div>
-                                                            <div class="col-lg-2 col-sm-12 mt-4">
-                                                                <label for="out_time_of_application_mover" class="form-label">Time of Application Mower:</label>
+                                                            <div class="col-lg-4 col-sm-12 mt-4">
+                                                                <label for="out_time_of_application_mover" class="form-label">Time of Application:</label>
                                                                 <div class="d-flex align-items-center justify-content-center">
                                                                     <input type="time" id="out_time_of_application_mover" name="out_time_of_application_mover" class="form-control">
                                                                     <button type="button" class="btn d-flex align-items-center justify-content-center p-0 time-reset" style="width: 38px;">
@@ -1041,11 +1043,11 @@
                                                                     </button>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-lg-2 col-sm-12 mt-4">
+                                                            <div class="col-lg-4 col-sm-12 mt-4">
                                                                 <label for="out_mowing_done_at_mm" class="form-label">Mowing Height (mm):</label>
                                                                 <input type="number" id="out_mowing_done_at_mm" name="out_mowing_done_at_mm" class="form-control">
                                                             </div>
-                                                            <div class="col-lg-2 col-sm-12 mt-4">
+                                                            <div class="col-lg-4 col-sm-12 mt-4">
                                                                 <label for="out_moving_passes_unit" class="form-label">Unit:</label>
                                                                 <select class="form-select" id="out_moving_passes_unit" name="out_moving_passes_unit">
                                                                     <option selected>Select Unit</option>
@@ -1054,14 +1056,14 @@
                                                                     <option value="minutes">Minutes</option>
                                                                 </select>
                                                             </div>
-                                                            <div class="col-lg-2 col-sm-12 mt-4">
+                                                            <div class="col-lg-4 col-sm-12 mt-4">
                                                                 <label for="out_mowing_duration" class="form-label">Duration</label>
                                                                 <input type="number" id="out_mowing_duration" name="out_mowing_duration" class="form-control">
                                                             </div>
-                                                            <div class="col-lg-2 col-sm-12 mt-5">
+                                                            <div class="col-lg-4 col-sm-12 mt-5">
                                                                 <button type="button" class="btn btn-primary" onclick="outaddMoverEntry()">Add Mower Entry</button>
                                                             </div>
-                                                            <div class="col-sm-12 col-lg-12">
+                                                            <div class="col-sm-12 col-lg-12 mt-4">
                                                                 <details>
                                                                     <summary>Mower Entries</summary>
                                                                     <div class="table-responsive transparent-bg">
@@ -1100,7 +1102,7 @@
                                                                 <div class="input-group-text bg-light border-0">
                                                                     <input class="form-check-input mt-0 border-left" type="checkbox" name="out_is_fertilizers_used" id="out_is_fertilizers_used">
                                                                 </div>
-                                                                <input type="text" class="form-control border-0 mt-2" value="Is Fertilizers Used" style="background-color:white" readonly aria-label="Text input with checkbox">
+                                                                <input type="text" class="form-control border-0" value="Is Fertilizers Used" style="background-color:white" readonly aria-label="Text input with checkbox">
                                                             </div>
                                                         </div>
                                                         <div class="col-sm-12 col-lg-6">
@@ -1152,10 +1154,10 @@
                                                         </div>
                                                     </div>
                                                     <div class="text-end">
-                                                        <button type="button" class="btn btn-sm btn-primary" id="outaddChemicalBtn">+ Add Chemical Entry</button>
+                                                        <button type="button" class="btn btn-sm btn-primary" id="outaddChemicalBtn">Add Chemical Entry</button>
                                                     </div>
                                                       <details>
-                                                                    <summary>Rolling Entries</summary>
+                                                                    <summary>Chemical Entries</summary>
                                                                     <div class="table-responsive transparent-bg">
                                                     <table class="table table-bordered mt-3" id="outchemicalTable">
                                                         <thead class="table-dark">
@@ -1534,28 +1536,28 @@
                                     </div>
 
                                       <div class="row">
-                <div class="col-sm-12 col-lg-12 d-flex align-items-center mt-4">
+                <div class="col-sm-12 col-lg-12 col-md-12 d-flex align-items-center mt-4 fs-6">
                     <div class="row">
-                    <div class="col-lg-3 col-sm-12">
+                    <div class="col-lg-6 col-sm-12 col-md-12">
 <div class="form-check checkbox-pitch">
                                                 <input class="form-check-input custom-checkbox" type="checkbox" id="checkPitchMain" name="checkPitchMain">
                                                 <label class="form-check-label">Is Main Pitch Form Complete?</label>
                                             </div>
                     </div>
-                    <div class="col-lg-3 col-sm-12">
+                    <div class="col-lg-6 col-sm-12 col-md-12">
   <div class="form-check checkbox-pitch">
                                                 <input class="form-check-input custom-checkbox" type="checkbox" id="checkPitchPractice" name="checkPitchPractice">
                                                 <label class="form-check-label">Is Practice Pitch Form Complete?</label>
                                             </div>
                     </div>
-                                        <div class="col-lg-3 col-sm-12">
+                                        <div class="col-lg-6 col-sm-12 col-md-12">
   <div class="form-check checkbox-pitch">
                                                 <input class="form-check-input custom-checkbox" type="checkbox" id="checkPitchOutfield" name="checkPitchOutfield">
                                                 <label class="form-check-label">Is Outfield Form Complete?</label>
                                             </div>
                                         </div>    
                                        
-                                           <div class="col-lg-3 col-sm-12">
+                                           <div class="col-lg-6 col-sm-12 col-md-12">
   <div class="form-check checkbox-pitch">
                                                 <input class="form-check-input custom-checkbox" type="checkbox" id="checkPitchPracticeArea" name="checkPitchPracticeArea">
                                                 <label class="form-check-label">Is Practice Field form completed?</label>
@@ -1637,7 +1639,7 @@
         align-items: center;
         gap: 10px;
         cursor: pointer;
-        font-size: 16px;
+      
         font-weight: 500;
         color: #333;
     }
@@ -1687,7 +1689,7 @@
     .checkbox-pitch .form-check-label {
         cursor: pointer;
         transition: color 0.3s ease;
-        font-size: 1.5em;
+       
     }
 
     /* Change label color when checkbox is checked */

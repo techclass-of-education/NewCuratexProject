@@ -11,6 +11,16 @@
   background-color: rgb(1, 1, 66);
 }
 
+#save-scores {
+  touch-action: manipulation;
+}
+
+#result-table
+{
+  border-collapse: collapse;
+  border-style: none;
+}
+
 .blue-bg {
   background-size: cover;
   background-image: url("../img/blue-bg.jpeg");
