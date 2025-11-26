@@ -578,13 +578,20 @@ console.log("Summery",summary)
       return;
     }
 
-    const team1 = "{{match.3}}";
-    const team2 = "{{match.4}}";
-    const matchType = "{{match.1}}";
-    const matchDate = "{{match.6}}";
-    const fromDate = "{{match.7}}";
-    const toDate = "{{match.8}}";
-    const days = "{{match.9}}";
+    // const team1 = "{{match.3}}";
+    // const team2 = "{{match.4}}";
+    // const matchType = "{{match.1}}";
+    // const matchDate = "{{match.6}}";
+    // const fromDate = "{{match.7}}";
+    // const toDate = "{{match.8}}";
+    // const days = "{{match.9}}";
+
+    const team1 = firstScore.team1;
+   const team2 = firstScore.team1;
+    const matchType = firstScore.match_type;
+    const matchDate = matchData[2];
+    const fromDate = matchData[3];
+    const toDate = matchData[4];
 
     // Calculate total runs by team
     const teamTotals = {};
