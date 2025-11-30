@@ -685,6 +685,10 @@ def fertilizer_usage_report(request):
     usageList=[]
     
     def split_Data(fertilizer_ids_string, weight, unit):
+        fertilizer_ids_string = fertilizer_ids_string or ""
+        weight = weight or ""
+        unit = unit or ""
+        
         ids = fertilizer_ids_string.split("__####__")
         weight = weight.split("__####__")
         unit = unit.split("__####__")
@@ -719,7 +723,7 @@ def fertilizer_usage_report(request):
                         })
             
 
-
+    
 
     def add_usage(fertilizer_ids_string, weight, unit):
         
@@ -4189,7 +4193,7 @@ def update_machinery(request, machinery_id):
             equipment_model = request.POST.get('equipment_model')
             type_ = request.POST.get('type')
             # company = request.POST.get('company')
-            specification = request.POST.get('specification')
+            date_purchase = request.POST.get('date_purchase')
             unit = request.POST.get('unit')
             value = request.POST.get('value')
             details = request.POST.get('print_details')
@@ -4197,9 +4201,9 @@ def update_machinery(request, machinery_id):
             with connection.cursor() as cursor:
                 cursor.execute(f'''
                 UPDATE {org_id}_machinery_master
-SET `equipment_name` = %s,`type` = %s,`specification` = %s,`unit` = %s,`value` = %s,
+SET `equipment_name` = %s,`type` = %s,`date_purchase` = %s,`unit` = %s,`value` = %s,
 `model` = %s ,`print_details` = %s WHERE `id` = %s'''
-    , [equipment_name, type_,specification,unit,value,equipment_model ,details,machinery_id])
+    , [equipment_name, type_,date_purchase,unit,value,equipment_model ,details,machinery_id])
 
             return redirect('machinery_list')
         print(machinery)

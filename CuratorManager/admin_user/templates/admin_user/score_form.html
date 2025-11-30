@@ -332,7 +332,7 @@
          <div id="finalSummery" class="border p-3 bg-dark text-light shadow-sm text-center text-light border-top-0">
               <!-- Result Summary will be displayed here -->
               
-            </div>
+         </div>
             
 
 
@@ -631,6 +631,24 @@ function saveScores() {
   // }
   // });
 
+  function addOvers(existingOvers, newOvers) {
+    // split kare overs ko overs + balls format me    
+    let [ex_ov, ex_ball] = existingOvers.toString().split('.').map(Number);
+    let [new_ov, new_ball] = newOvers.toString().split('.').map(Number);
+
+    // undefined (.0 case) handle
+    ex_ball = ex_ball || 0;
+    new_ball = new_ball || 0;
+
+    // convert total balls
+    let totalBalls = (ex_ov * 6 + ex_ball) + (new_ov * 6 + new_ball);
+
+    // convert back to overs format
+    let finalOvers = Math.floor(totalBalls / 6);
+    let finalBalls = totalBalls % 6;
+
+    return Number(finalOvers + "." + finalBalls);
+}
 
 let firstScore = {}
   // Function to fetch and display scores based on match_id
@@ -664,7 +682,7 @@ let firstScore = {}
             <option value="${firstScore.team1.trim()}">${firstScore.team1}</option>
             <option value="${firstScore.team2.trim()}">${firstScore.team2}</option>
         `;
-console.log(scores)
+//console.log(scores)
         scores.forEach((score, index) => {
 
           const newRow = document.createElement('tr');
@@ -749,7 +767,8 @@ scores.forEach(score => {
     // Totals add karo
     summary[team].runs += parseInt(score.runs);
     summary[team].wickets += parseInt(score.wickets);
-    summary[team].overs += parseFloat(score.overs);
+    // summary[team].overs += parseFloat(score.overs);
+    summary[team].overs = addOvers(summary[team].overs, parseFloat(score.overs));
 
     // Winner track karte rehna hai
     winnerFinal = getWinner(score.winner);
@@ -778,7 +797,8 @@ scores.forEach(score => {
 
     summary[innKey][index].runs += parseInt(score.runs);
     summary[innKey][index].wickets += parseInt(score.wickets);
-    summary[innKey][index].overs += parseFloat(score.overs);
+    // summary[innKey][index].overs += parseFloat(score.overs);
+    summary[innKey][index].overs = addOvers(summary[innKey][index].overs, parseFloat(score.overs));
 
     winnerFinal = getWinner(score.winner);
 

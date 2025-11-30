@@ -283,6 +283,28 @@
         console.error('Error updating score:', error);
       });
   });
+
+
+function addOvers(existingOvers, newOvers) {
+    // split kare overs ko overs + balls format me    
+    let [ex_ov, ex_ball] = existingOvers.toString().split('.').map(Number);
+    let [new_ov, new_ball] = newOvers.toString().split('.').map(Number);
+
+    // undefined (.0 case) handle
+    ex_ball = ex_ball || 0;
+    new_ball = new_ball || 0;
+
+    // convert total balls
+    let totalBalls = (ex_ov * 6 + ex_ball) + (new_ov * 6 + new_ball);
+
+    // convert back to overs format
+    let finalOvers = Math.floor(totalBalls / 6);
+    let finalBalls = totalBalls % 6;
+
+    return Number(finalOvers + "." + finalBalls);
+}
+
+
 let firstScore={}
   // Function to fetch and display scores based on match_id
   function fetchScores(matchId) {
@@ -393,7 +415,9 @@ scores.forEach(score => {
     // Totals add karo
     summary[team].runs += parseInt(score.runs);
     summary[team].wickets += parseInt(score.wickets);
-    summary[team].overs += parseFloat(score.overs);
+    // summary[team].overs += parseFloat(score.overs);
+    summary[team].overs = addOvers(summary[team].overs, parseFloat(score.overs));
+
 
     // Winner track karte rehna hai
     winnerFinal = getWinner(score.winner,score.team1,score.team2);
@@ -408,7 +432,7 @@ scores.forEach(score => {
 
     const innKey = `Inn${score.inning}`;
 
-    // अगर पहली बार inning आ रही है तो दो team के लिए 2 index create करो
+  
     if (!summary[innKey]) {
 
         summary[innKey] = [
@@ -422,9 +446,11 @@ scores.forEach(score => {
 
     summary[innKey][index].runs += parseInt(score.runs);
     summary[innKey][index].wickets += parseInt(score.wickets);
-    summary[innKey][index].overs += parseFloat(score.overs);
+    // summary[innKey][index].overs += parseFloat(score.overs);
+    summary[innKey][index].overs = addOvers(summary[innKey][index].overs, parseFloat(score.overs));
 
-    winnerFinal = getWinner(score.winner);
+
+    winnerFinal = getWinner(score.winner,score.team1,score.team2);
 
 });
 }
@@ -587,7 +613,7 @@ console.log("Summery",summary)
     // const days = "{{match.9}}";
 
     const team1 = firstScore.team1;
-   const team2 = firstScore.team1;
+    const team2 = firstScore.team1;
     const matchType = firstScore.match_type;
     const matchDate = matchData[2];
     const fromDate = matchData[3];

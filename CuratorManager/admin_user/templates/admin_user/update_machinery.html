@@ -49,10 +49,10 @@
 
                     <div class="row mt-3">
                         <div class="col-md-12">
-                            <label for="specification" class="form-label">Specification:</label>
-                            <input required type="text" id="specification" name="specification" value="{{ machinery.3 }}" class="form-control" list="specification_list">
-                            <datalist id="specification_list"></datalist>
-                                                                                     <button type="button" class="btn btn-primary mt-1" onclick="openModal('specification')">Select</button>
+                            <label for="date_purchase" class="form-label">Date purchase:</label>
+                            <input required type="text" id="date_purchase" name="date_purchase" value="{{ machinery.3 }}" class="form-control" list="date_purchase_list">
+                            <datalist id="date_purchase_list"></datalist>
+                                                                                     <button type="button" class="btn btn-primary mt-1" onclick="openModal('date_purchase')">Select</button>
 
                         </div>
                     </div>
@@ -93,12 +93,12 @@
   <!-- Bootstrap Modal -->
     <div class="modal fade" id="selectionModal" tabindex="-1" aria-labelledby="selectionModalLabel" aria-hidden="true">
         <div class="modal-dialog">
-            <div class="modal-content">
+            <div class="modal-content box-bg">
                 <div class="modal-header">
                     <h5 class="modal-title" id="selectionModalLabel">Select an Option</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close text-light" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body transparent-bg">
                     <ul id="modalList" class="list-group"></ul>
                 </div>
             </div>
@@ -129,7 +129,7 @@ datalistData=machineryData
                     populateDatalist(machineryData, "equipment_name", "equipment_name_list");
                     populateDatalist(machineryData, "model", "equipment_model_list");
                     populateDatalist(machineryData, "type", "type_list");
-                    populateDatalist(machineryData, "specification", "specification_list");
+                    populateDatalist(machineryData, "date_purchase", "date_purchase_list");
                     populateDatalist(machineryData, "unit", "unit_list");
                     populateDatalist(machineryData, "value", "value_list");
                     populateDatalist(machineryData, "print_details", "print_details");
@@ -161,7 +161,7 @@ datalistData=machineryData
                 if (value) {
                     const listItem = document.createElement('li');
                     listItem.textContent = value;
-                    listItem.className = 'list-group-item list-group-item-action';
+                    listItem.className = 'list-group-item list-group-item-action transparent-bg text-light border-light';
                     listItem.style.cursor = 'pointer';
                     listItem.onclick = function () {
                         document.getElementById(fieldId).value = value;
