@@ -202,7 +202,10 @@
                                             <div class="row">
                                                 <div class="col-sm-12 col-lg-12">
                                                      <details class="summary-shadow box-bg rounded">
-                                                                    <summary class="rounded-0">Watering</summary>
+                                                                    <summary class="rounded-0">Watering
+                                   <span class="badge text-bg-warning" id="main-water-add-count"></span>
+
+                                                                    </summary>
                                                     <fieldset
                                                         class="form-group px-2 mt-4 text-dark p-3 rounded">
                                                       
@@ -280,7 +283,10 @@
                                             <div class="row">
                                                 <div class="col-sm-12 col-lg-12">
                                                       <details class="summary-shadow box-bg rounded">
-                                                                    <summary class="rounded-0">Rolling</summary>
+                                                                    <summary class="rounded-0">Rolling
+                                   <span class="badge text-bg-warning" id="main-roll-add-count"></span>
+
+                                                                    </summary>
                                                     <fieldset
                                                         class="form-group mt-4 text-dark p-3 rounded">
                                                       
@@ -412,7 +418,10 @@
                                             <div class="row">
                                                 <div class="col-sm-12 col-lg-12">
                                                        <details class="summary-shadow box-bg rounded">
-                                                                    <summary class="rounded-0">Mower</summary>
+                                                                    <summary class="rounded-0">Mower
+                                   <span class="badge text-bg-warning" id="main-mower-add-count"></span>
+
+                                                                    </summary>
                                                     <fieldset
                                                         class="form-group mt-4 text-dark p-3 rounded">
                                                         <div class="row">
@@ -547,7 +556,10 @@
                                         
                                                 <div class="form-group gray-box text-dark rounded">
                                                     <details class="summary-shadow box-bg rounded">
-                                                                        <summary class="rounded-0">Chemical</summary>
+                                                                        <summary class="rounded-0">Chemical
+                                   <span class="badge text-bg-warning" id="main-chem-add-count"></span>
+
+                                                                        </summary>
                                                     <fieldset>
                                                         <legend class="w-auto px-2"></legend>
                                                         
@@ -566,7 +578,7 @@
                                                                                     id="is_fertilizers_used">
                                                                             </div>
                                                                             <input type="text" class="form-control border-0"
-                                                                                value="Is Fertilizers Used" readonly>
+                                                                                value="Is Chemicals Used" readonly>
                                                                         </div>
                                                                     </div>
 
@@ -671,6 +683,7 @@
 
                                                 </div>
                                             </div>
+
                                             <div class="row form-group box-bg mt-4 text-dark p-3 summary-shadow rounded alert">
                                                 <div class="col-sm-12 col-lg-12 p-3 ">
                                                     <label for="remark_by_groundsman" class="form-label">Remark by
@@ -684,7 +697,7 @@
                                              <div class="row form-group box-bg  mt-4 text-dark p-3 summary-shadow rounded alert ">
                                             <div class="col-sm-12 col-lg-12 mb-3">
                                                 <button type="button" class="btn btn-danger"
-                                                    onclick="addMainEntryRow()">Add</button>
+                                                    onclick="addMainEntryRow(event)">Add</button>
                                             </div>
                                             <details>
                                                 <summary class="bg-warning">Main Pitch Entries</summary>
@@ -713,10 +726,13 @@
                                                 <div class="col-sm-12 col-lg-12">
 
                                                     <details class="summary-shadow box-bg rounded">
-                                                                    <summary class="rounded-0">Watering</summary>
+                                                                    <summary class="rounded-0">Watering
+                                   <span class="badge text-bg-warning" id="pp-water-add-count"></span>
+
+                                                                    </summary>
                                                     <fieldset
                                                         class="form-group border mt-4 text-dark p-3 box-bg rounded">
-                                                        <legend class="w-auto px-2">Watering</legend>
+                                                        <!-- <legend class="w-auto px-2">Watering</legend> -->
                                                         <div class="row">
                                                             <div class="col-sm-12 col-lg-4">
                                                                 <label for="pp_last_watering_on"
@@ -782,13 +798,17 @@
 
                                                 </div>
                                             </div>
+
                                             <div class="row">
                                                 <div class="col-sm-12 col-lg-12">
                                                       <details class="summary-shadow box-bg rounded">
-                                                                    <summary class="rounded-0">Rolling</summary>
+                                                                    <summary class="rounded-0">Rolling
+                                   <span class="badge text-bg-warning" id="pp-roll-add-count"></span>
+
+                                                                    </summary>
                                                     <fieldset class="form-group border mt-4 text-dark p-3 box-bg"
                                                         style="background-color:#f7e8ba">
-                                                        <legend class="w-auto px-2">Rolling</legend>
+                                                        <!-- <legend class="w-auto px-2">Rolling</legend> -->
                                                         <div class="row">
                                                             <div class="col-sm-12 col-lg-2">
                                                                 <label for="pp_roller_machine_type"
@@ -910,20 +930,17 @@
                                                 </div>
                                             </div>
 
-
-
-
-
-
-
                                             <div class="row">
 
                                                 <div class="col-lg-12 col-sm-12">
                                                       <details class="summary-shadow box-bg rounded">
-                                                                    <summary class="rounded-0">Mower</summary>
+                                                                    <summary class="rounded-0">Mower
+                                   <span class="badge text-bg-warning" id="pp-mower-add-count"></span>
+
+                                                                    </summary>
                                                     <fieldset
                                                         class="form-group border mt-4 text-dark p-3 box-bg rounded">
-                                                        <legend class="w-auto px-2">Mower</legend>
+                                                        <!-- <legend class="w-auto px-2">Mower</legend> -->
                                                         <div class="row">
 
                                                             <div class="col-lg-4 col-sm-12">
@@ -1064,9 +1081,12 @@
                                             <div class="row">
                                               <div class="form-group gray-box text-dark rounded">
                                                     <details class="summary-shadow box-bg rounded">
-                                                                        <summary class="rounded-0">Chemical</summary>
+                                                                        <summary class="rounded-0">Chemical
+                                   <span class="badge text-bg-warning" id="pp-chem-add-count"></span>
+                                                                            
+                                                                        </summary>
                                                     <fieldset>
-                                                        <legend class="w-auto px-2">Chemical Entries</legend>
+                                                        <!-- <legend class="w-auto px-2">Chemical Entries</legend> -->
                                                         <div class="row">
                                                             <div class="col-lg-4 col-sm-12 ">
                                                                 <div class="row mt-3">
@@ -1083,7 +1103,7 @@
                                                                             </div>
                                                                             <input type="text"
                                                                                 class="form-control border-0"
-                                                                                value="Is Fertilizers Used"
+                                                                                value="Is Chemicals Used"
                                                                                 style="background-color:white" readonly
                                                                                 aria-label="Text input with checkbox">
                                                                         </div>
@@ -1210,7 +1230,7 @@
                         
                         <!-- Hidden field to submit -->
                          <div class="col-lg-4 col-sm-12 mt-4">
-                        <button type="button" class="btn btn-primary my-3" onclick="addPPEntryRow()">Add
+                        <button type="button" class="btn btn-primary my-3" onclick="addPPEntryRow(event)">Add
                             PP Entry</button>
 
                        </div>
@@ -1229,6 +1249,7 @@
 
                     </div>
                                      </div>
+
 <div class="tab-pane fade " id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
     <div class="form-group daily-form border mt-4 text-dark p-3">
         <legend class="w-auto px-2">Outfield Entries</legend>
@@ -1236,9 +1257,12 @@
         <div class="row">
             <div class="col-sm-12 col-lg-12">
                  <details class="summary-shadow box-bg rounded">
-                                                                    <summary class="rounded-0">Watering</summary>
+                                                                    <summary class="rounded-0">Watering
+                                   <span class="badge text-bg-warning" id="out-water-add-count"></span>
+
+                                                                    </summary>
                 <fieldset class="form-group border mt-4 text-dark p-3 box-bg rounded">
-                    <legend class="w-auto px-2">Watering</legend>
+                    <!-- <legend class="w-auto px-2">Watering</legend> -->
                     <div class="row">
                         <div class="col-sm-12 col-lg-4">
                             <label for="out_last_watering_on" class="form-label">Watering On:</label>
@@ -1292,9 +1316,12 @@
         <div class="row">
             <div class="col-sm-12 col-lg-12">
                  <details class="summary-shadow box-bg rounded">
-                                                                    <summary class="rounded-0">Rolling</summary>
+                                                                    <summary class="rounded-0">Rolling
+                                   <span class="badge text-bg-warning" id="out-roll-add-count"></span>
+
+                                                                    </summary>
                 <fieldset class="form-group border mt-4 text-dark p-3 box-bg rounded">
-                    <legend class="w-auto px-2">Rolling</legend>
+                    <!-- <legend class="w-auto px-2">Rolling</legend> -->
                     <div class="row">
                         <div class="col-sm-12 col-lg-2">
                             <label for="out_roller_machine_type" class="form-label">Select Machine Type</label>
@@ -1376,9 +1403,12 @@
         <div class="row">
             <div class="col-sm-12 col-lg-12">
                  <details class="summary-shadow box-bg rounded">
-                                                                    <summary class="rounded-0">Mowing</summary>
+                                                                    <summary class="rounded-0">Mowing
+                                   <span class="badge text-bg-warning" id="out-mower-add-count"></span>
+
+                                                                    </summary>
                 <fieldset class="form-group border mt-4 text-dark p-3 box-bg rounded">
-                    <legend class="w-auto px-2">Mower</legend>
+                    <!-- <legend class="w-auto px-2">Mower</legend> -->
                     <div class="row">
                         <div class="col-lg-3 col-sm-12">
                             <label for="out_mover_machine_type" class="form-label">Select Machine Type</label>
@@ -1465,9 +1495,13 @@
         <div class="row">
          <div class="form-group gray-box text-dark rounded">
                                                     <details class="summary-shadow box-bg rounded">
-                                                                        <summary class="rounded-0">Chemical</summary>
+                                                                        <summary class="rounded-0">
+                                                                            Chemical
+                                   <span class="badge text-bg-warning" id="out-chem-add-count"></span>
+                                                                        
+                                                                        </summary>
             <fieldset>
-                <legend class="w-auto px-2">Chemical Entries</legend>
+                <!-- <legend class="w-auto px-2">Chemical Entries</legend> -->
                 <hr>
                 <div class="row">
                     <div class="col-sm-12 col-lg-6">
@@ -1475,7 +1509,7 @@
                             <div class="input-group-text bg-light border-0" style="background-color:white !important;">
                                 <input class="form-check-input mt-0 border-left" type="checkbox" aria-label="Checkbox for following text input" name="out_is_fertilizers_used" id="out_is_fertilizers_used">
                             </div>
-                            <input type="text" class="form-control border-0" value="Is Fertilizers Used" style="background-color:white" readonly aria-label="Text input with checkbox">
+                            <input type="text" class="form-control border-0" value="Is Chemicals Used" style="background-color:white" readonly aria-label="Text input with checkbox">
                         </div>
                     </div>
                     <div class="col-sm-12 col-lg-6">
@@ -1522,7 +1556,9 @@
                     <button type="button" class="btn btn-sm btn-primary" id="outaddChemicalBtn">+ Add Chemical Entry</button>
                 </div>
                   <details>
-                                <summary>Chemical Entries</summary>
+                                <summary>Chemical Entries
+                                    
+                                </summary>
                   <div class="table-responsive transparent-bg">
                 <table class="table table-bordered mt-3" id="outchemicalTable">
                     <thead class="table-dark">
@@ -1555,7 +1591,7 @@
         </div>
          <div class="row form-group box-bg mt-4 text-dark p-3 rounded alert ">
              <div class="col-lg-4 col-sm-12 mt-4">
-        <button type="button" class="btn btn-primary my-3" onclick="addOutEntryRow()">Add Outfield Entry</button>
+        <button type="button" class="btn btn-primary my-3" onclick="addOutEntryRow(event)">Add Outfield Entry</button>
         </div>
         <div class="col-lg-12 col-sm-12 ">
         <details>
@@ -1579,9 +1615,12 @@
         <div class="row">
             <div class="col-sm-12 col-lg-12">
                   <details class="summary-shadow box-bg rounded">
-                                                                    <summary class="rounded-0">Watering</summary>
+                                                                    <summary class="rounded-0">
+                                                                        Watering 
+                                                                        <span class="badge text-bg-warning" id="practice-water-add-count"></span>
+                                                                    </summary>
                 <fieldset class="form-group border mt-4 text-dark p-3 box-bg rounded">
-                    <legend class="w-auto px-2">Watering</legend>
+                    <!-- <legend class="w-auto px-2">Watering</legend>  -->
                     <div class="row">
                         <div class="col-sm-12 col-lg-4">
                             <label for="practice_last_watering_on" class="form-label">Watering On:</label>
@@ -1636,9 +1675,13 @@
         <div class="row">
             <div class="col-sm-12 col-lg-12">
                   <details class="summary-shadow box-bg rounded">
-                                                                    <summary class="rounded-0">Rolling</summary>
+                                                                    <summary class="rounded-0">Rolling
+
+                                                                        <span class="badge text-bg-warning" id="practice-roll-add-count"></span>
+                                                                    </summary>
+
                 <fieldset class="form-group border mt-4 text-dark p-3 box-bg rounded">
-                    <legend class="w-auto px-2">Rolling</legend>
+                    <!-- <legend class="w-auto px-2">Rolling</legend> -->
                     <div class="row">
                         <div class="col-sm-12 col-lg-2">
                             <label for="practice_roller_machine_type" class="form-label">Select Machine Type</label>
@@ -1720,9 +1763,13 @@
         <div class="row">
             <div class="col-sm-12 col-lg-12">
                   <details class="summary-shadow box-bg rounded">
-                                                                    <summary class="rounded-0">Mower</summary>
+                                                                    <summary class="rounded-0">Mower
+
+                                                                        <span class="badge text-bg-warning" id="practice-mower-add-count"></span>
+                                                                    </summary>
+
                 <fieldset class="form-group border mt-4 text-dark p-3 box-bg rounded">
-                    <legend class="w-auto px-2">Mower</legend>
+                    <!-- <legend class="w-auto px-2">Mower</legend> -->
                     <div class="row">
                         <div class="col-lg-3 col-sm-12">
                             <label for="practice_mover_machine_type" class="form-label">Select Machine Type</label>
@@ -1808,9 +1855,13 @@
         <!-- Chemical Section -->
          <div class="form-group gray-box text-dark rounded">
                                                     <details class="summary-shadow box-bg rounded">
-                                                                        <summary class="rounded-0">Chemical</summary>
+                                                                        <summary class="rounded-0">Chemical
+
+                                                                            <span class="badge text-bg-warning" id="practice-chem-add-count">0</span>
+                                                                        </summary>
+
             <fieldset class="p-4">
-                <legend class="w-auto px-2">Chemical Entries</legend>
+                <!-- <legend class="w-auto px-2">Chemical Entries</legend> -->
                 <hr>
                 <div class="row">
                     <div class="col-sm-12 col-lg-6">
@@ -1818,7 +1869,7 @@
                             <div class="input-group-text bg-light border-0" style="background-color:white !important;">
                                 <input class="form-check-input mt-0 border-left" type="checkbox" aria-label="Checkbox for following text input" name="practice_is_fertilizers_used" id="practice_is_fertilizers_used">
                             </div>
-                            <input type="text" class="form-control border-0" value="Is Fertilizers Used" style="background-color:white" readonly aria-label="Text input with checkbox">
+                            <input type="text" class="form-control border-0" value="Is Chemicals Used" style="background-color:white" readonly aria-label="Text input with checkbox">
                         </div>
                     </div>
                     <div class="col-sm-12 col-lg-6">
@@ -1917,6 +1968,7 @@
             
             <input type="hidden" name="rowIndxs" id="rowIndxs" />
         </div>
+   
     </div>
     
 </div>
@@ -2030,6 +2082,35 @@
 
     // changeMenuTitle("Daily Maintenance")
     $(document).ready(function () {
+        $("#practice-water-add-count").text(0)
+        $("#practice-roll-add-count").text(0)
+        $("#practice-mower-add-count").text(0)
+        $("#practice-chem-add-count").text(0)
+
+        $("#out-water-add-count").text(0)
+        $("#out-roll-add-count").text(0)
+        $("#out-mower-add-count").text(0)
+        $("#out-chem-add-count").text(0)
+
+        $("#pp-water-add-count").text(0)
+        $("#pp-roll-add-count").text(0)
+        $("#pp-mower-add-count").text(0)
+        $("#pp-chem-add-count").text(0)
+
+        $("#main-water-add-count").text(0)
+        $("#main-roll-add-count").text(0)
+        $("#main-mower-add-count").text(0)
+        $("#main-chem-add-count").text(0)
+
+        $("#checkPitchMain").prop("disabled",true)
+        $("#checkPitchPractice").prop("disabled",true)
+        $("#checkPitchOutfield").prop("disabled",true)
+        $("#checkPitchPracticeArea").prop("disabled",true)
+
+
+
+
+
 // alert()
         // $(".checkboxes input[type='checkbox']").prop("disabled",true)
 
@@ -2051,6 +2132,8 @@
         $("#rolling_start_date").blur(function (event) {
             const d = $(event.target).val()
             $("#last_watering_on").val(d)
+            $("#pp_last_watering_on").val(d)
+            $("#pp_date_mowing_done_last").val(d)
             $("#date_mowing_done_last").val(d)
             $("#out_last_watering_on").val(d)
             $("#out_date_mowing_done_last").val(d)
@@ -2086,6 +2169,8 @@
         "outfield",
         "practice-area"
     ]
+
+    
     const tabsButtonsObject =
     {
 
@@ -2158,30 +2243,53 @@
     }
 
    
-   
+   function setBottomChecks()
+   {
+    allTabs.forEach((e)=>
+{
+    if($("#"+e).prop("checked"))
+{
+    $("#"+checkBoxesSubmitObject[e]).prop("disabled",false)
+}
+else
+{
+    $("#"+checkBoxesSubmitObject[e]).prop("disabled",true)
+
+}
+})
+   }
    
     $("#pitch-main").change(async function (event) {
         // alert("manin")
         await addToArrayCheckbox(event)
         allAreaTabHideShow(event)
+        setBottomChecks()
+        // $(event.target).prop("checked")?$("#checkPitchMain").prop("disabled",false):$("#checkPitchMain").prop("disabled",true)
     })
 
     $("#pitch-practice").change(async function (event) {
         await addToArrayCheckbox(event)
         //console.log(event.target.id)
         allAreaTabHideShow(event)
+        setBottomChecks()
+        // $(event.target).prop("checked")?$("#checkPitchPractice").prop("disabled",false):$("#checkPitchPractice").prop("disabled",true)
+        
     })
-
+    
     $("#outfield").change(async function (event) {
         await addToArrayCheckbox(event)
         //console.log(event.target.id)
         allAreaTabHideShow(event)
+        setBottomChecks()
+        // $(event.target).prop("checked")?$("#checkPitchOutfield").prop("disabled",false):$("#checkPitchOutfield").prop("disabled",true)
     })
-
+    
     $("#practice-area").change(async function (event) {
         await addToArrayCheckbox(event)
         //console.log(event.target.id)
         allAreaTabHideShow(event)
+        setBottomChecks()
+        // $(event.target).prop("checked")?$("#checkPitchPracticeArea").prop("disabled",false):$("#checkPitchPracticeArea").prop("disabled",true)
     })
 
 
@@ -2566,9 +2674,511 @@ localStorage.setItem("city",result.data.grounds[0].city);
 </script>
 
 
+
+
+
+<!-- main watering rolling -->
+<script>
+    let wateringEntries = [];
+    function mainfieldCountUpdate()
+   {
+        $("#main-water-add-count").text(wateringEntries.length)
+        $("#main-chem-add-count").text(chemicalEntries.length)
+        $("#main-mower-add-count").text(moverEntries.length)
+        $("#main-roll-add-count").text(rollingEntries.length)
+   }
+
+     function practiceCountUpdate()
+    {
+            $("#practice-water-add-count").text(practicewateringEntries.length)
+            $("#practice-chem-add-count").text(practiceChemicalEntries.length)
+            $("#practice-mower-add-count").text(practicemoverEntries.length)
+            $("#practice-roll-add-count").text(practicerollingEntries.length)
+
+    }
+
+    function ppfieldCountUpdate()
+   {
+        $("#pp-water-add-count").text(ppWateringEntries.length)
+        $("#pp-chem-add-count").text(ppChemicalEntries.length)
+        $("#pp-mower-add-count").text(ppmoverEntries.length)
+        $("#pp-roll-add-count").text(pprollingEntries.length)
+   }
+
+   function outfieldCountUpdate()
+   {
+        $("#out-water-add-count").text(outwateringEntries.length)
+        $("#out-chem-add-count").text(outChemicalEntries.length)
+        $("#out-mower-add-count").text(outmoverEntries.length)
+        $("#out-roll-add-count").text(outrollingEntries.length)
+
+   }
+
+    function addWateringEntry() {
+        const last_watering_on = document.getElementById("last_watering_on").value;
+        const time_of_application = document.getElementById("time_of_application").value;
+        const quantity_of_water = document.getElementById("quantity_of_water").value;
+      
+
+        if (!last_watering_on || !time_of_application || !quantity_of_water) {
+            alert("Please fill all fields before adding.");
+            return;
+        }
+
+        const entry = {
+            last_watering_on,
+            time_of_application,
+            quantity_of_water,
+           
+        };
+
+        wateringEntries.push(entry);
+        updateWateringTable();
+    }
+    
+    function delWateringEntry(event) {
+        const row = event.target.closest("tr");
+        const index = Array.from(row.parentNode.children).indexOf(row);
+        wateringEntries.splice(index, 1);
+        updateWateringTable();
+    }
+
+    function updateWateringTable() {
+        const tableBody = document.querySelector("#wateringTable tbody");
+        tableBody.innerHTML = "";
+
+        wateringEntries.forEach(entry => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${entry.last_watering_on}</td>
+                <td>${entry.time_of_application}</td>
+                <td>${entry.quantity_of_water}</td>
+              
+                  <td>
+                    <button type="button" class='btn btn-danger det-btn' onclick="delWateringEntry(event)">X</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+
+        document.getElementById("watering_entries_json").value = JSON.stringify(wateringEntries);
+        showToast("New Watering entry added successfully!");
+        mainfieldCountUpdate()
+
+    }
+   
+   
+    let rollingEntries = [];
+
+    function addRollingEntry() {
+        const machineType = document.getElementById("roller_machine_type").value;
+        const machineryName = document.getElementById("machinery_name").value;
+        const machineryId = document.getElementById("machinery_id").value;
+        const operator = document.getElementById("roller_machinery_name_operator").value;
+        const speed = document.getElementById("rolling_speed").value;
+        const passes = document.getElementById("no_of_passes").value;
+        const unit = document.getElementById("passes_unit").value;
+        const time = document.getElementById("time_roller").value;
+
+        if (!machineType || !machineryName || !operator || !speed || !passes || !unit || !time) {
+            alert("Please fill all fields before adding.");
+            return;
+        }
+
+        const entry = {
+            machineType,
+            machineryId,
+            machineryName,
+            operator,
+            speed,
+            passes,
+            unit,
+            time
+        };
+
+        rollingEntries.push(entry);
+        updateRollingTable();
+    }
+    
+    function delRollingEntry(event) {
+        const row = event.target.closest("tr");
+        const index = Array.from(row.parentNode.children).indexOf(row);
+        rollingEntries.splice(index, 1);
+        updateRollingTable();
+    }
+
+    function updateRollingTable() {
+        const tableBody = document.querySelector("#rollingTable tbody");
+        tableBody.innerHTML = "";
+
+        rollingEntries.forEach(entry => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${entry.machineType}</td>
+                <td>${entry.machineryName}</td>
+                <td>${entry.operator}</td>
+                <td>${entry.speed}</td>
+                <td>${entry.passes}</td>
+                <td>${entry.unit}</td>
+                <td>${entry.time}</td>
+                  <td>
+                    <button type="button" class='btn btn-danger det-btn' onclick="delRollingEntry(event)">X</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+
+        document.getElementById("rolling_entries_json").value = JSON.stringify(rollingEntries);
+        showToast("New Rolling entry added successfully!");
+        mainfieldCountUpdate()
+
+    }
+
+</script>
+
+
+<!-- main chemical -->
+<script>
+  let chemicalEntries = [];
+    document.getElementById("addChemicalBtn").addEventListener("click", function () {
+        const used = document.getElementById("is_fertilizers_used").checked ? "Yes" : "No";
+        const time = document.getElementById("time_of_application_chemical").value;
+        const chemicalId = document.getElementById("fertilizers_details").selectedOptions[0].value;
+        const chemicalName = document.getElementById("fertilizers_details").selectedOptions[0].text;
+        const weight = document.getElementById("chemical_weight").value;
+        const unit = document.getElementById("fertilizers_unit").value;
+        const remark = document.getElementById("chemical_details_remark").value;
+
+        // if (!chemical || !time) {
+        //   alert("Please fill required fields: Chemical and Time.");
+        //   return;
+        // }
+  if (!used || !time || !chemicalId || !unit || !weight || !remark) {
+            alert("Please fill all fields before adding.");
+            return;
+        }
+
+        const entry = {
+           used , time ,chemicalId ,chemicalName ,unit ,weight ,remark
+        };
+
+        chemicalEntries.push(entry);
+        // updateChemicalData();
+       
+
+        // Reset inputs
+        // document.getElementById("time_of_application_chemical").value = "";
+        // document.getElementById("fertilizers_details").value = "";
+        // document.getElementById("chemical_weight").value = "";
+        // document.getElementById("fertilizers_unit").value = "";
+        // document.getElementById("chemical_details_remark").value = "";
+
+        updateChemicalData();
+    });
+
+     function delChemicalEntry(event) {
+        const row = event.target.closest("tr");
+        const index = Array.from(row.parentNode.children).indexOf(row);
+        chemicalEntries.splice(index, 1);
+        updateChemicalData();
+    }
+
+    function updateChemicalData() {
+         const tableBody = document.querySelector("#chemicalTable tbody");
+         tableBody.innerHTML = "";
+         console.log(chemicalEntries)
+         chemicalEntries.forEach(e => {
+            const row = document.createElement("tr");
+          
+        row.innerHTML = `
+      <td>${e.used}</td>
+      <td>${e.time}</td>
+      <td>${e.chemicalName}</td>
+      <td>${e.weight}</td>
+      <td>${e.unit}</td>
+      <td>${e.remark}</td>
+    <td><button type="button" class="btn btn-sm btn-danger delete-row" onclick="delChemicalEntry(event)">X</button></td>
+
+    `;
+    tableBody.appendChild(row);
+        })
+      
+        document.getElementById("chemical_entries").value = JSON.stringify(chemicalEntries);
+        showToast("New Chemical entry added successfully!");
+        mainfieldCountUpdate()
+
+
+    }
+
+    // Final form submit validation (optional)
+    // function handleSubmit(form) {
+    //     const hiddenField = document.getElementById("chemical_entries").value;
+    //     if (!hiddenField || hiddenField === "[]") {
+    //         alert("Please add at least one chemical entry.");
+    //         return false;
+    //     }
+    //     return true;
+    // }
+
+</script>
+
+
+<!-- main mower -->
+<script>
+    let moverEntries = [];
+
+    function addMoverEntry() {
+        const type = document.getElementById("mover_machine_type").value;
+        const machineryName = document.getElementById("mover_machinery_name").value;
+        const machineryId = document.getElementById("mover_machinery_id").value;
+        const operator = document.getElementById("mover_machinery_name_operator").value;
+        const mowHeight = document.getElementById("mowing_done_at_mm").value;
+        const unit = document.getElementById("moving_passes_unit").value;
+        const duration = document.getElementById("mowing_duration").value;
+        const time = document.getElementById("time_of_application_mover").value;
+        const date = document.getElementById("date_mowing_done_last").value;
+
+        if (!type || !machineryName || !operator || !unit || !duration || !time || !date || !mowHeight) {
+            alert("Please fill all fields before adding.");
+            return;
+        }
+
+        const entry = {
+            type,
+            machineryId,
+            machineryName,
+            operator,
+            mowHeight,
+            unit,
+            duration,
+            time,
+            date
+        };
+
+        moverEntries.push(entry);
+        updateMoverTable();
+    }
+  
+    function delMowerEntry(event) {
+        const row = event.target.closest("tr");
+        const index = Array.from(row.parentNode.children).indexOf(row);
+        moverEntries.splice(index, 1);
+        updateMoverTable();
+    }
+   
+    function updateMoverTable() {
+        const tbody = document.querySelector("#moverTable tbody");
+        tbody.innerHTML = "";
+
+        moverEntries.forEach(e => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${e.type}</td>
+                    <td>${e.machineryName}</td>
+                    <td>${e.operator}</td>
+                    <td>${e.mowHeight}</td>
+                    <td>${e.duration}</td>
+                    <td>${e.unit}</td>
+                    <td>${e.time}</td>
+                    <td>${e.date}</td>
+                      <td>
+                    <button type="button" class='btn btn-danger det-btn' onclick="delMowerEntry(event)">X</button>
+                </td>
+                </tr>
+            `;
+        });
+
+        document.getElementById("mover_entries_json").value = JSON.stringify(moverEntries);
+        showToast("New Mower entry added successfully!");
+        mainfieldCountUpdate()
+
+
+    }
+</script>
+
+<!-- main final add row -->
+<script>
+    let rowIndex = 0;
+
+    function addMainEntryRow(event) {
+    //    console.log(event.target)
+    
+        rowIndex++;
+         if(rowIndex>1)
+    {
+        $(event.target).prop("disabled",true)
+        return
+    }
+        const container = document.getElementById("entryContainer");
+
+        const row = document.createElement("div");
+        row.className = "row g-3 mb-4 border rounded p-3 bg-light";
+        row.id = `entry_${rowIndex}`;
+
+        const fields = [
+            // { id: "last_watering_on", label: "Watering On", type: "date", col: 3 },
+            // { id: "time_of_application", label: "Time of Watering", type: "time", col: 3 },
+            // { id: "quantity_of_water", label: "Water Quantity", type: "text", col: 3 },
+            // { id: "machinery_id", label: "Roller ID", type: "text", col: 3 },
+            // { id: "machinery_name", label: "Roller Name", type: "text", col: 3 },
+            // { id: "time_roller", label: "Rolling Time", type: "time", col: 3 },
+            // { id: "rolling_speed", label: "Rolling Speed", type: "text", col: 3 },
+            // { id: "no_of_passes", label: "No. of Passes", type: "text", col: 3 },
+            // { id: "passes_unit", label: "Passes Units", type: "text", col: 3 },
+            // { id: "mover_machinery_id", label: "Mover ID", type: "text", col: 3 },
+            // { id: "mover_machinery_name", label: "Mover Name", type: "text", col: 3 },
+            // { id: "date_mowing_done_last", label: "Mowing Date", type: "date", col: 3 },
+            // { id: "time_of_application_mover", label: "Mover Time", type: "time", col: 3 },
+            // { id: "mowing_done_at_mm", label: "Mowing Height (mm)", type: "number", col: 3 },
+            // { id: "fertilizers_details", label: "Chemical Name", type: "text", col: 3 },
+            // { id: "chemical_weight", label: "Chemical Weight", type: "text", col: 3 },
+            // { id: "fertilizers_unit", label: "Unit", type: "text", col: 3 },
+            // { id: "chemical_details_remark", label: "Remark", type: "text", col: 3 },
+            // { id: "time_of_application_chemical", label: "Chem Time", type: "time", col: 3 },
+            { id: "chemical_entries", label: "Chemical Entries", type: "hidden", col: 3 },
+            { id: "watering_entries_json", label: "Watering Entries", type: "hidden", col: 3 },
+            
+            // { id: "mover_machine_type", label: "mover machine type", type: "text", col: 3 },
+            // { id: "mover_machinery_name_operator", label: "mover machinery operator", type: "text", col: 3 },
+            // { id: "moving_passes_unit", label: "moving passes unit", type: "text", col: 3 },
+            // { id: "mowing_duration", label: "mowing duration", type: "text", col: 3 },
+            // { id: "roller_machine_type", label: "roller machine type", type: "text", col: 3 },
+            // { id: "roller_machinery_name_operator", label: "roller machinery operator", type: "text", col: 3 },
+            { id: "rolling_entries_json", label: "Rolling Entries", type: "hidden", col: 3 },
+            { id: "mover_entries_json", label: "Mover Entries", type: "hidden", col: 3 },
+            { id: "is_fertilizers_used", label: "Fertilizer Used?", type: "checkbox", col: 3 },
+
+
+            // { id: "all_chemical_entries", label: "All Chemicals Entries", type: "textarea", col: 3 },
+        ];
+
+        fields.forEach(field => {
+            const formField = document.getElementById(field.id)
+            // console.log(field.id)
+            let input = document.createElement("input");
+            const colDiv2 = document.createElement("div");
+            colDiv2.className = `col-lg-6 col-sm-12 div-border`;
+
+            if (field.id=="watering_entries_json"||field.id === "chemical_entries"|| field.id === "rolling_entries_json" || field.id === "mover_entries_json") {
+
+                const label = document.createElement("label");
+                label.setAttribute("for", `${field.id}_${rowIndex}`);
+                label.className = "form-label input-as-label label-font-size fs-6 text-dark";
+                label.innerText = field.label;
+                input.type = formField.type
+                input.name = `${field.id}${rowIndex}`;
+                input.id = `${field.id}_${rowIndex}`;
+                input.value = formField.value
+                input.className = "form-control";
+
+
+                colDiv2.appendChild(input);
+                row.appendChild(colDiv2);
+
+                // const colDiv1 = document.createElement("div");
+                // colDiv1.className = `col-12 col-sm-6 col-md-${field.col}`;
+                              const divData = document.createElement("div");
+                divData.className="alert alert-dark text-white p-2";
+                // tarea.value=(formField.value)
+                try {
+                    if(field.id === "rolling_entries_json")
+                {
+                    JSON.parse(formField.value).forEach((element, i) => {
+                        divData.innerHTML += `<li>${element.machineType}</li> <li>${element.machineryName}</li> <li>${element.operator}</li> <li>${element.speed}</li> <li>${element.unit}</li> <li>${element.time}</li> <li>${element.passes}</li>` + "<hr>"
+                    });
+                }
+                else if(field.id === "mover_entries_json")
+                {
+                    JSON.parse(formField.value).forEach((element, i) => {
+                        divData.innerHTML += `<li>${element.type}</li> <li>${element.machineryId}</li> <li>${element.machineryName}</li> <li>${element.operator}</li> <li>${element.mowHeight}</li> <li>${element.duration}</li> <li>${element.time}</li> <li>${element.date}</li> <li>${element.unit}</li>` + "<hr>"
+                    });
+                }
+                else if(field.id === "chemical_entries")
+                {
+                    JSON.parse(formField.value).forEach((element, i) => {
+                        divData.innerHTML += `<li>${element.time}</li> <li>${element.chemName}</li> <li>${element.weight}</li> <li>${element.unit}</li> <li>${element.remark}</li>` + "\n"
+                    });
+                }
+                else if(field.id === "watering_entries_json")
+                {
+                    JSON.parse(formField.value).forEach((element, i) => {
+                        divData.innerHTML += `<li>${element.last_watering_on}</li> <li>${element.time_of_application}</li> <li>${element.quantity_of_water}</li>` + "\n"
+                    });
+                }
+                else
+                {
+                    divData.innerHTML = formField.value
+                }
+            }
+                catch (e) {
+                    console.log(e)
+                    divData.innerHTML = ""
+
+                }
+
+                divData.className = "form-control input-as-label input-font-size";
+                  if(formField.value === "")
+                {
+                    divData.innerHTML = "No entries yet"
+                }
+                divData.className = "form-control";
+                colDiv2.appendChild(label);
+                colDiv2.appendChild(divData);
+                row.appendChild(colDiv2);
+            } else {
+
+
+                const colDiv = document.createElement("div");
+                colDiv.className = `col-lg-6 col-sm-12 mt-5`;
+
+                const label = document.createElement("label");
+                label.setAttribute("for", `${field.id}_${rowIndex}`);
+                label.className = "form-label input-as-label label-font-size fs-6 text-dark";
+                label.innerText = field.label;
+
+
+                if (field.type === "checkbox") {
+                    input = document.createElement("input");
+                    input.type = "checkbox";
+                    input.checked = formField.checked
+                    input.className = "form-check-input all-entry-checkbox";
+                } else {
+                    input = document.createElement("input");
+                    input.type = field.type;
+                    input.className = "form-control input-as-label input-font-size";
+
+                    input.value = formField.value
+                }
+
+                input.name = `${field.id}${rowIndex}`;
+                input.id = `${field.id}_${rowIndex}`;
+
+                colDiv.appendChild(label);
+                colDiv.appendChild(input);
+                row.appendChild(colDiv);
+            }
+
+
+        });
+
+        // Delete Button
+        const btnDiv = document.createElement("div");
+        btnDiv.className = "col-12 text-end";
+        btnDiv.innerHTML = `<button type="button" class="btn btn-danger btn-sm" onclick="document.getElementById('entry_${rowIndex}').remove()">Delete Entry</button>`;
+
+        row.appendChild(btnDiv);
+        container.appendChild(row);
+
+        showToast("New Pitch entry added successfully!");
+
+    }
+</script>
+
+
 <!-- pp watering and rolling -->
 <script>
     let ppWateringEntries = [];
+   
 
     function addPPWateringEntry() {
 
@@ -2621,6 +3231,7 @@ localStorage.setItem("city",result.data.grounds[0].city);
 
         document.getElementById("pp_watering_entries_json").value = JSON.stringify(ppWateringEntries);
         showToast("New Watering entry added successfully!");
+        ppfieldCountUpdate()
 
     }
    
@@ -2687,6 +3298,7 @@ localStorage.setItem("city",result.data.grounds[0].city);
 
         document.getElementById("pp_rolling_entries_json").value = JSON.stringify(pprollingEntries);
         showToast("New Rolling entry added successfully!");
+        ppfieldCountUpdate()
 
     }
 
@@ -2697,8 +3309,13 @@ localStorage.setItem("city",result.data.grounds[0].city);
 <script>
     let ppIndex = 0;
 
-    function addPPEntryRow() {
+    function addPPEntryRow(event) {
         ppIndex++;
+        if(ppIndex>1)
+        {
+            $(event.target).prop("disabled",true)
+            return
+        }
         const container = document.getElementById("ppEntryContainer");
 
         const row = document.createElement("div");
@@ -2908,456 +3525,6 @@ localStorage.setItem("city",result.data.grounds[0].city);
     }
 </script>
 
-
-<!-- main watering rolling -->
-<script>
-    let wateringEntries = [];
-
-    function addWateringEntry() {
-        const last_watering_on = document.getElementById("last_watering_on").value;
-        const time_of_application = document.getElementById("time_of_application").value;
-        const quantity_of_water = document.getElementById("quantity_of_water").value;
-      
-
-        if (!last_watering_on || !time_of_application || !quantity_of_water) {
-            alert("Please fill all fields before adding.");
-            return;
-        }
-
-        const entry = {
-            last_watering_on,
-            time_of_application,
-            quantity_of_water,
-           
-        };
-
-        wateringEntries.push(entry);
-        updateWateringTable();
-    }
-    
-    function delWateringEntry(event) {
-        const row = event.target.closest("tr");
-        const index = Array.from(row.parentNode.children).indexOf(row);
-        wateringEntries.splice(index, 1);
-        updateWateringTable();
-    }
-
-    function updateWateringTable() {
-        const tableBody = document.querySelector("#wateringTable tbody");
-        tableBody.innerHTML = "";
-
-        wateringEntries.forEach(entry => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td>${entry.last_watering_on}</td>
-                <td>${entry.time_of_application}</td>
-                <td>${entry.quantity_of_water}</td>
-              
-                  <td>
-                    <button type="button" class='btn btn-danger det-btn' onclick="delWateringEntry(event)">X</button>
-                </td>
-            `;
-            tableBody.appendChild(row);
-        });
-
-        document.getElementById("watering_entries_json").value = JSON.stringify(wateringEntries);
-        showToast("New Watering entry added successfully!");
-
-    }
-   
-   
-    let rollingEntries = [];
-
-    function addRollingEntry() {
-        const machineType = document.getElementById("roller_machine_type").value;
-        const machineryName = document.getElementById("machinery_name").value;
-        const machineryId = document.getElementById("machinery_id").value;
-        const operator = document.getElementById("roller_machinery_name_operator").value;
-        const speed = document.getElementById("rolling_speed").value;
-        const passes = document.getElementById("no_of_passes").value;
-        const unit = document.getElementById("passes_unit").value;
-        const time = document.getElementById("time_roller").value;
-
-        if (!machineType || !machineryName || !operator || !speed || !passes || !unit || !time) {
-            alert("Please fill all fields before adding.");
-            return;
-        }
-
-        const entry = {
-            machineType,
-            machineryId,
-            machineryName,
-            operator,
-            speed,
-            passes,
-            unit,
-            time
-        };
-
-        rollingEntries.push(entry);
-        updateRollingTable();
-    }
-    
-    function delRollingEntry(event) {
-        const row = event.target.closest("tr");
-        const index = Array.from(row.parentNode.children).indexOf(row);
-        rollingEntries.splice(index, 1);
-        updateRollingTable();
-    }
-
-    function updateRollingTable() {
-        const tableBody = document.querySelector("#rollingTable tbody");
-        tableBody.innerHTML = "";
-
-        rollingEntries.forEach(entry => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td>${entry.machineType}</td>
-                <td>${entry.machineryName}</td>
-                <td>${entry.operator}</td>
-                <td>${entry.speed}</td>
-                <td>${entry.passes}</td>
-                <td>${entry.unit}</td>
-                <td>${entry.time}</td>
-                  <td>
-                    <button type="button" class='btn btn-danger det-btn' onclick="delRollingEntry(event)">X</button>
-                </td>
-            `;
-            tableBody.appendChild(row);
-        });
-
-        document.getElementById("rolling_entries_json").value = JSON.stringify(rollingEntries);
-        showToast("New Rolling entry added successfully!");
-
-    }
-
-</script>
-
-
-<!-- main chemical -->
-<script>
-  let chemicalEntries = [];
-    document.getElementById("addChemicalBtn").addEventListener("click", function () {
-        const used = document.getElementById("is_fertilizers_used").checked ? "Yes" : "No";
-        const time = document.getElementById("time_of_application_chemical").value;
-        const chemicalId = document.getElementById("fertilizers_details").selectedOptions[0].value;
-        const chemicalName = document.getElementById("fertilizers_details").selectedOptions[0].text;
-        const weight = document.getElementById("chemical_weight").value;
-        const unit = document.getElementById("fertilizers_unit").value;
-        const remark = document.getElementById("chemical_details_remark").value;
-
-        // if (!chemical || !time) {
-        //   alert("Please fill required fields: Chemical and Time.");
-        //   return;
-        // }
-  if (!used || !time || !chemicalId || !unit || !weight || !remark) {
-            alert("Please fill all fields before adding.");
-            return;
-        }
-
-        const entry = {
-           used , time ,chemicalId ,chemicalName ,unit ,weight ,remark
-        };
-
-        chemicalEntries.push(entry);
-        // updateChemicalData();
-       
-
-        // Reset inputs
-        // document.getElementById("time_of_application_chemical").value = "";
-        // document.getElementById("fertilizers_details").value = "";
-        // document.getElementById("chemical_weight").value = "";
-        // document.getElementById("fertilizers_unit").value = "";
-        // document.getElementById("chemical_details_remark").value = "";
-
-        updateChemicalData();
-    });
-
-     function delChemicalEntry(event) {
-        const row = event.target.closest("tr");
-        const index = Array.from(row.parentNode.children).indexOf(row);
-        chemicalEntries.splice(index, 1);
-        updateChemicalData();
-    }
-
-    function updateChemicalData() {
-         const tableBody = document.querySelector("#chemicalTable tbody");
-         tableBody.innerHTML = "";
-         console.log(chemicalEntries)
-         chemicalEntries.forEach(e => {
-            const row = document.createElement("tr");
-          
-        row.innerHTML = `
-      <td>${e.used}</td>
-      <td>${e.time}</td>
-      <td>${e.chemicalName}</td>
-      <td>${e.weight}</td>
-      <td>${e.unit}</td>
-      <td>${e.remark}</td>
-    <td><button type="button" class="btn btn-sm btn-danger delete-row" onclick="delChemicalEntry(event)">X</button></td>
-
-    `;
-    tableBody.appendChild(row);
-        })
-      
-        document.getElementById("chemical_entries").value = JSON.stringify(chemicalEntries);
-        showToast("New Chemical entry added successfully!");
-
-    }
-
-    // Final form submit validation (optional)
-    // function handleSubmit(form) {
-    //     const hiddenField = document.getElementById("chemical_entries").value;
-    //     if (!hiddenField || hiddenField === "[]") {
-    //         alert("Please add at least one chemical entry.");
-    //         return false;
-    //     }
-    //     return true;
-    // }
-
-</script>
-
-
-<!-- main mower -->
-<script>
-    let moverEntries = [];
-
-    function addMoverEntry() {
-        const type = document.getElementById("mover_machine_type").value;
-        const machineryName = document.getElementById("mover_machinery_name").value;
-        const machineryId = document.getElementById("mover_machinery_id").value;
-        const operator = document.getElementById("mover_machinery_name_operator").value;
-        const mowHeight = document.getElementById("mowing_done_at_mm").value;
-        const unit = document.getElementById("moving_passes_unit").value;
-        const duration = document.getElementById("mowing_duration").value;
-        const time = document.getElementById("time_of_application_mover").value;
-        const date = document.getElementById("date_mowing_done_last").value;
-
-        if (!type || !machineryName || !operator || !unit || !duration || !time || !date || !mowHeight) {
-            alert("Please fill all fields before adding.");
-            return;
-        }
-
-        const entry = {
-            type,
-            machineryId,
-            machineryName,
-            operator,
-            mowHeight,
-            unit,
-            duration,
-            time,
-            date
-        };
-
-        moverEntries.push(entry);
-        updateMoverTable();
-    }
-  function delMowerEntry(event) {
-        const row = event.target.closest("tr");
-        const index = Array.from(row.parentNode.children).indexOf(row);
-        moverEntries.splice(index, 1);
-        updateMoverTable();
-    }
-    function updateMoverTable() {
-        const tbody = document.querySelector("#moverTable tbody");
-        tbody.innerHTML = "";
-
-        moverEntries.forEach(e => {
-            tbody.innerHTML += `
-                <tr>
-                    <td>${e.type}</td>
-                    <td>${e.machineryName}</td>
-                    <td>${e.operator}</td>
-                    <td>${e.mowHeight}</td>
-                    <td>${e.duration}</td>
-                    <td>${e.unit}</td>
-                    <td>${e.time}</td>
-                    <td>${e.date}</td>
-                      <td>
-                    <button type="button" class='btn btn-danger det-btn' onclick="delMowerEntry(event)">X</button>
-                </td>
-                </tr>
-            `;
-        });
-
-        document.getElementById("mover_entries_json").value = JSON.stringify(moverEntries);
-        showToast("New Mower entry added successfully!");
-
-    }
-</script>
-
-<!-- main final add row -->
-<script>
-    let rowIndex = 0;
-
-    function addMainEntryRow() {
-        rowIndex++;
-        const container = document.getElementById("entryContainer");
-
-        const row = document.createElement("div");
-        row.className = "row g-3 mb-4 border rounded p-3 bg-light";
-        row.id = `entry_${rowIndex}`;
-
-        const fields = [
-            // { id: "last_watering_on", label: "Watering On", type: "date", col: 3 },
-            // { id: "time_of_application", label: "Time of Watering", type: "time", col: 3 },
-            // { id: "quantity_of_water", label: "Water Quantity", type: "text", col: 3 },
-            // { id: "machinery_id", label: "Roller ID", type: "text", col: 3 },
-            // { id: "machinery_name", label: "Roller Name", type: "text", col: 3 },
-            // { id: "time_roller", label: "Rolling Time", type: "time", col: 3 },
-            // { id: "rolling_speed", label: "Rolling Speed", type: "text", col: 3 },
-            // { id: "no_of_passes", label: "No. of Passes", type: "text", col: 3 },
-            // { id: "passes_unit", label: "Passes Units", type: "text", col: 3 },
-            // { id: "mover_machinery_id", label: "Mover ID", type: "text", col: 3 },
-            // { id: "mover_machinery_name", label: "Mover Name", type: "text", col: 3 },
-            // { id: "date_mowing_done_last", label: "Mowing Date", type: "date", col: 3 },
-            // { id: "time_of_application_mover", label: "Mover Time", type: "time", col: 3 },
-            // { id: "mowing_done_at_mm", label: "Mowing Height (mm)", type: "number", col: 3 },
-            // { id: "fertilizers_details", label: "Chemical Name", type: "text", col: 3 },
-            // { id: "chemical_weight", label: "Chemical Weight", type: "text", col: 3 },
-            // { id: "fertilizers_unit", label: "Unit", type: "text", col: 3 },
-            // { id: "chemical_details_remark", label: "Remark", type: "text", col: 3 },
-            // { id: "time_of_application_chemical", label: "Chem Time", type: "time", col: 3 },
-            { id: "chemical_entries", label: "Chemical Entries", type: "hidden", col: 3 },
-            { id: "watering_entries_json", label: "Watering Entries", type: "hidden", col: 3 },
-            
-            // { id: "mover_machine_type", label: "mover machine type", type: "text", col: 3 },
-            // { id: "mover_machinery_name_operator", label: "mover machinery operator", type: "text", col: 3 },
-            // { id: "moving_passes_unit", label: "moving passes unit", type: "text", col: 3 },
-            // { id: "mowing_duration", label: "mowing duration", type: "text", col: 3 },
-            // { id: "roller_machine_type", label: "roller machine type", type: "text", col: 3 },
-            // { id: "roller_machinery_name_operator", label: "roller machinery operator", type: "text", col: 3 },
-            { id: "rolling_entries_json", label: "Rolling Entries", type: "hidden", col: 3 },
-            { id: "mover_entries_json", label: "Mover Entries", type: "hidden", col: 3 },
-            { id: "is_fertilizers_used", label: "Fertilizer Used?", type: "checkbox", col: 3 },
-
-
-            // { id: "all_chemical_entries", label: "All Chemicals Entries", type: "textarea", col: 3 },
-        ];
-
-        fields.forEach(field => {
-            const formField = document.getElementById(field.id)
-            // console.log(field.id)
-            let input = document.createElement("input");
-            const colDiv2 = document.createElement("div");
-            colDiv2.className = `col-lg-6 col-sm-12 div-border`;
-
-            if (field.id=="watering_entries_json"||field.id === "chemical_entries"|| field.id === "rolling_entries_json" || field.id === "mover_entries_json") {
-
-                const label = document.createElement("label");
-                label.setAttribute("for", `${field.id}_${rowIndex}`);
-                label.className = "form-label input-as-label label-font-size fs-6 text-dark";
-                label.innerText = field.label;
-                input.type = formField.type
-                input.name = `${field.id}${rowIndex}`;
-                input.id = `${field.id}_${rowIndex}`;
-                input.value = formField.value
-                input.className = "form-control";
-
-
-                colDiv2.appendChild(input);
-                row.appendChild(colDiv2);
-
-                // const colDiv1 = document.createElement("div");
-                // colDiv1.className = `col-12 col-sm-6 col-md-${field.col}`;
-                              const divData = document.createElement("div");
-                divData.className="alert alert-dark text-white p-2";
-                // tarea.value=(formField.value)
-                try {
-                    if(field.id === "rolling_entries_json")
-                {
-                    JSON.parse(formField.value).forEach((element, i) => {
-                        divData.innerHTML += `<li>${element.machineType}</li> <li>${element.machineryName}</li> <li>${element.operator}</li> <li>${element.speed}</li> <li>${element.unit}</li> <li>${element.time}</li> <li>${element.passes}</li>` + "<hr>"
-                    });
-                }
-                else if(field.id === "mover_entries_json")
-                {
-                    JSON.parse(formField.value).forEach((element, i) => {
-                        divData.innerHTML += `<li>${element.type}</li> <li>${element.machineryId}</li> <li>${element.machineryName}</li> <li>${element.operator}</li> <li>${element.mowHeight}</li> <li>${element.duration}</li> <li>${element.time}</li> <li>${element.date}</li> <li>${element.unit}</li>` + "<hr>"
-                    });
-                }
-                else if(field.id === "chemical_entries")
-                {
-                    JSON.parse(formField.value).forEach((element, i) => {
-                        divData.innerHTML += `<li>${element.time}</li> <li>${element.chemName}</li> <li>${element.weight}</li> <li>${element.unit}</li> <li>${element.remark}</li>` + "\n"
-                    });
-                }
-                else if(field.id === "watering_entries_json")
-                {
-                    JSON.parse(formField.value).forEach((element, i) => {
-                        divData.innerHTML += `<li>${element.last_watering_on}</li> <li>${element.time_of_application}</li> <li>${element.quantity_of_water}</li>` + "\n"
-                    });
-                }
-                else
-                {
-                    divData.innerHTML = formField.value
-                }
-            }
-                catch (e) {
-                    console.log(e)
-                    divData.innerHTML = ""
-
-                }
-
-                divData.className = "form-control input-as-label input-font-size";
-                  if(formField.value === "")
-                {
-                    divData.innerHTML = "No entries yet"
-                }
-                divData.className = "form-control";
-                colDiv2.appendChild(label);
-                colDiv2.appendChild(divData);
-                row.appendChild(colDiv2);
-            } else {
-
-
-                const colDiv = document.createElement("div");
-                colDiv.className = `col-lg-6 col-sm-12 mt-5`;
-
-                const label = document.createElement("label");
-                label.setAttribute("for", `${field.id}_${rowIndex}`);
-                label.className = "form-label input-as-label label-font-size fs-6 text-dark";
-                label.innerText = field.label;
-
-
-                if (field.type === "checkbox") {
-                    input = document.createElement("input");
-                    input.type = "checkbox";
-                    input.checked = formField.checked
-                    input.className = "form-check-input all-entry-checkbox";
-                } else {
-                    input = document.createElement("input");
-                    input.type = field.type;
-                    input.className = "form-control input-as-label input-font-size";
-
-                    input.value = formField.value
-                }
-
-                input.name = `${field.id}${rowIndex}`;
-                input.id = `${field.id}_${rowIndex}`;
-
-                colDiv.appendChild(label);
-                colDiv.appendChild(input);
-                row.appendChild(colDiv);
-            }
-
-
-        });
-
-        // Delete Button
-        const btnDiv = document.createElement("div");
-        btnDiv.className = "col-12 text-end";
-        btnDiv.innerHTML = `<button type="button" class="btn btn-danger btn-sm" onclick="document.getElementById('entry_${rowIndex}').remove()">Delete Entry</button>`;
-
-        row.appendChild(btnDiv);
-        container.appendChild(row);
-
-        showToast("New Pitch entry added successfully!");
-
-    }
-</script>
-
 <!-- pp mower -->
 <script>
     let ppmoverEntries = [];
@@ -3424,6 +3591,7 @@ function ppDelMowerEntry(event) {
 
         document.getElementById("pp_mover_entries_json").value = JSON.stringify(ppmoverEntries);
         showToast("New Mower entry added successfully!");
+        ppfieldCountUpdate()
 
     }
 </script>
@@ -3496,6 +3664,7 @@ function ppDelMowerEntry(event) {
         })
         document.getElementById("pp_chemical_entries").value = JSON.stringify(ppchemicalEntries);
         showToast("New Chemical entry added successfully!");
+        ppfieldCountUpdate()
 
     }
 </script>
@@ -3504,8 +3673,13 @@ function ppDelMowerEntry(event) {
 <script>
                             let outIndex = 0;
 
-                            function addOutEntryRow() {
+                            function addOutEntryRow(event) {
                                 outIndex++;
+                                if(outIndex>1)
+                                {
+                                    $(event.target).prop("disabled",true)
+                                    return
+                                }
                                 const container = document.getElementById("outEntryContainer");
 
                                 const row = document.createElement("div");
@@ -3722,6 +3896,7 @@ function ppDelMowerEntry(event) {
 <script>
 
    let outwateringEntries = [];
+    
 
     function addOutWateringEntry() {
         const last_watering_on = document.getElementById("out_last_watering_on").value;
@@ -3772,6 +3947,7 @@ function ppDelMowerEntry(event) {
 
         document.getElementById("out_watering_entries_json").value = JSON.stringify(outwateringEntries);
         showToast("New Watering entry added successfully!");
+        outfieldCountUpdate()
 
     }
    
@@ -3814,6 +3990,7 @@ function outDelRollingEntry(event) {
         outrollingEntries.splice(index, 1);
         outupdateRollingTable();
     }
+
     function outupdateRollingTable() {
         const tableBody = document.querySelector("#outrollingTable tbody");
         tableBody.innerHTML = "";
@@ -3835,6 +4012,7 @@ function outDelRollingEntry(event) {
         });
         document.getElementById("out_rolling_entries_json").value = JSON.stringify(outrollingEntries);
         showToast("New Rolling entry added successfully!");
+        outfieldCountUpdate()
 
     }
 
@@ -3907,6 +4085,7 @@ function outDelRollingEntry(event) {
         });
         document.getElementById("out_mover_entries_json").value = JSON.stringify(outmoverEntries);
         showToast("New Mower entry added successfully!");
+        outfieldCountUpdate()
 
     }
 
@@ -3916,292 +4095,304 @@ function outDelRollingEntry(event) {
 <!-- outfiled chemical -->
                            <script>
                             const outChemicalEntries = [];
-                              function outDelChemicalEntry(event) {
-        const row = event.target.closest("tr");
-        const index = Array.from(row.parentNode.children).indexOf(row);
-        outChemicalEntries.splice(index, 1);
-        updateOutChemicalData();
-    }
-
-                                    document.getElementById("outaddChemicalBtn").addEventListener("click", function () {
-                                        const used = document.getElementById("out_is_fertilizers_used").checked ? "Yes" : "No";
-                                        const time = document.getElementById("out_time_of_application_chemical").value;
-                                        const chemical = document.getElementById("out_fertilizers_details").selectedOptions[0].value;
-                                        const chemicalName = document.getElementById("out_fertilizers_details").selectedOptions[0].text;
-                                        const weight = document.getElementById("out_chemical_weight").value;
-                                        const unit = document.getElementById("out_fertilizers_unit").value;
-                                        const remark = document.getElementById("out_chemical_details_remark").value;
-
-                            
-        if (!used || !time || !chemical || !unit || !weight || !remark) {
-            alert("Please fill all fields before adding.");
-            return;
+        function outDelChemicalEntry(event) {
+            const row = event.target.closest("tr");
+            const index = Array.from(row.parentNode.children).indexOf(row);
+            outChemicalEntries.splice(index, 1);
+            updateOutChemicalData();
         }
 
-        const entry = {
-           used , time ,unit ,weight ,remark,chemicalName,chemical
-        };
+                                        document.getElementById("outaddChemicalBtn").addEventListener("click", function () {
+                                            const used = document.getElementById("out_is_fertilizers_used").checked ? "Yes" : "No";
+                                            const time = document.getElementById("out_time_of_application_chemical").value;
+                                            const chemical = document.getElementById("out_fertilizers_details").selectedOptions[0].value;
+                                            const chemicalName = document.getElementById("out_fertilizers_details").selectedOptions[0].text;
+                                            const weight = document.getElementById("out_chemical_weight").value;
+                                            const unit = document.getElementById("out_fertilizers_unit").value;
+                                            const remark = document.getElementById("out_chemical_details_remark").value;
 
-        outChemicalEntries.push(entry);
+                                
+            if (!used || !time || !chemical || !unit || !weight || !remark) {
+                alert("Please fill all fields before adding.");
+                return;
+            }
 
-        updateOutChemicalData();
-    });
+            const entry = {
+            used , time ,unit ,weight ,remark,chemicalName,chemical
+            };
 
-    function updateOutChemicalData() {
-        const tableBody = document.querySelector("#outchemicalTable tbody");
-         tableBody.innerHTML = "";
-         
-         outChemicalEntries.forEach(e => {
-            const row = document.createElement("tr");
-          
-        row.innerHTML = `
-      <td>${e.used}</td>
-      <td>${e.time}</td>
-      <td>${e.chemicalName}</td>
-      <td>${e.weight}</td>
-      <td>${e.unit}</td>
-      <td>${e.remark}</td>
-                <td><button type="button" class="btn btn-sm btn-danger delete-row" onclick="outDelChemicalEntry(event)">X</button></td>
+            outChemicalEntries.push(entry);
 
-                `;
-                tableBody.appendChild(row);
-        })
-        document.getElementById("out_chemical_entries").value = JSON.stringify(outChemicalEntries);
-        showToast("New Chemical entry added successfully!");
-
-    }
-                                </script>
-<!--practice area main final add row-->
-<script>
-                            let practiceIndex = 0;
-
-                            function addPracticeEntryRow() {
-                                practiceIndex++;
-                                // alert(practiceIndex)
-                                const container = document.getElementById("practiceEntryContainer");
-
-                                const row = document.createElement("div");
-                                row.className = "row g-3 mb-4 border rounded p-3 bg-secondary-subtle";
-                                row.id = `practice_entry_${practiceIndex}`;
-
-                                const fields = [
-                                    // { id: "practice_last_watering_on", label: "Watering On", type: "date", col: 3 },
-                                    // { id: "practice_time_of_application", label: "Watering Time", type: "time", col: 3 },
-                                    // { id: "practice_quantity_of_water", label: "Water Quantity", type: "text", col: 3 },
-                                    // { id: "practice_machinery_id", label: "Roller ID", type: "text", col: 3 },
-                                    // { id: "practice_machinery_name", label: "Roller Name", type: "text", col: 3 },
-                                    // { id: "practice_time_roller", label: "Rolling Time", type: "time", col: 3 },
-                                    // { id: "practice_rolling_speed", label: "Rolling Speed", type: "number", col: 3 },
-                                    // { id: "practice_no_of_passes", label: "No. of Passes", type: "text", col: 3 },
-                                    // { id: "practice_passes_unit", label: "Passes Units", type: "text", col: 3 },
-                                    // { id: "practice_mover_machinery_id", label: "Mover ID", type: "text", col: 3 },
-                                    // { id: "practice_mover_machinery_name", label: "Mover Name", type: "text", col: 3 },
-                                    // { id: "practice_date_mowing_done_last", label: "Mowing Date", type: "date", col: 3 },
-                                    // { id: "practice_time_of_application_mover", label: "Mover Time", type: "time", col: 3 },
-                                    // { id: "practice_mowing_done_at_mm", label: "Mowing Height (mm)", type: "number", col: 3 },
-                                    // { id: "practice_fertilizers_details", label: "Chemical Name", type: "text", col: 3 },
-                                    // { id: "practice_chemical_weight", label: "Chemical Weight", type: "text", col: 3 },
-                                    // { id: "practice_fertilizers_unit", label: "Unit", type: "text", col: 3 },
-                                    // { id: "practice_chemical_details_remark", label: "Remark", type: "text", col: 3 },
-                                    // { id: "practice_time_of_application_chemical", label: "Chem Time", type: "time", col: 3 },
-                                    { id: "practice_chemical_entries", label: "Chemical Entries", type: "hidden", col: 3 },
-                                    { id: "practice_watering_entries_json", label: "Watering Entries", type: "hidden", col: 3 },
-                                    // { id: "practice_mover_machine_type", label: "mover machine type", type: "text", col: 3 },
-                                    // { id: "practice_mover_machinery_name_operator", label: "mover machinery operator", type: "text", col: 3 },
-                                    // { id: "practice_moving_passes_unit", label: "moving passes unit", type: "text", col: 3 },
-                                    // { id: "practice_mowing_duration", label: "mowing duration", type: "text", col: 3 },
-                                    // { id: "practice_roller_machine_type", label: "roller machine type", type: "text", col: 3 },
-                                    // { id: "practice_roller_machinery_name_operator", label: "roller machinery operator", type: "text", col: 3 },
-                                    { id: "practice_rolling_entries_json", label: "Roller Entries", type: "hidden", col: 3 },
-                                    { id: "practice_mover_entries_json", label: "Mower Entries", type: "hidden", col: 3 },
-                                    { id: "practice_is_fertilizers_used", label: "Fertilizer Used?", type: "checkbox", col: 3 },
-
-                                ];
-
-                                fields.forEach(field => {
-                                    const formField = document.getElementById(field.id)
-                                    // console.log(field.id)
-                                    let input = document.createElement("input");
-                                    const colDiv2 = document.createElement("div");
-                                    colDiv2.className = `col-sm-12 col-lg-6`;
-                                    if (field.id === "practice_chemical_entries" || 
-                                    field.id === "practice_rolling_entries_json" || 
-                                    field.id === "practice_mover_entries_json"||
-                                    field.id === "practice_watering_entries_json"
-                                ) {
-
-                                        const label = document.createElement("label");
-                                        label.setAttribute("for", `${field.id}_${practiceIndex}`);
-                                        label.className = "form-label input-as-label label-font-size";
-
-                                        label.innerText = field.label;
-                                        input.type = formField.type
-                                        input.name = `${field.id}${practiceIndex}`;
-                                        input.id = `${field.id}_${practiceIndex}`;
-                                        input.value = formField.value
-                                        input.className = "form-control";
-
-
-                                        colDiv2.appendChild(input);
-                                        row.appendChild(colDiv2);
-
-                                        // const colDiv1 = document.createElement("div");
-                                        // colDiv1.className = `col-12 col-sm-6 col-md-${field.col}`;
-                                        const divData = document.createElement("div");
-                                        divData.className="alert alert-dark text-white p-2";
-                                        // tarea.value=(formField.value)
-                                        try {
-                                             
-                                            if(field.id === "practice_rolling_entries_json")
-                                        {
-                                            JSON.parse(formField.value).forEach((element, i) => {
-                                                divData.innerHTML += `<li>${element.machineType}</li> <li>${element.machineryName}</li> <li>${element.operator}</li> <li>${element.speed}</li> <li>${element.unit}</li> <li>${element.time}</li> <li>${element.passes}</li>` + "<hr>"
-                                            });
-                                        }
-                                        else if(field.id === "practice_mover_entries_json")
-                                        {
-                                            JSON.parse(formField.value).forEach((element, i) => {
-                                                divData.innerHTML += `<li>${element.type}</li> <li>${element.machineryId}</li> <li>${element.machineryName}</li> <li>${element.operator}</li> <li>${element.mowHeight}</li> <li>${element.duration}</li> <li>${element.time}</li> <li>${element.date}</li> <li>${element.unit}</li>` + "<hr>"
-                                            });
-                                        }
-                                        else if(field.id === "practice_chemical_entries")
-                                        {
-                                            JSON.parse(formField.value).forEach((element, i) => {
-                                                divData.innerHTML += `<li>${element.time}</li> <li>${element.chemicalName}</li> <li>${element.weight}</li> <li>${element.unit}</li> <li>${element.remark}</li>` + "<hr>"
-                                            });
-                                        }
-                                        else if(field.id === "practice_watering_entries_json")
-                                        {
-                                            JSON.parse(formField.value).forEach((element, i) => {
-                                                divData.innerHTML += `<li>${element.last_watering_on}</li> <li>${element.time_of_application}</li> <li>${element.quantity_of_water}</li>` + "<hr>"
-                                            });
-                                        }
-                                        else
-                                        {
-                                            divData.innerHTML = formField.value
-                                        }
-                                        }
-                                        catch (e) {
-                                            console.log(e)
-                                            divData.value = ""
-
-                                        }
-
-                                        divData.className = "form-control";
-                                        if(formField.value === "")
-                                        {
-                                            divData.innerHTML = "No entries yet"
-                                        }
-                                        colDiv2.appendChild(label);
-                                        colDiv2.appendChild(divData);
-                                        row.appendChild(colDiv2);
-                                    } else {
-
-
-                                        const colDiv = document.createElement("div");
-                                        colDiv.className = `col-lg-6 col-sm-12 mt-5`;
-
-                                        const label = document.createElement("label");
-                                        label.setAttribute("for", `${field.id}_${practiceIndex}`);
-                                        label.className ="form-label input-as-label label-font-size";
-                                        label.innerText = field.label;
-
-
-                                        if (field.type === "checkbox") {
-                                            input = document.createElement("input");
-                                            input.type = "checkbox";
-                                            input.checked = formField.checked
-                                            input.className ="form-check-input all-entry-checkbox";
-                                        } else {
-                                            input = document.createElement("input");
-                                            input.type = field.type;
-                                            input.className = "form-control input-as-label input-font-size";
-
-                                            input.value = formField.value
-                                        }
-
-                                        input.name = `${field.id}${practiceIndex}`;
-                                        input.id = `${field.id}_${practiceIndex}`;
-
-                                        colDiv.appendChild(label);
-                                        colDiv.appendChild(input);
-                                        row.appendChild(colDiv);
-                                    }
-
-
-                                });
-
-                                // Delete Button
-                                const btnDiv = document.createElement("div");
-                                btnDiv.className = "col-12 text-end";
-                                btnDiv.innerHTML = `<button type="button" class="btn btn-danger btn-sm" onclick="document.getElementById('entry_${practiceIndex}').remove()">Delete Entry</button>`;
-
-                                row.appendChild(btnDiv);
-                                container.appendChild(row);
-
-                                showToast("New Practice Area entry added successfully!");
-
-
-                            }
-                        </script>
-<!-- practice area rolling watering-->
-                        <script>
-
-
-   let practicewateringEntries = [];
-
-    function addPracticeWateringEntry() {
-        const last_watering_on = document.getElementById("practice_last_watering_on").value;
-        const time_of_application = document.getElementById("practice_time_of_application").value;
-        const quantity_of_water = document.getElementById("practice_quantity_of_water").value;
-      
-
-        if (!last_watering_on || !time_of_application || !quantity_of_water) {
-            alert("Please fill all fields before adding.");
-            return;
-        }
-
-        const entry = {
-            last_watering_on,
-            time_of_application,
-            quantity_of_water,
-           
-        };
-
-        practicewateringEntries.push(entry);
-        practiceupdateWateringTable();
-    }
-    
-    function practicedelWateringEntry(event) {
-        const row = event.target.closest("tr");
-        const index = Array.from(row.parentNode.children).indexOf(row);
-        practicewateringEntries.splice(index, 1);
-        practiceupdateWateringTable();
-    }
-
-    function practiceupdateWateringTable() {
-        const tableBody = document.querySelector("#practicewateringTable tbody");
-        tableBody.innerHTML = "";
-
-        practicewateringEntries.forEach(entry => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td>${entry.last_watering_on}</td>
-                <td>${entry.time_of_application}</td>
-                <td>${entry.quantity_of_water}</td>
-              
-                  <td>
-                    <button type="button" class='btn btn-danger det-btn' onclick="practicedelWateringEntry(event)">X</button>
-                </td>
-            `;
-            tableBody.appendChild(row);
+            updateOutChemicalData();
         });
 
-        document.getElementById("practice_watering_entries_json").value = JSON.stringify(practicewateringEntries);
-        showToast("New Watering entry added successfully!");
+        function updateOutChemicalData() {
+            const tableBody = document.querySelector("#outchemicalTable tbody");
+            tableBody.innerHTML = "";
+            
+            outChemicalEntries.forEach(e => {
+                const row = document.createElement("tr");
+            
+            row.innerHTML = `
+        <td>${e.used}</td>
+        <td>${e.time}</td>
+        <td>${e.chemicalName}</td>
+        <td>${e.weight}</td>
+        <td>${e.unit}</td>
+        <td>${e.remark}</td>
+                    <td><button type="button" class="btn btn-sm btn-danger delete-row" onclick="outDelChemicalEntry(event)">X</button></td>
 
-    }
-   
+                    `;
+                    tableBody.appendChild(row);
+            })
+            document.getElementById("out_chemical_entries").value = JSON.stringify(outChemicalEntries);
+            showToast("New Chemical entry added successfully!");
+            outfieldCountUpdate()
+
+        }
+                                    </script>
+    <!--practice area main final add row-->
+    <script>
+                                let practiceIndex = 0;
+
+                                function addPracticeEntryRow(event) {
+                                    practiceIndex++;
+                                    if(practiceIndex>1)
+                                    {
+                                        $(event.target).prop("disabled",true)
+                                        return
+                                    }
+                                    // alert(practiceIndex)
+                                    const container = document.getElementById("practiceEntryContainer");
+
+                                    const row = document.createElement("div");
+                                    row.className = "row g-3 mb-4 border rounded p-3 bg-secondary-subtle";
+                                    row.id = `practice_entry_${practiceIndex}`;
+
+                                    const fields = [
+                                        // { id: "practice_last_watering_on", label: "Watering On", type: "date", col: 3 },
+                                        // { id: "practice_time_of_application", label: "Watering Time", type: "time", col: 3 },
+                                        // { id: "practice_quantity_of_water", label: "Water Quantity", type: "text", col: 3 },
+                                        // { id: "practice_machinery_id", label: "Roller ID", type: "text", col: 3 },
+                                        // { id: "practice_machinery_name", label: "Roller Name", type: "text", col: 3 },
+                                        // { id: "practice_time_roller", label: "Rolling Time", type: "time", col: 3 },
+                                        // { id: "practice_rolling_speed", label: "Rolling Speed", type: "number", col: 3 },
+                                        // { id: "practice_no_of_passes", label: "No. of Passes", type: "text", col: 3 },
+                                        // { id: "practice_passes_unit", label: "Passes Units", type: "text", col: 3 },
+                                        // { id: "practice_mover_machinery_id", label: "Mover ID", type: "text", col: 3 },
+                                        // { id: "practice_mover_machinery_name", label: "Mover Name", type: "text", col: 3 },
+                                        // { id: "practice_date_mowing_done_last", label: "Mowing Date", type: "date", col: 3 },
+                                        // { id: "practice_time_of_application_mover", label: "Mover Time", type: "time", col: 3 },
+                                        // { id: "practice_mowing_done_at_mm", label: "Mowing Height (mm)", type: "number", col: 3 },
+                                        // { id: "practice_fertilizers_details", label: "Chemical Name", type: "text", col: 3 },
+                                        // { id: "practice_chemical_weight", label: "Chemical Weight", type: "text", col: 3 },
+                                        // { id: "practice_fertilizers_unit", label: "Unit", type: "text", col: 3 },
+                                        // { id: "practice_chemical_details_remark", label: "Remark", type: "text", col: 3 },
+                                        // { id: "practice_time_of_application_chemical", label: "Chem Time", type: "time", col: 3 },
+                                        { id: "practice_chemical_entries", label: "Chemical Entries", type: "hidden", col: 3 },
+                                        { id: "practice_watering_entries_json", label: "Watering Entries", type: "hidden", col: 3 },
+                                        // { id: "practice_mover_machine_type", label: "mover machine type", type: "text", col: 3 },
+                                        // { id: "practice_mover_machinery_name_operator", label: "mover machinery operator", type: "text", col: 3 },
+                                        // { id: "practice_moving_passes_unit", label: "moving passes unit", type: "text", col: 3 },
+                                        // { id: "practice_mowing_duration", label: "mowing duration", type: "text", col: 3 },
+                                        // { id: "practice_roller_machine_type", label: "roller machine type", type: "text", col: 3 },
+                                        // { id: "practice_roller_machinery_name_operator", label: "roller machinery operator", type: "text", col: 3 },
+                                        { id: "practice_rolling_entries_json", label: "Roller Entries", type: "hidden", col: 3 },
+                                        { id: "practice_mover_entries_json", label: "Mower Entries", type: "hidden", col: 3 },
+                                        { id: "practice_is_fertilizers_used", label: "Fertilizer Used?", type: "checkbox", col: 3 },
+
+                                    ];
+
+                                    fields.forEach(field => {
+                                        const formField = document.getElementById(field.id)
+                                        // console.log(field.id)
+                                        let input = document.createElement("input");
+                                        const colDiv2 = document.createElement("div");
+                                        colDiv2.className = `col-sm-12 col-lg-6`;
+                                        if (field.id === "practice_chemical_entries" || 
+                                        field.id === "practice_rolling_entries_json" || 
+                                        field.id === "practice_mover_entries_json"||
+                                        field.id === "practice_watering_entries_json"
+                                    ) {
+
+                                            const label = document.createElement("label");
+                                            label.setAttribute("for", `${field.id}_${practiceIndex}`);
+                                            label.className = "form-label input-as-label label-font-size";
+
+                                            label.innerText = field.label;
+                                            input.type = formField.type
+                                            input.name = `${field.id}${practiceIndex}`;
+                                            input.id = `${field.id}_${practiceIndex}`;
+                                            input.value = formField.value
+                                            input.className = "form-control";
+
+
+                                            colDiv2.appendChild(input);
+                                            row.appendChild(colDiv2);
+
+                                            // const colDiv1 = document.createElement("div");
+                                            // colDiv1.className = `col-12 col-sm-6 col-md-${field.col}`;
+                                            const divData = document.createElement("div");
+                                            divData.className="alert alert-dark text-white p-2";
+                                            // tarea.value=(formField.value)
+                                            try {
+                                                
+                                                if(field.id === "practice_rolling_entries_json")
+                                            {
+                                                JSON.parse(formField.value).forEach((element, i) => {
+                                                    divData.innerHTML += `<li>${element.machineType}</li> <li>${element.machineryName}</li> <li>${element.operator}</li> <li>${element.speed}</li> <li>${element.unit}</li> <li>${element.time}</li> <li>${element.passes}</li>` + "<hr>"
+                                                });
+                                            }
+                                            else if(field.id === "practice_mover_entries_json")
+                                            {
+                                                JSON.parse(formField.value).forEach((element, i) => {
+                                                    divData.innerHTML += `<li>${element.type}</li> <li>${element.machineryId}</li> <li>${element.machineryName}</li> <li>${element.operator}</li> <li>${element.mowHeight}</li> <li>${element.duration}</li> <li>${element.time}</li> <li>${element.date}</li> <li>${element.unit}</li>` + "<hr>"
+                                                });
+                                            }
+                                            else if(field.id === "practice_chemical_entries")
+                                            {
+                                                JSON.parse(formField.value).forEach((element, i) => {
+                                                    divData.innerHTML += `<li>${element.time}</li> <li>${element.chemicalName}</li> <li>${element.weight}</li> <li>${element.unit}</li> <li>${element.remark}</li>` + "<hr>"
+                                                });
+                                            }
+                                            else if(field.id === "practice_watering_entries_json")
+                                            {
+                                                JSON.parse(formField.value).forEach((element, i) => {
+                                                    divData.innerHTML += `<li>${element.last_watering_on}</li> <li>${element.time_of_application}</li> <li>${element.quantity_of_water}</li>` + "<hr>"
+                                                });
+                                            }
+                                            else
+                                            {
+                                                divData.innerHTML = formField.value
+                                            }
+                                            }
+                                            catch (e) {
+                                                console.log(e)
+                                                divData.value = ""
+
+                                            }
+
+                                            divData.className = "form-control";
+                                            if(formField.value === "")
+                                            {
+                                                divData.innerHTML = "No entries yet"
+                                            }
+                                            colDiv2.appendChild(label);
+                                            colDiv2.appendChild(divData);
+                                            row.appendChild(colDiv2);
+                                        } else {
+
+
+                                            const colDiv = document.createElement("div");
+                                            colDiv.className = `col-lg-6 col-sm-12 mt-5`;
+
+                                            const label = document.createElement("label");
+                                            label.setAttribute("for", `${field.id}_${practiceIndex}`);
+                                            label.className ="form-label input-as-label label-font-size";
+                                            label.innerText = field.label;
+
+
+                                            if (field.type === "checkbox") {
+                                                input = document.createElement("input");
+                                                input.type = "checkbox";
+                                                input.checked = formField.checked
+                                                input.className ="form-check-input all-entry-checkbox";
+                                            } else {
+                                                input = document.createElement("input");
+                                                input.type = field.type;
+                                                input.className = "form-control input-as-label input-font-size";
+
+                                                input.value = formField.value
+                                            }
+
+                                            input.name = `${field.id}${practiceIndex}`;
+                                            input.id = `${field.id}_${practiceIndex}`;
+
+                                            colDiv.appendChild(label);
+                                            colDiv.appendChild(input);
+                                            row.appendChild(colDiv);
+                                        }
+
+
+                                    });
+
+                                    // Delete Button
+                                    const btnDiv = document.createElement("div");
+                                    btnDiv.className = "col-12 text-end";
+                                    btnDiv.innerHTML = `<button type="button" class="btn btn-danger btn-sm" onclick="document.getElementById('entry_${practiceIndex}').remove()">Delete Entry</button>`;
+
+                                    row.appendChild(btnDiv);
+                                    container.appendChild(row);
+
+                                    showToast("New Practice Area entry added successfully!");
+
+
+                                }
+                            </script>
+    <!-- practice area rolling watering-->
+                            <script>
+
+
+    let practicewateringEntries = [];
+  
+
+        function addPracticeWateringEntry() {
+            const last_watering_on = document.getElementById("practice_last_watering_on").value;
+            const time_of_application = document.getElementById("practice_time_of_application").value;
+            const quantity_of_water = document.getElementById("practice_quantity_of_water").value;
+        
+
+            if (!last_watering_on || !time_of_application || !quantity_of_water) {
+                alert("Please fill all fields before adding.");
+                return;
+            }
+
+            const entry = {
+                last_watering_on,
+                time_of_application,
+                quantity_of_water,
+            
+            };
+
+            practicewateringEntries.push(entry);
+        
+
+            practiceupdateWateringTable();
+        }
+        
+        function practicedelWateringEntry(event) {
+            const row = event.target.closest("tr");
+            const index = Array.from(row.parentNode.children).indexOf(row);
+            practicewateringEntries.splice(index, 1);
+
+            practiceupdateWateringTable();
+        }
+
+        function practiceupdateWateringTable() {
+            const tableBody = document.querySelector("#practicewateringTable tbody");
+            tableBody.innerHTML = "";
+
+            practicewateringEntries.forEach(entry => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${entry.last_watering_on}</td>
+                    <td>${entry.time_of_application}</td>
+                    <td>${entry.quantity_of_water}</td>
+                
+                    <td>
+                        <button type="button" class='btn btn-danger det-btn' onclick="practicedelWateringEntry(event)">X</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            document.getElementById("practice_watering_entries_json").value = JSON.stringify(practicewateringEntries);
+            showToast("New Watering entry added successfully!");
+        practiceCountUpdate()
+
+
+        }
+    
 
 
 
@@ -4242,6 +4433,8 @@ function outDelRollingEntry(event) {
         const row = event.target.closest("tr");
         const index = Array.from(row.parentNode.children).indexOf(row);
         practicerollingEntries.splice(index, 1);
+                                practiceCountUpdate()
+
         practiceupdateRollingTable();
     }
 
@@ -4265,6 +4458,8 @@ function outDelRollingEntry(event) {
         });
         document.getElementById("practice_rolling_entries_json").value = JSON.stringify(practicerollingEntries);
         showToast("New Rolling entry added successfully!");
+                                practiceCountUpdate()
+
 
     }
                         </script>
@@ -4305,7 +4500,7 @@ function outDelRollingEntry(event) {
                                 practiceupdateMoverTable();
                             }
 
-                          function practiceDelMowerEntry(event) {
+    function practiceDelMowerEntry(event) {
         const row = event.target.closest("tr");
         const index = Array.from(row.parentNode.children).indexOf(row);
         practicemoverEntries.splice(index, 1);
@@ -4333,6 +4528,7 @@ function outDelRollingEntry(event) {
         });
         document.getElementById("practice_mover_entries_json").value = JSON.stringify(practicemoverEntries);
         showToast("New Mower entry added successfully!");
+        practiceCountUpdate()
 
     }
                         </script>
@@ -4340,7 +4536,7 @@ function outDelRollingEntry(event) {
 <!-- practice area chemical -->
      <script>
         const practiceChemicalEntries=[]
-                          function practiceDelChemicalEntry(event) {
+    function practiceDelChemicalEntry(event) {
         const row = event.target.closest("tr");
         const index = Array.from(row.parentNode.children).indexOf(row);
         practiceChemicalEntries.splice(index, 1);
@@ -4393,6 +4589,7 @@ function outDelRollingEntry(event) {
         document.getElementById("practice_chemical_entries").value = JSON.stringify(practiceChemicalEntries);
 
         showToast("New chemical entry added successfully!");
+        practiceCountUpdate()
            
     }
     </script>

@@ -14,7 +14,7 @@
         {% include "admin_user/menu_top.html" %}
 
 
-<table class="table table-sm align-middle mb-0 w-75 mx-auto chemical-remport-table">
+<table id="chemicalTable" class="table table-sm align-middle mb-0 w-75 mx-auto chemical-remport-table">
     <thead class="bg-light fs-5 box-bg report-table-title">
     <tr>
         <th>
@@ -29,9 +29,9 @@
     </th>
     </tr>
     <tr>
-        <th>ID</th>
-        <th>Chemical Name</th>
-        <th>Type</th>
+        <th class="sortable">ID</th>
+        <th class="sortable">Chemical Name</th>
+        <th class="sortable">Type</th>
         <th>Actions</th>
     </tr>
     </thead>
@@ -53,9 +53,67 @@
 </div>
 </div>
 
+<style>
+    .sortable.sorted-asc::after {
+    content: " ⬆";
+    color: yellow;
+}
+.sortable.sorted-desc::after {
+    content: " ⬇";
+    color: yellow;
+}
+</style>
+
 
 {% include "admin_user/footertags.html" %}
 
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const table = document.getElementById("chemicalTable");
+    const headers = table.querySelectorAll("th.sortable");
+    let sortDirection = {}; // Store sorting direction per column
+
+    headers.forEach((header, index) => {
+        header.style.cursor = "pointer";
+        header.addEventListener("click", () => sortTable(index, header));
+    });
+
+    function sortTable(columnIndex, header) {
+        const tbody = table.querySelector("tbody");
+        const rows = Array.from(tbody.querySelectorAll("tr"));
+
+        const isNumeric = rows.every(row => !isNaN(row.children[columnIndex].innerText.trim()));
+
+        // Toggle sort direction
+        sortDirection[columnIndex] = !sortDirection[columnIndex];
+
+        rows.sort((a, b) => {
+            let valA = a.children[columnIndex].innerText.trim();
+            let valB = b.children[columnIndex].innerText.trim();
+
+            // Convert numeric values
+            if (isNumeric) {
+                valA = parseFloat(valA) || 0;
+                valB = parseFloat(valB) || 0;
+            }
+
+            if (sortDirection[columnIndex]) {
+                return valA > valB ? 1 : -1;
+            } else {
+                return valA < valB ? 1 : -1;
+            }
+        });
+
+        // Clear and re-append sorted rows
+        tbody.innerHTML = "";
+        rows.forEach(row => tbody.appendChild(row));
+
+        // Add visual indicator
+        headers.forEach(h => h.classList.remove("sorted-asc", "sorted-desc"));
+        header.classList.add(sortDirection[columnIndex] ? "sorted-asc" : "sorted-desc");
+    }
+});
+</script>
 
 
