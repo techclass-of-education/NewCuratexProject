@@ -69,7 +69,7 @@
 
                                         <div class="col-sm-12 mb-3 col-lg-12">
                                             <label for="rolling_start_date" class="form-label">Date:</label>
-                                            <input type="date" onchange="getWeather(this)" id="rolling_start_date"
+                                            <input type="date" onchange="getWeatherByThis(this,`daily`)" id="rolling_start_date"
                                                 name="rolling_start_date" class="form-control">
                                         </div>
                                    
@@ -1447,6 +1447,10 @@
                             <input type="number" id="out_mowing_done_at_mm" name="out_mowing_done_at_mm" class="form-control">
                         </div>
                         <div class="col-lg-2 col-sm-12 mt-4">
+                            <label for="out_clipping" class="form-label">Clipping:</label>
+                            <input type="number" id="out_clipping" name="out_clipping" class="form-control">
+                        </div>
+                        <div class="col-lg-2 col-sm-12 mt-4">
                             <label for="out_moving_passes_unit" class="form-label">Unit:</label>
                             <select class="form-select" id="out_moving_passes_unit" name="out_moving_passes_unit">
                                 <option selected>Select Unit</option>
@@ -1477,6 +1481,7 @@
                                                 <th>Unit</th>
                                                 <th>Time</th>
                                                 <th>Date</th>
+                                                <th>Clipping</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -2068,7 +2073,7 @@
 
 <script>
 
-
+    
     function showToast(msg)
     {
          const toastEl = document.getElementById('myToast');
@@ -2483,17 +2488,21 @@ else
                 })
             }).catch((error) => {
                 console.log(error)
-
             })
         } else {
             axios.get(`/usr_admin/get_pitches/${groundId}`).then((result) => {
-                console.log(result.data.grounds)
+                console.log(result.data)
                 $("#pitch_id").html("")
                 $("#pitch_id").append(`<option value=''>Select Pitch</option>`)
                 // $("#pitch_id").append(`<option value='all'>All</option>`)
                 // $("#pitch_id").append(`<option value='outfield'>Outfield Area</option>`)
                 // $("#pitch_id").append(`<option value='practice'>Practice Area</option>`)
-localStorage.setItem("city",result.data.grounds[0].city);
+                
+                localStorage.setItem("location-{{request.session.org_id}}",
+                JSON.stringify({"city":result.data.grounds[0].pitch[22],
+                    "ground_id":result.data.grounds[0].pitch[23],
+                    "orgid":result.data.grounds[0].pitch[23]})
+                );
                 result.data.grounds.forEach(function (p) {
                     $("#pitch_id").append(`<option value='${p.pitch[0]}'>${p.pitch[14]}  ${p.pitch[5]}</option>`)
                 })
@@ -2505,6 +2514,8 @@ localStorage.setItem("city",result.data.grounds[0].city);
 
     })
 
+   
+   
     function addChemicalsToSelect(fertilizers, select) {
         fertilizers.forEach(function (fert) {
             const option = document.createElement("option");
@@ -3806,7 +3817,7 @@ function ppDelMowerEntry(event) {
                                         else if(field.id === "out_mover_entries_json")
                                         {
                                             JSON.parse(formField.value).forEach((element, i) => {
-                                                divData.innerHTML += `<li>${element.type}</li> <li>${element.machineryId}</li> <li>${element.machineryName}</li> <li>${element.operator}</li> <li>${element.mowHeight}</li> <li>${element.duration}</li> <li>${element.time}</li> <li>${element.date}</li> <li>${element.unit}</li>` + "<hr>"
+                                                divData.innerHTML += `<li>${element.type}</li> <li>${element.machineryId}</li> <li>${element.machineryName}</li> <li>${element.operator}</li> <li>${element.mowHeight}</li> <li>${element.duration}</li> <li>${element.time}</li> <li>${element.date}</li> <li>${element.unit}</li><li>${element.out_clipping}</li>` + "<hr>"
                                             });
                                         }
                                         else if(field.id === "out_chemical_entries")
@@ -3841,7 +3852,7 @@ function ppDelMowerEntry(event) {
                                         colDiv2.appendChild(divData);
                                         row.appendChild(colDiv2);
 
-                } else {
+                                        } else {
 
 
                                         const colDiv = document.createElement("div");
@@ -4033,8 +4044,9 @@ function outDelRollingEntry(event) {
                                 const duration = document.getElementById("out_mowing_duration").value;
                                 const time = document.getElementById("out_time_of_application_mover").value;
                                 const date = document.getElementById("out_date_mowing_done_last").value;
-
-                                if (!type || !machineryName || !operator || !unit || !duration || !time || !date || !mowHeight) {
+                                const out_clipping = document.getElementById("out_clipping").value;
+                                
+                                if (!type || !machineryName || !operator || !unit || !duration || !time || !date || !mowHeight||!out_clipping) {
                                     alert("Please fill all fields before adding.");
                                     return;
                                 }
@@ -4048,7 +4060,8 @@ function outDelRollingEntry(event) {
                                     unit,
                                     duration,
                                     time,
-                                    date
+                                    date,
+                                    out_clipping
                                 };
 
                                 outmoverEntries.push(entry);
@@ -4077,6 +4090,7 @@ function outDelRollingEntry(event) {
                     <td>${e.unit}</td>
                     <td>${e.time}</td>
                     <td>${e.date}</td>
+                    <td>${e.out_clipping}</td>
                      <td>
                     <button type="button" class='btn btn-danger det-btn' onclick="outDelMowerEntry(event)">X</button>
                 </td>

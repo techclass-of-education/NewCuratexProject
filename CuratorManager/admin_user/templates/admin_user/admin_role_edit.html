@@ -1,0 +1,106 @@
+{% include "admin_user/headertags.html" %}
+{% load static %}
+<link href="{% static 'admin_user/css/gradient.css' %}" rel="stylesheet">
+<div class="wrapper grass-bg">
+    {% include "admin_user/menu_side.html" %}
+    <div id="content" class="bg-form-page">
+        {% include "admin_user/menu_top.html" %}
+
+        <div class="container mt-4 w-100 px-3">
+            <div class="card transparent-bg">
+
+                <div class="card-header box-bg text-white">
+                    <i class="bi bi-pencil-square me-2 text-info"></i>Edit Admin User
+                </div>
+
+                <div class="card-body box-gradient rounded-bottom">
+
+                    <form method="POST" action="{% url 'admin_user_edit' id %}"  enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row">
+                            <!-- Organization ID (Readonly) -->
+                            <div class="mb-3 col-lg-4 col-sm-12">
+                                <label for="id_org_id" class="form-label">Organization ID</label>
+                                {{ form.org_id }}
+                            </div>
+                            <div class="mb-3 col-lg-4 col-sm-12">
+                                <label for="id_ground_id" class="form-label">Ground</label>
+                                {{ form.ground_id }}
+                            </div>
+                            <!-- Name -->
+                            <div class="mb-3 col-lg-4 col-sm-12">
+                                <label for="id_name" class="form-label">Name</label>
+                                {{ form.name }}
+                            </div>
+                            <!-- Email -->
+                            <div class="mb-3 col-lg-4 col-sm-12">
+                                <label for="id_email" class="form-label">Email</label>
+                                {{ form.email }}
+                            </div>
+                           
+                            <!-- Username -->
+                            <div class="mb-3 col-lg-4 col-sm-12">
+                                <label for="id_username" class="form-label">Username</label>
+                                {{ form.username }}
+                            </div>
+                            <!-- Profile Image -->
+                           
+                            <!-- Role -->
+                            <div class="mb-3 col-lg-4 col-sm-12">
+                                <label for="id_role" class="form-label">Role</label>
+                                {{ form.role }}
+                            </div>
+                            <!-- Mobile -->
+                            <div class="mb-3 col-lg-4 col-sm-12">
+                                <label for="id_mobile" class="form-label">Mobile</label>
+                                {{ form.mobile }}
+                            </div>
+                            <!-- Date Registration -->
+                            <div class="mb-3 col-lg-4 col-sm-12">
+                                <label for="id_date_reg" class="form-label">Date of Registration</label>
+                                {{ form.date_reg }}
+                            </div>
+
+                            <div class="mb-3 col-lg-4 col-sm-12">
+                                <label for="id_is_suspend" class="form-label">Suspended?</label>
+                                {{ form.is_suspend }}
+                            </div>
+                            <!-- Submit Button -->
+                        </div>
+
+                        <button class="btn btn-warning mt-3" type="submit">Update</button>
+                        <a href="/usr_admin/admin_user_role_details/{{admin.id}}" class="btn btn-dark mt-3">Cancel</a>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include "admin_user/footertags.html" %}
+<script>
+    $(document).ready(function () {
+
+        axios.get("/usr_admin/get_grounds").then((result) => {
+            $("#id_ground_id").html("")
+            $("#id_ground_id").append(`<option value=''>Select Ground</option>`)
+
+
+            result.data.grounds.forEach(function (g) {
+                $("#id_ground_id").append(`<option value='${g.ground[0]}'>${g.ground[6]}</option>`)
+            })
+            
+        }).then(() => {
+            
+            $("#id_ground_id").val("{{form.ground_id.value}}")
+            $("#id_is_suspend").val("{{form.is_suspend.value}}".trim()=="True"?"1":"0")
+        }).catch((error) => {
+            console.log(error)
+
+        })
+    })
+</script>
+</body>
+
+</html>

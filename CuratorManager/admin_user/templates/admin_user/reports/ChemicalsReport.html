@@ -43,7 +43,7 @@
 
       <div class="col-lg-12 col-sm-12 d-flex align-items-end gap-2 mt-2">
         <button type="submit" class="btn btn-primary box-bg">Search</button>
-        {% if records %}
+        {% if chem_records %}
           <button type="button" id="downloadCsv" class="btn btn-success">Download CSV</button>
           <button type="button" id="downloadPdf" class="btn btn-danger">Download PDF</button>
         {% endif %}
@@ -56,11 +56,48 @@
         </div>
         
        
-  {% if records %}
+  {% if chem_records %}
     <!-- Table for KG -->
      <div class="a4-sheet w-75 rounded mt-4 mx-auto">
    
-    <table class="table align-middle mb-0 w-75 mx-auto border-white transparent-bg rounded" id="kgTable">
+       {% for chem in chem_records %}
+       <table class="table align-middle mb-0 w-75 mx-auto border-white caption-top transparent-bg rounded" id="kgTable">
+         <caption class="top">
+           <h4 class="mt-4 text-primary">
+           <span class="badge text-bg-light">
+           
+            <span class="badge text-bg-primary">{{ chem.chemical }}</span> 
+            
+          </span> 
+          </h4>
+      </caption>
+      <thead class="bg-light fs-5 box-bg report-table-title">
+
+   
+        <tr>
+            <th>Date</th>
+            <th>KG</th>
+            <th>Liter</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in chem.rows %}
+        <tr>
+            <td>{{ r.date }}</td>
+            <td>{{ r.kg }}</td>
+            <td>{{ r.ltr }}</td>
+        </tr>
+        {% endfor %}
+        <tr style="font-weight:bold">
+            <td>Total</td>
+            <td>{{ chem.total.kg }}</td>
+            <td>{{ chem.total.ltr }}</td>
+        </tr>
+    </tbody>
+    </table>
+{% endfor %}
+
+    <!-- <table class="table align-middle mb-0 w-75 mx-auto border-white transparent-bg rounded" id="kgTable">
       <thead class="bg-light fs-5 box-bg report-table-title">
          <tr>
                             <th>
@@ -75,15 +112,22 @@
         <tr><th>Fertilizer</th><th>Total (KG)</th></tr>
       </thead>
       <tbody class="transparent-bg">
-        {% for row in records %}
+         {% for row in records %}
           {% if row.kg %}
             <tr><td>{{ row.chemical }}</td><td>{{ row.kg }}</td></tr>
           {% endif %}
-        {% endfor %}
+        {% endfor %} 
+        
+        {% for t in totals %}
+    {% if t.kg %}
+    <tr><td>{{t.chemical}}</td><td>{{t.kg}}</td></tr>
+    {% endif %}
+{% endfor %}
+
       </tbody>
     </table>
 
-    <!-- Table for Liters -->
+ 
   
     <table class="table align-middle mb-0 mt-4 border-white transparent-bg w-75 mx-auto rounded" id="ltrTable">
       <thead class="bg-light fs-5 box-bg report-table-title">
@@ -104,9 +148,15 @@
           {% if row.ltr %}
             <tr><td>{{ row.chemical }}</td><td>{{ row.ltr }}</td></tr>
           {% endif %}
-        {% endfor %}
+        {% endfor %} 
+        {% for t in totals %}
+    {% if t.ltr %}
+    <tr><td>{{t.chemical}}</td><td>{{t.ltr}}</td></tr>
+    {% endif %}
+{% endfor %}
+
       </tbody>
-    </table>
+    </table> -->
   {% else %}
     <p class="text-danger">No data found.</p>
   {% endif %}
@@ -119,6 +169,7 @@
 
 <script>
   $(document).ready(function () {
+    $("#id_ground_id").val("{{ground_id}}".trim())
     axios.get("/usr_admin/get_grounds").then(result => {
       const dropdown = $("#id_ground_id");
       dropdown.empty().append(`<option value="">Select Ground</option>`);

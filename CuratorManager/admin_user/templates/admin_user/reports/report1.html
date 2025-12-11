@@ -114,6 +114,8 @@
 {% include "admin_user/headertags.html" %}
 
 {% load static %}
+{% load admin_user_filters %}
+
 <link href="{% static 'admin_user/css/gradient.css' %}" rel="stylesheet">
 <div class="wrapper grass-bg">
   <!-- Sidebar -->
@@ -290,6 +292,8 @@
                                     <th>Soil Type</th>
                                     <th>Pitch Condition</th>
                                     <th>Grass Height</th>
+                                    <th>Class Hammer</th>
+                                    <th>Moisture</th>
                                    
                                   
                                 </tr>
@@ -315,6 +319,8 @@
                                         </td>
                                       
                                         <td>{{ records.0.lawn_height }} mm</td>
+                                        <td>{{ records.0.clagg_hammer|default:"-" }} </td>
+                                        <td>{{ records.0.moisture|default:"-" }} </td>
                                        
                                     </tr>
                                

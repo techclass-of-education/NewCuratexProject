@@ -32,13 +32,21 @@
   }
 
   
-
+function getDateByTextThis(text)
+{
+  console.log(text)
+  if(text.value)
+  {
+    const dateData=text.value.trim().split("-")
+    return{"dd":dateData[2],"mm":dateData[1],"yyyy":dateData[0]}
+  }
+}
   
-  const getWeather = (y, m, d) => {
+const getWeather = (y, m, d,page) => {
      
     // Define your API key, location, and the date you want to get the forecast for
     const apiKey = 'f201a1e4b5cf4e87a66103535240211';
-    const loc = localStorage.getItem("city").trim();
+    const loc = page=="dash"?"{{request.session.user.city}}":JSON.parse(localStorage.getItem("location-{{request.session.user.org_id}}"));
     const date = `${y}/${m}/${d}` // Replace with your desired date (YYYY-MM-DD)
 
     // Construct the API URL for the forecast
@@ -56,7 +64,7 @@
         const maxTemp = forecast.maxtemp_c;
         const condition = forecast.condition.text;
         const cityName = data.location.name;
-        const countryName = data.location.country;
+        // const countryName = data.location.country;
 
         try
         { 
@@ -75,7 +83,7 @@
         document.getElementById("max_temp").innerHTML = maxTemp
         document.getElementById("forecast").innerHTML = condition
             document.getElementById("city_name").innerHTML = cityName
-        document.getElementById("country_name").innerHTML = countryName
+        // document.getElementById("country_name").innerHTML = countryName
         document.querySelector(".current-date").innerHTML = `${String(y).padStart(2, '0')}/${String(m).padStart(2, '0')}/${String(d).padStart(2, '0')}`
         }
         catch(e)
@@ -86,6 +94,62 @@
       })
       .catch(error => console.error('Error fetching weather data:', error));
   }
+
+
+  const getWeatherByThis = (text,page) => {
+     const dateThis=getDateByTextThis(text)
+    // Define your API key, location, and the date you want to get the forecast for
+    const apiKey = 'f201a1e4b5cf4e87a66103535240211';
+    const loc = page=="dash"?"{{request.session.user.city}}":JSON.parse(localStorage.getItem("location-{{request.session.user.org_id}}")).city;
+    alert(loc)
+    const date = `${dateThis.yyyy}/${dateThis.mm}/${dateThis.dd}` // Replace with your desired date (YYYY-MM-DD)
+
+    // Construct the API URL for the forecast
+    const url = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${loc}&dt=${date}&aqi=no`;
+
+    // Fetch the weather data
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        // Extract the forecast data for the day
+        const forecast = data.forecast.forecastday[0].day;
+
+        // Get the min, max temperature and weather condition description
+        const minTemp = forecast.mintemp_c;
+        const maxTemp = forecast.maxtemp_c;
+        const condition = forecast.condition.text;
+        const cityName = data.location.name;
+        // const countryName = data.location.country;
+
+        try
+        { 
+      document.getElementById("min_temp").value = minTemp
+        document.getElementById("max_temp").value = maxTemp
+        document.getElementById("forecast").value = condition
+        }
+        catch(e)
+        {
+          console.error("Error setting weather data:", e);
+        }
+
+        try
+        {
+          document.getElementById("min_temp").innerHTML = minTemp
+        document.getElementById("max_temp").innerHTML = maxTemp
+        document.getElementById("forecast").innerHTML = condition
+            document.getElementById("city_name").innerHTML = cityName
+        // document.getElementById("country_name").innerHTML = countryName
+        document.querySelector(".current-date").innerHTML = `${String(y).padStart(2, '0')}/${String(m).padStart(2, '0')}/${String(d).padStart(2, '0')}`
+        }
+        catch(e)
+        {
+          console.error("Error setting current date:", e);
+        }
+
+      })
+      .catch(error => console.error('Error fetching weather data:', error));
+  }
+
 
 function setCurators() {
    axios.get("{% url 'getCurators' %}")
@@ -112,6 +176,8 @@ function setCurators() {
    });
   
 }
+
+
 function setGroundmans() {
    axios.get("{% url 'getGroundmans' %}")
    .then((result) => {
@@ -137,8 +203,9 @@ function setGroundmans() {
    });
   
 }
-  
-  let selectedMachineType=""
+
+
+let selectedMachineType=""
  function openMachineryModal(modalType) {
   axios.get("{% url 'machinery_data' %}")
    .then((result) => {

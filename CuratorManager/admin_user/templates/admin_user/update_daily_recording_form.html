@@ -1,7 +1,9 @@
 {% include "admin_user/headertags.html" %}
 
 {% load static %}
+{% load admin_user_filters %}
 <link href="{% static 'admin_user/css/gradient.css' %}" rel="stylesheet">
+<script src="{% static 'admin_user/js/script.js' %}"></script>
 <div class="wrapper grass-bg">
     {% include "admin_user/menu_side.html" %}
 
@@ -80,7 +82,7 @@
 
                                         <div class="col-sm-12 col-lg-4">
                                             <label for="rolling_start_date" class="form-label">Date:</label>
-                                            <input type="date" onchange="getWeather(this)" id="rolling_start_date" name="rolling_start_date" value="{{daily.3}}" class="form-control">
+                                            <input type="date" onchange="getWeatherByThis(this,`daily`)" id="rolling_start_date" name="rolling_start_date" value="{{daily.3}}" class="form-control">
                                         </div>
                                     </div>
 
@@ -171,7 +173,7 @@
                                                                 <input type="text" id="quantity_of_water" name="quantity_of_water" class="form-control">
                                                             </div>
 
-   <div class="col-sm-12 col-lg-3 mt-5">
+                                                            <div class="col-sm-12 col-lg-3 mt-5">
 
                                                                 <button type="button" class="btn btn-primary"
                                                                     onclick="addWateringEntry()">Add Watering
@@ -354,6 +356,7 @@
                                                                 <label for="mowing_done_at_mm" class="form-label">Mowing Height (mm):</label>
                                                                 <input type="number" id="mowing_done_at_mm" name="mowing_done_at_mm" class="form-control">
                                                             </div>
+                                                          
                                                             <div class="col-lg-2 col-sm-12 mt-4">
                                                                 <label for="moving_passes_unit" class="form-label">Unit:</label>
                                                                 <select class="form-select" id="moving_passes_unit" name="moving_passes_unit">
@@ -667,7 +670,7 @@
                                                             </div>
                                                             <div class="col-lg-4 col-sm-12">
                                                                 <label for="pp_mover_machinery_id" class="form-label">Select Machinery/Mower</label>
-                                                                <input type="hidden" name="pp_mover_machinery_id" id="pp_mover_machinery_id" value="{{daily.72}}">
+                                                                <input type="hidden" name="pp_mover_machinery_id" id="pp_mover_machinery_id" value="">
                                                                  <div class="input-group">
                                                                 <input type="text" name="pp_mover_machinery_name" id="pp_mover_machinery_name" class="form-control" readonly placeholder="Click to select machinery">
                                                                  <span class="input-group-text bg-light" onclick="realoadMachineryList(event)">
@@ -682,12 +685,12 @@
                                                             </div>
                                                             <div class="col-lg-2 col-sm-12">
                                                                 <label for="pp_date_mowing_done_last" class="form-label">Last Mowing Date:</label>
-                                                                <input type="date" id="pp_date_mowing_done_last" name="pp_date_mowing_done_last" value="{{daily.73}}" class="form-control">
+                                                                <input type="date" id="pp_date_mowing_done_last" name="pp_date_mowing_done_last" value="" class="form-control">
                                                             </div>
                                                             <div class="col-lg-2 col-sm-12 mt-4">
                                                                 <label for="pp_time_of_application_mover" class="form-label">Time of Application Mower:</label>
                                                                 <div class="d-flex align-items-center justify-content-center">
-                                                                    <input type="time" id="pp_time_of_application_mover" name="pp_time_of_application_mover" value="{{daily.74}}" class="form-control">
+                                                                    <input type="time" id="pp_time_of_application_mover" name="pp_time_of_application_mover" value="" class="form-control">
                                                                     <button type="button" class="btn d-flex align-items-center justify-content-center p-0 time-reset" style="width: 38px;">
                                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
                                                                             <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
@@ -698,7 +701,7 @@
                                                             </div>
                                                             <div class="col-lg-2 col-sm-12 mt-4">
                                                                 <label for="pp_mowing_done_at_mm" class="form-label">Mowing Height (mm):</label>
-                                                                <input type="number" id="pp_mowing_done_at_mm" name="pp_mowing_done_at_mm" value="{{daily.75}}" class="form-control">
+                                                                <input type="number" id="pp_mowing_done_at_mm" name="pp_mowing_done_at_mm" value="" class="form-control">
                                                             </div>
                                                             <div class="col-lg-2 col-sm-12 mt-4">
                                                                 <label for="pp_moving_passes_unit" class="form-label">Unit:</label>
@@ -824,7 +827,7 @@
                                             <div class="row form-group gray-box mt-4 text-dark p-3 rounded alert ">
                                                 <div class="col-lg-6 col-sm-12 ">
                                                     <label for="pp_remark_by_groundsman" class="form-label">Remark by Groundsman:</label>
-                                                    <textarea id="pp_remark_by_groundsman" placeholder="Pitch Curing Remarks" name="pp_remark_by_groundsman" class="form-control"></textarea>
+                                                    <textarea id="pp_remark_by_groundsman" placeholder="Pitch Curing Remarks" name="pp_remark_by_groundsman" class="form-control">{{daily.79}}</textarea>
                                                 </div>
 
                                                 <!-- <div class="col-lg-4 col-sm-12 mt-4">
@@ -856,12 +859,12 @@
                                                         <div class="row">
                                                             <div class="col-sm-12 col-lg-4">
                                                                 <label for="out_last_watering_on" class="form-label">Watering On:</label>
-                                                                <input type="date" id="out_last_watering_on" name="out_last_watering_on" value="{{daily.27}}" class="form-control">
+                                                                <input type="date" id="out_last_watering_on" name="out_last_watering_on" value="" class="form-control">
                                                             </div>
                                                             <div class="col-sm-12 col-lg-4">
                                                                 <label for="out_time_of_application" class="form-label">Time of Watering:</label>
                                                                 <div class="d-flex align-items-center justify-content-center">
-                                                                    <input type="time" id="out_time_of_application" name="out_time_of_application" value="{{daily.29}}" class="form-control">
+                                                                    <input type="time" id="out_time_of_application" name="out_time_of_application" value="" class="form-control">
                                                                     <button type="button" class="btn d-flex align-items-center justify-content-center p-0 time-reset" style="width: 38px;">
                                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
                                                                             <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
@@ -872,7 +875,7 @@
                                                             </div>
                                                             <div class="col-sm-12 col-lg-4">
                                                                 <label for="out_quantity_of_water" class="form-label">Quantity of Water:</label>
-                                                                <input type="text" id="out_quantity_of_water" name="out_quantity_of_water" value="{{daily.28}}" class="form-control">
+                                                                <input type="text" id="out_quantity_of_water" name="out_quantity_of_water" value="" class="form-control">
                                                             </div>
 
                                                               <div class="col-sm-12 col-lg-3 mt-5">
@@ -1047,6 +1050,10 @@
                                                                 <label for="out_mowing_done_at_mm" class="form-label">Mowing Height (mm):</label>
                                                                 <input type="number" id="out_mowing_done_at_mm" name="out_mowing_done_at_mm" class="form-control">
                                                             </div>
+                                                              <div class="col-lg-2 col-sm-12 mt-4">
+                            <label for="out_clipping" class="form-label">Clipping:</label>
+                            <input type="number" id="out_clipping" name="out_clipping" class="form-control">
+                        </div>
                                                             <div class="col-lg-4 col-sm-12 mt-4">
                                                                 <label for="out_moving_passes_unit" class="form-label">Unit:</label>
                                                                 <select class="form-select" id="out_moving_passes_unit" name="out_moving_passes_unit">
@@ -1079,6 +1086,7 @@
                                                                                 <th>Unit</th>
                                                                                 <th>Time</th>
                                                                                 <th>Date</th>
+                                                                                <th>Clipping</th>
                                                                                 <th>Action</th>
                                                                             </tr>
                                                                         </thead>
@@ -1184,7 +1192,7 @@
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <label for="out_remark_by_groundsman" class="form-label">Remark by Groundsman:</label>
-                                                    <textarea id="out_remark_by_groundsman" placeholder="Pitch Curing Remarks" name="out_remark_by_groundsman" class="form-control"></textarea>
+                                                    <textarea id="out_remark_by_groundsman" placeholder="Pitch Curing Remarks" name="out_remark_by_groundsman" value="{{daily.38}}" class="form-control"></textarea>
                                                 </div>
                                             </div>
                                            
@@ -1203,7 +1211,7 @@
                                                         <div class="row">
                                                             <div class="col-sm-12 col-lg-4">
                                                                 <label for="practice_last_watering_on" class="form-label">Watering On:</label>
-                                                                <input type="date" id="practice_last_watering_on" name="practice_last_watering_on" value="{{daily.42}}" class="form-control">
+                                                                <input type="date" id="practice_last_watering_on" name="practice_last_watering_on" value="" class="form-control">
                                                             </div>
                                                             <div class="col-sm-12 col-lg-4">
                                                                 <label for="practice_time_of_application" class="form-label">Time of Watering:</label>
@@ -1219,7 +1227,7 @@
                                                             </div>
                                                             <div class="col-sm-12 col-lg-4">
                                                                 <label for="practice_quantity_of_water" class="form-label">Quantity of Water:</label>
-                                                                <input type="text" id="practice_quantity_of_water" name="practice_quantity_of_water" value="{{daily.43}}" class="form-control">
+                                                                <input type="text" id="practice_quantity_of_water" name="practice_quantity_of_water" value="" class="form-control">
                                                             </div>
                                                               <div class="col-sm-12 col-lg-3 mt-5">
 
@@ -1955,6 +1963,51 @@
 
     // Existing Document Ready and Initial Loads (MODIFIED FOR NEW DISPLAY)
     $(document).ready(function () {
+
+        
+    $("#ground_id").change(function () {
+        const groundId = $(this).val().trim()
+        if (groundId == "all") {
+            axios.get(`/usr_admin/get_all_pitches`).then((result) => {
+                // console.log(result.data.grounds)
+                $("#pitch_id").html("")
+                $("#pitch_id").append(`<option value=''>Select Pitch</option>`)
+                // $("#pitch_id").append(`<option value='all'>All</option>`)
+                // $("#pitch_id").append(`<option value='outfield'>Outfield Area</option>`)
+                // $("#pitch_id").append(`<option value='practice'>Practice Area</option>`)
+
+                result.data.grounds.forEach(function (p) {
+                    $("#pitch_id").append(`<option value='${p.pitches[0]}'>${p.pitches[14]}  ${p.pitches[5]}</option>`)
+                })
+            }).catch((error) => {
+                console.log(error)
+            })
+        } else {
+            axios.get(`/usr_admin/get_pitches/${groundId}`).then((result) => {
+                console.log(result.data)
+                $("#pitch_id").html("")
+                $("#pitch_id").append(`<option value=''>Select Pitch</option>`)
+                // $("#pitch_id").append(`<option value='all'>All</option>`)
+                // $("#pitch_id").append(`<option value='outfield'>Outfield Area</option>`)
+                // $("#pitch_id").append(`<option value='practice'>Practice Area</option>`)
+                
+                localStorage.setItem("location-{{request.session.org_id}}",
+                JSON.stringify({"city":result.data.grounds[0].pitch[22],
+                    "ground_id":result.data.grounds[0].pitch[23],
+                    "orgid":result.data.grounds[0].pitch[23]})
+                );
+                result.data.grounds.forEach(function (p) {
+                    $("#pitch_id").append(`<option value='${p.pitch[0]}'>${p.pitch[14]}  ${p.pitch[5]}</option>`)
+                })
+            }).catch((error) => {
+                console.log(error)
+
+            })
+        }
+
+    })
+
+   
         // $("#main-tab").addClass("hideTab")
         // $("#main-tab-pane").removeClass("showTab")
         // $("#main-tab-pane").addClass("hideTab")
@@ -2133,7 +2186,7 @@
         wateringEntries.forEach(entry => {
             const row = document.createElement("tr");
             row.innerHTML = `
-                <td>${entry.last_watering_on}</td>
+                <td>${toDDMMYYYY(entry.last_watering_on)}</td>
                 <td>${entry.time_of_application}</td>
                 <td>${entry.quantity_of_water}</td>
               
@@ -2157,7 +2210,7 @@
         if (last_watering_on.length > 0) {
             for (let i = 0; i < last_watering_on.length; i++) {
                 const entry = {
-                    last_watering_on: last_watering_on[i],
+                    last_watering_on: toDDMMYYYY(last_watering_on[i]),
                     time_of_application: time_of_application[i],
                     quantity_of_water: quantity_of_water[i],
                   
@@ -2174,11 +2227,11 @@
         const machineryId = getSplit("{{ daily.9|default:'' }}");
         const passes = getSplit("{{ daily.10|default:'' }}");
         const speed = getSplit("{{ daily.11|default:'' }}");
-        const unit = getSplit("{{ daily.113|default:'' }}");
+        const unit = getSplit("{{ daily.114|default:'' }}");
         const time = getSplit("{{ daily.15|default:'' }}");
       
-        const machineType = getSplit("{{ daily.105|default:'' }}");
-        const operator = getSplit("{{ daily.106|default:'' }}");
+        const machineType = getSplit("{{ daily.106|default:'' }}");
+        const operator = getSplit("{{ daily.107|default:'' }}");
 
         const namePromises = machineryId.map(id => getMachineryName(id));
         const names = await Promise.all(namePromises);
@@ -2266,13 +2319,13 @@
 
     async function loadMover() {
         const machineryId = getSplit("{{daily.16}}");
-        const unit = getSplit("{{daily.103}}");
+        const unit = getSplit("{{daily.104}}");
         const time = getSplit("{{daily.18}}");
-        const type = getSplit("{{daily.101}}");
-        const operator = getSplit("{{daily.102}}");
+        const type = getSplit("{{daily.102}}");
+        const operator = getSplit("{{daily.103}}");
         const date = getSplit("{{daily.17}}");
         const mowHeight = getSplit("{{daily.19}}");
-        const duration = getSplit("{{daily.104}}");
+        const duration = getSplit("{{daily.105}}");
 
         const namePromises = machineryId.map(id => getMachineryName(id));
         const names = await Promise.all(namePromises);
@@ -2348,7 +2401,7 @@
                     <td>${e.duration}</td>
                     <td>${e.unit}</td>
                     <td>${e.time}</td>
-                    <td>${e.date}</td>
+                    <td>${toDDMMYYYY(e.date)}</td>
                       <td>
                     <button type="button" class='btn btn-danger det-btn' onclick="delMowerEntry(event)">X</button>
                 </td>
@@ -2368,7 +2421,7 @@
         
         const timeList = getSplit("{{ daily.54|default:'' }}");
         const weightList = getSplit("{{ daily.81|default:'' }}");
-        const unitList = getSplit("{{ daily.85|default:'' }}");
+        const unitList = getSplit("{{ daily.86|default:'' }}");
         const remarkList = getSplit("{{ daily.22|default:'' }}");
         const usedListRaw = getSplit("{{ daily.20|default:'' }}");
         const usedList = convertYesNo(usedListRaw);
@@ -2541,7 +2594,7 @@
         ppWateringEntries.forEach(entry => {
             const row = document.createElement("tr");
             row.innerHTML = `
-                <td>${entry.last_watering_on}</td>
+                <td>${toDDMMYYYY(entry.last_watering_on)}</td>
                 <td>${entry.time_of_application}</td>
                 <td>${entry.quantity_of_water}</td>
               
@@ -2566,7 +2619,7 @@
         if (last_watering_on.length > 0) {
             for (let i = 0; i < last_watering_on.length; i++) {
                 const entry = {
-                    last_watering_on: last_watering_on[i],
+                    last_watering_on: toDDMMYYYY(last_watering_on[i]),
                     time_of_application: time_of_application[i],
                     quantity_of_water: quantity_of_water[i],
                   
@@ -2581,11 +2634,11 @@
 
 
     async function pploadRolling() {
-        const machineType = getSplit("{{ daily.107|default:'' }}");
-        const operator = getSplit("{{ daily.108|default:'' }}");
+        const machineType = getSplit("{{ daily.108|default:'' }}");
+        const operator = getSplit("{{ daily.109|default:'' }}");
         const speed = getSplit("{{ daily.67|default:'' }}");
         const passes = getSplit("{{ daily.66|default:'' }}");
-        const unit = getSplit("{{ daily.115|default:'' }}");
+        const unit = getSplit("{{ daily.84|default:'' }}");
         const time = getSplit("{{ daily.71|default:'' }}");
         const machineryId = getSplit("{{ daily.65|default:'' }}");
 
@@ -2672,12 +2725,12 @@ function ppDelRollingEntry(event) {
     }
 
     async function pploadMover() {
-        const type = getSplit("{{ daily.93|default:'' }}");
+        const type = getSplit("{{ daily.90|default:'' }}");
         const machineryId = getSplit("{{ daily.72|default:'' }}");
-        const operator = getSplit("{{ daily.94|default:'' }}");
+        const operator = getSplit("{{ daily.91|default:'' }}");
         const mowHeight = getSplit("{{ daily.75|default:'' }}");
-        const unit = getSplit("{{ daily.95|default:'' }}");
-        const duration = getSplit("{{ daily.96|default:'' }}");
+        const unit = getSplit("{{ daily.92|default:'' }}");
+        const duration = getSplit("{{ daily.93|default:'' }}");
         const time = getSplit("{{ daily.74|default:'' }}");
         const date = getSplit("{{ daily.73|default:'' }}");
 
@@ -2755,7 +2808,7 @@ function ppDelMowerEntry(event) {
                     <td>${e.duration}</td>
                     <td>${e.unit}</td>
                     <td>${e.time}</td>
-                    <td>${e.date}</td>
+                    <td>${toDDMMYYYY(e.date)}</td>
                     
                 <td>
                     <button type="button" class='btn btn-danger det-btn' onclick="ppDelMowerEntry(event)">X</button>
@@ -2776,7 +2829,7 @@ const ppchemicalEntries = []; // For practice pitch chemical entries
         const timeList = getSplit("{{ daily.80|default:'' }}");
         const chemicalList = getSplit("{{ daily.77|default:'' }}");
         const weightList = getSplit("{{ daily.82|default:'' }}");
-        const unitList = getSplit("{{ daily.86|default:'' }}");
+        const unitList = getSplit("{{ daily.87|default:'' }}");
         const remarkList = getSplit("{{ daily.78|default:'' }}");
 
         const chemNamePromises = chemicalList.map(id => fertilizerNameById(id));
@@ -2933,7 +2986,7 @@ const ppchemicalEntries = []; // For practice pitch chemical entries
         outwateringEntries.forEach(entry => {
             const row = document.createElement("tr");
             row.innerHTML = `
-                <td>${entry.last_watering_on}</td>
+                <td>${toDDMMYYYY(entry.last_watering_on)}</td>
                 <td>${entry.time_of_application}</td>
                 <td>${entry.quantity_of_water}</td>
               
@@ -2975,10 +3028,10 @@ const ppchemicalEntries = []; // For practice pitch chemical entries
         const machineryId = getSplit("{{daily.24}}");
         const passes = getSplit("{{daily.25}}");
         const speed = getSplit("{{daily.26}}");
-        const unit = getSplit("{{daily.114}}");
-        const time = getSplit("{{daily.29}}");
-        const machineType = getSplit("{{daily.109}}");
-        const operator = getSplit("{{daily.110}}");
+        const unit = getSplit("{{daily.115}}");
+        const time = getSplit("{{daily.30}}");
+        const machineType = getSplit("{{daily.110}}");
+        const operator = getSplit("{{daily.111}}");
 
         const namePromises = machineryId.map(id => getMachineryName(id));
         const names = await Promise.all(namePromises);
@@ -3063,13 +3116,14 @@ function outDelRollingEntry(event) {
 
     async function outloadMover() {
         const machineryId = getSplit("{{daily.31}}");
-        const unit = getSplit("{{daily.99}}");
+        const unit = getSplit("{{daily.100}}");
         const time = getSplit("{{daily.33}}");
-        const type = getSplit("{{daily.97}}");
-        const operator = getSplit("{{daily.98}}");
+        const type = getSplit("{{daily.98}}");
+        const operator = getSplit("{{daily.99}}");
         const date = getSplit("{{daily.32}}");
         const mowHeight = getSplit("{{daily.34}}");
-        const duration = getSplit("{{daily.100}}");
+        const duration = getSplit("{{daily.101}}");
+        const clipping = getSplit("{{daily.117}}");
 
         const namePromises = machineryId.map(id => getMachineryName(id));
         const names = await Promise.all(namePromises);
@@ -3085,7 +3139,8 @@ function outDelRollingEntry(event) {
                     unit: unit[i],
                     time: time[i],
                     mowHeight: mowHeight[i],
-                    date: date[i]
+                    date: date[i],
+                    out_clipping: clipping[i]
                 };
                 outmoverEntries.push(entry);
             }
@@ -3104,8 +3159,10 @@ function outDelRollingEntry(event) {
         const duration = document.getElementById("out_mowing_duration").value;
         const time = document.getElementById("out_time_of_application_mover").value;
         const date = document.getElementById("out_date_mowing_done_last").value;
+        const out_clipping = document.getElementById("out_clipping").value;
 
-        if (!type || !machineryName || !operator || !unit || !duration || !time || !date || !mowHeight) {
+
+        if (!type || !machineryName || !operator || !unit || !duration || !time || !date || !mowHeight||!out_clipping) {
             alert("Please fill all fields before adding mower entry for outfield.");
             return;
         }
@@ -3119,7 +3176,9 @@ function outDelRollingEntry(event) {
             unit,
             duration,
             time,
-            date
+            date,
+            out_clipping
+
         };
         outmoverEntries.push(entry);
         outupdateMoverTable();
@@ -3146,7 +3205,8 @@ function outDelRollingEntry(event) {
                     <td>${e.duration}</td>
                     <td>${e.unit}</td>
                     <td>${e.time}</td>
-                    <td>${e.date}</td>
+                    <td>${toDDMMYYYY(e.date)}</td>
+                    <td>${e.out_clipping}</td>
                      <td>
                     <button type="button" class='btn btn-danger det-btn' onclick="outDelMowerEntry(event)">X</button>
                 </td>
@@ -3164,7 +3224,7 @@ function outDelRollingEntry(event) {
         const timeList = getSplit("{{ daily.55|default:'' }}");
         const chemicalIdList = getSplit("{{ daily.36|default:'' }}");
         const weightList = getSplit("{{ daily.83|default:'' }}");
-        const unitList = getSplit("{{ daily.87|default:'' }}");
+        const unitList = getSplit("{{ daily.88|default:'' }}");
         const remarkList = getSplit("{{ daily.37|default:'' }}");
 
         const chemNamePromises = chemicalIdList.map(id => fertilizerNameById(id));
@@ -3303,7 +3363,7 @@ function outDelRollingEntry(event) {
         practicewateringEntries.forEach(entry => {
             const row = document.createElement("tr");
             row.innerHTML = `
-                <td>${entry.last_watering_on}</td>
+                <td>${toDDMMYYYY(entry.last_watering_on)}</td>
                 <td>${entry.time_of_application}</td>
                 <td>${entry.quantity_of_water}</td>
               
@@ -3332,7 +3392,7 @@ function outDelRollingEntry(event) {
         if (last_watering_on.length > 0) {
             for (let i = 0; i < last_watering_on.length; i++) {
                 const entry = {
-                    last_watering_on: last_watering_on[i],
+                    last_watering_on: toDDMMYYYY(last_watering_on[i]),
                     time_of_application: time_of_application[i],
                     quantity_of_water: quantity_of_water[i],
                   
@@ -3346,8 +3406,8 @@ function outDelRollingEntry(event) {
 
 
     async function practiceloadRolling() {
-        const machineType = getSplit("{{ daily.111|default:'' }}");
-        const operator = getSplit("{{ daily.112|default:'' }}");
+        const machineType = getSplit("{{ daily.112|default:'' }}");
+        const operator = getSplit("{{ daily.113|default:'' }}");
         const speed = getSplit("{{ daily.41|default:'' }}");
         const passes = getSplit("{{ daily.40|default:'' }}");
         const unit = getSplit("{{ daily.116|default:'' }}");
@@ -3436,11 +3496,11 @@ function outDelRollingEntry(event) {
     }
 
     async function practiceloadMover() {
-        const type = getSplit("{{ daily.93|default:'' }}");
-        const operator = getSplit("{{ daily.94|default:'' }}");
+        const type = getSplit("{{ daily.94|default:'' }}");
+        const operator = getSplit("{{ daily.95|default:'' }}");
         const mowHeight = getSplit("{{ daily.49|default:'' }}");
-        const unit = getSplit("{{ daily.95|default:'' }}");
-        const duration = getSplit("{{ daily.96|default:'' }}");
+        const unit = getSplit("{{ daily.96|default:'' }}");
+        const duration = getSplit("{{ daily.97|default:'' }}");
         const time = getSplit("{{ daily.48|default:'' }}");
         const date = getSplit("{{ daily.47|default:'' }}");
         const machineryId = getSplit("{{ daily.46|default:'' }}");
@@ -3519,7 +3579,7 @@ function outDelRollingEntry(event) {
                     <td>${e.duration}</td>
                     <td>${e.unit}</td>
                     <td>${e.time}</td>
-                    <td>${e.date}</td>
+                    <td>${toDDMMYYYY(e.date)}</td>
                 <td><button type="button" class="btn btn-sm btn-danger delete-row" onclick="practiceDelMowerEntry(event)">X</button></td>
 
                 </tr>
@@ -3536,8 +3596,8 @@ function outDelRollingEntry(event) {
         const usedList = getSplit("{{ daily.50|default:'' }}").map(v => v === "1" ? "Yes" : "No");
         const timeList = getSplit("{{ daily.56|default:'' }}");
         const chemicalIdList = getSplit("{{ daily.51|default:'' }}");
-        const weightList = getSplit("{{ daily.84|default:'' }}");
-        const unitList = getSplit("{{ daily.88|default:'' }}");
+        const weightList = getSplit("{{ daily.85|default:'' }}");
+        const unitList = getSplit("{{ daily.89|default:'' }}");
         const remarkList = getSplit("{{ daily.52|default:'' }}");
 
         const chemNamePromises = chemicalIdList.map(id => fertilizerNameById(id));

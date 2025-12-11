@@ -15,6 +15,10 @@ urlpatterns = [
     path('create_admin_user_role', views.create_admin_user_role, name='create_admin_user_role'),
     path('admin_users_roles_list', views.admin_user_roles_list, name='admin_user_roles_list'),
     path('admin_user_role_details/<int:admin_id>', views.admin_user_role_details, name='admin_user_role_details'),
+    # path('admin_user_role_details/edit/<int:id>', views.admin_user_role_edit_form, name='admin_user_role_edit_form'),
+    # path('admin_user_edit/update/<int:id>', views.admin_user_edit, name='admin_user_edit'),
+    path("admin_user_role/edit/<int:id>", views.admin_user_edit, name='admin_user_edit'),
+
     path('orgdashboard', views.org_dashboard, name='org_dashboard'),  # Root URL
     path('roledashboard', views.role_dashboard, name='role_dashboard'),  # Root URL
     path('logout', views.logout_view, name='logout'),

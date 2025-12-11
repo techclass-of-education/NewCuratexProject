@@ -11,6 +11,7 @@ class AdminRole(models.Model):
     role = models.CharField(max_length=255, null=False)
     mobile = models.CharField(max_length=255, null=False)
     date_reg = models.DateField(null=False)
+    is_suspend = models.BooleanField(default=False)
 
     def __str__(self):
         return "Username:"+self.username+" Organization ID:"+self.org_id

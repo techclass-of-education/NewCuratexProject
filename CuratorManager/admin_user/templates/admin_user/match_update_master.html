@@ -75,7 +75,7 @@
                                             <hr>
                                             <div class="col-lg-6 col-sm-12">
                                                 <label for="preparation_date" class="form-label">Preparation Date</label>
-                                                <input type="date" onchange="getWeather(this)" name="preparation_date" class="form-control" id="preparation_date" value="{{match.5}}">
+                                                <input type="date" onchange="getWeatherByThis(this,`match`)" name="preparation_date" class="form-control" id="preparation_date" value="{{match.5}}">
                                             </div>
                                             <div class="col-lg-6 col-sm-12" id="match-date-div">
                                                 <label for="match_date" class="form-label">Match Date</label>
@@ -163,10 +163,16 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-lg-6 col-sm-12 p-2 mx-2 alert box-bg" id="match-date-div">
+                                    <div class="col-lg-5 mx-auto col-sm-12 p-2 mx-2 alert box-bg" id="match-date-div">
                                         <label for="nuteral_curator" class="form-label">Nuteral Curator</label>
                                         <input type="text" name="nuteral_curator" value="{{match.63}}" class="form-control" id="nuteral_curator">
                                     </div>
+                                    <div class="col-lg-5 mx-auto col-sm-12 p-2 mx-auto alert box-bg" id="">
+                                        <label for="moisture" class="form-label">Moisture</label>
+                                        <input type="text" id="moisture" placeholder="Moisture" value="{{match.81}}" name="moisture" class="form-control">
+                                        <label for="clagg_hammer" class="form-label mt-2">Clagg Hammer</label>
+                                        <input type="text" placeholder="Clagg Hammer" id="clagg_hammer" value="{{match.80}}" name="clagg_hammer" class="form-control">
+                                </div>
                                 </div>
                             </div>
                             <hr class="mt-5 bg-info p-1">
@@ -2520,41 +2526,50 @@
 
 
 
-        $("#ground_id").change(function () {
-            const groundId = $(this).val().trim()
-            $("#ground_id_text").val(groundId)
-            if (groundId == "all") {
-                axios.get(`/usr_admin/get_all_pitches`).then((result) => {
-                    // console.log(result.data.grounds)
-                    $("#pitch_id").html("")
-                    $("#pitch_id").append(`<option value=''>Select Pitch</option>`)
-                    //                    $("#pitch_id").append(`<option value='all'>All Pitches</option>`)
+    $("#ground_id").change(function () {
+        const groundId = $(this).val().trim()
+        if (groundId == "all") {
+            axios.get(`/usr_admin/get_all_pitches`).then((result) => {
+                // console.log(result.data.grounds)
+                $("#pitch_id").html("")
+                $("#pitch_id").append(`<option value=''>Select Pitch</option>`)
+                // $("#pitch_id").append(`<option value='all'>All</option>`)
+                // $("#pitch_id").append(`<option value='outfield'>Outfield Area</option>`)
+                // $("#pitch_id").append(`<option value='practice'>Practice Area</option>`)
 
-                    result.data.grounds.forEach(function (p) {
-                        $("#pitch_id").append(`<option value='${p.pitches[0]}'>${p.pitches[14]}  ${p.pitches[5]}</option>`)
-                    })
-                }).catch((error) => {
-                    console.log(error)
-
+                result.data.grounds.forEach(function (p) {
+                    $("#pitch_id").append(`<option value='${p.pitches[0]}'>${p.pitches[14]}  ${p.pitches[5]}</option>`)
                 })
-            } else {
-                axios.get(`/usr_admin/get_pitches/${groundId}`).then((result) => {
-                    console.log(result.data.grounds)
-                    $("#pitch_id").html("")
-                    $("#pitch_id").append(`<option value=''>Select Pitch</option>`)
-                    //                    $("#pitch_id").append(`<option value='all'>All Pitches</option>`)
-                    localStorage.setItem("city",result.data.grounds[0].city);
-                    result.data.grounds.forEach(function (p) {
-                        $("#pitch_id").append(`<option value='${p.pitch[0]}'>${p.pitch[14]}  ${p.pitch[5]}</option>`)
-                    })
-                }).catch((error) => {
-                    console.log(error)
-
+            }).catch((error) => {
+                console.log(error)
+            })
+        } else {
+            axios.get(`/usr_admin/get_pitches/${groundId}`).then((result) => {
+                console.log(result.data)
+                $("#pitch_id").html("")
+                $("#pitch_id").append(`<option value=''>Select Pitch</option>`)
+                // $("#pitch_id").append(`<option value='all'>All</option>`)
+                // $("#pitch_id").append(`<option value='outfield'>Outfield Area</option>`)
+                // $("#pitch_id").append(`<option value='practice'>Practice Area</option>`)
+                
+                localStorage.setItem("location-{{request.session.org_id}}",
+                JSON.stringify({"city":result.data.grounds[0].pitch[22],
+                    "ground_id":result.data.grounds[0].pitch[23],
+                    "orgid":result.data.grounds[0].pitch[23]})
+                );
+                result.data.grounds.forEach(function (p) {
+                    $("#pitch_id").append(`<option value='${p.pitch[0]}'>${p.pitch[14]}  ${p.pitch[5]}</option>`)
                 })
-            }
+            }).catch((error) => {
+                console.log(error)
 
-        })
+            })
+        }
 
+    })
+
+   
+      
         $("#pitch_id").change(function () {
 
 

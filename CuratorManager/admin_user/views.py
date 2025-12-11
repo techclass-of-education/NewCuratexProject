@@ -267,7 +267,9 @@ def fetch_match_records(request):
       
           
           sau.id AS admin_id,sau.address AS admin_address,sau.name AS admin_name, 
-          sau.email AS admin_email,sau.username AS admin_username, sau.mobile AS admin_mobile
+          sau.email AS admin_email,sau.username AS admin_username, sau.mobile AS admin_mobile,
+          `vmm`.`clagg_hammer`,
+          `vmm`.`moisture`
           
         FROM {org_id}_match_master vmm
         LEFT JOIN {org_id}_ground_master vgm ON vmm.ground_id = vgm.id
@@ -542,8 +544,10 @@ def match_download_csv(request):
 
     return response
 
+
 def curator_recording_report_page(request):
     return render(request,"admin_user/reports/curator_records_report.html",{"records": "none"})
+
 
 def curator_recording_report(request):
     org_id = request.session.get('org_id')
@@ -596,6 +600,8 @@ def match_report(request):
     ground_id=request.GET.get("id")
     from_date = request.GET.get('from_date')
     to_date = request.GET.get('to_date')
+    pitch_id = request.GET.get('pitch_id')
+    match_type = request.GET.get('match_type')
 
     filters = []
     params = []
@@ -603,7 +609,15 @@ def match_report(request):
         filters.append("ground_id = %s")
         params.append(ground_id)
         
+    if pitch_id:
+        filters.append("pitch_id=%s")
+        params.append(pitch_id)
+    if match_type:
+        filters.append("match_type=%s")
+        params.append(match_type)
+        # filters.append("pitch_id=%s")
     if from_date and to_date:
+        # filters.append("pitch_id=%s")
         filters.append("(match_date BETWEEN %s AND %s OR from_date BETWEEN %s AND %s OR to_date BETWEEN %s AND %s)")
         params.extend([from_date, to_date, from_date, to_date, from_date, to_date])
 
@@ -618,14 +632,23 @@ def match_report(request):
         {where_clause}
         ORDER BY match_date DESC
     """
+    print(query)
 
     with connection.cursor() as cursor:
         cursor.execute(query, params)
         columns = [col[0] for col in cursor.description]
         data = [dict(zip(columns, row)) for row in cursor.fetchall()]
 
-    default_fields = ['id', 'match_type', 'name_tournament', 'team1', 'team2', 'preparation_date', 'match_date']
+    default_fields = []
+    if(match_type=="Multidays"):
+        default_fields = ['id', 'match_type', 'name_tournament', 'team1', 'team2', 'preparation_date', 'from_date','to_date']
+    elif(match_type=="One Day" or match_type=="T20"):
+        default_fields = ['id', 'match_type', 'name_tournament', 'team1', 'team2', 'preparation_date', 'match_date']
+    else:
+        default_fields = ['id', 'match_type', 'name_tournament', 'team1', 'team2', 'preparation_date', 'match_date', 'from_date','to_date']
+        
     return render(request, 'admin_user/reports/match_report.html', {'records': data, 'default_fields': default_fields})
+
 
 def chemicalsReport(request):
       return render(request, "admin_user/reports/ChemicalsReport.html")
@@ -657,7 +680,7 @@ def fertilizer_usage_report(request):
                 fertilizers_details, pitch_main_chemical_weight, pitch_main_chemical_unit,
                 out_fertilizers_details, outfield_chemical_weight, outfield_chemical_unit,
                 practice_fertilizers_details, pitch_practice_chemical_weight, pitch_practice_chemical_unit,
-                pp_fertilizers_details, practice_area_chemical_weight, practice_area_chemical_unit
+                pp_fertilizers_details, practice_area_chemical_weight, practice_area_chemical_unit,rolling_start_date
             FROM {org_id}_curator_daily_recording_master
             WHERE ground_id = %s AND rolling_start_date BETWEEN %s AND %s
         """
@@ -668,7 +691,7 @@ def fertilizer_usage_report(request):
                 fertilizers_details, pitch_main_chemical_weight, pitch_main_chemical_unit,
                 out_fertilizers_details, outfield_chemical_weight, outfield_chemical_unit,
                 practice_fertilizers_details, pitch_practice_chemical_weight, pitch_practice_chemical_unit,
-                pp_fertilizers_details, practice_area_chemical_weight, practice_area_chemical_unit
+                pp_fertilizers_details, practice_area_chemical_weight, practice_area_chemical_unit,rolling_start_date
             FROM {org_id}_curator_daily_recording_master
             WHERE ground_id = %s AND rolling_start_date BETWEEN %s AND %s 
         """
@@ -680,107 +703,215 @@ def fertilizer_usage_report(request):
         cursor.execute(query, value)
         rows = cursor.fetchall()
 
-    usage = {}
-    
-    usageList=[]
-    
-    def split_Data(fertilizer_ids_string, weight, unit):
-        fertilizer_ids_string = fertilizer_ids_string or ""
-        weight = weight or ""
-        unit = unit or ""
-        
-        ids = fertilizer_ids_string.split("__####__")
-        weight = weight.split("__####__")
-        unit = unit.split("__####__")
-        
-        min_len = min(len(ids), len(weight), len(unit))
-        if(chemical):
-            for i in range(min_len):
-                f_id = ids[i].strip("_#").strip()
-                f_weight = weight[i].strip("_#").strip()
-                f_unit = unit[i].strip("_#").strip()
+    usage_by_chemical = {}      # <-- final structure
+    chemical_totals = {}        # <-- grand totals
 
-                # âœ… Blank skip karne ke liye condition
-                if f_id or f_weight or f_unit:
-                    if(f_id==chemical):
-                        usageList.append({
-                            "id": f_id,
-                            "weight": f_weight,
-                            "unit": f_unit
-                        })
-        else:
-            for i in range(min_len):
-                f_id = ids[i].strip("_#").strip()
-                f_weight = weight[i].strip("_#").strip()
-                f_unit = unit[i].strip("_#").strip()
-
-                # âœ… Blank skip karne ke liye condition
-                if f_id or f_weight or f_unit:
-                    usageList.append({
-                            "id": f_id,
-                            "weight": f_weight,
-                            "unit": f_unit
-                        })
-            
-
-    
-
-    def add_usage(fertilizer_ids_string, weight, unit):
-        
-        if not fertilizer_ids_string or not weight or not unit:
-            return
-
-        
-        try:
-            weight = float(weight)
-        except:
-            return
-
-        unit = unit.strip().lower()
-
-        # Split multiple fertilizer IDs if needed
-        fertilizer_ids = [f.strip() for f in fertilizer_ids_string.split(",") if f.strip().isdigit()]
-
-        for fert_id in fertilizer_ids:
-            chem_name = fert_map.get(fert_id)
-            if not chem_name:
-                continue
-            usage.setdefault(chem_name, {"kg": 0.0, "ltr": 0.0})
-            if unit == "kg":
-                usage[chem_name]["kg"] += weight
-            elif unit == "gm":
-                usage[chem_name]["kg"] += weight / 1000
-            elif unit == "ltr":
-                usage[chem_name]["ltr"] += weight
-            elif unit == "ml":
-                usage[chem_name]["ltr"] += weight / 1000
-    
     for row in rows:
-        split_Data(row[0], row[1], row[2])   # main pitch
-        split_Data(row[3], row[4], row[5])   # outfield
-        split_Data(row[6], row[7], row[8])   # practice
-        split_Data(row[9], row[10], row[11]) # practice area
-    
-    print(usageList)
-    for row in usageList:
-        add_usage(row.get("id"), row.get("weight"), row.get("unit"))   # main pitch
-      
 
-    report = []
-    for chem, qty in usage.items():
-        report.append({
-            "chemical": chem,
-            "kg": round(qty["kg"], 2) if qty["kg"] else None,
-            "ltr": round(qty["ltr"], 2) if qty["ltr"] else None
+        raw_date = row[12]
+        try:
+            date = raw_date.strftime("%d-%m-%Y")
+        except:
+            parts = str(raw_date).split("-")
+            if len(parts)==3:
+                date = f"{parts[2]}-{parts[1]}-{parts[0]}"
+            else:
+                date = raw_date
+
+        # 4 zones
+        for ids_str,w,u in [
+            (row[0],row[1],row[2]),
+            (row[3],row[4],row[5]),
+            (row[6],row[7],row[8]),
+            (row[9],row[10],row[11])
+        ]:
+
+            ids = (ids_str or "").split("__####__")
+            wts = (w       or "").split("__####__")
+            uts = (u       or "").split("__####__")
+
+            for i in range(min(len(ids),len(wts),len(uts))):
+
+                fid = ids[i].strip("_#")
+                wt  = wts[i].strip("_#")
+                un  = uts[i].strip("_#")
+
+                if not fid: 
+                    continue
+                if chemical not in ["","all"] and chemical!=fid:
+                    continue
+
+                try: wt = float(wt)
+                except: continue
+
+                cname = fert_map.get(fid, "unknown")
+
+                # convert units
+                if un=="kg":  kg=wt; ltr=0
+                elif un=="gm":kg=wt/1000; ltr=0
+                elif un=="ltr":kg=0; ltr=wt
+                elif un=="ml": kg=0; ltr=wt/1000
+                else: continue
+
+                # --- chemical → date bucket ---
+                usage_by_chemical.setdefault(cname, {})
+                usage_by_chemical[cname].setdefault(date, {"kg":0,"ltr":0})
+
+                usage_by_chemical[cname][date]["kg"]  += kg
+                usage_by_chemical[cname][date]["ltr"] += ltr
+
+                # grand totals
+                chemical_totals.setdefault(cname, {"kg":0,"ltr":0})
+                chemical_totals[cname]["kg"]  += kg
+                chemical_totals[cname]["ltr"] += ltr
+
+
+    # ===== Prepare list for template =====
+
+    chem_records = []
+
+    for cname, datedata in usage_by_chemical.items():
+
+        rows_list = []
+        # sort dates
+        for date in sorted(datedata.keys(), key=lambda d: datetime.strptime(d, "%d-%m-%Y")):
+            v = datedata[date]
+            rows_list.append({
+                "date": date,
+                "kg": round(v["kg"],2) if v["kg"] else None,
+                "ltr": round(v["ltr"],2) if v["ltr"] else None
+            })
+
+        total = chemical_totals.get(cname, {"kg":0,"ltr":0})
+
+        chem_records.append({
+            "chemical": cname,
+            "rows": rows_list,
+            "total": {
+                "kg": round(total["kg"],2) if total["kg"] else None,
+                "ltr": round(total["ltr"],2) if total["ltr"] else None
+            }
         })
-    return render(request, "admin_user/reports/ChemicalsReport.html",
-    {
-         "records": report,
+
+    print({
+            "chem_records": chem_records,
+            "ground_id": ground_id,
+            "from_date": from_date,
+            "to_date": to_date,
+            "chemical": chemical,
+        })
+
+    return render(request,"admin_user/reports/ChemicalsReport.html",{
+        "chem_records": chem_records,
         "ground_id": ground_id,
         "from_date": from_date,
-        "to_date": to_date
+        "to_date": to_date,
+        "chemical": chemical,
     })
 
+
+
+    # usage = {}
+        
+        # usageList=[]
+        
+        # def split_Data(fertilizer_ids_string, weight, unit):
+        #     fertilizer_ids_string = fertilizer_ids_string or ""
+        #     weight = weight or ""
+        #     unit = unit or ""
+            
+        #     ids = fertilizer_ids_string.split("__####__")
+        #     weight = weight.split("__####__")
+        #     unit = unit.split("__####__")
+            
+        #     min_len = min(len(ids), len(weight), len(unit))
+        #     if(chemical):
+        #         for i in range(min_len):
+        #             f_id = ids[i].strip("_#").strip()
+        #             f_weight = weight[i].strip("_#").strip()
+        #             f_unit = unit[i].strip("_#").strip()
+
+        #             # âœ… Blank skip karne ke liye condition
+        #             if f_id or f_weight or f_unit:
+        #                 if(f_id==chemical):
+        #                     usageList.append({
+        #                         "id": f_id,
+        #                         "weight": f_weight,
+        #                         "unit": f_unit
+        #                     })
+        #     else:
+        #         for i in range(min_len):
+        #             f_id = ids[i].strip("_#").strip()
+        #             f_weight = weight[i].strip("_#").strip()
+        #             f_unit = unit[i].strip("_#").strip()
+
+        #             # âœ… Blank skip karne ke liye condition
+        #             if f_id or f_weight or f_unit:
+        #                 usageList.append({
+        #                         "id": f_id,
+        #                         "weight": f_weight,
+        #                         "unit": f_unit
+        #                     })
+                
+
+        
+
+        # def add_usage(fertilizer_ids_string, weight, unit):
+            
+        #     if not fertilizer_ids_string or not weight or not unit:
+        #         return
+
+            
+        #     try:
+        #         weight = float(weight)
+        #     except:
+        #         return
+
+        #     unit = unit.strip().lower()
+
+        #     # Split multiple fertilizer IDs if needed
+        #     fertilizer_ids = [f.strip() for f in fertilizer_ids_string.split(",") if f.strip().isdigit()]
+
+        #     for fert_id in fertilizer_ids:
+        #         chem_name = fert_map.get(fert_id)
+        #         if not chem_name:
+        #             continue
+        #         usage.setdefault(chem_name, {"kg": 0.0, "ltr": 0.0})
+        #         if unit == "kg":
+        #             usage[chem_name]["kg"] += weight
+        #         elif unit == "gm":
+        #             usage[chem_name]["kg"] += weight / 1000
+        #         elif unit == "ltr":
+        #             usage[chem_name]["ltr"] += weight
+        #         elif unit == "ml":
+        #             usage[chem_name]["ltr"] += weight / 1000
+        
+        # for row in rows:
+        #     split_Data(row[0], row[1], row[2])   # main pitch
+        #     split_Data(row[3], row[4], row[5])   # outfield
+        #     split_Data(row[6], row[7], row[8])   # practice
+        #     split_Data(row[9], row[10], row[11]) # practice area
+        
+        # print(usageList)
+        # for row in usageList:
+        #     add_usage(row.get("id"), row.get("weight"), row.get("unit"))   # main pitch
+        
+
+        # report = []
+        # for chem, qty in usage.items():
+        #     report.append({
+        #         "chemical": chem,
+        #         "kg": round(qty["kg"], 2) if qty["kg"] else None,
+        #         "ltr": round(qty["ltr"], 2) if qty["ltr"] else None
+        #     })
+        # return render(request, "admin_user/reports/ChemicalsReport.html",
+        # {
+        #      "records": report,
+        #     "ground_id": ground_id,
+        #     "from_date": from_date,
+        #     "to_date": to_date
+        # })
+        
 
 # def parse_pass_data(data):
 #     if not data or "$##$" not in data:
@@ -865,8 +996,8 @@ def machinery_pass_report(request):
     
 
     if ground_id and from_date and to_date:
-        where_clauses = ["vcd.ground_id = %s", "vcd.rolling_start_date BETWEEN %s AND %s"]
-        params = [ground_id, from_date, to_date]
+        where_clauses = ["vcd.ground_id = %s  AND vcd.rolling_start_date BETWEEN %s AND %s or vcm.ground_id = %s  AND vcm.rolling_date BETWEEN %s AND %s"]
+        params = [ground_id, from_date, to_date,ground_id, from_date, to_date]
 
        
         final_where_clause = " AND ".join(where_clauses)
@@ -903,7 +1034,6 @@ def machinery_pass_report(request):
                 vcd.out_no_of_passes,vcd.out_passes_unit,vcd.out_machinery_id,
                 vcd.practice_no_of_passes,vcd.practice_passes_unit,vcd.practice_machinery_id,
                 vcd.pp_no_of_passes, vcd.pp_passes_unit,vcd.pp_machinery_id,
-                
                 vcd.mowing_duration,vcd.moving_passes_unit, vcd.mover_machinery_id,
                 vcd.out_mowing_duration,vcd.out_moving_passes_unit,vcd.out_mover_machinery_id,
                 vcd.practice_mowing_duration,vcd.practice_moving_passes_unit,vcd.practice_mover_machinery_id,
@@ -911,20 +1041,28 @@ def machinery_pass_report(request):
                 vcd.roller_machinery_name_operator, 
                 vcd.out_roller_machinery_name_operator,
                 vcd.practice_roller_machinery_name_operator,
-                 vcd.pp_roller_machinery_name_operator,
-                  vcd.mover_machinery_name_operator,
-                  vcd.out_mover_machinery_name_operator,
-                  vcd.practice_mover_machinery_name_operator,
-                   vcd.pp_mover_machinery_name_operator
-                  
-                  
-                  
+                vcd.pp_roller_machinery_name_operator,
+                vcd.mover_machinery_name_operator,
+                vcd.out_mover_machinery_name_operator,
+                vcd.practice_mover_machinery_name_operator,
+                vcd.pp_mover_machinery_name_operator,
                 
+                vcm.no_of_passes, vcm.passes_unit, vcm.machinery_id,
+                vcm.out_no_of_passes,vcm.out_passes_unit,vcm.out_machinery_id,
                 
-              
-            FROM {org_id}_curator_daily_recording_master vcd
-            JOIN {org_id}_ground_master vgm ON vcd.ground_id = vgm.id
-            WHERE {final_where_clause}"""
+                vcm.mowing_duration,vcm.moving_passes_unit, vcm.mover_machinery_id,
+                vcm.out_mowing_duration,vcm.out_moving_passes_unit,vcm.out_mover_machinery_id,
+                
+                vcm.roller_machinery_name_operator, 
+                vcm.out_roller_machinery_name_operator,
+                
+				vcm.mover_machinery_name_operator,
+                vcm.out_mover_machinery_name_operator
+                
+                FROM {org_id}_curator_daily_recording_master vcd
+                JOIN {org_id}_ground_master vgm ON vcd.ground_id = vgm.id
+                JOIN {org_id}_match_master vcm ON vcd.ground_id = vcm.ground_id
+                WHERE {final_where_clause}"""
         # print(query)
         with connection.cursor() as cursor:
             cursor.execute(query, params)
@@ -982,6 +1120,10 @@ def machinery_pass_report(request):
             split_Data(row[16], row[17], row[18],row[30]) # practice area        
             split_Data(row[19], row[20], row[21],row[31]) # practice area        
             split_Data(row[22], row[23], row[24],row[32]) # practice area        
+            split_Data(row[33], row[34], row[35],row[45]) # practice area        
+            split_Data(row[36], row[37], row[38],row[46]) # practice area        
+            split_Data(row[39], row[40], row[41],row[47]) # practice area        
+            split_Data(row[42], row[43], row[44],row[48]) # practice area        
 
         # print(usageList)
         # if machinery_id:
@@ -1191,6 +1333,7 @@ def get_fertilizers_json(request):
     result = [{"id": row[0], "name": row[1],"type":row[2]} for row in data]
     return JsonResponse({"fertilizers": result})
 
+
 def get_single_fertilizer(request, fert_id):
     org_id = request.session.get('org_id')
     with connection.cursor() as cursor:
@@ -1203,6 +1346,7 @@ def get_single_fertilizer(request, fert_id):
     else:
         return JsonResponse({"error": "Chemical not found"}, status=404)
 
+
 def get_unique_chemical_types(request):
     org_id = request.session.get('org_id')
     with connection.cursor() as cursor:
@@ -1211,6 +1355,7 @@ def get_unique_chemical_types(request):
 
     types = [row[0] for row in rows]
     return JsonResponse({"types": types})
+
 
 def fertilizer_list(request):
     try:
@@ -1222,6 +1367,7 @@ def fertilizer_list(request):
         return render(request, 'admin_user/masters/chemicals_list.html', {'fertilizers': fertilizers})
     except Exception as e:
         print(e)
+
 
 def fertilizer_add(request):
     try:
@@ -1267,7 +1413,6 @@ def fertilizer_delete(request, id):
         print(e)
 
 
-
 def login_auth(request):
     if request.method == 'POST':
         org_id = request.POST.get('org_id')
@@ -1285,12 +1430,11 @@ def login_auth(request):
                     "email": user.email,
                     "username": user.username,
                     "address":user.address,
+                    "city":user.city,
                     "role": "admin",
                     "ground_id":"all"
-                    
-                    
                 }
-                print(request.session.get("user"))
+                print("main admin data=",request.session.get("user"))
                 
                 return render(request,'admin_user/dashboard.html',{'user':user})
             else:
@@ -1299,7 +1443,6 @@ def login_auth(request):
         except Exception as e:
             print(e)
             return render(request, 'admin_user/org_login.html')
-
 
 
 def login_auth_role(request):
@@ -1312,29 +1455,37 @@ def login_auth_role(request):
         
         try:
             user = AdminRole.objects.get( org_id=org_id,username=username, password=password,role=role)
+            
             admin = AdminUserList.objects.get( org_id=org_id)
 
-            if user is not None:
-                request.session["org_id"]=user.org_id
-                request.session["user"] = {
-                    "id": user.id,
-                    "name": user.name,
-                    "org_id": user.org_id,
-                    "email": user.email,
-                    "username": user.username,
-                    "ground_id":user.ground_id,
-                    "role": user.role
-                }
-                profilePath = user.profileImage.url
-                if(role=="Groundman"):
-                    return render(request,'groundman/dashboard.html',{'user':user,'profilePath':profilePath,"admin":admin})
-                elif(role=="Curator"):
-                    return render(request,'curator/dashboard.html',{'user':user,'profilePath':profilePath,"admin":admin})
-                elif(role=="Scorer"):
-                    return render(request,'scorer/dashboard.html',{'user':user,'profilePath':profilePath,"admin":admin})
+            if user.is_suspend == False:
+                with connection.cursor() as cursor:
+                    cursor.execute(f"SELECT * FROM `{org_id}_ground_master` WHERE id='{user.ground_id}' and org_id='{org_id}'")
+                    groundData = cursor.fetchone()
+                    print("groundData",groundData)
+                    request.session["org_id"]=user.org_id
+                    
+                    request.session["user"] = {
+                        "id": user.id,
+                        "name": user.name,
+                        "org_id": user.org_id,
+                        "email": user.email,
+                        "username": user.username,
+                        "ground_id":user.ground_id,
+                        "role": user.role,
+                        "city":groundData[9]
+                    }
+                    print("role login data=",request.session.get("user"))
+                    profilePath = user.profileImage.url
+                    if(role=="Groundman"):
+                        return render(request,'groundman/dashboard.html',{'user':user,'profilePath':profilePath,"admin":admin})
+                    elif(role=="Curator"):
+                        return render(request,'curator/dashboard.html',{'user':user,'profilePath':profilePath,"admin":admin})
+                    elif(role=="Scorer"):
+                        return render(request,'scorer/dashboard.html',{'user':user,'profilePath':profilePath,"admin":admin})
 
             else:
-                messages.error(request, 'Invalid username or password')
+                messages.error(request, 'User suspended')
         except Exception as e:
             print(e)
             if (role == "Groundman"):
@@ -1389,8 +1540,6 @@ def login_auth_role_direct(request):
                 return render(request, 'scorer/org_login.html')
 
 
-
-
 def org_dashboard(request):
     user_id = request.session.get("user").get("id")  # Retrieve the stored ID from the session
     if user_id:
@@ -1400,6 +1549,7 @@ def org_dashboard(request):
         except AdminUserList.DoesNotExist:
             org_user = None  # Handle the case where the user does not exist
 
+
 def getCurators(request):
     org_id = request.session.get('org_id')
     with connection.cursor() as cursor:
@@ -1407,12 +1557,14 @@ def getCurators(request):
         curators = cursor.fetchall()
     return JsonResponse({"curators": curators})
 
+
 def getGroundmans(request):
     org_id = request.session.get('org_id')
     with connection.cursor() as cursor:
         cursor.execute(f"SELECT id, name FROM admin_user_adminrole WHERE role='Groundman' and org_id='{org_id}'")
         groundmans = cursor.fetchall()
     return JsonResponse({"groundmans":  groundmans})
+
 
 def getScorers(request):
     org_id = request.session.get('org_id')
@@ -1425,8 +1577,10 @@ def getScorers(request):
 def role_dashboard(request):
     return render(request,'admin_user/dashboard_role.html')
 
+
 def logout_view(request):
     return redirect('login')
+
 
 def add_state_city(request):
     org_id = request.session.get('org_id')
@@ -1507,17 +1661,57 @@ def create_admin_user_role(request):
         messages.error(request, e)
         print(e)
 
+
 def admin_user_roles_list(request):
     org_id = request.session["org_id"]
     admin_roles = AdminRole.objects.filter(org_id=org_id)
     print(admin_roles)
     return render(request, 'admin_user/admin_users_roles_list.html', {'admin_roles': admin_roles})
 
+
 def admin_user_role_details(request, admin_id):
     admin = AdminRole.objects.get(id=admin_id)
     profilePath=admin.profileImage.url
     # print(profilePath)
     return render(request, 'admin_user/admin_user_role_details.html', {'admin': admin,'profilePath':profilePath})
+
+def admin_user_role_edit_form(request, id):
+    admin = AdminRole.objects.get(id=id)
+    form = AdminUserRoleForm(instance=admin)
+    # print(form)
+    return render(request,"admin_user/admin_role_edit.html", {"admin":admin, "form": form,"id":id})
+
+
+def admin_user_edit(request, id):
+    try:
+        admin = AdminRole.objects.get(id=id)
+
+        if request.method == "POST":
+            AdminRole.objects.filter(id=id).update(
+                name = request.POST.get("name"),
+                email = request.POST.get("email"),
+                username = request.POST.get("username"),
+                mobile = request.POST.get("mobile"),
+                role = request.POST.get("role"),
+                ground_id = request.POST.get("ground_id"),
+                org_id = request.POST.get("org_id"),
+                date_reg = request.POST.get("date_reg"),
+                is_suspend = request.POST.get("is_suspend")
+            )
+
+            # messages.success(request, "User updated successfully")
+            return redirect('admin_user_role_details', admin_id=id)
+
+        else:
+            form = AdminUserRoleForm(instance=admin)
+
+        return render(request,"admin_user/admin_role_edit.html",
+            {"admin":admin, "form": form,"id":id}
+        )
+
+    except Exception as e:
+        print(e)
+
 
 def create_ground_master(request):
    
@@ -1644,6 +1838,7 @@ def create_ground_master(request):
         return render(request, 'admin_user/create_ground_master.html',{'org_id':request.session["org_id"],'state_data':state_data})
     except Exception as e:
         print(e)
+
 
 def update_ground_master(request, ground_id):
     try:
@@ -1842,6 +2037,7 @@ def delete_ground_master(request, ground_id):
         print(e)
         return JsonResponse({'status':False,'msg': f'failed error:{e}'})
 
+
 @csrf_exempt
 def addNewPItch(request):
     try:
@@ -1964,6 +2160,7 @@ def update_pitches(request, ground_id):
 
     })
 
+
 def ground_list(request):
     org_id = request.session["org_id"]
     with connection.cursor() as cursor:
@@ -1971,6 +2168,7 @@ def ground_list(request):
         grounds = cursor.fetchall()
 
     return render(request, 'admin_user/ground_list.html', {'grounds': grounds})
+
 
 def ground_pitches(request,ground_id):
     try:
@@ -1985,6 +2183,7 @@ def ground_pitches(request,ground_id):
         return render(request, 'admin_user/ground_pitches.html', {'pitches': pitches,'grounds':grounds})
     except Exception as e:
         print(e)
+
 
 def save_edit_pitch(request):
     org_id = request.session["org_id"]
@@ -2033,6 +2232,7 @@ def save_edit_pitch(request):
                     print(e)
 
         return redirect(f'/usr_admin/ground_pitches/{ground_id}')
+
 
 def edit_pitch(request,pitch_id,ground_id):
     try:
@@ -2114,7 +2314,8 @@ def get_pitches(request, ground_id):
 
     with connection.cursor() as cursor:
         cursor.execute(f'''
-            SELECT p.*, g.city_name 
+            SELECT p.*,g.city_name,g.id as gid,
+            g.org_id as orgid, g.google_location as glog
             FROM {org_id}_pitch_master p
             JOIN {org_id}_ground_master g 
             ON p.ground_id = g.id
@@ -2416,6 +2617,7 @@ def curator_daily_recording_form(request):
                     outfield_chemical_weight=""
                     # outfield_chemical_unit=(request.POST.get("out_fertilizers_unit"+str(index)) or '').strip() or None
                     outfield_chemical_unit=""
+                    out_clipping=""
                     
                     out_watering_entries_json = (request.POST.get("out_watering_entries_json"+str(index)) or '').strip() or None
                     out_watering_entries = json.loads(out_watering_entries_json) if out_watering_entries_json else []
@@ -2476,7 +2678,8 @@ def curator_daily_recording_form(request):
                             out_mover_machine_type+=str(mov["type"])+"__####__"
                             out_mover_machinery_name_operator+=str(mov["operator"])+"__####__"
                             out_mowing_done_at_mm+=str(mov["mowHeight"])+"__####__"
-                            print(out_mover_machinery_id+" "+out_moving_passes_unit)
+                            out_clipping+=str(mov["out_clipping"])+"__####__"
+                            # print(out_mover_machinery_id+" "+out_moving_passes_unit)
                         # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
                     else:
                         print("No Movers")
@@ -2872,7 +3075,8 @@ def curator_daily_recording_form(request):
                             passes_unit,
                             out_passes_unit,
                             pp_passes_unit,
-                            practice_passes_unit
+                            practice_passes_unit,
+                            out_clipping
 
                             ) 
                             
@@ -2882,7 +3086,7 @@ def curator_daily_recording_form(request):
                                     %s, %s, %s, %s, %s, %s,%s,%s, %s, %s, %s, %s, %s, %s, %s,
                         %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s,%s, %s, %s,
                         %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
-                        %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s,%s, %s, %s, %s,%s, %s, %s,%s)
+                        %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s,%s, %s, %s, %s,%s, %s, %s,%s,%s)
                             """
                     values = [
                         pitch_id, recording_type, ground_id,pitch_location, rolling_start_date, min_temp, max_temp, forecast, clagg_hammer, moisture,
@@ -2932,7 +3136,8 @@ def curator_daily_recording_form(request):
                         practice_roller_machine_type, practice_roller_machinery_name_operator, passes_unit,
                         out_passes_unit,
                         pp_passes_unit,
-                        practice_passes_unit
+                        practice_passes_unit,
+                        out_clipping
 
 
                     ]
@@ -3202,6 +3407,7 @@ def update_daily(request,daily_id):
             out_fertilizers_details = ""
             out_chemical_details_remark = ""
             out_remark_by_groundsman = ""
+            out_clipping = ""
             
             out_rolling_entries_json = (request.POST.get("out_rolling_entries_json") or '').strip() or None
             out_rolling_entries = json.loads(out_rolling_entries_json) if out_rolling_entries_json else []
@@ -3232,7 +3438,8 @@ def update_daily(request,daily_id):
                     out_mover_machine_type+=str(mov["type"])+"__####__"
                     out_mover_machinery_name_operator+=str(mov["operator"])+"__####__"
                     out_mowing_done_at_mm+=str(mov["mowHeight"])+"__####__"
-                    print("out 2",out_mover_machinery_id+" "+out_moving_passes_unit)
+                    out_clipping+=str(mov["out_clipping"])+"__####__"
+                    # print("out 2",out_mover_machinery_id+" "+out_moving_passes_unit)
                     # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
             else:
                 print("No Movers")
@@ -3424,7 +3631,8 @@ def update_daily(request,daily_id):
                             passes_unit=%s,
                             out_passes_unit=%s,
                             pp_passes_unit=%s,
-                            practice_passes_unit=%s
+                            practice_passes_unit=%s,
+                            out_clipping=%s
                         
                             WHERE `id`=%s"""
                     values = [
@@ -3504,6 +3712,7 @@ def update_daily(request,daily_id):
                         out_passes_unit,
                         pp_passes_unit,
                         practice_passes_unit ,
+                        out_clipping ,
                     id
                 ]
 
@@ -3592,14 +3801,15 @@ def update_daily(request,daily_id):
                             passes_unit,
                             out_passes_unit,
                             pp_passes_unit,
-                            practice_passes_unit
+                            practice_passes_unit,
+                            out_clipping
                         
                         ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
                         %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
                                 %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
                                 %s, %s, %s, %s, %s, %s,%s,%s, %s, %s, %s, %s, %s, %s, %s,
                       %s, %s, %s, %s, %s, %s, %s,%s, %s, %s,%s,%s, %s, %s,%s,%s, %s, %s,%s,%s, %s, %s,%s,%s, %s, %s,%s,%s,%s,%s,%s,%s,%s,%s
-                      ,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                      ,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                         """
                     values = [
                     pitch_id_text, 
@@ -3678,7 +3888,8 @@ def update_daily(request,daily_id):
                         practice_roller_machine_type, practice_roller_machinery_name_operator, passes_unit,
                         out_passes_unit,
                         pp_passes_unit,
-                        practice_passes_unit
+                        practice_passes_unit,
+                        out_clipping
                         
                     
                 ]
@@ -4461,6 +4672,8 @@ def insert_match(request):
                 dew_factor =request.POST.get('dew_factor')
                 access_bounce =request.POST.get('access_bounce')
                 nuteral_curator =request.POST.get('nuteral_curator')
+                clagg_hammer = request.POST.get('clagg_hammer')
+                moisture = request.POST.get('moisture')
                 # rolling_time = request.POST.get('rolling_time')
                 # rolling_pattern = request.POST.get('rolling_pattern')
                 if(pitchIndex>0):
@@ -4899,10 +5112,12 @@ def insert_match(request):
                             passes_unit,
                             out_passes_unit,
                             rolling_date,
-                            out_rolling_date
+                            out_rolling_date,
+                            clagg_hammer,
+                            moisture
                         ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
     %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
-    %s, %s,%s,%s,%s, %s,%s,%s,%s,%s,%s,%s,%s, %s,%s,%s,%s,%s,%s, %s,%s,%s,%s,%s,%s)'''
+    %s, %s,%s,%s,%s, %s,%s,%s,%s,%s,%s,%s,%s, %s,%s,%s,%s,%s,%s, %s,%s,%s,%s,%s,%s,%s,%s)'''
                     
                     values=[
                         match_type, name_tournament, team1, team2,dew_factor, access_bounce,preparation_date, match_date, from_date, to_date,
@@ -4938,8 +5153,9 @@ def insert_match(request):
                             passes_unit,
                             out_passes_unit,
                             rolling_date,
-                            out_rolling_date
-
+                            out_rolling_date,
+                            clagg_hammer,
+                            moisture
                     ]
                     # print(sql)
                     # print(values)
@@ -4994,6 +5210,8 @@ def update_match(request, match_id):
             moisture_upto = request.POST.get('moisture_upto')
             dew_factor =request.POST.get('dew_factor')
             access_bounce =request.POST.get('access_bounce')
+            clagg_hammer = request.POST.get('clagg_hammer')
+            moisture = request.POST.get('moisture')
             # rolling_time = request.POST.get('rolling_time')
             # rolling_pattern = request.POST.get('rolling_pattern')
             machinery_id = request.POST.get('machinery_id')
@@ -5276,8 +5494,10 @@ def update_match(request, match_id):
                             passes_unit=%s,
                             out_passes_unit=%s,
                             rolling_date=%s,
-                            out_rolling_date=%s
-                        WHERE id=%s
+                            out_rolling_date=%s,
+                            clagg_hammer = %s,
+                            moisture = %s
+                            WHERE id=%s
                     '''
                     values = [
                     match_type, name_tournament, team1, team2,dew_factor, access_bounce,preparation_date, match_date,nuteral_curator, from_date, to_date,
@@ -5319,54 +5539,56 @@ def update_match(request, match_id):
                             out_passes_unit,
                             rolling_date,
                             out_rolling_date,
+                            clagg_hammer,
+                            moisture,
                         match_id
                     ]
                 
                 elif(btnSubmit=="save"):
                     sql=f'''INSERT INTO {org_id}_match_master 
                           (
-                        match_type, 
-                        name_tournament, 
-                        team1, 
-                        team2,
-                        dew_factor,
-                        access_bounce, 
+                            match_type, 
+                            name_tournament, 
+                            team1, 
+                            team2,
+                            dew_factor,
+                            access_bounce, 
                             preparation_date,
-                              match_date, 
+                            match_date, 
                             nuteral_curator, 
-                              from_date, 
-                              to_date,
+                            from_date, 
+                            to_date,
                             days_count,
-                              start_time, 
-                              pitch_id,
-                                ground_id, 
-                                is_pitch_level, 
-                                lawn_height, 
+                            start_time, 
+                            pitch_id,
+                            ground_id, 
+                            is_pitch_level, 
+                            lawn_height, 
                             grass_cover, 
                             min_temp, 
                             max_temp, 
                             forecast,
-                              moisture_upto,  
-                              machinery_id, 
-                              no_of_passes, 
+                            moisture_upto,  
+                            machinery_id, 
+                            no_of_passes, 
                             rolling_speed, 
                             last_watering_on,
-                                quantity_of_water, 
-                                time_of_application,
-                                time_roller,
-                                out_time_roller,
+                            quantity_of_water, 
+                            time_of_application,
+                            time_roller,
+                            out_time_roller,
                             mover_machinery_id,
-                              date_mowing_done_last, 
-                              time_of_application_mover, 
+                            date_mowing_done_last, 
+                            time_of_application_mover, 
                             mowing_done_at_mm, 
                             is_fertilizers_used,
-                              fertilizers_details,
-                                chemical_details_remark, 
+                            fertilizers_details,
+                            chemical_details_remark, 
                             remark_by_groundsman, 
                             out_machinery_id,
-                              out_no_of_passes, 
-                              out_rolling_speed, 
-                              out_last_watering_on, 
+                            out_no_of_passes, 
+                            out_rolling_speed, 
+                            out_last_watering_on, 
                             out_quantity_of_water, 
                             out_time_of_application, 
                             out_mover_machinery_id, 
@@ -5377,15 +5599,14 @@ def update_match(request, match_id):
                             out_fertilizers_details, 
                             out_chemical_details_remark, 
                             out_remark_by_groundsman, 
-                           
                             brief_match_pitch_assessment,
-                             time_of_application_chemical,
-                        out_time_of_application_chemical,
-                        fertilizers_unit,
-                        out_fertilizers_unit, 
-                        chemical_weight, 
-                        out_chemical_weight,
-            out_mover_machine_type,
+                            time_of_application_chemical,
+                            out_time_of_application_chemical,
+                            fertilizers_unit,
+                            out_fertilizers_unit, 
+                            chemical_weight, 
+                            out_chemical_weight,
+                            out_mover_machine_type,
                             out_mover_machinery_name_operator, 
                             out_moving_passes_unit, 
                             out_mowing_duration,
@@ -5402,71 +5623,73 @@ def update_match(request, match_id):
                             passes_unit,
                             out_passes_unit,
                             rolling_date,
-                            out_rolling_date
+                            out_rolling_date,
+                            clagg_hammer,
+                            moisture
                       
                     ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
-                          %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s)'''
+                          %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s,%s, %s)'''
                     values = [ 
-                              match_type, 
-                              name_tournament, 
-                              team1, 
-                              team2,
-                              dew_factor, 
-                              access_bounce,
-                              preparation_date, 
-                              match_date,
-                              nuteral_curator,
-                              from_date, 
-                              to_date,
-                        days_count, 
-                        start_time, 
-                        pitch_id_text, 
-                        ground_id_text, 
-                        is_pitch_level, 
-                        lawn_height, 
-                        grass_cover,
-                        min_temp, 
-                        max_temp, 
-                        forecast, 
-                        moisture_upto,  
-                        machinery_id, 
-                        no_of_passes, 
-                        rolling_speed, 
-                        last_watering_on,
-                        quantity_of_water, 
-                        time_of_application,
-                        time_roller,
-                        out_time_roller,
-                        mover_machinery_id, 
-                        date_mowing_done_last, 
-                        time_of_application_mover,
-                        mowing_done_at_mm,
-                        is_fertilizers_used, 
-                        fertilizers_details,
-                        chemical_details_remark,
-                        remark_by_groundsman,
-                        out_machinery_id, 
-                        out_no_of_passes, 
-                        out_rolling_speed, 
-                        out_last_watering_on, 
-                        out_quantity_of_water,
-                        out_time_of_application, 
-                        out_mover_machinery_id, 
-                        out_date_mowing_done_last,
-                        out_time_of_application_mover,
-                        out_mowing_done_at_mm, 
-                        out_is_fertilizers_used,
-                        out_fertilizers_details,
-                        out_chemical_details_remark, 
-                        out_remark_by_groundsman,
-                        brief_match_pitch_assessment,
-                        time_of_application_chemical,
-                        out_time_of_application_chemical,
-                         pitch_main_chemical_unit, 
-                         outfield_chemical_unit, 
-                         pitch_main_chemical_weight,
-                         outfield_chemical_weight,
-                             out_mover_machine_type,
+                            match_type, 
+                            name_tournament, 
+                            team1, 
+                            team2,
+                            dew_factor, 
+                            access_bounce,
+                            preparation_date, 
+                            match_date,
+                            nuteral_curator,
+                            from_date, 
+                            to_date,
+                            days_count, 
+                            start_time, 
+                            pitch_id_text, 
+                            ground_id_text, 
+                            is_pitch_level, 
+                            lawn_height, 
+                            grass_cover,
+                            min_temp, 
+                            max_temp, 
+                            forecast, 
+                            moisture_upto,  
+                            machinery_id, 
+                            no_of_passes, 
+                            rolling_speed, 
+                            last_watering_on,
+                            quantity_of_water, 
+                            time_of_application,
+                            time_roller,
+                            out_time_roller,
+                            mover_machinery_id, 
+                            date_mowing_done_last, 
+                            time_of_application_mover,
+                            mowing_done_at_mm,
+                            is_fertilizers_used, 
+                            fertilizers_details,
+                            chemical_details_remark,
+                            remark_by_groundsman,
+                            out_machinery_id, 
+                            out_no_of_passes, 
+                            out_rolling_speed, 
+                            out_last_watering_on, 
+                            out_quantity_of_water,
+                            out_time_of_application, 
+                            out_mover_machinery_id, 
+                            out_date_mowing_done_last,
+                            out_time_of_application_mover,
+                            out_mowing_done_at_mm, 
+                            out_is_fertilizers_used,
+                            out_fertilizers_details,
+                            out_chemical_details_remark, 
+                            out_remark_by_groundsman,
+                            brief_match_pitch_assessment,
+                            time_of_application_chemical,
+                            out_time_of_application_chemical,
+                            pitch_main_chemical_unit, 
+                            outfield_chemical_unit, 
+                            pitch_main_chemical_weight,
+                            outfield_chemical_weight,
+                            out_mover_machine_type,
                             out_mover_machinery_name_operator, 
                             out_moving_passes_unit, 
                             out_mowing_duration,
@@ -5481,11 +5704,13 @@ def update_match(request, match_id):
                             passes_unit,
                             out_passes_unit,
                             rolling_date,
-                            out_rolling_date
+                            out_rolling_date,
+                            clagg_hammer,
+                            moisture
                       
                     ]
                 
-                print(sql)
+                # print(sql)
                 cursor.execute(sql, values)
 
             return redirect('match_list')
