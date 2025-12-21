@@ -52,8 +52,6 @@ def logout_root(request):
     return redirect('login_root')
 
 
-
-
 # views.py
 
 def createTable(tableName,t,org):
@@ -516,7 +514,6 @@ def addMachinery(org):
             print("Data inserted successfully.")
     except Exception as e:
             print(f"An error occurred: {e}")
-
 
 def addChemicals(org):
     try:

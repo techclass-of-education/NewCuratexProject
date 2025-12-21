@@ -2,6 +2,45 @@
 
 {% load static %}
 <link href="{% static 'admin_user/css/gradient.css' %}" rel="stylesheet">
+<style>
+
+
+  .a4-sheet-inner-div {
+  padding: 0 !important;
+  margin: 0 !important;
+  font-size: 10px !important;
+
+
+  }
+
+  @media print {
+    body {
+      margin: 0;
+    }
+  
+    #sidebar,nav,#form-div
+    {
+      display: none !important;
+    }
+
+    body
+    {
+       margin: 0 !important;
+     background: white !important;
+      padding: 0 !important;
+    }
+    #a4-sheet
+    {
+      margin-top: 0px !important;
+    }
+    .a4-sheet,#a4-inner-div,.a4-inner-div,#content {
+      margin: 0 !important;
+     width: 100%;
+      padding: 0 !important;
+    }
+  }
+
+</style>
 <div class="wrapper grass-bg">
     <!-- Sidebar -->
     {% include "admin_user/menu_side.html" %}
@@ -12,7 +51,7 @@
         <!-- Navbar -->
         {% include "admin_user/menu_top.html" %}
  
- <div class="container mt-5">
+ <div class="container mt-5" id="form-div">
             <div class="card w-75 mx-auto transparent-bg">
                 <div class="card-header box-bg text-white">
 
@@ -45,7 +84,7 @@
         <button type="submit" class="btn btn-primary box-bg">Search</button>
         {% if chem_records %}
           <button type="button" id="downloadCsv" class="btn btn-success">Download CSV</button>
-          <button type="button" id="downloadPdf" class="btn btn-danger">Download PDF</button>
+          <button type="button" id="" class="btn btn-danger" onclick="window.print()">Download PDF</button>
         {% endif %}
       </div>
     </div>
@@ -59,21 +98,22 @@
   {% if chem_records %}
     <!-- Table for KG -->
      <div class="a4-sheet w-75 rounded mt-4 mx-auto">
-   
-       {% for chem in chem_records %}
-       <table class="table align-middle mb-0 w-75 mx-auto border-white caption-top transparent-bg rounded" id="kgTable">
-         <caption class="top">
-           <h4 class="mt-4 text-primary">
-           <span class="badge text-bg-light">
-           
-            <span class="badge text-bg-primary">{{ chem.chemical }}</span> 
-            
-          </span> 
-          </h4>
-      </caption>
+    
+       <table class="table align-middle mb-0 w-75 mx-auto border-white caption-top transparent-bg rounded chem-table" id="kgTable">
+         <caption class="top text-center text-bg-light">
+         <h3>Chemical Report</h3>
+         </caption>
+        {% for chem in chem_records %}
       <thead class="bg-light fs-5 box-bg report-table-title">
-
-   
+        <tr>
+          <td colspan="3">
+            
+           <span class="badge text-bg-light">
+            <span class="badge text-bg-primary">{{ chem.chemical }}</span> 
+          </span> 
+          
+          </td>
+        </tr>
         <tr>
             <th>Date</th>
             <th>KG</th>
@@ -93,71 +133,17 @@
             <td>{{ chem.total.kg }}</td>
             <td>{{ chem.total.ltr }}</td>
         </tr>
+        <tr>
+          <td class="bg-light" colspan="3">
+            
+          </td>
+        </tr>
     </tbody>
-    </table>
-{% endfor %}
-
-    <!-- <table class="table align-middle mb-0 w-75 mx-auto border-white transparent-bg rounded" id="kgTable">
-      <thead class="bg-light fs-5 box-bg report-table-title">
-         <tr>
-                            <th>
-                                 <h5 class="mt-4">Fertilizers Used in KG</h5>
-                            </th>
-                            <th>
-
-                            </th>
-
-                            
-                        </tr>
-        <tr><th>Fertilizer</th><th>Total (KG)</th></tr>
-      </thead>
-      <tbody class="transparent-bg">
-         {% for row in records %}
-          {% if row.kg %}
-            <tr><td>{{ row.chemical }}</td><td>{{ row.kg }}</td></tr>
-          {% endif %}
-        {% endfor %} 
-        
-        {% for t in totals %}
-    {% if t.kg %}
-    <tr><td>{{t.chemical}}</td><td>{{t.kg}}</td></tr>
-    {% endif %}
-{% endfor %}
-
-      </tbody>
+    
+    {% endfor %}
     </table>
 
- 
-  
-    <table class="table align-middle mb-0 mt-4 border-white transparent-bg w-75 mx-auto rounded" id="ltrTable">
-      <thead class="bg-light fs-5 box-bg report-table-title">
-         <tr>
-                            <th>
-                                 <h5 class="mt-4">Fertilizers Used in Liters</h5>
-                            </th>
-                            <th>
-
-                            </th>
-
-                          
-                        </tr>
-        <tr><th>Fertilizer</th><th>Total (Liters)</th></tr>
-      </thead>
-      <tbody>
-        {% for row in records %}
-          {% if row.ltr %}
-            <tr><td>{{ row.chemical }}</td><td>{{ row.ltr }}</td></tr>
-          {% endif %}
-        {% endfor %} 
-        {% for t in totals %}
-    {% if t.ltr %}
-    <tr><td>{{t.chemical}}</td><td>{{t.ltr}}</td></tr>
-    {% endif %}
-{% endfor %}
-
-      </tbody>
-    </table> -->
-  {% else %}
+    {% else %}
     <p class="text-danger">No data found.</p>
   {% endif %}
 </div>
@@ -179,30 +165,33 @@
     });
   });
 
-  // CSV Download Logic
-  document.getElementById("downloadCsv")?.addEventListener("click", () => {
-    let csvContent = "";
-    const tables = [document.getElementById("kgTable"), document.getElementById("ltrTable")];
 
-    tables.forEach(table => {
-      const rows = table.querySelectorAll("tr");
-      rows.forEach(row => {
-        const cols = Array.from(row.children).map(td => `"${td.innerText.trim()}"`);
-        csvContent += cols.join(",") + "\n";
-      });
-      csvContent += "\n";
-    });
 
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.setAttribute("download", "chemicals_report.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  });
+  
+  // // CSV Download Logic
+  // document.getElementById("downloadCsv")?.addEventListener("click", () => {
+  //   let csvContent = "";
+  //   const tables = [document.getElementById("kgTable"), document.getElementById("ltrTable")];
 
-  // PDF Download Logic
+  //   tables.forEach(table => {
+  //     const rows = table.querySelectorAll("tr");
+  //     rows.forEach(row => {
+  //       const cols = Array.from(row.children).map(td => `"${td.innerText.trim()}"`);
+  //       csvContent += cols.join(",") + "\n";
+  //     });
+  //     csvContent += "\n";
+  //   });
+
+  //   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  //   const link = document.createElement("a");
+  //   link.href = URL.createObjectURL(blob);
+  //   link.setAttribute("download", "chemicals_report.csv");
+  //   document.body.appendChild(link);
+  //   link.click();
+  //   document.body.removeChild(link);
+  // });
+
+  // // PDF Download Logic
   document.getElementById("downloadPdf")?.addEventListener("click", () => {
     const element = document.querySelector(".a4-sheet");
     const opt = {
@@ -241,5 +230,42 @@
         });
 
 </script>
+
+<script>
+document.getElementById("downloadCsv")?.addEventListener("click", () => {
+
+  let csvContent = "";
+  const tables = document.querySelectorAll(".chem-table");
+
+  tables.forEach((table, index) => {
+
+    // Table Caption (Chemical Name)
+    const caption = table.querySelector("caption h4");
+    if (caption) {
+      csvContent += `"${caption.innerText.trim()}"\n`;
+    }
+
+    const rows = table.querySelectorAll("tr");
+    rows.forEach(row => {
+      const cols = Array.from(row.children)
+        .map(td => `"${td.innerText.replace(/"/g, '""').trim()}"`);
+      csvContent += cols.join(",") + "\n";
+    });
+
+    csvContent += "\n\n";
+  });
+
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "chemicals_consumption_report.csv";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+});
+</script>
+
 </body>
 </html>

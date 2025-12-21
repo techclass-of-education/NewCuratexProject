@@ -73,7 +73,7 @@
                 aria-labelledby="heading{{ recording.0 }}" data-bs-parent="#accordionDR">
                 <div class="accordion-body">
                     <div class="table-responsive transparent-bg">
-                  <a class="btn btn-success mx-2" href="{% url 'update_daily' recording.0 %}">UPDATE</a>
+                  <a class="btn btn-success mx-2" href="{% url 'update_daily' recording.0 %}">EDIT</a>
                    {% if request.session.user.role == "admin" %}
                     <input class="btn btn-danger del-btn" dataid="{{recording.0}}" value="DELETE" type="button"/>
                      {% endif %}

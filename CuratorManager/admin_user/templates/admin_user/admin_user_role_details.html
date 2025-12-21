@@ -47,8 +47,15 @@
                                 <td><b>{{ admin.role }}</b></td>
                             </tr>
                             <tr>
-                                <th>Suspended?:</th>
-                                <td><b>{{ admin.is_suspend }}</b></td>
+                                <th>Is Suspended ?:</th>
+                                <td><b>
+
+                                     {% if admin.is_suspend == True %}
+                                                Yes
+                                            {% else %}
+                                                No
+                                            {% endif %}
+                                </b></td>
                             </tr>
                         </table>
                         <a href="../admin_user_role/edit/{{admin.id}}" class="btn btn-warning mt-3">Edit</a>

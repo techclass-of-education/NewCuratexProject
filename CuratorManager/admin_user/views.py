@@ -86,7 +86,7 @@ def fetch_grounds(request):
     with connection.cursor() as cursor:
         cursor.execute(query, [tournament, city])
         data = cursor.fetchall()
-        print(data)
+        # print(data)
 
     grounds = [{"id": g[0], "name": g[1]} for g in data]
     return JsonResponse({"grounds": grounds})
@@ -146,7 +146,7 @@ def fetch_match_records(request):
     match_date = request.GET.get("match_date")
     match_type = request.GET.get("match_type")
     name_tournament = request.GET.get("name_tournament")
-    print(match_type)
+    # print(match_type)
     filters = []
     params = []
 
@@ -179,7 +179,7 @@ def fetch_match_records(request):
     
     if where_clause:
         where_clause = "WHERE " + where_clause
-    print(where_clause)
+    # print(where_clause)
 
     query = f"""
         SELECT 
@@ -278,7 +278,7 @@ def fetch_match_records(request):
        
         {where_clause}
     """
-    print(query,params)
+    # print(query,params)
     
     
     request.session['match-report-query'] = query
@@ -289,7 +289,7 @@ def fetch_match_records(request):
         rows = cursor.fetchall()
         
         data = [dict(zip(columns, row)) for row in rows]
-        print(data)
+        # print(data)
 
     return render(request, "admin_user/reports/report1.html", {"records": data})
 
@@ -632,7 +632,7 @@ def match_report(request):
         {where_clause}
         ORDER BY match_date DESC
     """
-    print(query)
+    # print(query)
 
     with connection.cursor() as cursor:
         cursor.execute(query, params)
@@ -659,8 +659,8 @@ def fertilizer_usage_report(request):
     ground_id = request.GET.get("ground_id")
     from_date = request.GET.get("from_date")
     to_date = request.GET.get("to_date")
-    chemical = request.GET.get("chemical").strip()
-    print(type(chemical))
+    chemical = request.GET.get("chemical")
+    # print(type(chemical))
 
     if not all([ground_id, from_date, to_date]):
         return render(request, "admin_user/reports/curator_fertilizer_report.html", {"error": "Please provide all filters."})
@@ -697,7 +697,7 @@ def fertilizer_usage_report(request):
         """
         value.extend([ground_id, from_date, to_date])
     
-    print(query,value)
+    # print(query,value)
 
     with connection.cursor() as cursor:
         cursor.execute(query, value)
@@ -793,13 +793,13 @@ def fertilizer_usage_report(request):
             }
         })
 
-    print({
-            "chem_records": chem_records,
-            "ground_id": ground_id,
-            "from_date": from_date,
-            "to_date": to_date,
-            "chemical": chemical,
-        })
+    # print({
+    #         "chem_records": chem_records,
+    #         "ground_id": ground_id,
+    #         "from_date": from_date,
+    #         "to_date": to_date,
+    #         "chemical": chemical,
+    #     })
 
     return render(request,"admin_user/reports/ChemicalsReport.html",{
         "chem_records": chem_records,
@@ -988,6 +988,9 @@ def machinery_pass_report(request):
     to_date = request.GET.get("to_date")
     machinery_id = request.GET.get("machinery_id")
     machinery_name_operator = request.GET.get("machinery_name_operator")
+    print("machinery id",machinery_id)
+    print("machinery id",from_date)
+    print("machinery id",to_date)
 
     pass_records = []
     hour_records = []
@@ -995,79 +998,182 @@ def machinery_pass_report(request):
     machinery_name = ""
     
 
-    if ground_id and from_date and to_date:
-        where_clauses = ["vcd.ground_id = %s  AND vcd.rolling_start_date BETWEEN %s AND %s or vcm.ground_id = %s  AND vcm.rolling_date BETWEEN %s AND %s"]
-        params = [ground_id, from_date, to_date,ground_id, from_date, to_date]
-
-       
-        final_where_clause = " AND ".join(where_clauses)
-        #  SELECT  
-        #         vgm.ground_name,
-        #         vcd.no_of_passes, vcd.out_no_of_passes, vcd.practice_no_of_passes, vcd.pp_no_of_passes,
-        #         vcd.mowing_duration, vcd.out_mowing_duration, vcd.practice_mowing_duration, vcd.pp_mowing_duration,
-        #         vcd.machinery_id, vcd.out_machinery_id, vcd.practice_machinery_id, vcd.pp_machinery_id,
-        #         vcd.mover_machinery_id, vcd.out_mover_machinery_id, vcd.practice_mover_machinery_id, vcd.pp_mover_machinery_id,
-        #         vcd.roller_machinery_name_operator, vcd.out_roller_machinery_name_operator,
-        #         vcd.practice_roller_machinery_name_operator, vcd.pp_roller_machinery_name_operator,
-        #         vcd.practice_mover_machinery_name_operator, vcd.pp_mover_machinery_name_operator,
-        #         vcd.mover_machinery_name_operator, vcd.out_mover_machinery_name_operator,
-        #         vcd.moving_passes_unit, vcd.out_moving_passes_unit, vcd.practice_moving_passes_unit, vcd.pp_moving_passes_unit
-        #     FROM {org_id}_curator_daily_recording_master vcd
-        #     JOIN {org_id}_ground_master vgm ON vcd.ground_id = vgm.id
-        #     WHERE {final_where_clause}
+    # if ground_id and from_date and to_date:
+    #     where_clauses = ["vcd.ground_id = %s  AND DATE(vcd.rolling_start_date) BETWEEN %s AND %s or vcm.ground_id = %s  AND DATE(vcm.preparation_date) BETWEEN %s AND %s"]
+    #     params = [ground_id, 
+    #               from_date, 
+    #               to_date,
+                  
+    #               ground_id, 
+    #               from_date, 
+    #               to_date
+    #              ]
+    # # if ground_id and from_date and to_date:
+    # #     where_clauses = ["vcd.ground_id = %s  AND vcd.rolling_start_date BETWEEN %s AND %s or vcm.ground_id = %s  AND vcm.match_date BETWEEN %s AND %s or vcm.ground_id = %s  AND vcm.from_date BETWEEN %s AND %s or vcm.ground_id = %s  AND vcm.to_date BETWEEN %s AND %s"]
+    # #     params = [ground_id, 
+    # #               from_date, 
+    # #               to_date,
+                  
+    # #               ground_id, 
+    # #               from_date, 
+    # #               to_date,
+                  
+    # #               ground_id, 
+    # #               from_date, 
+    # #               to_date,
+                  
+    # #               ground_id, 
+    # #               from_date, 
+    # #               to_date]
+    #     final_where_clause = " AND ".join(where_clauses)
+        
+    #     #  SELECT  
+    #     #         vgm.ground_name,
+    #     #         vcd.no_of_passes, vcd.out_no_of_passes, vcd.practice_no_of_passes, vcd.pp_no_of_passes,
+    #     #         vcd.mowing_duration, vcd.out_mowing_duration, vcd.practice_mowing_duration, vcd.pp_mowing_duration,
+    #     #         vcd.machinery_id, vcd.out_machinery_id, vcd.practice_machinery_id, vcd.pp_machinery_id,
+    #     #         vcd.mover_machinery_id, vcd.out_mover_machinery_id, vcd.practice_mover_machinery_id, vcd.pp_mover_machinery_id,
+    #     #         vcd.roller_machinery_name_operator, vcd.out_roller_machinery_name_operator,
+    #     #         vcd.practice_roller_machinery_name_operator, vcd.pp_roller_machinery_name_operator,
+    #     #         vcd.practice_mover_machinery_name_operator, vcd.pp_mover_machinery_name_operator,
+    #     #         vcd.mover_machinery_name_operator, vcd.out_mover_machinery_name_operator,
+    #     #         vcd.moving_passes_unit, vcd.out_moving_passes_unit, vcd.practice_moving_passes_unit, vcd.pp_moving_passes_unit
+    #     #     FROM {org_id}_curator_daily_recording_master vcd
+    #     #     JOIN {org_id}_ground_master vgm ON vcd.ground_id = vgm.id
+    #     #     WHERE {final_where_clause}
  
-        # query = f"""SELECT  
-        #         vgm.ground_name,
-        #         vcd.no_of_passes, vcd.out_no_of_passes, vcd.practice_no_of_passes, vcd.pp_no_of_passes,
-        #         vcd.mowing_duration, vcd.out_mowing_duration, vcd.practice_mowing_duration, vcd.pp_mowing_duration,
-        #         vcd.passes_unit, vcd.out_passes_unit, vcd.practice_passes_unit, vcd.pp_passes_unit,
-        #         vcd.moving_passes_unit, vcd.out_moving_passes_unit, vcd.practice_moving_passes_unit, vcd.pp_moving_passes_unit,
-        #         vcd.machinery_id, vcd.out_machinery_id, vcd.practice_machinery_id, vcd.pp_machinery_id,
-        #         vcd.mover_machinery_id, vcd.out_mover_machinery_id, vcd.practice_mover_machinery_id, vcd.pp_mover_machinery_id
-        #     FROM {org_id}_curator_daily_recording_master vcd
-        #     JOIN {org_id}_ground_master vgm ON vcd.ground_id = vgm.id
-        #     WHERE {final_where_clause}"""
+    #     # query = f"""SELECT  
+    #     #         vgm.ground_name,
+    #     #         vcd.no_of_passes, vcd.out_no_of_passes, vcd.practice_no_of_passes, vcd.pp_no_of_passes,
+    #     #         vcd.mowing_duration, vcd.out_mowing_duration, vcd.practice_mowing_duration, vcd.pp_mowing_duration,
+    #     #         vcd.passes_unit, vcd.out_passes_unit, vcd.practice_passes_unit, vcd.pp_passes_unit,
+    #     #         vcd.moving_passes_unit, vcd.out_moving_passes_unit, vcd.practice_moving_passes_unit, vcd.pp_moving_passes_unit,
+    #     #         vcd.machinery_id, vcd.out_machinery_id, vcd.practice_machinery_id, vcd.pp_machinery_id,
+    #     #         vcd.mover_machinery_id, vcd.out_mover_machinery_id, vcd.practice_mover_machinery_id, vcd.pp_mover_machinery_id
+    #     #     FROM {org_id}_curator_daily_recording_master vcd
+    #     #     JOIN {org_id}_ground_master vgm ON vcd.ground_id = vgm.id
+    #     #     WHERE {final_where_clause}"""
             
-        query = f"""SELECT  
-                vgm.ground_name,
-                vcd.no_of_passes, vcd.passes_unit, vcd.machinery_id,
-                vcd.out_no_of_passes,vcd.out_passes_unit,vcd.out_machinery_id,
-                vcd.practice_no_of_passes,vcd.practice_passes_unit,vcd.practice_machinery_id,
-                vcd.pp_no_of_passes, vcd.pp_passes_unit,vcd.pp_machinery_id,
-                vcd.mowing_duration,vcd.moving_passes_unit, vcd.mover_machinery_id,
-                vcd.out_mowing_duration,vcd.out_moving_passes_unit,vcd.out_mover_machinery_id,
-                vcd.practice_mowing_duration,vcd.practice_moving_passes_unit,vcd.practice_mover_machinery_id,
-                vcd.pp_mowing_duration,vcd.pp_moving_passes_unit,vcd.pp_mover_machinery_id,
-                vcd.roller_machinery_name_operator, 
-                vcd.out_roller_machinery_name_operator,
-                vcd.practice_roller_machinery_name_operator,
-                vcd.pp_roller_machinery_name_operator,
-                vcd.mover_machinery_name_operator,
-                vcd.out_mover_machinery_name_operator,
-                vcd.practice_mover_machinery_name_operator,
-                vcd.pp_mover_machinery_name_operator,
+    #     query = f"""SELECT  
+    #             vgm.ground_name,
+    #             vcd.no_of_passes, vcd.passes_unit, vcd.machinery_id,
+    #             vcd.out_no_of_passes,vcd.out_passes_unit,vcd.out_machinery_id,
+    #             vcd.practice_no_of_passes,vcd.practice_passes_unit,vcd.practice_machinery_id,
+    #             vcd.pp_no_of_passes, vcd.pp_passes_unit,vcd.pp_machinery_id,
+    #             vcd.mowing_duration,vcd.moving_passes_unit, vcd.mover_machinery_id,
+    #             vcd.out_mowing_duration,vcd.out_moving_passes_unit,vcd.out_mover_machinery_id,
+    #             vcd.practice_mowing_duration,vcd.practice_moving_passes_unit,vcd.practice_mover_machinery_id,
+    #             vcd.pp_mowing_duration,vcd.pp_moving_passes_unit,vcd.pp_mover_machinery_id,
+    #             vcd.roller_machinery_name_operator, 
+    #             vcd.out_roller_machinery_name_operator,
+    #             vcd.practice_roller_machinery_name_operator,
+    #             vcd.pp_roller_machinery_name_operator,
+    #             vcd.mover_machinery_name_operator,
+    #             vcd.out_mover_machinery_name_operator,
+    #             vcd.practice_mover_machinery_name_operator,
+    #             vcd.pp_mover_machinery_name_operator,
                 
-                vcm.no_of_passes, vcm.passes_unit, vcm.machinery_id,
-                vcm.out_no_of_passes,vcm.out_passes_unit,vcm.out_machinery_id,
+    #             vcm.no_of_passes, vcm.passes_unit, vcm.machinery_id,
+    #             vcm.out_no_of_passes,vcm.out_passes_unit,vcm.out_machinery_id,
                 
-                vcm.mowing_duration,vcm.moving_passes_unit, vcm.mover_machinery_id,
-                vcm.out_mowing_duration,vcm.out_moving_passes_unit,vcm.out_mover_machinery_id,
+    #             vcm.mowing_duration,vcm.moving_passes_unit, vcm.mover_machinery_id,
+    #             vcm.out_mowing_duration,vcm.out_moving_passes_unit,vcm.out_mover_machinery_id,
                 
-                vcm.roller_machinery_name_operator, 
-                vcm.out_roller_machinery_name_operator,
+    #             vcm.roller_machinery_name_operator, 
+    #             vcm.out_roller_machinery_name_operator,
                 
-				vcm.mover_machinery_name_operator,
-                vcm.out_mover_machinery_name_operator
+	# 			vcm.mover_machinery_name_operator,
+    #             vcm.out_mover_machinery_name_operator,
+    #             vcd.rolling_start_date,
+    #             vcm.preparation_date
                 
-                FROM {org_id}_curator_daily_recording_master vcd
-                JOIN {org_id}_ground_master vgm ON vcd.ground_id = vgm.id
-                JOIN {org_id}_match_master vcm ON vcd.ground_id = vcm.ground_id
-                WHERE {final_where_clause}"""
-        # print(query)
+                
+    #             FROM {org_id}_curator_daily_recording_master vcd
+    #             JOIN {org_id}_ground_master vgm ON vcd.ground_id = vgm.id
+    #             JOIN {org_id}_match_master vcm ON vcd.ground_id = vcm.ground_id
+    #             WHERE {final_where_clause}"""
+    #     # print(query)
+    #     with connection.cursor() as cursor:
+    #         cursor.execute(query, params)
+    #         records = cursor.fetchall()
+    #         print(records)
+    if ground_id and from_date and to_date:
+        where_clauses = ["""
+        (
+            vcd.ground_id = %s
+            AND DATE(vcd.rolling_start_date) BETWEEN %s AND %s
+        )
+        OR
+        (
+            vcm.ground_id = %s
+            AND DATE(vcm.preparation_date) BETWEEN %s AND %s
+        )
+        """]
+        
+        params = [
+           
+            from_date,
+            to_date,
+            ground_id,
+            from_date,
+            to_date
+        ]
+
+        final_where_clause = " AND ".join(where_clauses)
+
+        query = f"""
+        SELECT  
+            vgm.ground_name,
+
+            vcd.no_of_passes, vcd.passes_unit, vcd.machinery_id,
+            vcd.out_no_of_passes, vcd.out_passes_unit, vcd.out_machinery_id,
+            vcd.practice_no_of_passes, vcd.practice_passes_unit, vcd.practice_machinery_id,
+            vcd.pp_no_of_passes, vcd.pp_passes_unit, vcd.pp_machinery_id,
+            vcd.mowing_duration, vcd.moving_passes_unit, vcd.mover_machinery_id,
+            vcd.out_mowing_duration, vcd.out_moving_passes_unit, vcd.out_mover_machinery_id,
+            vcd.practice_mowing_duration, vcd.practice_moving_passes_unit, vcd.practice_mover_machinery_id,
+            vcd.pp_mowing_duration, vcd.pp_moving_passes_unit, vcd.pp_mover_machinery_id,
+
+            vcd.roller_machinery_name_operator,
+            vcd.out_roller_machinery_name_operator,
+            vcd.practice_roller_machinery_name_operator,
+            vcd.pp_roller_machinery_name_operator,
+            vcd.mover_machinery_name_operator,
+            vcd.out_mover_machinery_name_operator,
+            vcd.practice_mover_machinery_name_operator,
+            vcd.pp_mover_machinery_name_operator,
+
+            vcm.no_of_passes, vcm.passes_unit, vcm.machinery_id,
+            vcm.out_no_of_passes, vcm.out_passes_unit, vcm.out_machinery_id,
+            vcm.mowing_duration, vcm.moving_passes_unit, vcm.mover_machinery_id,
+            vcm.out_mowing_duration, vcm.out_moving_passes_unit, vcm.out_mover_machinery_id,
+            vcm.roller_machinery_name_operator,
+            vcm.out_roller_machinery_name_operator,
+            vcm.mover_machinery_name_operator,
+            vcm.out_mover_machinery_name_operator,
+
+            vcd.rolling_start_date,
+            vcm.preparation_date
+
+        FROM {org_id}_curator_daily_recording_master vcd
+
+JOIN {org_id}_ground_master vgm 
+    ON vcd.ground_id = vgm.id
+
+LEFT JOIN {org_id}_match_master vcm 
+    ON vcd.ground_id = vcm.ground_id
+   AND DATE(vcm.preparation_date) BETWEEN %s AND %s
+
+WHERE 
+    vcd.ground_id = %s
+    AND DATE(vcd.rolling_start_date) BETWEEN %s AND %s
+        """
+
         with connection.cursor() as cursor:
             cursor.execute(query, params)
             records = cursor.fetchall()
-            # print(records)
+            print(records)
+
        
         usageList=[]
         
@@ -1170,8 +1276,8 @@ def machinery_pass_report(request):
                 result[mid] = [0, 0]
 
             # element-wise à¤œà¥‹à¤¡à¤¼à¤¨à¤¾
-            result[mid][0] += pd[0]
-            result[mid][1] += pd[1]
+            result[mid][0] += int(pd[0])
+            result[mid][1] += int(pd[1])
 
         # dict à¤¸à¥‡ list of dict à¤¬à¤¨à¤¾à¤¨à¤¾
         finalwithid = [{'mid': mid, 'pd': pd} for mid, pd in result.items()]
@@ -1196,13 +1302,13 @@ def machinery_pass_report(request):
             if minutes > 0:  # âœ… à¤•à¥‡à¤µà¤² minutes > 0 à¤µà¤¾à¤²à¥‡
                 minutes_dict[d["mid"]] = minutes
 
-        print("Passes Dict:", passes_dict)
-        print("Minutes Dict:", minutes_dict)
+        # print("Passes Dict:", passes_dict)
+        # print("Minutes Dict:", minutes_dict)
 
         
 
     context = {
-        "operator": machinery_name_operator,
+    "operator": machinery_name_operator,
     "passes_dict": passes_dict,
     "minutes_dict": minutes_dict,
     "ground_id": ground_id,
@@ -1363,7 +1469,7 @@ def fertilizer_list(request):
         with connection.cursor() as cursor:
             cursor.execute(f"SELECT id, chemical_name,chemical_type FROM {org_id}_fertilizer_master")
             fertilizers = cursor.fetchall()
-            print(fertilizers)
+            # print(fertilizers)
         return render(request, 'admin_user/masters/chemicals_list.html', {'fertilizers': fertilizers})
     except Exception as e:
         print(e)
@@ -1394,10 +1500,10 @@ def fertilizer_edit(request, id):
             return redirect('fertilizer_list')
         else:
             with connection.cursor() as cursor:
-                print(id)
+                # print(id)
                 cursor.execute(f"SELECT id, chemical_name,chemical_type FROM {org_id}_fertilizer_master WHERE id=%s", [id])
                 fertilizer = cursor.fetchone()
-                print(fertilizer)
+                # print(fertilizer)
             return render(request, 'admin_user/masters/chemical_edit.html', {'fertilizer': fertilizer})
     except Exception as e:
         print(e)
@@ -1415,18 +1521,18 @@ def fertilizer_delete(request, id):
 
 def login_auth(request):
     if request.method == 'POST':
-        org_id = request.POST.get('org_id')
+        org_id = request.POST.get('org_id').lower()
         username = request.POST.get('username')
         password = request.POST.get('password')
         # print(org_id)
         try:
             user = AdminUserList.objects.get( org_id=org_id,username=username, password=password)
             if user is not None:
-                request.session["org_id"]=user.org_id
+                request.session["org_id"]=user.org_id.lower()
                 request.session["user"] = {
                     "id": user.id,
                     "name": user.name,
-                    "org_id": user.org_id,
+                    "org_id": user.org_id.lower(),
                     "email": user.email,
                     "username": user.username,
                     "address":user.address,
@@ -1434,7 +1540,7 @@ def login_auth(request):
                     "role": "admin",
                     "ground_id":"all"
                 }
-                print("main admin data=",request.session.get("user"))
+                # print("main admin data=",request.session.get("user"))
                 
                 return render(request,'admin_user/dashboard.html',{'user':user})
             else:
@@ -1448,7 +1554,7 @@ def login_auth(request):
 def login_auth_role(request):
 
     if request.method == 'POST':
-        org_id = request.POST.get('org_id')
+        org_id = request.POST.get('org_id').lower()
         username = request.POST.get('username')
         password = request.POST.get('password')
         role = request.POST.get('role')
@@ -1462,20 +1568,20 @@ def login_auth_role(request):
                 with connection.cursor() as cursor:
                     cursor.execute(f"SELECT * FROM `{org_id}_ground_master` WHERE id='{user.ground_id}' and org_id='{org_id}'")
                     groundData = cursor.fetchone()
-                    print("groundData",groundData)
-                    request.session["org_id"]=user.org_id
+                    # print("groundData",groundData)
+                    request.session["org_id"]=user.org_id.lower()
                     
                     request.session["user"] = {
                         "id": user.id,
                         "name": user.name,
-                        "org_id": user.org_id,
+                        "org_id": user.org_id.lower(),
                         "email": user.email,
                         "username": user.username,
                         "ground_id":user.ground_id,
                         "role": user.role,
                         "city":groundData[9]
                     }
-                    print("role login data=",request.session.get("user"))
+                    # print("role login data=",request.session.get("user"))
                     profilePath = user.profileImage.url
                     if(role=="Groundman"):
                         return render(request,'groundman/dashboard.html',{'user':user,'profilePath':profilePath,"admin":admin})
@@ -1510,11 +1616,11 @@ def login_auth_role_direct(request):
            
 
             if user is not None:
-                request.session["org_id"]=user.org_id
+                request.session["org_id"]=user.org_id.lower()
                 request.session["userdirect"] = {
                     "id": user.id,
                     "name": user.name,
-                    "org_id": user.org_id,
+                    "org_id": user.org_id.lower(),
                     "email": user.email,
                     "username": user.username,
                     "ground_id":user.ground_id,
@@ -1590,7 +1696,7 @@ def add_state_city(request):
             state_code = request.POST.get('state-code')
             city_name = request.POST.get('city')
             with connection.cursor() as cursor:
-                print("Method Post")
+                # print("Method Post")
                 cursor.execute(f'''INSERT INTO {org_id}_state_master (state, state_code) VALUES (%s, %s)''',
                                [state_name, state_code])
 
@@ -1665,7 +1771,7 @@ def create_admin_user_role(request):
 def admin_user_roles_list(request):
     org_id = request.session["org_id"]
     admin_roles = AdminRole.objects.filter(org_id=org_id)
-    print(admin_roles)
+    # print(admin_roles)
     return render(request, 'admin_user/admin_users_roles_list.html', {'admin_roles': admin_roles})
 
 
@@ -1718,7 +1824,7 @@ def create_ground_master(request):
     try:
         org_id = request.session["org_id"]
         if request.method == "POST":
-            org_id = request.POST.get('org_id')
+            org_id = request.POST.get('org_id').lower()
             google_location = request.POST.get('google_location')
             year_of_construction = request.POST.get('year_of_construction')
             phone_numbers = request.POST.get('phone_numbers')
@@ -1834,7 +1940,7 @@ def create_ground_master(request):
                             SELECT id,state, state_code
                             FROM {org_id}_state_master''')
                 state_data = cursor.fetchall()
-                print(state_data)
+                # print(state_data)
         return render(request, 'admin_user/create_ground_master.html',{'org_id':request.session["org_id"],'state_data':state_data})
     except Exception as e:
         print(e)
@@ -1848,7 +1954,7 @@ def update_ground_master(request, ground_id):
             ground = cursor.fetchone()
 
         if request.method == "POST":
-                org_id = request.POST.get('org_id')
+                org_id = request.POST.get('org_id').lower()
                 google_location = request.POST.get('google_location')
                 year_of_construction = request.POST.get('year_of_construction')
                 phone_numbers = request.POST.get('phone_numbers')
@@ -1868,7 +1974,7 @@ def update_ground_master(request, ground_id):
                 count_main_pitches = request.POST.get('count_main_pitches')
                 count_practice_pitches = request.POST.get('count_practice_pitches')
                 is_side_screen = True if request.POST.get('is_side_screen',False)=="on" else False
-                print(is_side_screen)
+                # print(is_side_screen)
                 # print("is_side_screen",is_side_screen)
                 count_placement_side_screen = 0 
                 is_broadcasting_facility = True if request.POST.get('is_broadcasting_facility',False)=="on" else False
@@ -2013,7 +2119,7 @@ def update_ground_master(request, ground_id):
                                 SELECT id,state, state_code
                                 FROM {org_id}_state_master''')
                     state_data = cursor.fetchall()
-                    print(state_data)
+                    # print(state_data)
         return render(request, 'admin_user/update_ground_master.html',
                       {'org_id':request.session["org_id"],'state_data':state_data,"ground":ground})
     except Exception as e:
@@ -2046,7 +2152,7 @@ def addNewPItch(request):
             ground_id = request.POST.get("ground_id")
             pitch_type = request.POST.get("pitch_type")
             pitch_no=-1
-            print(pitch_type)
+            # print(pitch_type)
             
             with connection.cursor() as cursor:
                 # Delete score by id
@@ -2205,7 +2311,7 @@ def save_edit_pitch(request):
         pitch_placement = request.POST.get('pitch_placement')
         size_pitch = request.POST.get('size_pitch')
         pitch_details = request.POST.get('pitch_details')
-        print(pitch_details)
+        # print(pitch_details)
 
         st=request.POST.get('soil_type')
         if(st=="mixed"):
@@ -2266,7 +2372,7 @@ def get_grounds(request):
         # state_id = request.GET.get('state_id')
         
         user_data = request.session.get("user")
-        print(user_data)
+        # print(user_data)
         grounds=[]
         
         with connection.cursor() as cursor:
@@ -2375,6 +2481,7 @@ def curator_daily_recording_form(request):
         
         pitch_id=0
         ground_id=0
+        out_clipping=""
         
         if request.method == "POST":
             rowIndxs=request.POST["rowIndxs"]
@@ -2386,7 +2493,7 @@ def curator_daily_recording_form(request):
             pracriceIndex=int(rowSplit[2].strip())
             ppIndex=int(rowSplit[3].strip())
             
-            print(mainIndex,outIndex,pracriceIndex,ppIndex)
+            # print(mainIndex,outIndex,pracriceIndex,ppIndex)
             maxIndex=max(mainIndex,outIndex,pracriceIndex,ppIndex)
             print("Max Index=",maxIndex)
             
@@ -2472,7 +2579,7 @@ def curator_daily_recording_form(request):
                             time_roller+=str(roll["time"])+"__####__"
                             roller_machine_type+=str(roll["machineType"])+"__####__"
                             roller_machinery_name_operator+=str(roll["operator"])+"__####__"
-                            print(machinery_id+" "+passes_unit)
+                            # print(machinery_id+" "+passes_unit)
                         # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
                     else:
                         print("No Rollers")
@@ -2493,7 +2600,7 @@ def curator_daily_recording_form(request):
                             mover_machine_type+=str(mov["type"])+"__####__"
                             mover_machinery_name_operator+=str(mov["operator"])+"__####__"
                             mowing_done_at_mm+=str(mov["mowHeight"])+"__####__"
-                            print(mover_machinery_id+" "+moving_passes_unit)
+                            # print(mover_machinery_id+" "+moving_passes_unit)
                         # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
                     else:
                         print("No Movers")
@@ -2617,7 +2724,7 @@ def curator_daily_recording_form(request):
                     outfield_chemical_weight=""
                     # outfield_chemical_unit=(request.POST.get("out_fertilizers_unit"+str(index)) or '').strip() or None
                     outfield_chemical_unit=""
-                    out_clipping=""
+                    
                     
                     out_watering_entries_json = (request.POST.get("out_watering_entries_json"+str(index)) or '').strip() or None
                     out_watering_entries = json.loads(out_watering_entries_json) if out_watering_entries_json else []
@@ -2659,7 +2766,7 @@ def curator_daily_recording_form(request):
                             out_time_roller+=str(roll["time"])+"__####__"
                             out_roller_machine_type+=str(roll["machineType"])+"__####__"
                             out_roller_machinery_name_operator+=str(roll["operator"])+"__####__"
-                            print(out_machinery_id+" "+out_passes_unit)
+                            # print(out_machinery_id+" "+out_passes_unit)
                         # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
                     else:
                         print("No Rollers")
@@ -2784,7 +2891,7 @@ def curator_daily_recording_form(request):
                         print("No Watering")
                         
                     practice_chemical_entries=(request.POST.get("practice_chemical_entries"+str(index)) or '').strip() or None
-                    print("Practice Chemical Entries:",practice_chemical_entries)
+                    # print("Practice Chemical Entries:",practice_chemical_entries)
                     practice_chemical_entries = json.loads(practice_chemical_entries) if practice_chemical_entries else []
                     if(len(practice_chemical_entries)>0):
                           practice_is_fertilizers_used=1
@@ -2810,7 +2917,7 @@ def curator_daily_recording_form(request):
                             practice_time_roller+=str(roll["time"])+"__####__"
                             practice_roller_machine_type+=str(roll["machineType"])+"__####__"
                             practice_roller_machinery_name_operator+=str(roll["operator"])+"__####__"
-                            print(practice_machinery_id+" "+practice_passes_unit)
+                            # print(practice_machinery_id+" "+practice_passes_unit)
                         # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
                     else:
                         print("No Rollers")
@@ -2827,7 +2934,7 @@ def curator_daily_recording_form(request):
                             practice_mover_machine_type+=str(mov["type"])+"__####__"
                             practice_mover_machinery_name_operator+=str(mov["operator"])+"__####__"
                             practice_mowing_done_at_mm+=str(mov["mowHeight"])+"__####__"
-                            print(practice_mover_machinery_id+" "+practice_moving_passes_unit)
+                            # print(practice_mover_machinery_id+" "+practice_moving_passes_unit)
                         # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
                     else:
                         print("No Movers")
@@ -2933,20 +3040,20 @@ def curator_daily_recording_form(request):
                     pp_chemical_entries=(request.POST.get("pp_chemical_entries"+str(index)) or '').strip() or None
                     pp_chemical_entries = json.loads(pp_chemical_entries) if pp_chemical_entries else []
                     if(len(pp_chemical_entries)>0):
-                        print("PP Chemical Entries 1:",pp_chemical_entries)
+                        # print("PP Chemical Entries 1:",pp_chemical_entries)
                         pp_is_fertilizers_used=1
                         for chem in pp_chemical_entries:
-                            print("PP Chemical Entries 2:",pp_chemical_entries)
+                            # print("PP Chemical Entries 2:",pp_chemical_entries)
                             pp_time_of_application_chemical+=str(chem["time"])+"__####__"
-                            print("PP Chemical Entries 3:",pp_chemical_entries)
+                            # print("PP Chemical Entries 3:",pp_chemical_entries)
                             pitch_practice_chemical_weight+=str(chem["weight"])+"__####__"
-                            print("PP Chemical Entries 4:",pp_chemical_entries)
+                            # print("PP Chemical Entries 4:",pp_chemical_entries)
                             pitch_practice_chemical_unit+=str(chem["unit"])+"__####__"
-                            print("PP Chemical Entries 5:",pp_chemical_entries)
+                            # print("PP Chemical Entries 5:",pp_chemical_entries)
                             pp_chemical_details_remark+=str(chem["remark"])+"__####__"
-                            print("PP Chemical Entries 6:",pp_chemical_entries)
+                            # print("PP Chemical Entries 6:",pp_chemical_entries)
                             pp_fertilizers_details+=str(chem["chem"])+"__####__"
-                            print("PP Chemical Entries 7:",pp_chemical_entries)
+                            # print("PP Chemical Entries 7:",pp_chemical_entries)
                             # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
                     else:
                         pp_is_fertilizers_used=0
@@ -2956,7 +3063,7 @@ def curator_daily_recording_form(request):
                     
                     pp_rolling_entries_json = (request.POST.get("pp_rolling_entries_json"+str(index)) or '').strip() or None
                     pp_rolling_entries = json.loads(pp_rolling_entries_json) if pp_rolling_entries_json else []
-                    print("PP Rolling Entries:",pp_rolling_entries)
+                    # print("PP Rolling Entries:",pp_rolling_entries)
                     if(len(pp_rolling_entries)>0):
                         for roll in pp_rolling_entries:
                             pp_machinery_id+=str(roll["machineryId"])+"__####__"
@@ -2966,14 +3073,14 @@ def curator_daily_recording_form(request):
                             pp_time_roller+=str(roll["time"])+"__####__"
                             pp_roller_machine_type+=str(roll["machineType"])+"__####__"
                             pp_roller_machinery_name_operator+=str(roll["operator"])+"__####__"
-                            print(pp_machinery_id+" "+pp_passes_unit)
+                            # print(pp_machinery_id+" "+pp_passes_unit)
                         # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
                     else:
                         print("No Rollers")
                     
                     pp_mover_entries_json = (request.POST.get("pp_mover_entries_json"+str(index)) or '').strip() or None
                     pp_mover_entries = json.loads(pp_mover_entries_json) if pp_mover_entries_json else []
-                    print("PP Mover Entries:",pp_mover_entries)
+                    # print("PP Mover Entries:",pp_mover_entries)
                     if(len(pp_mover_entries)>0):
                         for mov in pp_mover_entries:
                          
@@ -2986,7 +3093,7 @@ def curator_daily_recording_form(request):
                             pp_mover_machine_type+=str(mov["type"])+"__####__"
                             pp_mover_machinery_name_operator+=str(mov["operator"])+"__####__"
                             pp_mowing_done_at_mm+=str(mov["mowHeight"])+"__####__"
-                            print(pp_mover_machinery_id+" "+pp_moving_passes_unit)
+                            # print(pp_mover_machinery_id+" "+pp_moving_passes_unit)
                         # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
                     else:
                         print("No Movers")
@@ -3174,6 +3281,10 @@ def update_daily(request,daily_id):
         if not dailyRecord:
             raise Exception("dailyRecord not found")
         if request.method == "POST":
+            remark_by_groundsman=request.POST.get("remark_by_groundsman")
+            out_remark_by_groundsman=request.POST.get("out_remark_by_groundsman")
+            pp_remark_by_groundsman=request.POST.get("pp_remark_by_groundsman")
+            practice_remark_by_groundsman=request.POST.get("practice_remark_by_groundsman")
 
             if request.POST.get('pitch_id_text') != "all":
                 pitch_id_text = request.POST.get('pitch_id_text')
@@ -3216,7 +3327,7 @@ def update_daily(request,daily_id):
             is_fertilizers_used = 0
             fertilizers_details = ""
             chemical_details_remark = ""
-            remark_by_groundsman = ""
+            # remark_by_groundsman = ""
             time_of_application_chemical = ""
             out_time_of_application_chemical = ""
             practice_time_of_application_chemical = ""
@@ -3276,14 +3387,14 @@ def update_daily(request,daily_id):
             rolling_entries = json.loads(rolling_entries_json) if rolling_entries_json else []
             if(len(rolling_entries)>0):
                 for roll in rolling_entries:
-                    machinery_id+=str(roll["machineryId"])+"__####__"
-                    passes_unit+=str(roll["unit"])+"__####__"
-                    no_of_passes+=str(roll["passes"])+"__####__"
-                    rolling_speed+=str(roll["speed"])+"__####__"
-                    time_roller+=str(roll["time"])+"__####__"
-                    roller_machine_type+=str(roll["machineType"])+"__####__"
-                    roller_machinery_name_operator+=str(roll["operator"])+"__####__"
-                    print("main",machinery_id+" "+passes_unit)
+                    machinery_id+=str(roll.get("machineryId"))+"__####__"
+                    passes_unit+=str(roll.get("unit"))+"__####__"
+                    no_of_passes+=str(roll.get("passes"))+"__####__"
+                    rolling_speed+=str(roll.get("speed"))+"__####__"
+                    time_roller+=str(roll.get("time"))+"__####__"
+                    roller_machine_type+=str(roll.get("machineType"))+"__####__"
+                    roller_machinery_name_operator+=str(roll.get("operator"))+"__####__"
+                    # print("main",machinery_id+" "+passes_unit)
                     # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
             else:
                 print("No Rollers")
@@ -3292,15 +3403,15 @@ def update_daily(request,daily_id):
             mover_entries = json.loads(mover_entries_json) if mover_entries_json else []
             if(len(mover_entries)>0):
                 for mov in mover_entries:
-                    mover_machinery_id+=str(mov["machineryId"])+"__####__"
-                    moving_passes_unit+=str(mov["unit"])+"__####__"
-                    mowing_duration+=str(mov["duration"])+"__####__"
-                    date_mowing_done_last+=str(mov["date"])+"__####__"
-                    time_of_application_mover+=str(mov["time"])+"__####__"
-                    mover_machine_type+=str(mov["type"])+"__####__"
-                    mover_machinery_name_operator+=str(mov["operator"])+"__####__"
-                    mowing_done_at_mm+=str(mov["mowHeight"])+"__####__"
-                    print(mover_machinery_id+" "+moving_passes_unit)
+                    mover_machinery_id+=str(mov.get("machineryId"))+"__####__"
+                    moving_passes_unit+=str(mov.get("unit"))+"__####__"
+                    mowing_duration+=str(mov.get("duration"))+"__####__"
+                    date_mowing_done_last+=str(mov.get("date"))+"__####__"
+                    time_of_application_mover+=str(mov.get("time"))+"__####__"
+                    mover_machine_type+=str(mov.get("type"))+"__####__"
+                    mover_machinery_name_operator+=str(mov.get("operator"))+"__####__"
+                    mowing_done_at_mm+=str(mov.get("mowHeight"))+"__####__"
+                    # print(mover_machinery_id+" "+moving_passes_unit)
                     # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
             else:
                 print("No Movers")
@@ -3310,11 +3421,11 @@ def update_daily(request,daily_id):
             if(len(chemical_entries)>0):
                 is_fertilizers_used=1
                 for chem in chemical_entries:
-                    time_of_application_chemical+=str(chem["time"])+"__####__"
-                    pitch_main_chemical_weight+=str(chem["weight"])+"__####__"
-                    pitch_main_chemical_unit+=str(chem["unit"])+"__####__"
-                    chemical_details_remark+=str(chem["remark"])+"__####__"
-                    fertilizers_details+=str(chem["chem"])+"__####__"
+                    time_of_application_chemical+=str(chem.get("time"))+"__####__"
+                    pitch_main_chemical_weight+=str(chem.get("weight"))+"__####__"
+                    pitch_main_chemical_unit+=str(chem.get("unit"))+"__####__"
+                    chemical_details_remark+=str(chem.get("remark"))+"__####__"
+                    fertilizers_details+=str(chem.get("chem"))+"__####__"
                     # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
             else:
                 is_fertilizers_used=0
@@ -3334,7 +3445,7 @@ def update_daily(request,daily_id):
             pp_is_fertilizers_used = 0
             pp_fertilizers_details = ""
             pp_chemical_details_remark = ""
-            pp_remark_by_groundsman = ""
+            # pp_remark_by_groundsman = ""
             pp_time_of_application_chemical = ""
             print("time")
             pp_chemical_entries=(request.POST.get("pp_chemical_entries") or '').strip() or None
@@ -3342,11 +3453,11 @@ def update_daily(request,daily_id):
             if(len(pp_chemical_entries)>0):
                 pp_is_fertilizers_used=1
                 for chem in pp_chemical_entries:
-                    pp_time_of_application_chemical+=str(chem["time"])+"__####__"
-                    pitch_practice_chemical_weight+=str(chem["weight"])+"__####__"
-                    pitch_practice_chemical_unit+=str(chem["unit"])+"__####__"
-                    pp_chemical_details_remark+=str(chem["remark"])+"__####__"
-                    pp_fertilizers_details+=str(chem["chem"])+"__####__"
+                    pp_time_of_application_chemical+=str(chem.get("time"))+"__####__"
+                    pitch_practice_chemical_weight+=str(chem.get("weight"))+"__####__"
+                    pitch_practice_chemical_unit+=str(chem.get("unit"))+"__####__"
+                    pp_chemical_details_remark+=str(chem.get("remark"))+"__####__"
+                    pp_fertilizers_details+=str(chem.get("chem"))+"__####__"
                     # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
             else:
                 pp_is_fertilizers_used=0
@@ -3358,14 +3469,14 @@ def update_daily(request,daily_id):
             pp_rolling_entries = json.loads(pp_rolling_entries_json) if pp_rolling_entries_json else []
             if(len(pp_rolling_entries)>0):
                 for roll in pp_rolling_entries:
-                    pp_machinery_id+=str(roll["machineryId"])+"__####__"
-                    pp_passes_unit+=str(roll["unit"])+"__####__"
-                    pp_no_of_passes+=str(roll["passes"])+"__####__"
-                    pp_rolling_speed+=str(roll["speed"])+"__####__"
-                    pp_time_roller+=str(roll["time"])+"__####__"
-                    pp_roller_machine_type+=str(roll["machineType"])+"__####__"
-                    pp_roller_machinery_name_operator+=str(roll["operator"])+"__####__"
-                    print(pp_machinery_id+" "+pp_passes_unit)
+                    pp_machinery_id+=str(roll.get("machineryId"))+"__####__"
+                    pp_passes_unit+=str(roll.get("unit"))+"__####__"
+                    pp_no_of_passes+=str(roll.get("passes"))+"__####__"
+                    pp_rolling_speed+=str(roll.get("speed"))+"__####__"
+                    pp_time_roller+=str(roll.get("time"))+"__####__"
+                    pp_roller_machine_type+=str(roll.get("machineType"))+"__####__"
+                    pp_roller_machinery_name_operator+=str(roll.get("operator"))+"__####__"
+                    # print(pp_machinery_id+" "+pp_passes_unit)
                     # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
             else:
                 print("No Rollers")
@@ -3374,15 +3485,15 @@ def update_daily(request,daily_id):
             pp_mover_entries = json.loads(pp_mover_entries_json) if pp_mover_entries_json else []
             if(len(pp_mover_entries)>0):
                 for mov in pp_mover_entries:         
-                    pp_mover_machinery_id+=str(mov["machineryId"])+"__####__"
-                    pp_moving_passes_unit+=str(mov["unit"])+"__####__"
-                    pp_mowing_duration+=str(mov["duration"])+"__####__"
-                    pp_date_mowing_done_last+=str(mov["date"])+"__####__"
-                    pp_time_of_application_mover+=str(mov["time"])+"__####__"
-                    pp_mover_machine_type+=str(mov["type"])+"__####__"
-                    pp_mover_machinery_name_operator+=str(mov["operator"])+"__####__"
-                    pp_mowing_done_at_mm+=str(mov["mowHeight"])+"__####__"
-                    print("pp ",pp_mover_machinery_id+" "+pp_moving_passes_unit)
+                    pp_mover_machinery_id+=str(mov.get("machineryId"))+"__####__"
+                    pp_moving_passes_unit+=str(mov.get("unit"))+"__####__"
+                    pp_mowing_duration+=str(mov.get("duration"))+"__####__"
+                    pp_date_mowing_done_last+=str(mov.get("date"))+"__####__"
+                    pp_time_of_application_mover+=str(mov.get("time"))+"__####__"
+                    pp_mover_machine_type+=str(mov.get("type"))+"__####__"
+                    pp_mover_machinery_name_operator+=str(mov.get("operator"))+"__####__"
+                    pp_mowing_done_at_mm+=str(mov.get("mowHeight"))+"__####__"
+                    # print("pp ",pp_mover_machinery_id+" "+pp_moving_passes_unit)
                     # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
             else:
                 print("No Movers")
@@ -3406,39 +3517,39 @@ def update_daily(request,daily_id):
             out_is_fertilizers_used =  0
             out_fertilizers_details = ""
             out_chemical_details_remark = ""
-            out_remark_by_groundsman = ""
+            # out_remark_by_groundsman = ""
             out_clipping = ""
             
             out_rolling_entries_json = (request.POST.get("out_rolling_entries_json") or '').strip() or None
             out_rolling_entries = json.loads(out_rolling_entries_json) if out_rolling_entries_json else []
             if(len(out_rolling_entries)>0):
                 for roll in out_rolling_entries:
-                    out_machinery_id+=str(roll["machineryId"])+"__####__"
-                    out_passes_unit+=str(roll["unit"])+"__####__"
-                    out_no_of_passes+=str(roll["passes"])+"__####__"
-                    out_rolling_speed+=str(roll["speed"])+"__####__"
-                    out_time_roller+=str(roll["time"])+"__####__"
-                    out_roller_machine_type+=str(roll["machineType"])+"__####__"
-                    out_roller_machinery_name_operator+=str(roll["operator"])+"__####__"
-                    print("out 1",out_machinery_id+" "+out_passes_unit)
+                    out_machinery_id+=str(roll.get("machineryId"))+"__####__"
+                    out_passes_unit+=str(roll.get("unit"))+"__####__"
+                    out_no_of_passes+=str(roll.get("passes"))+"__####__"
+                    out_rolling_speed+=str(roll.get("speed"))+"__####__"
+                    out_time_roller+=str(roll.get("time"))+"__####__"
+                    out_roller_machine_type+=str(roll.get("machineType"))+"__####__"
+                    out_roller_machinery_name_operator+=str(roll.get("operator"))+"__####__"
+                    # print("out 1",out_machinery_id+" "+out_passes_unit)
                     # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
             else:
                     print("No Rollers")
                     
             out_mover_entries_json = (request.POST.get("out_mover_entries_json") or '').strip() or None
             out_mover_entries = json.loads(out_mover_entries_json) if out_mover_entries_json else []
-            print("out_mover_entries ",out_mover_entries)
+            # print("out_mover_entries ",out_mover_entries)
             if(len(out_mover_entries)>0):
                 for mov in out_mover_entries:
-                    out_mover_machinery_id+=str(mov["machineryId"])+"__####__"
-                    out_moving_passes_unit+=str(mov["unit"])+"__####__"
-                    out_mowing_duration+=str(mov["duration"])+"__####__"
-                    out_date_mowing_done_last+=str(mov["date"])+"__####__"
-                    out_time_of_application_mover+=str(mov["time"])+"__####__"
-                    out_mover_machine_type+=str(mov["type"])+"__####__"
-                    out_mover_machinery_name_operator+=str(mov["operator"])+"__####__"
-                    out_mowing_done_at_mm+=str(mov["mowHeight"])+"__####__"
-                    out_clipping+=str(mov["out_clipping"])+"__####__"
+                    out_mover_machinery_id+=str(mov.get("machineryId"))+"__####__"
+                    out_moving_passes_unit+=str(mov.get("unit"))+"__####__"
+                    out_mowing_duration+=str(mov.get("duration"))+"__####__"
+                    out_date_mowing_done_last+=str(mov.get("date"))+"__####__"
+                    out_time_of_application_mover+=str(mov.get("time"))+"__####__"
+                    out_mover_machine_type+=str(mov.get("type"))+"__####__"
+                    out_mover_machinery_name_operator+=str(mov.get("operator"))+"__####__"
+                    out_mowing_done_at_mm+=str(mov.get("mowHeight"))+"__####__"
+                    out_clipping+=str(mov.get("out_clipping"))+"__####__"
                     # print("out 2",out_mover_machinery_id+" "+out_moving_passes_unit)
                     # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
             else:
@@ -3447,15 +3558,15 @@ def update_daily(request,daily_id):
             
             out_chemical_entries=(request.POST.get("out_chemical_entries") or '').strip() or None
             out_chemical_entries = json.loads(out_chemical_entries) if out_chemical_entries else []
-            print("out_chemical_entries ",out_chemical_entries)
+            # print("out_chemical_entries ",out_chemical_entries)
             if(len(out_chemical_entries)>0):
                 out_is_fertilizers_used=1
                 for chem in out_chemical_entries:
-                    out_time_of_application_chemical+=str(chem["time"])+"__####__"
-                    outfield_chemical_weight+=str(chem["weight"])+"__####__"
-                    outfield_chemical_unit+=str(chem["unit"])+"__####__"
-                    out_chemical_details_remark+=str(chem["remark"])+"__####__"
-                    out_fertilizers_details+=str(chem["chemical"])+"__####__"
+                    out_time_of_application_chemical+=str(chem.get("time"))+"__####__"
+                    outfield_chemical_weight+=str(chem.get("weight"))+"__####__"
+                    outfield_chemical_unit+=str(chem.get("unit"))+"__####__"
+                    out_chemical_details_remark+=str(chem.get("remark"))+"__####__"
+                    out_fertilizers_details+=str(chem.get("chemical"))+"__####__"
                     # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
             else:
                 out_is_fertilizers_used=0
@@ -3479,7 +3590,7 @@ def update_daily(request,daily_id):
             practice_is_fertilizers_used =  0
             practice_fertilizers_details = ""
             practice_chemical_details_remark= ""
-            practice_remark_by_groundsman = ""
+            # practice_remark_by_groundsman = ""
             
             
             
@@ -3489,11 +3600,11 @@ def update_daily(request,daily_id):
             if(len(practice_chemical_entries)>0):
                 practice_is_fertilizers_used=1
                 for chem in practice_chemical_entries:
-                    practice_time_of_application_chemical+=str(chem["time"])+"__####__"
-                    practice_area_chemical_weight+=str(chem["weight"])+"__####__"
-                    practice_area_chemical_unit+=str(chem["unit"])+"__####__"
-                    practice_chemical_details_remark+=str(chem["remark"])+"__####__"
-                    practice_fertilizers_details+=str(chem["chemical"])+"__####__"
+                    practice_time_of_application_chemical+=str(chem.get("time"))+"__####__"
+                    practice_area_chemical_weight+=str(chem.get("weight"))+"__####__"
+                    practice_area_chemical_unit+=str(chem.get("unit"))+"__####__"
+                    practice_chemical_details_remark+=str(chem.get("remark"))+"__####__"
+                    practice_fertilizers_details+=str(chem.get("chemical"))+"__####__"
                     # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
             else:
                 practice_is_fertilizers_used=0
@@ -3503,14 +3614,14 @@ def update_daily(request,daily_id):
             practice_rolling_entries = json.loads(practice_rolling_entries_json) if practice_rolling_entries_json else []
             if(len(practice_rolling_entries)>0):
                 for roll in practice_rolling_entries:
-                    practice_machinery_id+=str(roll["machineryId"])+"__####__"
-                    practice_passes_unit+=str(roll["unit"])+"__####__"
-                    practice_no_of_passes+=str(roll["passes"])+"__####__"
-                    practice_rolling_speed+=str(roll["speed"])+"__####__"
-                    practice_time_roller+=str(roll["time"])+"__####__"
-                    practice_roller_machine_type+=str(roll["machineType"])+"__####__"
-                    practice_roller_machinery_name_operator+=str(roll["operator"])+"__####__"
-                    print(practice_machinery_id+" "+practice_passes_unit)
+                    practice_machinery_id+=str(roll.get("machineryId"))+"__####__"
+                    practice_passes_unit+=str(roll.get("unit"))+"__####__"
+                    practice_no_of_passes+=str(roll.get("passes"))+"__####__"
+                    practice_rolling_speed+=str(roll.get("speed"))+"__####__"
+                    practice_time_roller+=str(roll.get("time"))+"__####__"
+                    practice_roller_machine_type+=str(roll.get("machineType"))+"__####__"
+                    practice_roller_machinery_name_operator+=str(roll.get("operator"))+"__####__"
+                    # print(practice_machinery_id+" "+practice_passes_unit)
                         # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
             else:
                 print("No Rollers")
@@ -3520,15 +3631,15 @@ def update_daily(request,daily_id):
             if(len(practice_mover_entries)>0):
                 practice_is_fertilizers_used=1
                 for mov in practice_mover_entries:
-                    practice_mover_machinery_id+=str(mov["machineryId"])+"__####__"
-                    practice_moving_passes_unit+=str(mov["unit"])+"__####__"
-                    practice_mowing_duration+=str(mov["duration"])+"__####__"
-                    practice_date_mowing_done_last+=str(mov["date"])+"__####__"
-                    time_of_application_practice_mover+=str(mov["time"])+"__####__"
-                    practice_mover_machine_type+=str(mov["type"])+"__####__"
-                    practice_mover_machinery_name_operator+=str(mov["operator"])+"__####__"
-                    practice_mowing_done_at_mm+=str(mov["mowHeight"])+"__####__"
-                    print(practice_mover_machinery_id+" "+practice_moving_passes_unit)
+                    practice_mover_machinery_id+=str(mov.get("machineryId"))+"__####__"
+                    practice_moving_passes_unit+=str(mov.get("unit"))+"__####__"
+                    practice_mowing_duration+=str(mov.get("duration"))+"__####__"
+                    practice_date_mowing_done_last+=str(mov.get("date"))+"__####__"
+                    time_of_application_practice_mover+=str(mov.get("time"))+"__####__"
+                    practice_mover_machine_type+=str(mov.get("type"))+"__####__"
+                    practice_mover_machinery_name_operator+=str(mov.get("operator"))+"__####__"
+                    practice_mowing_done_at_mm+=str(mov.get("mowHeight"))+"__####__"
+                    # print(practice_mover_machinery_id+" "+practice_moving_passes_unit)
                     # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
             else:
                 practice_is_fertilizers_used=0
@@ -3897,13 +4008,10 @@ def update_daily(request,daily_id):
 
 
                 # Debugging: Print the query and values
-                print("Query:", query)
-                print("Values:", values)
+                # print("Query:", query)
+                # print("Values:", values)
 
-                cleaned_values = [
-    value if value not in ['NA', 'None', '', None] else None
-    for value in values
-]
+                cleaned_values = [value if value not in ['NA', 'None', '', None] else None for value in values]
 
 
                 cursor.execute(query, cleaned_values)
@@ -3920,6 +4028,8 @@ def update_daily(request,daily_id):
         return render(request, 'admin_user/update_daily_recording_form.html', {'daily': dailyRecord})
     except Exception as e:
         print(e)
+
+
 
 @csrf_exempt
 def delete_daily(request,daily_id):
@@ -4376,7 +4486,7 @@ def get_machinery_data(request):
     with connection.cursor() as cursor:
         try:
             sql=f"SELECT * FROM {org_id}_machinery_master"
-            print(sql)
+            # print(sql)
             cursor.execute(f"SELECT * FROM {org_id}_machinery_master")
 
             data = cursor.fetchall()
@@ -4417,7 +4527,7 @@ SET `equipment_name` = %s,`type` = %s,`date_purchase` = %s,`unit` = %s,`value` =
     , [equipment_name, type_,date_purchase,unit,value,equipment_model ,details,machinery_id])
 
             return redirect('machinery_list')
-        print(machinery)
+        # print(machinery)
         return render(request, 'admin_user/update_machinery.html', {'machinery': machinery})
     except Exception as e:
         print(e)
@@ -4481,7 +4591,7 @@ def add_score(request, match_id):
             return redirect('list_matches')
 
      
-        print(match)
+        # print(match)
 
         return render(request, 'admin_user/score_form.html', {'match': match})
     except Exception as e:
@@ -4496,7 +4606,7 @@ def save_scores(request):
             match_id = data.get('match_id')
             scores = data.get('scores')
             i=1
-            print(scores)
+            # print(scores)
             with connection.cursor() as cursor:
                 
                 for score in scores:
@@ -4550,11 +4660,11 @@ def get_match_scores(request, match_id):
                 
                 cursor.execute(f"""SELECT match_type, name_tournament, match_date, from_date, to_date ,ground_id FROM `{org_id}_match_master` WHERE id = %s""", [match_id])
                 match = cursor.fetchone()
-                print(match)
+                # print(match)
                 
                 cursor.execute(f"""SELECT ground_name FROM `{org_id}_ground_master` WHERE id = %s""", [match[5]])
                 ground = cursor.fetchone()
-                print(ground)
+                # print(ground)
                 
             # Format the response data
             scores_data = [
@@ -4637,7 +4747,7 @@ def insert_match(request):
         org_id = request.session["org_id"]
         if request.method == 'POST':
             rowIndxs=request.POST.get("rowIndxs")
-            print("rowIndxs",rowIndxs)
+            # print("rowIndxs",rowIndxs)
             rowSplit=rowIndxs.split("-")
             pitchIndex=int(rowSplit[0].strip())
             outfieldIndex=int(rowSplit[1].strip())
@@ -4645,7 +4755,7 @@ def insert_match(request):
           
             # print(pitchIndex,outfieldIndex)
             maxIndex=max(pitchIndex,outfieldIndex)
-            print("Max Index=",maxIndex)
+            # print("Max Index=",maxIndex)
             
             
             for index in range(1,maxIndex+1):
@@ -4726,7 +4836,7 @@ def insert_match(request):
                             time_roller+=str(roll["time"])+"__####__"
                             roller_machine_type+=str(roll["machineType"])+"__####__"
                             roller_machinery_name_operator+=str(roll["operator"])+"__####__"
-                            print(machinery_id+" "+passes_unit)
+                            # print(machinery_id+" "+passes_unit)
                         # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
                     else:
                         print("No Rollers")
@@ -4747,7 +4857,7 @@ def insert_match(request):
                             mover_machine_type+=str(mov["type"])+"__####__"
                             mover_machinery_name_operator+=str(mov["operator"])+"__####__"
                             mowing_done_at_mm+=str(mov["mowHeight"])+"__####__"
-                            print(mover_machinery_id+" "+moving_passes_unit)
+                            # print(mover_machinery_id+" "+moving_passes_unit)
                         # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
                     else:
                         print("No Movers")
@@ -4965,7 +5075,7 @@ def insert_match(request):
                             out_time_roller+=str(roll["time"])+"__####__"
                             out_roller_machine_type+=str(roll["machineType"])+"__####__"
                             out_roller_machinery_name_operator+=str(roll["operator"])+"__####__"
-                            print(out_machinery_id+" "+out_passes_unit)
+                            # print(out_machinery_id+" "+out_passes_unit)
                         # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
                     else:
                         print("No Rollers")
@@ -4984,7 +5094,7 @@ def insert_match(request):
                             out_mover_machine_type+=str(mov["type"])+"__####__"
                             out_mover_machinery_name_operator+=str(mov["operator"])+"__####__"
                             out_mowing_done_at_mm+=str(mov["mowHeight"])+"__####__"
-                            print(out_mover_machinery_id+" "+out_moving_passes_unit)
+                            # print(out_mover_machinery_id+" "+out_moving_passes_unit)
                         # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
                     else:
                         print("No Movers")
@@ -5286,7 +5396,7 @@ def update_match(request, match_id):
                     time_roller+=str(roll["time"])+"__####__"
                     roller_machine_type+=str(roll["machineType"])+"__####__"
                     roller_machinery_name_operator+=str(roll["operator"])+"__####__"
-                    print("main",machinery_id+" "+passes_unit)
+                    # print("main",machinery_id+" "+passes_unit)
                     # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
             else:
                 print("No Rollers")
@@ -5303,7 +5413,7 @@ def update_match(request, match_id):
                     mover_machine_type+=str(mov["type"])+"__####__"
                     mover_machinery_name_operator+=str(mov["operator"])+"__####__"
                     mowing_done_at_mm+=str(mov["mowHeight"])+"__####__"
-                    print(mover_machinery_id+" "+moving_passes_unit)
+                    # print(mover_machinery_id+" "+moving_passes_unit)
                     # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
             else:
                 print("No Movers")
@@ -5366,14 +5476,14 @@ def update_match(request, match_id):
                     out_time_roller+=str(roll["time"])+"__####__"
                     out_roller_machine_type+=str(roll["machineType"])+"__####__"
                     out_roller_machinery_name_operator+=str(roll["operator"])+"__####__"
-                    print("out 1",out_machinery_id+" "+out_passes_unit)
+                    # print("out 1",out_machinery_id+" "+out_passes_unit)
                     # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
             else:
                     print("No Rollers")
                     
             out_mover_entries_json = (request.POST.get("out_mover_entries_json") or '').strip() or None
             out_mover_entries = json.loads(out_mover_entries_json) if out_mover_entries_json else []
-            print("out_mover_entries ",out_mover_entries)
+            # print("out_mover_entries ",out_mover_entries)
             if(len(out_mover_entries)>0):
                 for mov in out_mover_entries:
                     out_mover_machinery_id+=str(mov["machineryId"])+"__####__"
@@ -5384,7 +5494,7 @@ def update_match(request, match_id):
                     out_mover_machine_type+=str(mov["type"])+"__####__"
                     out_mover_machinery_name_operator+=str(mov["operator"])+"__####__"
                     out_mowing_done_at_mm+=str(mov["mowHeight"])+"__####__"
-                    print("out 2",out_mover_machinery_id+" "+out_moving_passes_unit)
+                    # print("out 2",out_mover_machinery_id+" "+out_moving_passes_unit)
                     # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
             else:
                 print("No Movers")
@@ -5392,7 +5502,7 @@ def update_match(request, match_id):
             
             out_chemical_entries=(request.POST.get("out_chemical_entries") or '').strip() or None
             out_chemical_entries = json.loads(out_chemical_entries) if out_chemical_entries else []
-            print("out_chemical_entries ",out_chemical_entries)
+            # print("out_chemical_entries ",out_chemical_entries)
             if(len(out_chemical_entries)>0):
                 out_is_fertilizers_used=1
                 for chem in out_chemical_entries:
@@ -5860,7 +5970,7 @@ def match_list(request):
     try:
         org_id = request.session["org_id"]
         user = request.session.get("user")
-        print("user is:",user)
+        # print("user is:",user)
         with connection.cursor() as cursor:
             if user.get("role")=="admin":
                 cursor.execute(f'''SELECT `cdr`.`id`,
@@ -6146,7 +6256,7 @@ def export_multiple_tables_to_excel(request):
             'Table7': f"SELECT * FROM {org_id}_machinery_master",
         }
 
-        print("Queries to be executed:", queries)
+        # print("Queries to be executed:", queries)
         # In-memory zip buffer
         zip_buffer = BytesIO()
         
