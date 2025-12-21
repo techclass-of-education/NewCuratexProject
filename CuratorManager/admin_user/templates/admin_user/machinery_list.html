@@ -37,7 +37,7 @@
         </tr>
         </thead>
         {% for machinery in machinery %}
-        <tr>
+        <tr class="list">
             <td>{{ machinery.0 }}</td>
             <td>{{ machinery.1 }}</td>
             <td>{{ machinery.2 }}</td>
@@ -150,6 +150,10 @@ document.addEventListener("DOMContentLoaded", function () {
 th.sortable.sorted-desc::after {
     content: " ⬇" !important;
     color: yellow !important;
+}
+.list td
+{
+    color: white !important;
 }
 </style>
 </body>

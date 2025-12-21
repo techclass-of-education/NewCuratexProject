@@ -582,7 +582,7 @@ def curator_recording_report(request):
         columns = [col[0] for col in cursor.description]
         data = [dict(zip(columns, row)) for row in cursor.fetchall()]
 
-    default_fields = ['id', 'pitch_id', 'pitch_location', 'rolling_start_date', 'min_temp', 'max_temp', 'match_date']
+    default_fields = ['id', 'pitch_id','ground_id', 'rolling_start_date', 'min_temp', 'max_temp', 'match_date']
     
     return render(
         request,
@@ -988,9 +988,9 @@ def machinery_pass_report(request):
     to_date = request.GET.get("to_date")
     machinery_id = request.GET.get("machinery_id")
     machinery_name_operator = request.GET.get("machinery_name_operator")
-    print("machinery id",machinery_id)
-    print("machinery id",from_date)
-    print("machinery id",to_date)
+    # print("machinery id",machinery_id)
+    # print("machinery id",from_date)
+    # print("machinery id",to_date)
 
     pass_records = []
     hour_records = []
@@ -1172,7 +1172,7 @@ WHERE
         with connection.cursor() as cursor:
             cursor.execute(query, params)
             records = cursor.fetchall()
-            print(records)
+            # print(records)
 
        
         usageList=[]

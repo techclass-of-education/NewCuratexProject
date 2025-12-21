@@ -417,6 +417,133 @@
 
 </script>
 
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // const groundId = "{{ request.GET.id }}";
+    // if (!groundId) return;
+
+
+    // // 🔹 Step 1: find TH having data-key="ground_id"
+    // const th = document.querySelector('th[data-key="ground_id"]');
+    // if (!th) return;
+
+    // // 🔹 Step 2: get column index of that TH
+    // const colIndex = th.cellIndex;   // zero-based index
+    // // alert(colIndex)
+
+    // // 🔹 Step 3: fetch ground name using axios
+    // axios.get("/usr_admin/get_ground/"+groundId, {
+       
+    // })
+    // .then(response => {
+    //     const groundName = response.data.ground[6];
+    //     // alert(groundName)
+
+    //     // 🔹 Step 4: replace all TDs of that column
+    //     document.querySelectorAll("tbody tr").forEach(row => {
+    //         const td = row.cells[colIndex];
+    //         if (td) {
+    //             td.innerText = groundName;
+    //         }
+    //     });
+    // })
+    // .catch(err => console.error(err));
+
+});
+
+
+function replaceColumnValueByTH({
+    thKey,
+    apiUrl,
+    idValue,
+    valueExtractor
+}) {
+    const th = document.querySelector(`th[data-key="${thKey}"]`);
+    if (!th) return;
+
+    const colIndex = th.cellIndex;
+
+    axios.get(apiUrl)
+        .then(response => {
+            const newValue = valueExtractor(response);
+
+            document.querySelectorAll("tbody tr").forEach(row => {
+                if (row.cells[colIndex]) {
+                    row.cells[colIndex].innerText = newValue;
+                }
+            });
+        })
+        .catch(err => console.error(err));
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    /* 🔹 Ground replacement */
+    replaceColumnValueByTH({
+        thKey: "ground_id",
+        apiUrl: `/usr_admin/get_ground/{{request.GET.id}}`,
+        idValue: "{{ request.GET.id }}",
+        valueExtractor: res => res.data.ground[6]
+    });
+
+ 
+
+});
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const groundId = "{{ request.GET.id }}";
+    if (!groundId) return;
+
+    // 🔹 Step 1: pitch_id wala TH dhundo
+    const pitchTh = document.querySelector('th[data-key="pitch_id"]');
+    if (!pitchTh) return;
+
+    const pitchColIndex = pitchTh.cellIndex;
+
+    // 🔹 Step 2: aapka existing API call
+    axios.get(`/usr_admin/get_pitches/${groundId}`)
+        .then(res => {
+
+            const pitchMap = {};
+
+            console.log(res.data)
+
+            // 🔹 Step 3: response se mapping banao
+            res.data.grounds.forEach(obj => {
+                const pitch = obj.pitch;
+
+                const pitchId = pitch[0];        // p.id
+                const placement = pitch[14];     // p.pitch_placement
+
+                pitchMap[pitchId] = placement;
+            });
+
+            // 🔹 Step 4: table rows me replace
+            document.querySelectorAll("tbody tr").forEach(row => {
+
+                const td = row.cells[pitchColIndex];
+                if (!td) return;
+
+                const pitchIdInTable = td.innerText.trim();
+
+                if (pitchMap[pitchIdInTable]) {
+                    td.innerText = pitchMap[pitchIdInTable];
+                }
+            });
+        })
+        .catch(err => console.error("Pitch fetch error:", err));
+});
+</script>
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
 
