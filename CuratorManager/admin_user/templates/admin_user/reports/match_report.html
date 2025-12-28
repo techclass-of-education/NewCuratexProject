@@ -162,7 +162,7 @@
 
                 
 
-                <div class="col-lg-12 col-sm-12">
+               <div class="col-lg-12 me-2 mt-5 mt-2 col-sm-12 d-flex flex-wrap align-items-end">
                      <button type="submit" class="btn btn-warning">Search</button>
                     <button type="button" class="btn btn-info text-white" data-bs-toggle="modal"
                         data-bs-target="#staticBackdrop">
@@ -172,33 +172,33 @@
                     <button id="downloadCsv" type="button" class="btn btn-success">Download CSV</button>
                     <button id="" type="button" onclick="window.print()" class="btn btn-danger">Download PDF</button>
                     {% endif %}
-                    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
-                        tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                        <div class="modal-dialog box-bg">
-                            <div class="modal-content transparent-bg">
-                                <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <label class="form-label">Select Columns</label>
-                                    <div class="column-checkbox-wrapper">
-                                        {% for key in records.0.keys %}
-                                        <div class="form-check">
-                                            <input class="form-check-input column-checkbox" type="checkbox"
-                                                id="check_{{ key }}" value="{{ key }}" {% if key in default_fields %}checked{% endif %}>
-                                            <label class="form-check-label" for="check_{{ key }}">{{ key|capfirst }}</label>
-                                        </div>
-                                        {% endfor %}
+                </div>
+                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                    tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog box-bg">
+                        <div class="modal-content transparent-bg">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <label class="form-label">Select Columns</label>
+                                <div class="column-checkbox-wrapper">
+                                    {% for key in records.0.keys %}
+                                    <div class="form-check">
+                                        <input class="form-check-input column-checkbox" type="checkbox"
+                                            id="check_{{ key }}" value="{{ key }}" {% if key in default_fields %}checked{% endif %}>
+                                        <label class="form-check-label" for="check_{{ key }}">{{ key|capfirst }}</label>
                                     </div>
+                                    {% endfor %}
                                 </div>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary">Understood</button>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Understood</button>
 
-                            </div>
                         </div>
                     </div>
                 </div>

@@ -11,6 +11,20 @@
   background-color: rgb(1, 1, 66);
 }
 
+@media (min-width: 992px) {
+  .dropdown-menu
+{
+  position: absolute !important;
+  right: 0 !important;
+}
+}
+
+.dropdown-menu
+{
+  position: absolute !important;
+  right: 0 !important;
+}
+
 #save-scores {
   touch-action: manipulation;
 }
@@ -364,6 +378,11 @@ color: white !important;
   summary:hover {
     background-color: #0056b3; /* Darker blue on hover */
   }
+
+#content
+{
+  overflow: auto;
+}
 
   /* Styling for the content when revealed */
   details p {

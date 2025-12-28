@@ -1,5 +1,42 @@
 {% include "admin_user/headertags.html" %}
 
+<style>
+    .a4-sheet-inner-div {
+  padding: 0 !important;
+  margin: 0 !important;
+  font-size: 10px !important;
+
+
+  }
+
+  @media print {
+    body {
+      margin: 0;
+    }
+  
+    #sidebar,nav,#form-div
+    {
+      display: none !important;
+    }
+
+    body
+    {
+       margin: 0 !important;
+     background: white !important;
+      padding: 0 !important;
+    }
+    #a4-sheet
+    {
+      margin-top: 0px !important;
+    }
+    .a4-sheet,#a4-inner-div,.a4-inner-div,#content {
+      margin: 0 !important;
+     width: 100%;
+      padding: 0 !important;
+    }
+  }
+</style>
+
 {% load static %}
 <link href="{% static 'admin_user/css/gradient.css' %}" rel="stylesheet">
 <div class="wrapper grass-bg">
@@ -13,7 +50,7 @@
         {% include "admin_user/menu_top.html" %}
 
   
-<div class="container mt-5">
+<div class="container mt-5" id="form-div">
             <div class="card w-75 mx-auto transparent-bg">
                 <div class="card-header box-bg text-white">
 
@@ -60,15 +97,15 @@
         <label for="machinery_name_operator" class="form-label">Operator Name:</label>
         <input type="text" name="machinery_name_operator" id="machinery_name_operator" class="form-control">
       </div>
-      <div class="col-lg-12 me-2 mt-5 mt-2 col-sm-12 d-flex align-items-end">
+      <div class="col-lg-12 me-2 mt-5 mt-2 col-sm-12 d-flex flex-wrap align-items-end">
         <button type="submit" class="btn btn-primary box-bg">Generate Report</button>
       
-       {% if data %}
+     
      
   <button type="button" class="btn mx-2 btn-success" id="downloadCsv">Download CSV</button>
-  <button type="button" class="btn me-2 btn-danger" id="downloadPdf">Download PDF</button>
+  <button type="button" class="btn me-2 btn-danger" id="" onclick="window.print()">Download PDF</button>
 </div>
- {% endif %}
+ 
     </div>
   </form>
   </div>
@@ -153,7 +190,7 @@
 
 <div class="a4-sheet mt-4">
    
-
+<h2>Machinery Report</h2>
     <!-- Passes Dict Table -->
    <!-- Passes Dict Table -->
 
