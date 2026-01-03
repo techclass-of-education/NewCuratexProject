@@ -113,6 +113,29 @@
     }
   </script>
   <script>
+function toDDMMYYYY(val) {
+    if (!val) return "";
+
+    // yyyy-mm-dd OR yyyy/mm/dd
+    if (/^\d{4}[-\/]\d{2}[-\/]\d{2}$/.test(val)) {
+        const parts = val.includes("/") ? val.split("/") : val.split("-");
+        return `${parts[2]}-${parts[1]}-${parts[0]}`;
+    }
+
+    // ISO datetime: 2025-08-17T10:30:00
+    const d = new Date(val);
+    if (!isNaN(d.getTime())) {
+        const dd = String(d.getDate()).padStart(2, '0');
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const yyyy = d.getFullYear();
+        return `${dd}-${mm}-${yyyy}`;
+    }
+
+    return val;
+}
+</script>
+
+  <script>
 function loadExportLogs() {
     axios.get('/usr_admin/export-logs/')
         .then(response => {
@@ -122,7 +145,7 @@ function loadExportLogs() {
             logs.forEach(row => {
                 tbody.innerHTML += `<tr>
                     <td class="text-dark">${row.id}</td>
-                    <td class="text-dark">${row.export_date}</td>
+                   <td class="text-dark">${toDDMMYYYY(row.export_date)}</td>
                     <td class="text-dark">${row.export_type}</td>
                     <td class="text-dark">${row.created_at}</td>
                 </tr>`;

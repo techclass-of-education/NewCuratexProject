@@ -1,5 +1,6 @@
 <title>Match Recording List</title>
 {% include "admin_user/headertags.html" %}
+{% load admin_user_filters %}
 
 {% load static %}
 <link href="{% static 'admin_user/css/gradient.css' %}" rel="stylesheet">
@@ -46,10 +47,10 @@
 
 
                         {% if match.1 == "Multidays" %}
-                        <span class="pe-4 fs-6 text-center"> <b>Match Date</b> <small><br>{{ match.7 }} -
-                                {{match.8}}</small></span>
+                        <span class="pe-4 fs-6 text-center"> <b>Match Date</b> <small><br>{{ match.7| to_ddmmyyyy }} -
+                                {{match.8| to_ddmmyyyy}}</small></span>
                         {% else %}
-                        <span class="pe-4 fs-6 text-center"> <b>Match Date</b><small><br> {{ match.6 }}</small></span>
+                        <span class="pe-4 fs-6 text-center"> <b>Match Date</b><small><br> {{ match.6| to_ddmmyyyy }}</small></span>
                         {% endif %}
                         <span class="pe-4 fs-6 text-center"> <b>Match Between</b><small><br> {{ match.3 }} &
                                 {{match.4}}</small></span>
@@ -106,10 +107,10 @@
                                                         <td>{{ match.2 }}</td>
                                                         <td>{{ match.3 }}</td>
                                                         <td>{{ match.4 }}</td>
-                                                        <td>{{ match.5 }}</td>
-                                                        <td>{{ match.6 }}</td>
-                                                        <td>{{ match.7 }}</td>
-                                                        <td>{{ match.8 }}</td>
+                                                        <td>{{ match.5| to_ddmmyyyy }}</td>
+                                                        <td>{{ match.6| to_ddmmyyyy }}</td>
+                                                        <td>{{ match.7| to_ddmmyyyy }}</td>
+                                                        <td>{{ match.8| to_ddmmyyyy }}</td>
                                                         <td>{{ match.9 }}</td>
                                                         <td>{{ match.10 }}</td>
                                                         <td>{{ match.80 }} {{ match.79 }}</td>
@@ -187,7 +188,7 @@
                                                             {% if item.strip %}
                                                             <tr>
                                                                 <td>
-                                                                    {{ item }}
+                                                                    {{ item| to_ddmmyyyy }}
                                                                 </td>
                                                             </tr>
                                                             {% endif %}
@@ -250,7 +251,7 @@
                                                             {% if item.strip %}
                                                             <tr>
                                                                 <td>
-                                                                    {{ item }}
+                                                                    {{ item| to_ddmmyyyy }}
                                                                 </td>
                                                             </tr>
                                                             {% endif %}
@@ -359,7 +360,7 @@
                                                             {% if item.strip %}
                                                             <tr>
                                                                 <td>
-                                                                    {{ item }}
+                                                                    {{ item| to_ddmmyyyy }}
                                                                 </td>
                                                             </tr>
                                                             {% endif %}
@@ -526,7 +527,7 @@
                                                             {% if item.strip %}
                                                             <tr>
                                                                 <td>
-                                                                    {{ item }}
+                                                                    {{ item| to_ddmmyyyy }}
                                                                 </td>
                                                             </tr>
                                                             {% endif %}
@@ -589,7 +590,7 @@
                                                             {% if item.strip %}
                                                             <tr>
                                                                 <td>
-                                                                    {{ item }}
+                                                                    {{ item| to_ddmmyyyy }}
                                                                 </td>
                                                             </tr>
                                                             {% endif %}
@@ -697,7 +698,7 @@
                                                             {% if item.strip %}
                                                             <tr>
                                                                 <td>
-                                                                    {{ item }}
+                                                                    {{ item| to_ddmmyyyy }}
                                                                 </td>
                                                             </tr>
                                                             {% endif %}
@@ -865,10 +866,10 @@
                         <span class="pe-4 fs-6 text-center"> <b>Name of Ground</b> <small><br>{{ match.78 }}</small></span>
 
                         {% if match.1 == "Multidays" %}
-                        <span class="pe-4 fs-6 text-center"> <b>Match Date</b> <small><br>{{ match.7 }} -
-                                {{match.8}}</small></span>
+                        <span class="pe-4 fs-6 text-center"> <b>Match Date</b> <small><br>{{ match.7| to_ddmmyyyy }} -
+                                {{match.8| to_ddmmyyyy}}</small></span>
                         {% else %}
-                        <span class="pe-4 fs-6 text-center"> <b>Match Date</b><small><br> {{ match.6 }}</small></span>
+                        <span class="pe-4 fs-6 text-center"> <b>Match Date</b><small><br> {{ match.6| to_ddmmyyyy }}</small></span>
                         {% endif %}
                         <span class="pe-4 fs-6 text-center"> <b>Match Between</b><small><br> {{ match.3 }} &
                                 {{match.4}}</small></span>
@@ -926,10 +927,10 @@
                                                         <td>{{ match.2 }}</td>
                                                         <td>{{ match.3 }}</td>
                                                         <td>{{ match.4 }}</td>
-                                                        <td>{{ match.5 }}</td>
-                                                        <td>{{ match.6 }}</td>
-                                                        <td>{{ match.7 }}</td>
-                                                        <td>{{ match.8 }}</td>
+                                                        <td>{{ match.5| to_ddmmyyyy }}</td>
+                                                        <td>{{ match.6| to_ddmmyyyy }}</td>
+                                                        <td>{{ match.7| to_ddmmyyyy }}</td>
+                                                        <td>{{ match.8| to_ddmmyyyy }}</td>
                                                         <td>{{ match.9 }}</td>
                                                         <td>{{ match.10 }}</td>
                                                         <td>{{ match.80 }} {{ match.79 }}</td>
@@ -1007,7 +1008,7 @@
                                                             {% if item.strip %}
                                                             <tr>
                                                                 <td>
-                                                                    {{ item }}
+                                                                    {{ item| to_ddmmyyyy }}
                                                                 </td>
                                                             </tr>
                                                             {% endif %}
@@ -1071,7 +1072,7 @@
                                                             {% if item.strip %}
                                                             <tr>
                                                                 <td>
-                                                                    {{ item }}
+                                                                    {{ item| to_ddmmyyyy }}
                                                                 </td>
                                                             </tr>
                                                             {% endif %}
@@ -1179,7 +1180,7 @@
                                                                     {% if item.strip %}
                                                                     <tr>
                                                                         <td>
-                                                                            {{ item }}
+                                                                            {{ item| to_ddmmyyyy }}
                                                                         </td>
                                                                     </tr>
                                                                     {% endif %}
@@ -1347,7 +1348,7 @@
                                                             {% if item.strip %}
                                                             <tr>
                                                                 <td>
-                                                                    {{ item }}
+                                                                    {{ item| to_ddmmyyyy }}
                                                                 </td>
                                                             </tr>
                                                             {% endif %}
@@ -1410,7 +1411,7 @@
                                                             {% if item.strip %}
                                                             <tr>
                                                                 <td>
-                                                                    {{ item }}
+                                                                    {{ item| to_ddmmyyyy }}
                                                                 </td>
                                                             </tr>
                                                             {% endif %}
@@ -1519,7 +1520,7 @@
                                                             {% if item.strip %}
                                                             <tr>
                                                                 <td>
-                                                                    {{ item }}
+                                                                    {{ item| to_ddmmyyyy }}
                                                                 </td>
                                                             </tr>
                                                             {% endif %}

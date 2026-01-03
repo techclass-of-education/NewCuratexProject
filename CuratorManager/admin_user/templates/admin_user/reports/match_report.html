@@ -1,5 +1,4 @@
-
-    <!-- <style>
+<!-- <style>
         body {
             background-color: #f0f4ff;
         }
@@ -64,45 +63,49 @@
             white-space: nowrap;
         }
     </style> -->
-    <style>
-          #title
-    {
-     display: none;
+<style>
+    #title {
+        display: none;
     }
+
     @media print {
-    body {
-      margin: 0;
-    }
-  
-    #sidebar,nav,#form-div
-    {
-      display: none !important;
-    }
+        body {
+            margin: 0;
+        }
 
-    body
-    {
-       margin: 0 !important;
-     background: white !important;
-      padding: 0 !important;
-    }
-    #a4-sheet, #form-div
-    {
-      /* margin-top: 0px !important; */
-      margin: auto !important;
-      width: 100vw !important;
-    }
+        #sidebar,
+        nav,
+        #form-div {
+            display: none !important;
+        }
 
-    #title
-    {
-     display: block;
+        body {
+            margin: 0 !important;
+            background: white !important;
+            padding: 0 !important;
+        }
+
+        #a4-sheet,
+        #form-div {
+            /* margin-top: 0px !important; */
+            margin: auto !important;
+            width: 100vw !important;
+        }
+
+        #title {
+            display: block;
+        }
+
+        .a4-sheet,
+        #a4-inner-div,
+        .a4-inner-div,
+        #content {
+            margin: 0 !important;
+            width: 100%;
+            padding: 0 !important;
+        }
     }
-    .a4-sheet,#a4-inner-div,.a4-inner-div,#content {
-      margin: 0 !important;
-     width: 100%;
-      padding: 0 !important;
-    }
-  }
-    </style>
+</style>
 
 {% include "admin_user/headertags.html" %}
 
@@ -118,109 +121,110 @@
         <!-- Navbar -->
         {% include "admin_user/menu_top.html" %}
 
-        
-<div class="container mt-5" id="form-div">
+
+        <div class="container mt-5" id="form-div">
             <div class="card w-75 mx-auto transparent-bg">
                 <div class="card-header box-bg text-white">
 
                     <i class="bi bi-person-check me-2 text-info"></i>Match Report
                 </div>
                 <div class="card-body box-gradient rounded-bottom">
-        <!-- Filters and Field Selection -->
-        <form method="get" action="/usr_admin/match-report/" class="rounded">
-            <div class="row g-3 align-items-end">
-                <div class="col-lg-4 col-sm-12">
-                    <label for="from_date" class="form-label">Ground</label>
-                    <select class="form-select"  id="id_ground_id"  name="id">
-                    </select>
-                </div>
-
-                <div class="col-lg-4 col-sm-12">
-                   <label for="pitch_id" class="form-label">Select Pitch:</label>
-                    <select id="pitch_id" name="pitch_id" class="form-control"></select>
-                </div>
-                <div class="col-lg-4 col-sm-12">
-                   <label for="match_type" class="form-label">Match Type</label>
-                                    <select name="match_type" id="match_type" class="form-select"
-                                        onchange="">
-                                        <option value="">Select Match Type</option>
-                                        <option value="Multidays">Multidays</option>
-                                        <option value="One Day">One Day</option>
-                                        <option value="T20">T20</option>
-                                    </select>
-                </div>
-
-                <div class="col-lg-4 col-sm-12">
-                    <label for="from_date" class="form-label">From Match Date</label>
-                    <input type="date" class="form-control" name="from_date" value="{{ request.GET.from_date }}">
-                </div>
-
-                <div class="col-lg-4 col-sm-12">
-                    <label for="to_date" class="form-label">To Match Date</label>
-                    <input type="date" class="form-control" name="to_date" value="{{ request.GET.to_date }}">
-                </div>
-
-                
-
-               <div class="col-lg-12 me-2 mt-5 mt-2 col-sm-12 d-flex flex-wrap align-items-end">
-                     <button type="submit" class="btn btn-warning">Search</button>
-                    <button type="button" class="btn btn-info text-white" data-bs-toggle="modal"
-                        data-bs-target="#staticBackdrop">
-                        Select Colunms
-                    </button>
-                      {% if records %}
-                    <button id="downloadCsv" type="button" class="btn btn-success">Download CSV</button>
-                    <button id="" type="button" onclick="window.print()" class="btn btn-danger">Download PDF</button>
-                    {% endif %}
-                </div>
-                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
-                    tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                    <div class="modal-dialog box-bg">
-                        <div class="modal-content transparent-bg">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
+                    <!-- Filters and Field Selection -->
+                    <form method="get" action="/usr_admin/match-report/" class="rounded">
+                        <div class="row g-3 align-items-end">
+                            <div class="col-lg-4 col-sm-12">
+                                <label for="from_date" class="form-label">Ground</label>
+                                <select class="form-select" id="id_ground_id" name="id">
+                                </select>
                             </div>
-                            <div class="modal-body">
-                                <label class="form-label">Select Columns</label>
-                                <div class="column-checkbox-wrapper">
-                                    {% for key in records.0.keys %}
-                                    <div class="form-check">
-                                        <input class="form-check-input column-checkbox" type="checkbox"
-                                            id="check_{{ key }}" value="{{ key }}" {% if key in default_fields %}checked{% endif %}>
-                                        <label class="form-check-label" for="check_{{ key }}">{{ key|capfirst }}</label>
+
+                            <div class="col-lg-4 col-sm-12">
+                                <label for="pitch_id" class="form-label">Select Pitch:</label>
+                                <select id="pitch_id" name="pitch_id" class="form-control"></select>
+                            </div>
+                            <div class="col-lg-4 col-sm-12">
+                                <label for="match_type" class="form-label">Match Type</label>
+                                <select name="match_type" id="match_type" class="form-select" onchange="">
+                                    <option value="">Select Match Type</option>
+                                    <option value="Multidays">Multidays</option>
+                                    <option value="One Day">One Day</option>
+                                    <option value="T20">T20</option>
+                                </select>
+                            </div>
+
+                            <div class="col-lg-4 col-sm-12">
+                                <label for="from_date" class="form-label">From Match Date</label>
+                                <input type="date" class="form-control" name="from_date"
+                                    value="{{ request.GET.from_date }}">
+                            </div>
+
+                            <div class="col-lg-4 col-sm-12">
+                                <label for="to_date" class="form-label">To Match Date</label>
+                                <input type="date" class="form-control" name="to_date"
+                                    value="{{ request.GET.to_date }}">
+                            </div>
+
+
+
+                            <div class="col-lg-12 me-2 mt-5 mt-2 col-sm-12 d-flex flex-wrap align-items-end">
+                                <button type="submit" class="btn btn-warning">Search</button>
+                                <button type="button" class="btn btn-info text-white" data-bs-toggle="modal"
+                                    data-bs-target="#staticBackdrop">
+                                    Select Colunms
+                                </button>
+                                {% if records %}
+                                <button id="downloadCsv" type="button" class="btn btn-success">Download CSV</button>
+                                <button id="" type="button" onclick="window.print()" class="btn btn-danger">Download
+                                    PDF</button>
+                                {% endif %}
+                            </div>
+                            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static"
+                                data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog box-bg">
+                                    <div class="modal-content transparent-bg">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <label class="form-label">Select Columns</label>
+                                            <div class="column-checkbox-wrapper">
+                                                {% for key in records.0.keys %}
+                                                <div class="form-check">
+                                                    <input class="form-check-input column-checkbox" type="checkbox" 
+                                                    id="check_{{ key }}" value="{{ key }}" {% if key in default_fields %}checked{% endif %}>
+                                                    <label class="form-check-label" for="check_{{ key }}">{{key|capfirst }}</label>
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
                                     </div>
-                                    {% endfor %}
+                                    <div class="modal-footer">
+                                       
+                                    </div>
                                 </div>
                             </div>
+
+
+                            <div class="col-md-12 mt-2">
+
+
+
+                            </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Understood</button>
-
-                        </div>
-                    </div>
+                    </form>
                 </div>
-
-
-                <div class="col-md-12 mt-2">
-                   
-                  
-
-                </div>
-            </div>
-        </form>
- </div>
             </div>
 
         </div>
         <!-- A4 Layout Report -->
-        <div class="a4-sheet mt-5 mx-auto" id="a4-sheet"  style="width: 70vw !important;">
-           <div class="card-header box-bg text-white" id="title">
+        <div class="a4-sheet mt-5 mx-auto" id="a4-sheet" style="width: 70vw !important;">
+            <div class="card-header box-bg text-white" id="title">
 
-                    <i class="bi bi-person-check me-2 text-info"></i>Match Report
-                </div>
+                <i class="bi bi-person-check me-2 text-info"></i>Match Report
+            </div>
             {% if records %}
             <div class="table-responsive mx-auto" style="width: 70vw;overflow-y: auto;">
                 <table id="reportTable" class="table align-middle mb-0 border-white mx-auto rounded">
@@ -250,141 +254,166 @@
             {% endif %}
         </div>
     </div>
-    </div>
+</div>
 
 
 {% include "admin_user/footertags.html" %}
 
 
 <script>
-    $(document).ready(function(){
+    $(document).ready(function () {
 
-    axios.get("/usr_admin/get_grounds").then((result) => {
-                $("#id_ground_id").html("")
-                $("#id_ground_id").append(`<option value=''>Select Ground</option>`)
-              
+        axios.get("/usr_admin/get_grounds").then((result) => {
+            $("#id_ground_id").html("")
+            $("#id_ground_id").append(`<option value=''>Select Ground</option>`)
 
-                result.data.grounds.forEach(function (g) {
-                    $("#id_ground_id").append(`<option value='${g.ground[0]}'>${g.ground[6]}</option>`)
-                })
 
-            }).catch((error) => {
-                console.log(error)
-
+            result.data.grounds.forEach(function (g) {
+                $("#id_ground_id").append(`<option value='${g.ground[0]}'>${g.ground[6]}</option>`)
             })
 
+        }).catch((error) => {
+            console.log(error)
 
-    $("#pitch_id").val("{{ request.GET.pitch_id }}")                
-    $("#match_type").val("{{ request.GET.match_type }}")                
-    $("#id_ground_id").change(function () {
-        const groundId = $(this).val().trim()
-        if (groundId == "all") {
-            axios.get(`/usr_admin/get_all_pitches`).then((result) => {
-                // console.log(result.data.grounds)
-                $("#pitch_id").html("")
-                $("#pitch_id").append(`<option value=''>Select Pitch</option>`)
-                //                    $("#pitch_id").append(`<option value='all'>All Pitches</option>`)
+        })
 
-                result.data.grounds.forEach(function (p) {
-                    $("#pitch_id").append(`<option value='${p.pitches[0]}'>${p.pitches[14]}  ${p.pitches[5]}</option>`)
+
+        $("#pitch_id").val("{{ request.GET.pitch_id }}")
+        $("#match_type").val("{{ request.GET.match_type }}")
+        $("#id_ground_id").change(function () {
+            const groundId = $(this).val().trim()
+            if (groundId == "all") {
+                axios.get(`/usr_admin/get_all_pitches`).then((result) => {
+                    // console.log(result.data.grounds)
+                    $("#pitch_id").html("")
+                    $("#pitch_id").append(`<option value=''>Select Pitch</option>`)
+                    //                    $("#pitch_id").append(`<option value='all'>All Pitches</option>`)
+
+                    result.data.grounds.forEach(function (p) {
+                        $("#pitch_id").append(`<option value='${p.pitches[0]}'>${p.pitches[14]}  ${p.pitches[5]}</option>`)
+                    })
+                }).catch((error) => {
+                    console.log(error)
+
                 })
-            }).catch((error) => {
-                console.log(error)
+            } else {
+                axios.get(`/usr_admin/get_pitches/${groundId}`).then((result) => {
+                    console.log(result.data.grounds)
+                    $("#pitch_id").html("")
+                    $("#pitch_id").append(`<option value=''>Select Pitch</option>`)
+                    //$("#pitch_id").append(`<option value='all'>All Pitches</option>`)
 
-            })
-        } else {
-            axios.get(`/usr_admin/get_pitches/${groundId}`).then((result) => {
-                console.log(result.data.grounds)
-                $("#pitch_id").html("")
-                $("#pitch_id").append(`<option value=''>Select Pitch</option>`)
-                //$("#pitch_id").append(`<option value='all'>All Pitches</option>`)
+                    localStorage.setItem("city", result.data.grounds[0].city);
 
-                localStorage.setItem("city",result.data.grounds[0].city);
+                    result.data.grounds.forEach(function (p) {
+                        $("#pitch_id").append(`<option value='${p.pitch[0]}'>${p.pitch[14]}  ${p.pitch[5]}</option>`)
+                    })
+                }).catch((error) => {
+                    console.log(error)
 
-                result.data.grounds.forEach(function (p) {
-                    $("#pitch_id").append(`<option value='${p.pitch[0]}'>${p.pitch[14]}  ${p.pitch[5]}</option>`)
                 })
-            }).catch((error) => {
-                console.log(error)
+            }
 
-            })
-        }
+        })
+
 
     })
-
-
-})
 </script>
-    
-    <script>
-        window.addEventListener("DOMContentLoaded", () => {
-            const table = document.getElementById('reportTable');
-            const checkboxes = document.querySelectorAll('.column-checkbox');
 
-            checkboxes.forEach(cb => {
-                const key = cb.value;
-                const ths = table.querySelectorAll(`th[data-key="${key}"]`);
-                if (ths.length === 0) return;
-                const colIndex = Array.from(ths[0].parentNode.children).indexOf(ths[0]);
+<script>
+    window.addEventListener("DOMContentLoaded", () => {
+        const table = document.getElementById('reportTable');
+        const checkboxes = document.querySelectorAll('.column-checkbox');
 
-                // Initial hide/show based on checked state
+        checkboxes.forEach(cb => {
+            const key = cb.value;
+            const ths = table.querySelectorAll(`th[data-key="${key}"]`);
+            if (ths.length === 0) return;
+            const colIndex = Array.from(ths[0].parentNode.children).indexOf(ths[0]);
+
+            // Initial hide/show based on checked state
+            table.querySelectorAll('tr').forEach(row => {
+                if (row.children[colIndex])
+                    row.children[colIndex].style.display = cb.checked ? '' : 'none';
+            });
+
+            // On change
+            cb.addEventListener('change', () => {
                 table.querySelectorAll('tr').forEach(row => {
                     if (row.children[colIndex])
                         row.children[colIndex].style.display = cb.checked ? '' : 'none';
                 });
-
-                // On change
-                cb.addEventListener('change', () => {
-                    table.querySelectorAll('tr').forEach(row => {
-                        if (row.children[colIndex])
-                            row.children[colIndex].style.display = cb.checked ? '' : 'none';
-                    });
-                });
-            });
-
-            // CSV Export
-            document.getElementById('downloadCsv').addEventListener('click', () => {
-                const visibleIndexes = Array.from(checkboxes)
-                    .map((cb, idx) => cb.checked ? idx : null)
-                    .filter(idx => idx !== null);
-
-                const rows = Array.from(table.querySelectorAll('tr'));
-                let csvContent = "";
-
-                rows.forEach(row => {
-                    const cols = Array.from(row.children)
-                        .filter((td, idx) => visibleIndexes.includes(idx))
-                        .map(cell => `"${cell.innerText.trim()}"`);
-                    csvContent += cols.join(",") + "\n";
-                });
-
-                const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-                const link = document.createElement("a");
-                link.href = URL.createObjectURL(blob);
-                link.setAttribute("download", "match_report.csv");
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
             });
         });
 
+        // CSV Export
+        document.getElementById('downloadCsv').addEventListener('click', () => {
+            const visibleIndexes = Array.from(checkboxes)
+                .map((cb, idx) => cb.checked ? idx : null)
+                .filter(idx => idx !== null);
 
-    </script>
-    <script>
-        document.getElementById('downloadPdf').addEventListener('click', () => {
-            const element = document.querySelector('.a4-sheet');
-            const opt = {
-                margin: 0,
-                filename: 'match_report.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, scrollY: 0 },  // scrollY avoids offset
-                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-            };
-            html2pdf().set(opt).from(element).save();
+            const rows = Array.from(table.querySelectorAll('tr'));
+            let csvContent = "";
+
+            rows.forEach(row => {
+                const cols = Array.from(row.children)
+                    .filter((td, idx) => visibleIndexes.includes(idx))
+                    .map(cell => `"${cell.innerText.trim()}"`);
+                csvContent += cols.join(",") + "\n";
+            });
+
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.setAttribute("download", "match_report.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         });
-    </script>
+    });
 
-    <script>
+
+</script>
+<script>
+    document.getElementById('downloadPdf').addEventListener('click', () => {
+        const element = document.querySelector('.a4-sheet');
+        const opt = {
+            margin: 0,
+            filename: 'match_report.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, scrollY: 0 },  // scrollY avoids offset
+            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(element).save();
+    });
+</script>
+
+<!-- <script>
+    $(document).ready(function () {
+        let tds = Array.from($("td"))
+
+        const splitStr = "__####__"
+
+        tds.forEach(function (td) {
+            let newTdStr = ""
+            console.log(td.innerText)
+            if (td.innerText.includes(splitStr)) {
+                let colIndex = td.cellIndex;
+
+                // Uske table ka thead se th text nikal lo
+
+                (td.innerText.split(splitStr)).forEach(function (v) {
+                    if (v.trim() != "")
+                        newTdStr += `<li>${v}</li>`
+                })
+                td.innerHTML = newTdStr
+            }
+
+        })
+    })
+</script> -->
+
+   <script>
     $(document).ready(function () {
         let tds = Array.from($("td"))
       
@@ -400,152 +429,166 @@
            
                 (td.innerText.split(splitStr)).forEach(function (v) {
                     if(v.trim()!="")
-                    newTdStr+=`<li>${v}</li>`
-                })
+                {
+                    if (/^\d{4}[\/-]\d{2}[\/-]\d{2}$/.test(v)) {
+                        const parts = v.includes("/") ? v.split("/") : v.split("-");
+       
+                    newTdStr+=`<li>${parts[2]}-${parts[1]}-${parts[0]}</li>`
+                }else
+                {
+                        newTdStr+=`<li>${v}</li>`
+
+                    }
+                }
                 td.innerHTML=newTdStr
-            }
+                })
+            }else
+            {
+                 v=td.innerHTML
+                if (/^\d{4}[\/-]\d{2}[\/-]\d{2}$/.test(v)) {
+                    const parts = v.includes("/") ? v.split("/") : v.split("-");
+                    
+                    newTdStr=`${parts[2]}-${parts[1]}-${parts[0]}`
+                td.innerHTML=newTdStr
+
+                }}
 
         })
 
 
 
     })
-
-
-
-
-
 </script>
 
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
 
-    // const groundId = "{{ request.GET.id }}";
-    // if (!groundId) return;
-
-
-    // // 🔹 Step 1: find TH having data-key="ground_id"
-    // const th = document.querySelector('th[data-key="ground_id"]');
-    // if (!th) return;
-
-    // // 🔹 Step 2: get column index of that TH
-    // const colIndex = th.cellIndex;   // zero-based index
-    // // alert(colIndex)
-
-    // // 🔹 Step 3: fetch ground name using axios
-    // axios.get("/usr_admin/get_ground/"+groundId, {
-       
-    // })
-    // .then(response => {
-    //     const groundName = response.data.ground[6];
-    //     // alert(groundName)
-
-    //     // 🔹 Step 4: replace all TDs of that column
-    //     document.querySelectorAll("tbody tr").forEach(row => {
-    //         const td = row.cells[colIndex];
-    //         if (td) {
-    //             td.innerText = groundName;
-    //         }
-    //     });
-    // })
-    // .catch(err => console.error(err));
-
-});
+        // const groundId = "{{ request.GET.id }}";
+        // if (!groundId) return;
 
 
-function replaceColumnValueByTH({
-    thKey,
-    apiUrl,
-    idValue,
-    valueExtractor
-}) {
-    const th = document.querySelector(`th[data-key="${thKey}"]`);
-    if (!th) return;
+        // // 🔹 Step 1: find TH having data-key="ground_id"
+        // const th = document.querySelector('th[data-key="ground_id"]');
+        // if (!th) return;
 
-    const colIndex = th.cellIndex;
+        // // 🔹 Step 2: get column index of that TH
+        // const colIndex = th.cellIndex;   // zero-based index
+        // // alert(colIndex)
 
-    axios.get(apiUrl)
-        .then(response => {
-            const newValue = valueExtractor(response);
+        // // 🔹 Step 3: fetch ground name using axios
+        // axios.get("/usr_admin/get_ground/"+groundId, {
 
-            document.querySelectorAll("tbody tr").forEach(row => {
-                if (row.cells[colIndex]) {
-                    row.cells[colIndex].innerText = newValue;
-                }
-            });
-        })
-        .catch(err => console.error(err));
-}
+        // })
+        // .then(response => {
+        //     const groundName = response.data.ground[6];
+        //     // alert(groundName)
 
-document.addEventListener("DOMContentLoaded", function () {
+        //     // 🔹 Step 4: replace all TDs of that column
+        //     document.querySelectorAll("tbody tr").forEach(row => {
+        //         const td = row.cells[colIndex];
+        //         if (td) {
+        //             td.innerText = groundName;
+        //         }
+        //     });
+        // })
+        // .catch(err => console.error(err));
 
-    /* 🔹 Ground replacement */
-    replaceColumnValueByTH({
-        thKey: "ground_id",
-        apiUrl: `/usr_admin/get_ground/{{request.GET.id}}`,
-        idValue: "{{ request.GET.id }}",
-        valueExtractor: res => res.data.ground[6]
     });
 
- 
 
-});
+    function replaceColumnValueByTH({
+        thKey,
+        apiUrl,
+        idValue,
+        valueExtractor
+    }) {
+        const th = document.querySelector(`th[data-key="${thKey}"]`);
+        if (!th) return;
+
+        const colIndex = th.cellIndex;
+
+        axios.get(apiUrl)
+            .then(response => {
+                const newValue = valueExtractor(response);
+
+                document.querySelectorAll("tbody tr").forEach(row => {
+                    if (row.cells[colIndex]) {
+                        row.cells[colIndex].innerText = newValue;
+                    }
+                });
+            })
+            .catch(err => console.error(err));
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        /* 🔹 Ground replacement */
+        replaceColumnValueByTH({
+            thKey: "ground_id",
+            apiUrl: `/usr_admin/get_ground/{{request.GET.id}}`,
+            idValue: "{{ request.GET.id }}",
+            valueExtractor: res => res.data.ground[6]
+        });
+
+
+
+    });
 </script>
 
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
 
-    const groundId = "{{ request.GET.id }}";
-    if (!groundId) return;
+        const groundId = "{{ request.GET.id }}";
+        if (!groundId) return;
 
-    // 🔹 Step 1: pitch_id wala TH dhundo
-    const pitchTh = document.querySelector('th[data-key="pitch_id"]');
-    if (!pitchTh) return;
+        // 🔹 Step 1: pitch_id wala TH dhundo
+        const pitchTh = document.querySelector('th[data-key="pitch_id"]');
+        if (!pitchTh) return;
 
-    const pitchColIndex = pitchTh.cellIndex;
+        const pitchColIndex = pitchTh.cellIndex;
 
-    // 🔹 Step 2: aapka existing API call
-    axios.get(`/usr_admin/get_pitches/${groundId}`)
-        .then(res => {
+        // 🔹 Step 2: aapka existing API call
+        axios.get(`/usr_admin/get_pitches/${groundId}`)
+            .then(res => {
 
-            const pitchMap = {};
+                const pitchMap = {};
 
-            console.log(res.data)
+                console.log(res.data)
 
-            // 🔹 Step 3: response se mapping banao
-            res.data.grounds.forEach(obj => {
-                const pitch = obj.pitch;
+                // 🔹 Step 3: response se mapping banao
+                res.data.grounds.forEach(obj => {
+                    const pitch = obj.pitch;
 
-                const pitchId = pitch[0];        // p.id
-                const placement = pitch[14];     // p.pitch_placement
+                    const pitchId = pitch[0];        // p.id
+                    const placement = pitch[14];     // p.pitch_placement
 
-                pitchMap[pitchId] = placement;
-            });
+                    pitchMap[pitchId] = placement;
+                });
 
-            // 🔹 Step 4: table rows me replace
-            document.querySelectorAll("tbody tr").forEach(row => {
+                // 🔹 Step 4: table rows me replace
+                document.querySelectorAll("tbody tr").forEach(row => {
 
-                const td = row.cells[pitchColIndex];
-                if (!td) return;
+                    const td = row.cells[pitchColIndex];
+                    if (!td) return;
 
-                const pitchIdInTable = td.innerText.trim();
+                    const pitchIdInTable = td.innerText.trim();
 
-                if (pitchMap[pitchIdInTable]) {
-                    td.innerText = pitchMap[pitchIdInTable];
-                }
-            });
-        })
-        .catch(err => console.error("Pitch fetch error:", err));
-});
+                    if (pitchMap[pitchIdInTable]) {
+                        td.innerText = pitchMap[pitchIdInTable];
+                    }
+                });
+            })
+            .catch(err => console.error("Pitch fetch error:", err));
+    });
 </script>
 
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
 
 </body>
 

@@ -5,12 +5,7 @@ register = template.Library()
 
 @register.filter
 def to_ddmmyyyy(value):
-    try:
-        # first try python date/datetime object
-        return value.strftime("%d-%m-%Y")
-    except:
-        pass
-
+    
     try:
         # if string "YYYY-MM-DD"
         dt = datetime.strptime(str(value), "%Y-%m-%d")

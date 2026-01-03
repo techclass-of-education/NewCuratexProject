@@ -1,4 +1,5 @@
 {% include "admin_user/headertags.html" %}
+{% load admin_user_filters %}
 
 {% load static %}
 <link href="{% static 'admin_user/css/gradient.css' %}" rel="stylesheet">
@@ -73,12 +74,19 @@
         <input type="date" name="to_date" class="form-control" value="{{ to_date }}">
       </div>
         <div class="col-lg-4 col-sm-12">
+        <label>Select Chemical Type</label>
+        <select id="chemical_type_select" name="chemical_type_select" class="form-control">
+                            <option value="">Select Chemical Type</option>
+                        </select>
+      </div>
+        <div class="col-lg-4 col-sm-12">
         <label>Select Chemical</label>
         <select class="form-select" id="chemical" name="chemical">
           <option value="">Select any Chemical</option>
 
         </select>
       </div>
+    
 
       <div class="col-lg-12 col-sm-12 d-flex align-items-end flex-wrap gap-2 mt-2">
         <button type="submit" class="btn btn-primary box-bg">Search</button>
@@ -101,7 +109,12 @@
     
        <table class="table align-middle mb-0 w-75 mx-auto border-white caption-top transparent-bg rounded chem-table" id="kgTable">
          <caption class="top text-center text-bg-light">
-         <h3>Chemical Report</h3>
+           <h3>Chemical Report  </h3>
+         
+        <!-- <span>  {{ chemical_type_select|default:'All Types' }}
+           </span>   -->
+          
+         
          </caption>
         {% for chem in chem_records %}
       <thead class="bg-light fs-5 box-bg report-table-title">
@@ -123,7 +136,7 @@
       <tbody>
         {% for r in chem.rows %}
         <tr>
-            <td>{{ r.date }}</td>
+            <td>{{ r.date| to_ddmmyyyy }}</td>
             <td>{{ r.kg }}</td>
             <td>{{ r.ltr }}</td>
         </tr>
@@ -165,6 +178,25 @@
     });
   });
 
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        axios.get("/usr_admin/get-chemical-types/")
+            .then(response => {
+                const types = response.data.types;
+                const select = document.getElementById("chemical_type_select");
+
+                types.forEach(type => {
+                    const option = document.createElement("option");
+                    option.value = type;
+                    option.textContent = type;
+                    select.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error("Error fetching chemical types:", error);
+            });
+    });
 
 
   

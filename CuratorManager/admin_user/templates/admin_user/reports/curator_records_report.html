@@ -1,5 +1,6 @@
 
 {% include "admin_user/headertags.html" %}
+{% load admin_user_filters %}
 
 {% load static %}
 <link href="{% static 'admin_user/css/gradient.css' %}" rel="stylesheet">
@@ -232,10 +233,29 @@ $(document).ready(function(){
            
                 (td.innerText.split(splitStr)).forEach(function (v) {
                     if(v.trim()!="")
-                    newTdStr+=`<li>${v}</li>`
-                })
+                {
+                    if (/^\d{4}[\/-]\d{2}[\/-]\d{2}$/.test(v)) {
+                        const parts = v.includes("/") ? v.split("/") : v.split("-");
+       
+                    newTdStr+=`<li>${parts[2]}-${parts[1]}-${parts[0]}</li>`
+                }else
+                {
+                        newTdStr+=`<li>${v}</li>`
+
+                    }
+                }
                 td.innerHTML=newTdStr
-            }
+                })
+            }else
+            {
+                 v=td.innerHTML
+                if (/^\d{4}[\/-]\d{2}[\/-]\d{2}$/.test(v)) {
+                    const parts = v.includes("/") ? v.split("/") : v.split("-");
+                    
+                    newTdStr=`${parts[2]}-${parts[1]}-${parts[0]}`
+                td.innerHTML=newTdStr
+
+                }}
 
         })
 

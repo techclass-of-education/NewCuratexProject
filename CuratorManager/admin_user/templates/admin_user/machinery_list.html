@@ -2,6 +2,7 @@
     <title>Machinery List</title>
 
 {% include "admin_user/headertags.html" %}
+{% load admin_user_filters %}
 
 {% load static %}
 <link href="{% static 'admin_user/css/gradient.css' %}" rel="stylesheet">
@@ -41,7 +42,7 @@
             <td>{{ machinery.0 }}</td>
             <td>{{ machinery.1 }}</td>
             <td>{{ machinery.2 }}</td>
-            <td>{{ machinery.3 }}</td>
+            <td>{{ machinery.3| to_ddmmyyyy }}</td>
             <td>{{ machinery.4 }}</td>
             <td>{{ machinery.5 }}</td>
             <td>{{ machinery.6 }}</td>

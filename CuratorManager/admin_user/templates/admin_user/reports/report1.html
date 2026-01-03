@@ -233,7 +233,7 @@
                                         <td>{{ records.0.name_tournament }}</td>
                                         <td>{{ records.0.match_type }}</td>
                                          {% if records.0.match_type == "Multidays" %}
-                                        <td>{{ records.0.from_date }}-{{ records.0.to_date }}</td>
+                                        <td>{{ records.0.from_date|to_ddmmyyyy }} to {{ records.0.to_date | to_ddmmyyyy}}</td>
                                         {% else %}
                                         <td>{{ records.0.match_date }}</td>
                                         {% endif %}
@@ -475,7 +475,7 @@
                   {% if item.strip %}
                   <tr>
                     <td>
-                      {{ item }}
+                      {{ item|to_ddmmyyyy }}
                     </td>
                   </tr>
                   {% endif %}
@@ -556,7 +556,7 @@
                   {% if item.strip %}
                   <tr>
                     <td>
-                      {{ item }}
+                      {{ item| to_ddmmyyyy }}
                     </td>
                   </tr>
                   {% endif %}
@@ -651,7 +651,7 @@
                   {% if item.strip %}
                   <tr>
                     <td>
-                      {{ item }}
+                      {{ item| to_ddmmyyyy }}
                     </td>
                   </tr>
                   {% endif %}

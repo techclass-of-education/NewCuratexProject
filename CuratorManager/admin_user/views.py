@@ -638,6 +638,7 @@ def match_report(request):
         cursor.execute(query, params)
         columns = [col[0] for col in cursor.description]
         data = [dict(zip(columns, row)) for row in cursor.fetchall()]
+        print(data)
 
     default_fields = []
     if(match_type=="Multidays"):
@@ -660,6 +661,7 @@ def fertilizer_usage_report(request):
     from_date = request.GET.get("from_date")
     to_date = request.GET.get("to_date")
     chemical = request.GET.get("chemical")
+    chemical_type_select = request.GET.get("chemical_type_select")
     # print(type(chemical))
 
     if not all([ground_id, from_date, to_date]):
@@ -667,8 +669,10 @@ def fertilizer_usage_report(request):
 
     # 1. Fetch fertilizer ID to chemical name mapping
     with connection.cursor() as cursor:
-        cursor.execute(f"SELECT id, chemical_name FROM {org_id}_fertilizer_master")
-        fert_map = {str(row[0]): row[1] for row in cursor.fetchall()}
+        cursor.execute(f"SELECT id, chemical_name, chemical_type FROM {org_id}_fertilizer_master")
+        rows_fert = cursor.fetchall()
+    fert_name_map = {str(r[0]): r[1] for r in rows_fert}
+    fert_type_map = {str(r[0]): r[2] for r in rows_fert}
 
     query=""
     value=[]
@@ -740,11 +744,16 @@ def fertilizer_usage_report(request):
                     continue
                 if chemical not in ["","all"] and chemical!=fid:
                     continue
+                
+                if chemical_type_select not in ["", "all", None]:
+                    fert_type = fert_type_map.get(fid)
+                    if fert_type != chemical_type_select:
+                        continue
 
                 try: wt = float(wt)
                 except: continue
 
-                cname = fert_map.get(fid, "unknown")
+                cname = fert_name_map.get(fid, "unknown")
 
                 # convert units
                 if un=="kg":  kg=wt; ltr=0

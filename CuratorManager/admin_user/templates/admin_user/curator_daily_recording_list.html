@@ -1,4 +1,5 @@
 {% include "admin_user/headertags.html" %}
+{% load admin_user_filters %}
 
 {% load static %}
 
@@ -61,7 +62,7 @@
                     <span class="pe-3">  <b class="td-ground fs-6">{{ recording.63 }} <span class="text-warning">({{ recording.0 }})</span></b></span>
                     
                     
-                    <span class="pe-4 fs-6"> <b class="">Date</b><small><br> {{ recording.3 }}</small></span>
+                    <span class="pe-4 fs-6"> <b class="">Date</b><small><br> {{ recording.3| to_ddmmyyyy  }}</small></span>
                     <span class="pe-4 fs-6"> <b class="fs-6">Actual Entry Date-time</b><small><br> {{ recording.59 }}</small></span>
                     <span class="fs-6"> <b>Record Updated Date-time</b><small><br> {{ recording.60 }}</small></span>
 
@@ -99,7 +100,7 @@
             <td>{{ recording.61}} {{ recording.62}}</td>
             <td class="td-ground">{{ recording.63 }}</td>
             <!-- <td>{{ recording.2 }}</td> -->
-            <td>{{ recording.3 }}</td>
+            <td>{{ recording.3| to_ddmmyyyy }}</td>
             <td>{{ recording.4 }}</td>
             <td>{{ recording.5 }}</td>
             <td>{{ recording.6 }}</td>
@@ -134,7 +135,7 @@
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
-                                                    {{ item }}
+                                                    {{ item| to_ddmmyyyy  }}
                                                 </td>
                                             </tr>
                                               {% endif %}
@@ -285,7 +286,7 @@
                                                 {% if item.strip %}
                                               <tr>
                                                   <td>
-                                                      {{ item }}
+                                                      {{ item | to_ddmmyyyy }}
                                                   </td>
                                               </tr>
                                                 {% endif %}
@@ -449,7 +450,7 @@
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
-                                                    {{ item }}
+                                                    {{ item| to_ddmmyyyy  }}
                                                 </td>
                                             </tr>
                                               {% endif %}
@@ -691,7 +692,7 @@
                                                 {% if item.strip %}
                                               <tr>
                                                   <td>
-                                                      {{ item }}
+                                                      {{ item | to_ddmmyyyy }}
                                                   </td>
                                               </tr>
                                                 {% endif %}
@@ -901,7 +902,7 @@
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
-                                                    {{ item }}
+                                                    {{ item| to_ddmmyyyy  }}
                                                 </td>
                                             </tr>
                                               {% endif %}
@@ -1052,7 +1053,7 @@
                                                 {% if item.strip %}
                                               <tr>
                                                   <td>
-                                                      {{ item }}
+                                                      {{ item| to_ddmmyyyy  }}
                                                   </td>
                                               </tr>
                                                 {% endif %}
@@ -1324,7 +1325,7 @@
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
-                                                    {{ item }}
+                                                    {{ item| to_ddmmyyyy  }}
                                                 </td>
                                             </tr>
                                               {% endif %}
@@ -1474,7 +1475,7 @@
                                                 {% if item.strip %}
                                               <tr>
                                                   <td>
-                                                      {{ item }}
+                                                      {{ item| to_ddmmyyyy  }}
                                                   </td>
                                               </tr>
                                                 {% endif %}
