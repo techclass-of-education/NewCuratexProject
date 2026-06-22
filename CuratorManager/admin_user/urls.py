@@ -40,6 +40,8 @@ urlpatterns = [
     path('delete_daily/<int:daily_id>', views.delete_daily, name='delete_daily'),
     path('curator_daily_recording_list/', views.curator_daily_recording_list, name='curator_daily_recording_list'),
     path('curator_daily_recording_list/filter', views.curator_daily_recording_list_filter, name='curator_daily_recording_list_filter'),
+    path('curator_daily_recording_list_filter_by_date/filter', views.curator_daily_recording_list_filter_by_date, name='curator_daily_recording_list_filter_by_date'),
+    
     path('get_pitches/<str:ground_id>', views.get_pitches, name='get_pitches'),
     path('get_pitch/<str:pitch_id>', views.get_pitch, name='get_pitch'),
     path('get_all_pitches/', views.get_all_pitches, name='get_all_pitches'),
@@ -51,6 +53,8 @@ urlpatterns = [
     path('machinery/<int:machinery_id>/', views.get_machinery_details, name='get_machinery_details'),
     path('matches/', views.match_list, name='match_list'),        # URL to list all matches
     path('matches_filter/', views.match_list_filter, name='match_list_filter'),        # URL to list all matches by ground
+    path('match_list_filter_by_date/', views.match_list_filter_by_date, name='match_list_filter_by_date'),        # URL to list all matches by ground
+    
     path('matches/insert/', views.insert_match, name='insert_match'),  # URL to insert a new match
     path('matches/update/<int:match_id>/', views.update_match, name='update_match'),  # URL to update a match
     path('matches/delete/<int:match_id>/', views.delete_match, name='delete_match'),  # URL to update a match
@@ -70,6 +74,22 @@ urlpatterns = [
     path('getCurators/', views.getCurators, name='getCurators'),
     path('getGroundmans/', views.getGroundmans, name='getGroundmans'),
     path('getScorer/', views.getScorers, name='getScorers'),
+    
+
+    path('save_icc_pitch_form/<int:id>/', views.save_icc_pitch_form, name='save_icc_pitch_form'),
+    path('save_icc_pitch_save/', views.save_icc_pitch_save, name='save_icc_pitch_save'),
+    # path('save_icc_pitch_save/<int:id>/', views.save_icc_pitch_report, name='save_icc_pitch_report'),
+
+
+    path('annualreportform/', views.annual_report_form, name='annual_report_form'),
+    path('save-maintenance/', views.save_maintenance, name='save-maintenance'),
+    path('annual-maintenance-report-page/', views.annual_maintenance_report_page, name='annual-maintenance-report-page'),
+
+    path("annual-maintenance-report-api/",views.annual_maintenance_report_api,name="annual_maintenance_report_api"),
+    path("get-clagghammer/<int:id>/<str:t>/<str:f>/",views.get_clagghammer,name="get_clagghammer"),
+    path("get-moisture/<int:id>/<str:t>/<str:f>/",views.get_moisture,name="get_moisture"),
+    
+    
     #####################reports
     
    
@@ -96,6 +116,8 @@ urlpatterns = [
     path('match-report-page/', views.match_report_page, name='match_daily_records_page'),
     path('match-report/', views.match_report, name='match_daily_records'),
     path('get-chemical-types/', views.get_unique_chemical_types, name='get_chemical_types'),
+    path('icc-match-report/', views.icc_match_report, name='icc_match_report'),
+    path('get-icc-report/<int:match_id>/', views.get_icc_report, name='get_icc_report'),
     
     ############ Backup database ###############
     path('export-excel/', views.export_multiple_tables_to_excel, name='export-excel'),

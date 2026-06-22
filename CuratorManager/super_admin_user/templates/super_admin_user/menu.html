@@ -1,6 +1,13 @@
 <script>
   function changeMenuTitle(title) {
+    try
+    {
     document.querySelector("#menu-page-title").innerHTML = title
+    }
+    catch(err)
+    {
+      console.error(err)
+    }
   }
 </script>
 

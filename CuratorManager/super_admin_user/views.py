@@ -7,8 +7,10 @@ from .models import MastersList
 from admin_user.forms.adminRoleForm import AdminUserRoleForm
 from .templates.super_admin_user.admin.adminUpdate import AdminUserUpdateForm
 from django.shortcuts import render, get_object_or_404, redirect
+
+
 def login(request):
-    return render(request, 'super_admin_user/login.html')
+    return render(request, 'admin_user/org_login.html')
 
 
 def login_auth(request):
@@ -446,6 +448,37 @@ SET FOREIGN_KEY_CHECKS=1;
   `out_rolling_date` varchar(700) DEFAULT NULL,
   PRIMARY KEY (`id`)); SET FOREIGN_KEY_CHECKS=1;'''
             cursor.execute(sql)
+        
+        elif (t=="icc_pitch_report"):
+            sql=f'''SET FOREIGN_KEY_CHECKS=0;
+          CREATE TABLE IF NOT EXISTS {tableName} (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `match_id` int NOT NULL,
+  `ground_id` int NOT NULL,
+  `referee` varchar(150) DEFAULT NULL,
+  `grass_uniform` varchar(5) DEFAULT NULL,
+  `grass_cover` varchar(20) DEFAULT NULL,
+  `grass_details` text,
+  `pitch_dry` varchar(5) DEFAULT NULL,
+  `pitch_dry_details` text,
+  `pitch_comment` text,
+  `heavy_roller_days` varchar(50) DEFAULT NULL,
+  `heavy_roller_effect` json DEFAULT NULL,
+  `bounce` json DEFAULT NULL,
+  `bounce_consistency` json DEFAULT NULL,
+  `seam_movement` json DEFAULT NULL,
+  `turn` json DEFAULT NULL,
+  `pitch_rating` varchar(20) DEFAULT NULL,
+  `outfield_rating` varchar(20) DEFAULT NULL,
+  `final_comment` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+);SET FOREIGN_KEY_CHECKS=1;
+
+            '''
+            cursor.execute(sql)
+   
     except Exception as e:
          print(e.message)
     addMachinery(org)
@@ -593,7 +626,7 @@ def addChemicals(org):
 
 
 def createAllMastersName(instance):
-    tables = ["machinery","state","city", "ground", "pitch","match","match_scores","curator_daily_recording","fertilizer","export_log"]
+    tables = ["machinery","state","city", "ground", "pitch","match","match_scores","curator_daily_recording","fertilizer","export_log","icc_pitch_report"]
     for t in tables:
         tableName=instance.org_id+"_"+t+"_master"
         masterList=MastersList()
@@ -630,7 +663,7 @@ def create_admin_user(request):
             if form.is_valid():
 
                 instance=form.save()
-                print(request, 'Admin user created successfully')
+                # print(request, 'Admin user created successfully')
                 createAllMastersName(instance)
 
                 return redirect('admin_users_list')  # Redirect to a view that lists admin users

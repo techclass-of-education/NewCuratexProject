@@ -20,7 +20,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 import csv
-from xhtml2pdf import pisa
+
 from django.template.loader import get_template
 from datetime import datetime
 
@@ -139,159 +139,168 @@ def fetch_match_report(request):
 
 
 def fetch_match_records(request):
-    org_id = request.session.get('org_id')
-    match_id = request.GET.get("match_id")
-    team1 = request.GET.get("team1")
-    team2 = request.GET.get("team2")
-    match_date = request.GET.get("match_date")
-    match_type = request.GET.get("match_type")
-    name_tournament = request.GET.get("name_tournament")
-    # print(match_type)
-    filters = []
-    params = []
+    try:
+        org_id = request.session.get('org_id')
+        match_id = request.GET.get("match_id")
+        team1 = request.GET.get("team1")
+        team2 = request.GET.get("team2")
+        match_date = request.GET.get("match_date")
+        match_type = request.GET.get("match_type")
+        name_tournament = request.GET.get("name_tournament")
+        # print(match_type)
+        filters = []
+        params = []
 
-    if match_id:
-        filters.append("vmm.id = %s")
-        params.append(match_id)
-    else:
-        if match_type:
+        if match_id:
+            filters.append("vmm.id = %s")
+            params.append(match_id)
+        else:
+            if match_type:
+                
+                filters.append("vmm.match_type = %s")
+                params.append(f"{match_type}")
+
+            if team1:
+                filters.append("vmm.team1 LIKE %s")
+                params.append(f"{team1}")
+
+            if team2:
+                filters.append("vmm.team2 LIKE %s")
+                params.append(f"{team2}")
+
+            if match_date:
+                filters.append("vmm.match_date = %s")
+                params.append(match_date)
+
+            if name_tournament:
+                filters.append("vmm.name_tournament LIKE %s")
+                params.append(f"{name_tournament}")
+
+        where_clause = " AND ".join(filters)
+        
+        if where_clause:
+            where_clause = "WHERE " + where_clause
+        # print(where_clause)
+
+        query = f"""
+            SELECT 
+            vmm.id AS match_id, vmm.match_type, vmm.name_tournament, vmm.match_date,
+            vmm.team1, vmm.team2,vmm.preparation_date,
+            vmm.from_date, vmm.to_date,vmm.nuteral_curator,
+                `vmm`.`days_count`,
+                `vmm`.`start_time`,
+                `vmm`.`is_pitch_level`,
+                `vmm`.`lawn_height`,
+                `vmm`.`grass_cover`,
+                `vmm`.`min_temp`,
+                `vmm`.`max_temp`,
+                `vmm`.`forecast`,
+                `vmm`.`moisture_upto`,
+                `vmm`.`dew_factor`,
+                `vmm`.`access_bounce`,
+                `vmm`.`machinery_id`,
+                `vmm`.`no_of_passes`,
+                `vmm`.`rolling_speed`,
+                `vmm`.`last_watering_on`,
+                `vmm`.`quantity_of_water`,
+                `vmm`.`time_of_application`,
+                `vmm`.`time_roller`,
+                `vmm`.`is_daily_watering`,
+                `vmm`.`mover_machinery_id`,
+                `vmm`.`date_mowing_done_last`,
+                `vmm`.`time_of_application_mover`,
+                `vmm`.`mowing_done_at_mm`,
+                `vmm`.`is_fertilizers_used`,
+                `vmm`.`fertilizers_details`,
+                `vmm`.`chemical_details_remark`,
+                `vmm`.`remark_by_groundsman`,
+                `vmm`.`out_machinery_id`,
+                `vmm`.`out_no_of_passes`,
+                `vmm`.`out_rolling_speed`,
+                `vmm`.`out_last_watering_on`,
+                `vmm`.`out_quantity_of_water`,
+                `vmm`.`out_time_of_application`,
+                `vmm`.`out_time_roller`,
+                `vmm`.`out_is_daily_watering`,
+                `vmm`.`out_mover_machinery_id`,
+                `vmm`.`out_date_mowing_done_last`,
+                `vmm`.`time_of_application_out_mover`,
+                `vmm`.`out_mowing_done_at_mm`,
+                `vmm`.`out_is_fertilizers_used`,
+                `vmm`.`out_fertilizers_details`,
+                `vmm`.`out_chemical_details_remark`,
+                `vmm`.`out_remark_by_groundsman`,
+                `vmm`.`brief_match_pitch_assessment`,
+                `vmm`.`time_of_application_chemical`,
+                `vmm`.`out_time_of_application_chemical`,
+                `vmm`.`created_at`,
+                `vmm`.`updated_at`,
+                `vmm`.`chemical_weight`,
+                `vmm`.`fertilizers_unit`,
+                `vmm`.`out_chemical_weight`,
+                `vmm`.`out_fertilizers_unit`,
+                `vmm`.`nuteral_curator`,
+                `vmm`.`out_mover_machine_type`,
+                `vmm`.`out_mover_machinery_name_operator`,
+                `vmm`.`out_moving_passes_unit`,
+                `vmm`.`out_mowing_duration`,
+                `vmm`.`mover_machine_type`,
+                `vmm`.`mover_machinery_name_operator`,
+                `vmm`.`moving_passes_unit`,
+                `vmm`.`mowing_duration`,
+                `vmm`.`roller_machine_type`,
+                `vmm`.`roller_machinery_name_operator`,
+                `vmm`.`out_roller_machine_type`,
+                `vmm`.`out_roller_machinery_name_operator`,
+                `vmm`.`passes_unit`,
+                `vmm`.`out_passes_unit`,
+                `vmm`.`rolling_date`,
+                `vmm`.`out_rolling_date`,
             
-            filters.append("vmm.match_type = %s")
-            params.append(f"{match_type}")
-
-        if team1:
-            filters.append("vmm.team1 LIKE %s")
-            params.append(f"{team1}")
-
-        if team2:
-            filters.append("vmm.team2 LIKE %s")
-            params.append(f"{team2}")
-
-        if match_date:
-            filters.append("vmm.match_date = %s")
-            params.append(match_date)
-
-        if name_tournament:
-            filters.append("vmm.name_tournament LIKE %s")
-            params.append(f"{name_tournament}")
-
-    where_clause = " AND ".join(filters)
-    
-    if where_clause:
-        where_clause = "WHERE " + where_clause
-    # print(where_clause)
-
-    query = f"""
-        SELECT 
-          vmm.id AS match_id, vmm.match_type, vmm.name_tournament, vmm.match_date,
-          vmm.team1, vmm.team2,vmm.preparation_date,
-          vmm.from_date, vmm.to_date,vmm.nuteral_curator,
-			`vmm`.`days_count`,
-			`vmm`.`start_time`,
-			`vmm`.`is_pitch_level`,
-			`vmm`.`lawn_height`,
-			`vmm`.`grass_cover`,
-			`vmm`.`min_temp`,
-			`vmm`.`max_temp`,
-			`vmm`.`forecast`,
-			`vmm`.`moisture_upto`,
-			`vmm`.`dew_factor`,
-			`vmm`.`access_bounce`,
-			`vmm`.`machinery_id`,
-			`vmm`.`no_of_passes`,
-			`vmm`.`rolling_speed`,
-			`vmm`.`last_watering_on`,
-			`vmm`.`quantity_of_water`,
-			`vmm`.`time_of_application`,
-			`vmm`.`time_roller`,
-			`vmm`.`is_daily_watering`,
-			`vmm`.`mover_machinery_id`,
-			`vmm`.`date_mowing_done_last`,
-			`vmm`.`time_of_application_mover`,
-			`vmm`.`mowing_done_at_mm`,
-			`vmm`.`is_fertilizers_used`,
-			`vmm`.`fertilizers_details`,
-			`vmm`.`chemical_details_remark`,
-			`vmm`.`remark_by_groundsman`,
-			`vmm`.`out_machinery_id`,
-			`vmm`.`out_no_of_passes`,
-			`vmm`.`out_rolling_speed`,
-			`vmm`.`out_last_watering_on`,
-			`vmm`.`out_quantity_of_water`,
-			`vmm`.`out_time_of_application`,
-			`vmm`.`out_time_roller`,
-			`vmm`.`out_is_daily_watering`,
-			`vmm`.`out_mover_machinery_id`,
-			`vmm`.`out_date_mowing_done_last`,
-			`vmm`.`time_of_application_out_mover`,
-			`vmm`.`out_mowing_done_at_mm`,
-			`vmm`.`out_is_fertilizers_used`,
-			`vmm`.`out_fertilizers_details`,
-			`vmm`.`out_chemical_details_remark`,
-			`vmm`.`out_remark_by_groundsman`,
-			`vmm`.`brief_match_pitch_assessment`,
-			`vmm`.`time_of_application_chemical`,
-			`vmm`.`out_time_of_application_chemical`,
-			`vmm`.`created_at`,
-			`vmm`.`updated_at`,
-			`vmm`.`chemical_weight`,
-			`vmm`.`fertilizers_unit`,
-			`vmm`.`out_chemical_weight`,
-			`vmm`.`out_fertilizers_unit`,
-			`vmm`.`nuteral_curator`,
-			`vmm`.`out_mover_machine_type`,
-			`vmm`.`out_mover_machinery_name_operator`,
-			`vmm`.`out_moving_passes_unit`,
-			`vmm`.`out_mowing_duration`,
-			`vmm`.`mover_machine_type`,
-			`vmm`.`mover_machinery_name_operator`,
-			`vmm`.`moving_passes_unit`,
-			`vmm`.`mowing_duration`,
-			`vmm`.`roller_machine_type`,
-			`vmm`.`roller_machinery_name_operator`,
-			`vmm`.`out_roller_machine_type`,
-			`vmm`.`out_roller_machinery_name_operator`,
-			`vmm`.`passes_unit`,
-			`vmm`.`out_passes_unit`,
-			`vmm`.`rolling_date`,
-			`vmm`.`out_rolling_date`,
-          
-          vgm.ground_name, vgm.city_name, vgm.state_name, vgm.org_id, vgm.count_main_pitches,
-          vgm.count_practice_pitches,
-          
-          vpm.pitch_no,vpm.id, vpm.pitch_type, vpm.profile_of_pitches,
-          vpm.soil_type, vpm.is_uniformtiy_of_grass, vpm.mowing_size, vpm.pitch_placement,
-          
+            vgm.ground_name, vgm.city_name, vgm.state_name, vgm.org_id, vgm.count_main_pitches,
+            vgm.count_practice_pitches,
+            
+            vpm.pitch_no,vpm.id, vpm.pitch_type, vpm.profile_of_pitches,
+            vpm.soil_type, vpm.is_uniformtiy_of_grass, vpm.mowing_size, vpm.pitch_placement,
+            
+            
+            
         
-          
-      
-          
-          sau.id AS admin_id,sau.address AS admin_address,sau.name AS admin_name, 
-          sau.email AS admin_email,sau.username AS admin_username, sau.mobile AS admin_mobile,
-          `vmm`.`clagg_hammer`,
-          `vmm`.`moisture`
-          
-        FROM {org_id}_match_master vmm
-        LEFT JOIN {org_id}_ground_master vgm ON vmm.ground_id = vgm.id
-        LEFT JOIN super_admin_user_adminuserlist sau ON vgm.org_id = sau.org_id
-        LEFT JOIN {org_id}_pitch_master vpm ON vmm.pitch_id = vpm.id
-       
-        {where_clause}
-    """
-    # print(query,params)
-    
-    
-    request.session['match-report-query'] = query
-    
-    with connection.cursor() as cursor:
-        cursor.execute(query, params)
-        columns = [col[0] for col in cursor.description]
-        rows = cursor.fetchall()
+            
+            sau.id AS admin_id,sau.address AS admin_address,sau.name AS admin_name, 
+            sau.email AS admin_email,sau.username AS admin_username, sau.mobile AS admin_mobile,
+            `vmm`.`clagg_hammer`,
+            `vmm`.`moisture`
+            
+            FROM {org_id}_match_master vmm
+            LEFT JOIN {org_id}_ground_master vgm ON vmm.ground_id = vgm.id
+            LEFT JOIN super_admin_user_adminuserlist sau ON vgm.org_id = sau.org_id
+            LEFT JOIN {org_id}_pitch_master vpm ON vmm.pitch_id = vpm.id
         
-        data = [dict(zip(columns, row)) for row in rows]
-        # print(data)
+            {where_clause}
+        """
+        # print(query,params)
+        
+        
+        request.session['match-report-query'] = query
+        
+        with connection.cursor() as cursor:
+            cursor.execute(query, params)
+            columns = [col[0] for col in cursor.description]
+            rows = cursor.fetchall()
+            mrow=rows[0]
+            # print("data 1 st row",mrow[0])
+            query = f"""SELECT * FROM {org_id}_match_main_clagghammer WHERE match_id = %s"""
+            cursor.execute(query, [mrow[0]])
+            claggRows=cursor.fetchall()
+            # print(claggRows)
+            data = [dict(zip(columns, row)) for row in rows]
+            # claggdata = [dict(zip(columns, row)) for row in claggRows]
+            # print(claggdata)
 
-    return render(request, "admin_user/reports/report1.html", {"records": data})
+        return render(request, "admin_user/reports/report1.html", {"records": data,"clagg":claggRows})
+    except Exception as e:
+        print(e)
 
 
 def download_pdf(request):
@@ -661,10 +670,11 @@ def fertilizer_usage_report(request):
     from_date = request.GET.get("from_date")
     to_date = request.GET.get("to_date")
     chemical = request.GET.get("chemical")
+    area = request.GET.get("area")   # new line
     chemical_type_select = request.GET.get("chemical_type_select")
     # print(type(chemical))
-
-    if not all([ground_id, from_date, to_date]):
+    
+    if not all([from_date, to_date]):
         return render(request, "admin_user/reports/curator_fertilizer_report.html", {"error": "Please provide all filters."})
 
     # 1. Fetch fertilizer ID to chemical name mapping
@@ -683,19 +693,19 @@ def fertilizer_usage_report(request):
             SELECT 
                 fertilizers_details, pitch_main_chemical_weight, pitch_main_chemical_unit,
                 out_fertilizers_details, outfield_chemical_weight, outfield_chemical_unit,
-                practice_fertilizers_details, pitch_practice_chemical_weight, pitch_practice_chemical_unit,
-                pp_fertilizers_details, practice_area_chemical_weight, practice_area_chemical_unit,rolling_start_date
+                practice_fertilizers_details,practice_area_chemical_weight, practice_area_chemical_unit,
+                pp_fertilizers_details, pitch_practice_chemical_weight, pitch_practice_chemical_unit,rolling_start_date
             FROM {org_id}_curator_daily_recording_master
-            WHERE ground_id = %s AND rolling_start_date BETWEEN %s AND %s
+            WHERE rolling_start_date BETWEEN %s AND %s
         """
-        value.extend([ground_id, from_date, to_date])
+        value.extend([from_date, to_date])
     else:
         query = f"""
             SELECT 
                 fertilizers_details, pitch_main_chemical_weight, pitch_main_chemical_unit,
                 out_fertilizers_details, outfield_chemical_weight, outfield_chemical_unit,
-                practice_fertilizers_details, pitch_practice_chemical_weight, pitch_practice_chemical_unit,
-                pp_fertilizers_details, practice_area_chemical_weight, practice_area_chemical_unit,rolling_start_date
+                practice_fertilizers_details, practice_area_chemical_weight, practice_area_chemical_unit,
+                pp_fertilizers_details, pitch_practice_chemical_weight, pitch_practice_chemical_unit,rolling_start_date
             FROM {org_id}_curator_daily_recording_master
             WHERE ground_id = %s AND rolling_start_date BETWEEN %s AND %s 
         """
@@ -723,13 +733,23 @@ def fertilizer_usage_report(request):
                 date = raw_date
 
         # 4 zones
-        for ids_str,w,u in [
-            (row[0],row[1],row[2]),
-            (row[3],row[4],row[5]),
-            (row[6],row[7],row[8]),
-            (row[9],row[10],row[11])
-        ]:
-
+        # for ids_str,w,u in [
+        #     (row[0],row[1],row[2]),
+        #     (row[3],row[4],row[5]),
+        #     (row[6],row[7],row[8]),
+        #     (row[9],row[10],row[11])
+        # ]:
+        zones = [
+            ("main-pitches", row[0], row[1], row[2]),
+            ("oufield", row[3], row[4], row[5]),
+            ("practice-outfield", row[6], row[7], row[8]),
+            ("practice-pitches", row[9], row[10], row[11])
+        ]
+        for zone_name, ids_str, w, u in zones:
+            # 🔥 AREA FILTER
+            if area not in ["", "all", None]:
+                if zone_name != area:
+                    continue
             ids = (ids_str or "").split("__####__")
             wts = (w       or "").split("__####__")
             uts = (u       or "").split("__####__")
@@ -764,10 +784,13 @@ def fertilizer_usage_report(request):
 
                 # --- chemical → date bucket ---
                 usage_by_chemical.setdefault(cname, {})
-                usage_by_chemical[cname].setdefault(date, {"kg":0,"ltr":0})
+                usage_by_chemical[cname].setdefault(date, [])
 
-                usage_by_chemical[cname][date]["kg"]  += kg
-                usage_by_chemical[cname][date]["ltr"] += ltr
+                usage_by_chemical[cname][date].append({
+                    "area": zone_name,
+                    "kg": kg,
+                    "ltr": ltr
+                })
 
                 # grand totals
                 chemical_totals.setdefault(cname, {"kg":0,"ltr":0})
@@ -782,14 +805,15 @@ def fertilizer_usage_report(request):
     for cname, datedata in usage_by_chemical.items():
 
         rows_list = []
-        # sort dates
+
         for date in sorted(datedata.keys(), key=lambda d: datetime.strptime(d, "%d-%m-%Y")):
-            v = datedata[date]
-            rows_list.append({
-                "date": date,
-                "kg": round(v["kg"],2) if v["kg"] else None,
-                "ltr": round(v["ltr"],2) if v["ltr"] else None
-            })
+            for entry in datedata[date]:
+                rows_list.append({
+                    "date": date,
+                    "area": entry["area"],   # 🔥 new column
+                    "kg": round(entry["kg"],2) if entry["kg"] else None,
+                    "ltr": round(entry["ltr"],2) if entry["ltr"] else None
+                })
 
         total = chemical_totals.get(cname, {"kg":0,"ltr":0})
 
@@ -1420,7 +1444,64 @@ WHERE
 #     }
 #     return render(request, "admin_user/reports/MachineriesReport.html", context)
 
+def icc_match_report(request):
+    # if request.method == 'POST':
+        
+    return render(request,'admin_user/reports/icc_match_report.html')
 
+
+def get_icc_report(request, match_id):
+    try:
+        org_id = request.session["org_id"]
+
+        with connection.cursor() as cursor:
+            cursor.execute(f"""
+                    SELECT m.id, m.name_tournament, m.match_date, 
+                        g.id, g.ground_name,m.team1,m.team2,m.from_date,m.to_date,m.match_type,m.days_count
+                    FROM {org_id}_match_master m
+                    JOIN {org_id}_ground_master g ON m.ground_id = g.id
+                    WHERE m.id = %s
+                """, [match_id])
+
+            row = cursor.fetchone()
+            
+            cursor.execute(
+                f"SELECT * FROM {org_id}_icc_pitch_report WHERE match_id=%s",
+                [match_id]
+            )
+            row1 = cursor.fetchone()
+
+            matchData={
+                    "match_id": row[0],
+                    "match_name": row[1],
+                    "match_date": row[2],
+                    "ground_id": row[3],
+                    "ground_name": row[4],
+                    "team1":row[5],
+                    "team2":row[6],
+                    "from_date":row[7],
+                    "to_date":row[8],
+                    "match_type":row[9],
+                    "days_count":row[10]
+                }
+            print(matchData)
+                # return render(request, 'admin_user/iccpitchoutfield/iccpitchoutfieldform.html',)
+            if not row1:
+                return JsonResponse({"error": "No data found"}, status=404)
+
+            columns = [col[0] for col in cursor.description]
+            data = dict(zip(columns, row1))
+
+        # JSON parse
+        data["heavy_roller_effect"] = json.loads(data["heavy_roller_effect"] or "{}")
+        data["bounce"] = json.loads(data["bounce"] or "{}")
+        data["bounce_consistency"] = json.loads(data["bounce_consistency"] or "{}")
+        data["seam_movement"] = json.loads(data["seam_movement"] or "{}")
+        data["turn"] = json.loads(data["turn"] or "{}")
+
+        return JsonResponse({"data": data,"match_data":matchData})
+    except Exception as e:
+        print(e)
 
 ######################end reports
 
@@ -1527,7 +1608,6 @@ def fertilizer_delete(request, id):
     except Exception as e:
         print(e)
 
-
 def login_auth(request):
     if request.method == 'POST':
         org_id = request.POST.get('org_id').lower()
@@ -1558,7 +1638,9 @@ def login_auth(request):
         except Exception as e:
             print(e)
             return render(request, 'admin_user/org_login.html')
-
+    else:
+        messages.error(request, 'Invalid username or password')
+        return redirect("login")
 
 def login_auth_role(request):
 
@@ -1609,7 +1691,9 @@ def login_auth_role(request):
                 return render(request, 'curator/org_login.html')
             elif (role == "Scorer"):
                 return render(request, 'scorer/org_login.html')
-
+    else:
+        messages.error(request, 'Invalid username or password')
+        return redirect("login")
 
 def login_auth_role_direct(request):
 
@@ -1653,7 +1737,9 @@ def login_auth_role_direct(request):
                 return render(request, 'curator/org_login.html')
             elif (role == "Scorer"):
                 return render(request, 'scorer/org_login.html')
-
+    else:
+        messages.error(request, 'Invalid username or password')
+        return redirect("login")
 
 def org_dashboard(request):
     user_id = request.session.get("user").get("id")  # Retrieve the stored ID from the session
@@ -1668,7 +1754,7 @@ def org_dashboard(request):
 def getCurators(request):
     org_id = request.session.get('org_id')
     with connection.cursor() as cursor:
-        cursor.execute(f"SELECT id, name FROM admin_user_adminrole WHERE role='Curator' and org_id='{org_id}'")
+        cursor.execute(f"SELECT admin_user_adminrole.id, name, {org_id}_ground_master.ground_name FROM admin_user_adminrole inner join {org_id}_ground_master on admin_user_adminrole.ground_id={org_id}_ground_master.id WHERE role='Curator' and admin_user_adminrole.org_id='{org_id}'")
         curators = cursor.fetchall()
     return JsonResponse({"curators": curators})
 
@@ -2735,6 +2821,11 @@ def curator_daily_recording_form(request):
                     outfield_chemical_unit=""
                     
                     
+                   
+                        
+                        
+                        
+                    
                     out_watering_entries_json = (request.POST.get("out_watering_entries_json"+str(index)) or '').strip() or None
                     out_watering_entries = json.loads(out_watering_entries_json) if out_watering_entries_json else []
                     if(len(out_watering_entries)>0):
@@ -3264,6 +3355,122 @@ def curator_daily_recording_form(request):
 
                     cursor.execute(query, values)
                     
+                    last_id = cursor.lastrowid
+                    print("Inserted ID:", last_id)      
+                    try:
+                        moisture_entries_json = (request.POST.get("moisture_entries_json"+str(index)) or '').strip() or None
+                        moisture_entries = json.loads(moisture_entries_json) if moisture_entries_json else []
+                        if(moisture_entries["date"]):
+                            date=moisture_entries["date"]
+                            time=moisture_entries["time"]
+                            match_details=moisture_entries["match_details"]
+                            data=moisture_entries["data"]
+                            sqlNew=f'''INSERT INTO `{org_id}_daily_outfield_moisture` (`daily_id`,`date`,`time`,`match_details`,`data`) VALUES (%s,%s,%s,%s,%s)'''
+                            v=[last_id,date,time,match_details,json.dumps(data)]
+                            cursor.execute(sqlNew, v)
+                            
+                            
+                            # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
+                        else:
+                            print("No Moisture Data")
+                    except Exception as e:
+                        print(e)
+                    
+                    try:
+                        claggHammer_entries_json = (request.POST.get("claggHammer_entries_json"+str(index)) or '').strip() or None
+                        claggHammer_entries = json.loads(claggHammer_entries_json) if claggHammer_entries_json else []
+                        if(len(claggHammer_entries)>0):
+                            for clagg in claggHammer_entries:
+                                date=clagg["date"]
+                                time=clagg["time"]
+                                value1=clagg["value1"]
+                                value2=clagg["value2"]
+                                value3=clagg["value3"]
+                                value4=clagg["value4"]
+                                value5=clagg["value5"]
+                                value6=clagg["value6"]
+                                value7=clagg["value7"]
+                                value8=clagg["value8"]
+                                value9=clagg["value9"]
+                                value10=clagg["value10"]
+                                sqlNew=f'''INSERT INTO `{org_id}_daily_outfield_clagghammer` (`daily_id`,`date`,`time`,`value1`,
+                                                                                                                            `value2`,
+                                                                                                                            `value3`,
+                                                                                                                            `value4`,
+                                                                                                                            `value5`,
+                                                                                                                            `value6`,
+                                                                                                                            `value7`,
+                                                                                                                            `value8`,
+                                                                                                                            `value9`,
+                                                                                                                            `value10`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'''
+                                v=[last_id,date,time,value1,value2,value3,value4,value5,value6,value7,value8,value9,value10]
+                                cursor.execute(sqlNew, v)
+                            
+                            
+                            # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
+                        else:
+                            print("No clagg hammer data")
+                    except Exception as e:
+                        print(e)
+                        
+                        
+                    try:    
+                        pmoisture_entries_json = (request.POST.get("pmoisture_entries_json"+str(index)) or '').strip() or None
+                        pmoisture_entries = json.loads(pmoisture_entries_json) if pmoisture_entries_json else []
+                        if(pmoisture_entries["date"]):
+                            date=pmoisture_entries["date"]
+                            time=pmoisture_entries["time"]
+                            match_details=pmoisture_entries["match_details"]
+                            data=pmoisture_entries["data"]
+                            sqlNew=f'''INSERT INTO `{org_id}_daily_pf_moisture` (`daily_id`,`date`,`time`,`match_details`,`data`) VALUES (%s,%s,%s,%s,%s)'''
+                            v=[last_id,date,time,match_details,json.dumps(data)]
+                            cursor.execute(sqlNew, v)
+                            
+                            
+                            # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
+                        else:
+                            print("No Moisture Data")
+                    except Exception as e:
+                        print(e)
+                    
+                    
+                    try:
+                        pclaggHammer_entries_json = (request.POST.get("pclaggHammer_entries_json"+str(index)) or '').strip() or None
+                        pclaggHammer_entries = json.loads(pclaggHammer_entries_json) if pclaggHammer_entries_json else []
+                        if(len(pclaggHammer_entries)>0):
+                            for clagg in pclaggHammer_entries:
+                                date=clagg["date"]
+                                time=clagg["time"]
+                                value1=clagg["value1"]
+                                value2=clagg["value2"]
+                                value3=clagg["value3"]
+                                value4=clagg["value4"]
+                                value5=clagg["value5"]
+                                value6=clagg["value6"]
+                                value7=clagg["value7"]
+                                value8=clagg["value8"]
+                                value9=clagg["value9"]
+                                value10=clagg["value10"]
+                                sqlNew=f'''INSERT INTO `{org_id}_daily_pf_clagghammer` (`daily_id`,`date`,`time`,`value1`,
+                                                                                                                            `value2`,
+                                                                                                                            `value3`,
+                                                                                                                            `value4`,
+                                                                                                                            `value5`,
+                                                                                                                            `value6`,
+                                                                                                                            `value7`,
+                                                                                                                            `value8`,
+                                                                                                                            `value9`,
+                                                                                                                            `value10`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'''
+                                v=[last_id,date,time,value1,value2,value3,value4,value5,value6,value7,value8,value9,value10]
+                                cursor.execute(sqlNew, v)
+                            
+                            
+                            # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
+                        else:
+                            print("No clagg hammer data")
+                    except Exception as e:
+                        print(e)
+                    
                     
                     # print("Hello")
             return redirect('curator_daily_recording_list')
@@ -3277,6 +3484,8 @@ def curator_daily_recording_form(request):
         return render(request, 'admin_user/curator_daily_recording_form.html', {'pitches': pitches})
     except Exception as e:
         print(e)
+
+
 
 def update_daily(request,daily_id):
     try:
@@ -4191,7 +4400,182 @@ def curator_daily_recording_list_filter(request):
             messages.error(request, e)
         return render(request, 'admin_user/curator_daily_recording_list.html', {'recordings': recordings, "flag": True})
 
-    
+
+def curator_daily_recording_list_filter_by_date(request):
+    try:
+        formData=request.GET
+        user = request.session.get("user")
+        
+        org_id = request.session["org_id"]
+        ground_id = formData.get("ground_id") if formData.get("ground_id") else "no"
+        from_date =formData.get("from_date") if formData.get("from_date") else "no"
+        to_date = formData.get("to_date") if formData.get("to_date") else "no"
+        # org_id = request.session["org_id"]
+        # ground_id = request.GET.get("ground_id")
+        
+        try:
+            query_base = f'''
+                        SELECT 
+                            cdr.id, 
+                            cdr.pitch_id, 
+                            cdr.pitch_location, 
+                            cdr.rolling_start_date, 
+                            cdr.min_temp, 
+                            cdr.max_temp, 
+                            cdr.forecast, 
+                            cdr.clagg_hammer, 
+                            cdr.moisture, 
+                            cdr.machinery_id, 
+                            cdr.no_of_passes, 
+                            cdr.rolling_speed, 
+                            cdr.last_watering_on, 
+                            cdr.quantity_of_water, 
+                            cdr.time_of_application, 
+                            cdr.time_roller, 
+                            cdr.mover_machinery_id, 
+                            cdr.date_mowing_done_last, 
+                            cdr.time_of_application_mover, 
+                            cdr.mowing_done_at_mm, 
+                            cdr.is_fertilizers_used, 
+                            cdr.fertilizers_details, 
+                            cdr.chemical_details_remark, 
+                            cdr.remark_by_groundsman, 
+                            cdr.out_machinery_id, 
+                            cdr.out_no_of_passes, 
+                            cdr.out_rolling_speed, 
+                            cdr.out_last_watering_on, 
+                            cdr.out_quantity_of_water, 
+                            cdr.out_time_of_application, 
+                            cdr.out_time_roller, 
+                            cdr.out_mover_machinery_id, 
+                            cdr.out_date_mowing_done_last, 
+                            cdr.time_of_application_out_mover, 
+                            cdr.out_mowing_done_at_mm, 
+                            cdr.out_is_fertilizers_used, 
+                            cdr.out_fertilizers_details, 
+                            cdr.out_chemical_details_remark, 
+                            cdr.out_remark_by_groundsman, 
+                            cdr.practice_machinery_id, 
+                            cdr.practice_no_of_passes, 
+                            cdr.practice_rolling_speed, 
+                            cdr.practice_last_watering_on, 
+                            cdr.practice_quantity_of_water, 
+                            cdr.practice_time_of_application, 
+                            cdr.practice_time_roller, 
+                            cdr.practice_mover_machinery_id, 
+                            cdr.practice_date_mowing_done_last, 
+                            cdr.time_of_application_practice_mover, 
+                            cdr.practice_mowing_done_at_mm, 
+                            cdr.practice_is_fertilizers_used, 
+                            cdr.practice_fertilizers_details, 
+                            cdr.practice_chemical_details_remark, 
+                            cdr.practice_remark_by_groundsman, 
+                            cdr.time_of_application_chemical, 
+                            cdr.out_time_of_application_chemical, 
+                            cdr.practice_time_of_application_chemical, 
+                            cdr.recording_type, 
+                            cdr.ground_id, 
+                            cdr.created_at, 
+                            cdr.updated_at,
+                            p.pitch_type, 
+                            p.pitch_placement, 
+                            g.ground_name AS ground_name,
+                            m1.print_details AS main_machinery,
+                            m2.print_details AS mover_machinery,
+                            m3.print_details AS out_machinery,
+                            m4.print_details AS out_mover_machinery,
+                            m5.print_details AS practice_machinery,
+                            m6.print_details AS practice_mover_machinery,
+                            cdr.pitch_main,
+                            cdr.pitch_practice,
+                            cdr.outfield,
+                            cdr.practice_area,
+                            cdr.pp_machinery_id, 
+                            cdr.pp_no_of_passes, 
+                            cdr.pp_rolling_speed, 
+                            cdr.pp_last_watering_on,
+                            cdr.pp_quantity_of_water, 
+                            cdr.pp_time_of_application, 
+                            cdr.pp_time_roller, 
+                            cdr.pp_mover_machinery_id,
+                            cdr.pp_date_mowing_done_last, 
+                            cdr.pp_time_of_application_mover, 
+                            cdr.pp_mowing_done_at_mm, 
+                            cdr.pp_is_fertilizers_used,
+                            cdr.pp_fertilizers_details, 
+                            cdr.pp_chemical_details_remark, 
+                            cdr.pp_remark_by_groundsman,
+                            cdr.pp_time_of_application_chemical,
+                            m7.print_details AS pp_machinery,
+                            m8.print_details AS pp_mover_machinery,
+                            cdr.pitch_main_chemical_unit,
+                            cdr.pitch_main_chemical_weight,
+                            cdr.pitch_practice_chemical_weight,
+                            cdr.pitch_practice_chemical_unit,
+                            cdr.outfield_chemical_weight,
+                            cdr.outfield_chemical_unit,
+                            cdr.practice_area_chemical_weight,
+                            cdr.practice_area_chemical_unit
+                        FROM 
+                            {org_id}_curator_daily_recording_master cdr
+                        INNER JOIN 
+                            {org_id}_pitch_master p ON cdr.pitch_id = p.id
+                        INNER JOIN 
+                            {org_id}_ground_master g ON cdr.ground_id = g.id
+                        LEFT JOIN 
+                            {org_id}_machinery_master m1 ON cdr.machinery_id = m1.id
+                        LEFT JOIN 
+                            {org_id}_machinery_master m2 ON cdr.mover_machinery_id = m2.id
+                        LEFT JOIN 
+                            {org_id}_machinery_master m3 ON cdr.out_machinery_id = m3.id
+                        LEFT JOIN 
+                            {org_id}_machinery_master m4 ON cdr.out_mover_machinery_id = m4.id
+                        LEFT JOIN 
+                            {org_id}_machinery_master m5 ON cdr.practice_machinery_id = m5.id
+                        LEFT JOIN 
+                            {org_id}_machinery_master m6 ON cdr.practice_mover_machinery_id = m6.id
+                            LEFT JOIN 
+                            {org_id}_machinery_master m7 ON cdr.pp_machinery_id = m7.id
+                            LEFT JOIN 
+                            {org_id}_machinery_master m8 ON cdr.pp_mover_machinery_id = m8.id '''
+                
+            conditions = []
+            params = []
+            if user.get("role")=="admin":
+                if ground_id != "no":
+                    conditions.append("cdr.ground_id = %s")
+                    params.append(ground_id)
+            else:
+                conditions.append("cdr.ground_id = %s")
+                params.append(user.get("ground_id"))
+
+            if from_date != "no" and to_date != "no":
+                        # Sahi BETWEEN syntax aur dono dates filter ke liye
+                        conditions.append("(cdr.rolling_start_date BETWEEN %s AND %s)")
+                        params.extend([from_date, to_date])
+
+                    # 4. Agar koi condition hai toh WHERE clause jodein
+            if conditions:
+                        query_base += " WHERE " + " AND ".join(conditions)
+
+                    # 5. Order by aur Limit jodein
+            query_base += " ORDER BY cdr.rolling_start_date DESC LIMIT 15"
+
+            print(query_base)
+                    # 6. Query Execute karein
+            with connection.cursor() as cursor:
+                cursor.execute(query_base, params)
+                recordings = cursor.fetchall() # aapka data fetch karne ke liye
+                print(recordings)
+                
+        except Exception as e:
+                print(e)
+                messages.error(request, e)
+        return render(request, 'admin_user/curator_daily_recording_list.html', {'recordings': recordings, "flag": True})
+    except Exception as e:
+        print(e)
+
+
 def curator_daily_recording_list(request):
     org_id = request.session["org_id"]
     with connection.cursor() as cursor:
@@ -4322,7 +4706,7 @@ def curator_daily_recording_list(request):
                         {org_id}_machinery_master m7 ON cdr.pp_machinery_id = m7.id
                         LEFT JOIN 
                         {org_id}_machinery_master m8 ON cdr.pp_mover_machinery_id = m8.id
-                    order by cdr.created_at desc;
+                    order by cdr.rolling_start_date desc limit 15;
                 '''
                 cursor.execute(sql)
             else:
@@ -4433,7 +4817,7 @@ def curator_daily_recording_list(request):
                         LEFT JOIN 
                         {org_id}_machinery_master m8 ON cdr.pp_mover_machinery_id = m8.id
                     
-                    WHERE cdr.ground_id = %s order by cdr.created_at desc;
+                    WHERE cdr.ground_id = %s order by cdr.rolling_start_date desc limit 15;
                 '''
                 cursor.execute(sql, [user.get("ground_id")])
             recordings = cursor.fetchall()
@@ -4719,8 +5103,6 @@ def delete_score(request, score_id):
 
         return JsonResponse({'status': 'success'})
 
-
-
 @csrf_exempt
 def update_score(request, score_id):
     org_id = request.session["org_id"]
@@ -4750,7 +5132,6 @@ def update_score(request, score_id):
     except Exception as e:
         print(e)
 
- 
 def insert_match(request):
     try:
         org_id = request.session["org_id"]
@@ -5279,6 +5660,64 @@ def insert_match(request):
                     # print(sql)
                     # print(values)
                     cursor.execute(sql,values)
+                    last_id = cursor.lastrowid
+                    print("Inserted ID:", last_id)
+                    
+                    try:
+                        moisture_entries_json = (request.POST.get("moisture_entries_json"+str(index)) or '').strip() or None
+                        moisture_entries = json.loads(moisture_entries_json) if moisture_entries_json else []
+                        if(moisture_entries["date"]):
+                            date=moisture_entries["date"]
+                            time=moisture_entries["time"]
+                            match_details=moisture_entries["match_details"]
+                            data=moisture_entries["data"]
+                            sqlNew=f'''INSERT INTO `{org_id}_match_main_moisture` (`match_id`,`date`,`time`,`match_details`,`data`) VALUES (%s,%s,%s,%s,%s)'''
+                            v=[last_id,date,time,match_details,json.dumps(data)]
+                            cursor.execute(sqlNew, v)
+                            
+                            
+                            # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
+                        else:
+                            print("No Moisture Data")
+                    except Exception as e:
+                        print(e)
+                    
+                    try:
+                        claggHammer_entries_json = (request.POST.get("claggHammer_entries_json"+str(index)) or '').strip() or None
+                        claggHammer_entries = json.loads(claggHammer_entries_json) if claggHammer_entries_json else []
+                        if(len(claggHammer_entries)>0):
+                            for clagg in claggHammer_entries:
+                                date=clagg["date"]
+                                time=clagg["time"]
+                                value1=clagg["value1"]
+                                value2=clagg["value2"]
+                                value3=clagg["value3"]
+                                value4=clagg["value4"]
+                                value5=clagg["value5"]
+                                value6=clagg["value6"]
+                                value7=clagg["value7"]
+                                value8=clagg["value8"]
+                                value9=clagg["value9"]
+                                value10=clagg["value10"]
+                                sqlNew=f'''INSERT INTO `{org_id}_match_main_clagghammer` (`match_id`,`date`,`time`,`value1`,
+                                                                                                                            `value2`,
+                                                                                                                            `value3`,
+                                                                                                                            `value4`,
+                                                                                                                            `value5`,
+                                                                                                                            `value6`,
+                                                                                                                            `value7`,
+                                                                                                                            `value8`,
+                                                                                                                            `value9`,
+                                                                                                                            `value10`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'''
+                                v=[last_id,date,time,value1,value2,value3,value4,value5,value6,value7,value8,value9,value10]
+                                cursor.execute(sqlNew, v)
+                            
+                            
+                            # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
+                        else:
+                            print("No clagg hammer data")
+                    except Exception as e:
+                        print(e)
 
             return redirect('match_list')
 
@@ -5286,7 +5725,6 @@ def insert_match(request):
     except Exception as e:
         print(e)
         return HttpResponse(e)
-
 
 def update_match(request, match_id):
     try:
@@ -5841,7 +6279,6 @@ def update_match(request, match_id):
         print("Error:", e)
         return render(request, 'admin_user/error.html', {'error': str(e)})
 
-
 @csrf_exempt
 def delete_match(request,match_id):
     org_id = request.session["org_id"]
@@ -5851,7 +6288,6 @@ def delete_match(request,match_id):
             cursor.execute(f"""DELETE FROM {org_id}_match_master  WHERE id = %s""", [match_id])
 
     return JsonResponse({'status': 'success'})
-
 
 def match_list_filter(request):
     try:
@@ -5964,10 +6400,164 @@ def match_list_filter(request):
 								`{org_id}_fertilizer_master` c1 ON cdr.fertilizers_details = c1.id
 							LEFT JOIN 
 								`{org_id}_fertilizer_master` c2 ON cdr.out_fertilizers_details = c2.id
-						   where cdr.ground_id=%s order by cdr.created_at desc''',[ground_id])
+						   where cdr.ground_id=%s order by cdr.created_at desc limit 15''',[ground_id])
            		 
                 
             matches = cursor.fetchall()
+
+
+        return render(request, 'admin_user/match_list.html', {'matches': matches})
+    except Exception as e:
+        print(e)
+
+
+def match_list_filter_by_date(request):
+    try:
+        formData=request.GET
+        user = request.session.get("user")
+        
+        org_id = request.session["org_id"]
+        ground_id = formData.get("ground_id") if formData.get("ground_id") else "no"
+        from_date =formData.get("from_date") if formData.get("from_date") else "no"
+        to_date = formData.get("to_date") if formData.get("to_date") else "no"
+        
+        
+        query_base=f'''SELECT `cdr`.`id`,
+			`cdr`.`match_type`,
+			`cdr`.`name_tournament`,
+			`cdr`.`team1`,
+			`cdr`.`team2`,
+			`cdr`.`preparation_date`,
+			`cdr`.`match_date`,
+			`cdr`.`from_date`,
+			`cdr`.`to_date`,
+			`cdr`.`days_count`,
+			`cdr`.`start_time`,
+			`cdr`.`pitch_id`,
+			`cdr`.`ground_id`,
+			`cdr`.`is_pitch_level`,
+			`cdr`.`lawn_height`,
+			`cdr`.`grass_cover`,
+			`cdr`.`min_temp`,
+			`cdr`.`max_temp`,
+			`cdr`.`forecast`,
+			`cdr`.`moisture_upto`,
+			`cdr`.`dew_factor`,
+			`cdr`.`access_bounce`,
+			`cdr`.`machinery_id`,
+			`cdr`.`no_of_passes`,
+			`cdr`.`rolling_speed`,
+			`cdr`.`last_watering_on`,
+			`cdr`.`quantity_of_water`,
+			`cdr`.`time_of_application`,
+			`cdr`.`time_roller`,
+			`cdr`.`is_daily_watering`,
+			`cdr`.`mover_machinery_id`,
+			`cdr`.`date_mowing_done_last`,
+			`cdr`.`time_of_application_mover`,
+			`cdr`.`mowing_done_at_mm`,
+			`cdr`.`is_fertilizers_used`,
+			`cdr`.`fertilizers_details`,
+			`cdr`.`chemical_details_remark`,
+			`cdr`.`remark_by_groundsman`,
+			`cdr`.`out_machinery_id`,
+			`cdr`.`out_no_of_passes`,
+			`cdr`.`out_rolling_speed`,
+			`cdr`.`out_last_watering_on`,
+			`cdr`.`out_quantity_of_water`,
+			`cdr`.`out_time_of_application`,
+			`cdr`.`out_time_roller`,
+			`cdr`.`out_is_daily_watering`,
+			`cdr`.`out_mover_machinery_id`,
+			`cdr`.`out_date_mowing_done_last`,
+			`cdr`.`time_of_application_out_mover`,
+			`cdr`.`out_mowing_done_at_mm`,
+			`cdr`.`out_is_fertilizers_used`,
+			`cdr`.`out_fertilizers_details`,
+			`cdr`.`out_chemical_details_remark`,
+			`cdr`.`out_remark_by_groundsman`,
+			`cdr`.`brief_match_pitch_assessment`,
+			`cdr`.`time_of_application_chemical`,
+			`cdr`.`out_time_of_application_chemical`,
+			`cdr`.`created_at`,
+			`cdr`.`updated_at`,
+			`cdr`.`chemical_weight`,
+			`cdr`.`fertilizers_unit`,
+			`cdr`.`out_chemical_weight`,
+			`cdr`.`out_fertilizers_unit`,
+			`cdr`.`nuteral_curator`,
+			`cdr`.`out_mover_machine_type`,
+			`cdr`.`out_mover_machinery_name_operator`,
+			`cdr`.`out_moving_passes_unit`,
+			`cdr`.`out_mowing_duration`,
+			`cdr`.`mover_machine_type`,
+			`cdr`.`mover_machinery_name_operator`,
+			`cdr`.`moving_passes_unit`,
+			`cdr`.`mowing_duration`,
+			`cdr`.`roller_machine_type`,
+			`cdr`.`roller_machinery_name_operator`,
+			`cdr`.`out_roller_machine_type`,
+			`cdr`.`out_roller_machinery_name_operator`,
+			`cdr`.`passes_unit`,
+			`cdr`.`out_passes_unit`,
+			g.ground_name,
+			p.pitch_type, 
+			p.pitch_placement, 
+			c1.chemical_name as chem1,
+			c2.chemical_name as chem2,
+			m1.print_details as mch1,
+			m2.print_details as mch2,
+			m3.print_details as mch3,
+			m4.print_details as mch4,
+            `cdr`.`rolling_date`,
+            `cdr`.`out_rolling_date`
+                FROM {org_id}_match_master cdr
+							INNER JOIN 
+								{org_id}_pitch_master p ON cdr.pitch_id = p.id
+							INNER JOIN 
+								{org_id}_ground_master g ON cdr.ground_id = g.id
+							LEFT JOIN 
+								{org_id}_machinery_master m1 ON cdr.machinery_id = m1.id
+							LEFT JOIN 
+								{org_id}_machinery_master m2 ON cdr.mover_machinery_id = m2.id
+							LEFT JOIN 
+								{org_id}_machinery_master m3 ON cdr.out_machinery_id = m3.id
+							LEFT JOIN 
+								{org_id}_machinery_master m4 ON cdr.out_mover_machinery_id = m4.id
+							LEFT JOIN 
+								`{org_id}_fertilizer_master` c1 ON cdr.fertilizers_details = c1.id
+							LEFT JOIN 
+								`{org_id}_fertilizer_master` c2 ON cdr.out_fertilizers_details = c2.id '''
+						   # 3. Dynamic Conditions aur Parameters Build karein
+        conditions = []
+        params = []
+        if user.get("role")=="admin":
+            if ground_id != "no":
+                conditions.append("cdr.ground_id = %s")
+                params.append(ground_id)
+        else:
+            conditions.append("cdr.ground_id = %s")
+            params.append(user.get("ground_id"))
+
+        if from_date != "no" and to_date != "no":
+                    # Sahi BETWEEN syntax aur dono dates filter ke liye
+                    conditions.append("(cdr.match_date BETWEEN %s AND %s) or (cdr.from_date >= %s AND cdr.to_date <= %s)")
+                    params.extend([from_date, to_date,from_date, to_date])
+
+                # 4. Agar koi condition hai toh WHERE clause jodein
+        if conditions:
+                    query_base += " WHERE " + " AND ".join(conditions)
+
+                # 5. Order by aur Limit jodein
+        query_base += " ORDER BY cdr.created_at DESC LIMIT 15"
+
+        print(query_base)
+                # 6. Query Execute karein
+        with connection.cursor() as cursor:
+            cursor.execute(query_base, params)
+            matches = cursor.fetchall() # aapka data fetch karne ke liye
+            # print(matches)
+    
 
 
         return render(request, 'admin_user/match_list.html', {'matches': matches})
@@ -6095,7 +6685,7 @@ def match_list(request):
 							LEFT JOIN 
 								`{org_id}_fertilizer_master` c2 ON cdr.out_fertilizers_details = c2.id
 						   
-							order by cdr.created_at desc''')
+							order by cdr.created_at desc limit 15''')
             else:
                 cursor.execute(f'''SELECT `cdr`.`id`,
 			`cdr`.`match_type`,
@@ -6205,7 +6795,7 @@ def match_list(request):
 							LEFT JOIN 
 								`{org_id}_fertilizer_master` c2 ON cdr.out_fertilizers_details = c2.id
 						   
-							 where cdr.ground_id=%s order by `created_at` desc''',[user.get("ground_id")])
+							 where cdr.ground_id=%s order by `created_at` desc limit 15''',[user.get("ground_id")])
                 
             matches = cursor.fetchall()
 
@@ -6214,6 +6804,433 @@ def match_list(request):
     except Exception as e:
         print(e)
 
+
+def get_clagghammer(request,id,t,f):
+    try:
+        table=""
+        mdId=""
+        org_id = request.session["org_id"]
+        if t=="m":
+            table=f"`{org_id}_match_main_clagghammer`"
+            mdId="match"
+        else:
+            if f=="o":
+                table=f"`{org_id}_daily_outfield_clagghammer`"
+                mdId="daily"
+            else:
+                table=f"`{org_id}_daily_pf_clagghammer`"
+                mdId="daily"
+        with connection.cursor() as cursor:
+            sql=f"""
+                           SELECT `id`,
+                                `{mdId}_id`,
+                                `date`,
+                                `time`,
+                                `value1`,
+                                `value2`,
+                                `value3`,
+                                `value4`,
+                                `value5`,
+                                `value6`,
+                                `value7`,
+                                `value8`,
+                                `value9`,
+                                `value10`
+                                FROM {table} where {mdId}_id= %s"""
+            print(sql)
+            cursor.execute(sql, [id])
+
+            rows = cursor.fetchall()
+            print(rows)
+            return JsonResponse({"data":rows})
+    except Exception as e:
+        print(e)
+
+
+def get_moisture(request,id,t,f):
+    
+    try:
+        table=""
+        mdId=""
+        org_id = request.session["org_id"]
+        if t=="m":
+            table=f"`{org_id}_match_main_moisture`"
+            mdId="match"
+        else:
+            if f=="o":
+                table=f"`{org_id}_daily_outfield_moisture`"
+                mdId="daily"
+            else:
+                table=f"`{org_id}_daily_pf_moisture`"
+                mdId="daily"  
+        org_id = request.session["org_id"]
+        with connection.cursor() as cursor:
+            cursor.execute(f"""
+                           SELECT `id`,
+                                `{mdId}_id`,
+                                `date`,
+                                `time`,
+                                `match_details`,
+                                `data`
+                                FROM {table} where `{mdId}_id`=%s""", [id])
+
+            row = cursor.fetchone()
+            # print(row)
+
+            return JsonResponse({
+                "id": row[0],
+                "_id": row[1],
+                "date": row[2],
+                "time": row[3],
+                "match_details": row[4],
+                "data": row[5],
+            })
+    except Exception as e:
+        print(e)
+
+
+def save_icc_pitch_form(request,id):
+    try:
+        org_id = request.session["org_id"]
+        with connection.cursor() as cursor:
+            cursor.execute(f"""
+                SELECT m.id, m.name_tournament, m.match_date, 
+                    g.id, g.ground_name,m.team1,m.team2,m.from_date,m.to_date,m.match_type
+                FROM {org_id}_match_master m
+                JOIN {org_id}_ground_master g ON m.ground_id = g.id
+                WHERE m.id = %s
+            """, [id])
+
+            row = cursor.fetchone()
+
+            return render(request, 'admin_user/iccpitchoutfield/iccpitchoutfieldform.html',{
+                "match_id": row[0],
+                "match_name": row[1],
+                "match_date": row[2],
+                "ground_id": row[3],
+                "ground_name": row[4],
+                "team1":row[5],
+                "team2":row[6],
+                "from_date":row[7],
+                "to_date":row[8],
+                "match_type":row[9]
+                
+            })
+    except Exception as e:
+        print(e)
+
+import json
+from django.http import JsonResponse
+from django.db import connection
+
+def save_icc_pitch_save(request):
+    org_id = request.session["org_id"]
+    try:
+        if request.method == "POST":
+            data = request.POST
+            # print(data)
+
+            # 🔹 Roller Days
+            roller_days = [f"Day{i}" for i in range(1,6) if data.get(f"roller_day{i}")]
+            roller_days_str = ",".join(roller_days)
+
+            # 🔹 Roller Effect JSON
+            roller_effect = {}
+            for i in range(1,6):
+                roller_effect[f"day{i}"] = {
+                    "effect": bool(data.get(f"roller_effect_day{i}")),
+                 
+                    
+                }
+            # 🔹 Bounce JSON
+            bounce = {}
+            for i in range(1,6):
+                bounce[f"day{i}"] = {
+                    "low": bool(data.get(f"bounce_low_{i}")),
+                    "medium_low": bool(data.get(f"bounce_ml_{i}")),
+                    "medium": bool(data.get(f"bounce_med_{i}")),
+                    "medium_high": bool(data.get(f"bounce_mh_{i}")),
+                    "high": bool(data.get(f"bounce_high_{i}"))
+                    
+                }
+ # 🟡 Consistency JSON
+            consistency = {}
+            for i in range(1,6):
+                consistency[f"day{i}"] = {
+                    "consistent": bool(data.get(f"consist_1_{i}")),
+                    "variable": bool(data.get(f"consist_2_{i}")),
+                    "highly_variable": bool(data.get(f"consist_3_{i}")),
+                    "uneven": bool(data.get(f"consist_4_{i}"))
+                }
+            # 🔹 Seam Movement JSON
+            seam = {}
+            for i in range(1,6):
+                seam[f"day{i}"] = {
+                    "little": bool(data.get(f"seam{i}")),
+                    "occasional": bool(data.get(f"seam_occ{i}")),
+                    "more_than_occasional": bool(data.get(f"seam_1_{i}")),
+                    "excessive": bool(data.get(f"seam_2_{i}"))
+                    
+                }
+
+            # 🔹 Turn JSON
+            turn = {}
+            for i in range(1,6):
+                turn[f"day{i}"] = {
+                    "little": bool(data.get(f"turn{i}")),
+                    "moderate": bool(data.get(f"turn_mod{i}")),
+                    "considerable": bool(data.get(f"trun_consistency_{i}")),
+                    "excessive": bool(data.get(f"trun_excessive_{i}"))
+                }
+
+            with connection.cursor() as cursor:
+                query = f"""
+                INSERT INTO {org_id}_icc_pitch_report
+                (match_id, ground_id, referee,
+                grass_uniform, grass_cover, grass_details,
+                pitch_dry, pitch_dry_details,pitch_comment,
+                heavy_roller_days, heavy_roller_effect,
+                bounce, bounce_consistency, seam_movement, turn,
+                pitch_rating, outfield_rating, final_comment)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                """
+
+                cursor.execute(query, [
+                    data.get("match_id"),
+                    data.get("ground_id"),
+                    data.get("referee"),
+
+                    data.get("grass_uniform"),
+                    data.get("grass_cover"),
+                    data.get("grass_details"),
+
+                    data.get("pitch_dry"),
+                    data.get("pitch_dry_details"),
+                    data.get("pitch_comment"),
+
+                    roller_days_str,
+                    json.dumps(roller_effect),
+                    
+                    json.dumps(bounce),
+                    json.dumps(consistency),
+                    json.dumps(seam),
+                    json.dumps(turn),
+
+                    data.get("pitch_rating"),
+                    data.get("outfield_rating"),
+                    data.get("final_comment")
+                ])
+
+            return JsonResponse({"status": "success"})    
+    except Exception as e:
+        print(e)
+
+
+def annual_report_form(request):
+    return render(request, 'admin_user/annualreport/annualReportForm.html')
+
+
+import json
+from django.db import connection, transaction
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt # Agar CSRF handle kar rahe ho toh iski zaroorat nahi
+def save_maintenance(request):
+    org_id = request.session["org_id"]
+    if request.method == 'POST':
+        try:
+            raw_data = json.loads(request.body)
+            ground_id = raw_data.get('ground_id')
+            mDate = raw_data.get('mDate')
+            areas = raw_data.get('areas') # This is a list of area objects
+
+            with transaction.atomic(): # Transcation safety
+                with connection.cursor() as cursor:
+                    # 1. Insert into vca_annual_maintenance
+                    # 'area' column expects JSON
+                    area_json = json.dumps([a['area_name'] for a in areas])
+                    
+                    sql_main = f"""
+                        INSERT INTO {org_id}_annual_maintenance (ground_id, area,mdate, create_at)
+                        VALUES (%s, %s, %s, NOW())
+                    """
+                    cursor.execute(sql_main, [ground_id, area_json, mDate])
+                    annual_id = cursor.lastrowid
+
+                    # 2. Insert into vca_annual_maintenance_area (Looping through each area)
+                    sql_area = f"""
+                        INSERT INTO {org_id}_annual_maintenance_area (
+                            annual_id, area, dusting_date, dusting_time, dusting_soil_type, 
+                            dusting_machine_id, dusting_operator, dusting_remarks,
+                            aeration_date, aeration_time, aeration_type, aeration_remarks_input, 
+                            aeration_machine_id, scarifying_date, scarifying_time, 
+                            scarifying_height_value, scarifying_height_unit, scarifying_machine_id, 
+                            scarifying_operator, verti_cutting_date, verti_cutting_time, 
+                            verti_cutting_height_value, verti_cutting_height_unit, 
+                            verti_cutting_machine_id, verti_cutting_reason_remarks, create_at,
+                            dusting_quantity,aeration_operator,scarifying_reason_remarks,verti_cutting_operator
+                        ) VALUES (
+                            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
+                            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
+                            %s, %s, %s, %s, %s, NOW(),%s, %s, %s, %s
+                        )
+                    """
+
+                    for a in areas:
+                        cursor.execute(sql_area, [
+                            annual_id, a.get('area_name'), 
+                            a.get('dusting_date'), a.get('dusting_time'), a.get('dusting_soil_type'),
+                            a.get('dusting_machine_id'), a.get('dusting_operator'), a.get('dusting_remarks'),
+                            a.get('aeration_date'), a.get('aeration_time'), a.get('aeration_type'), a.get('aeration_remarks_input'),
+                            a.get('aeration_machine_id'), a.get('scarifying_date'), a.get('scarifying_time'),
+                            a.get('scarifying_height_value'), a.get('scarifying_height_unit'), a.get('scarifying_machine_id'),
+                            a.get('scarifying_operator'), a.get('verti_cutting_date'), a.get('verti_cutting_time'),
+                            a.get('verti_cutting_height_value'), a.get('verti_cutting_height_unit'),
+                            a.get('verti_cutting_machine_id'), a.get('verti_cutting_reason_remarks'),
+                            a.get('dusting_quantity'),a.get('aeration_operator'),a.get('scarifying_reason_remarks'),a.get('verti_cutting_operator')
+                        ])
+
+            return JsonResponse({'status': 'success', 'annual_id': annual_id})
+
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+    return JsonResponse({'status': 'invalid method'}, status=405)
+
+
+# views.py
+
+from django.http import JsonResponse
+from django.db import connection
+
+def annual_maintenance_report_page(request):
+    return render(request,"admin_user/annualreport/annualReport.html")
+
+def annual_maintenance_report_api(request):
+
+    org_id = request.session["org_id"]
+
+    ground_id = request.GET.get("ground_id")
+    from_date = request.GET.get("from_date")
+    to_date = request.GET.get("to_date")
+    area = request.GET.get("area")
+
+    if not ground_id or not from_date or not to_date:
+        return JsonResponse({
+            "status": False,
+            "message": "Ground and dates required"
+        })
+
+    query = f"""
+    SELECT
+
+        am.id,
+        am.mdate,
+
+        gm.id as ground_id,
+        gm.ground_name,
+        gm.city_name,
+        gm.state_name,
+        gm.outfield_type,
+        gm.lawn_species_out,
+
+        amd.area,
+
+        amd.dusting_date,
+        amd.dusting_time,
+        amd.dusting_soil_type,
+        amd.dusting_machine_id,
+        amd.dusting_operator,
+        amd.dusting_quantity,
+        amd.dusting_remarks,
+
+        amd.aeration_date,
+        amd.aeration_time,
+        amd.aeration_type,
+        amd.aeration_remarks_input,
+        amd.aeration_machine_id,
+        amd.aeration_operator,
+
+        amd.scarifying_date,
+        amd.scarifying_time,
+        amd.scarifying_height_value,
+        amd.scarifying_height_unit,
+        amd.scarifying_machine_id,
+        amd.scarifying_operator,
+        amd.scarifying_reason_remarks,
+
+        amd.verti_cutting_date,
+        amd.verti_cutting_time,
+        amd.verti_cutting_height_value,
+        amd.verti_cutting_height_unit,
+        amd.verti_cutting_machine_id,
+        amd.verti_cutting_operator,
+        amd.verti_cutting_reason_remarks
+
+    FROM {org_id}_annual_maintenance am
+
+    INNER JOIN {org_id}_annual_maintenance_area amd
+        ON am.id = amd.annual_id
+
+    INNER JOIN {org_id}_ground_master gm
+        ON am.ground_id = gm.id
+
+    WHERE am.ground_id=%s
+    AND am.mdate BETWEEN %s AND %s
+    """
+
+    values = [ground_id, from_date, to_date]
+
+    # ✅ area filter
+    if area and area != "" and area != "all":
+        query += " AND amd.area=%s "
+        values.append(area)
+
+    query += " ORDER BY am.mdate DESC "
+
+    with connection.cursor() as cursor:
+
+        cursor.execute(query, values)
+
+        columns = [col[0] for col in cursor.description]
+
+        rows = [
+            dict(zip(columns, row))
+            for row in cursor.fetchall()
+        ]
+
+    return JsonResponse({
+        "status": True,
+        "records": rows,
+        "selectedArea":area
+    })
+
+
+def get_match_details(request, match_id):
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT m.id, m.match_name, m.match_date, 
+                   g.id, g.ground_name,m.team1,m.team2,from_date,to_date
+            FROM match_master m
+            JOIN ground_master g ON m.ground_id = g.id
+            WHERE m.id = %s
+        """, [match_id])
+
+        row = cursor.fetchone()
+
+    return JsonResponse({
+        "match_id": row[0],
+        "match_name": row[1],
+        "match_date": row[2],
+        "ground_id": row[3],
+        "ground_name": row[4],
+        "team1":row[5],
+        "team2":row[6],
+        "from_date":row[7],
+        "to_date":row[8]
+        
+    })
 
 from django.http import JsonResponse
 from django.db import connection
@@ -6410,3 +7427,64 @@ def get_export_logs(request):
         return JsonResponse({"error": str(e)}, status=500)
 
 ##################### Backup data #####################
+
+
+##################### 48 auto backup data #####################
+
+# import zipfile
+# from io import BytesIO
+# from django.core.mail import EmailMessage
+# from django.db import connection
+# from django.conf import settings
+# from datetime import datetime
+
+# def generate_sql_backup(org_id, filter_date):
+#     queries = {
+#         'Table1': f"SELECT * FROM {org_id}_curator_daily_recording_master WHERE created_at <= '{filter_date}'",
+#         'Table2': f"SELECT * FROM {org_id}_fertilizer_master",
+#         'Table3': f"SELECT * FROM {org_id}_match_master WHERE created_at <= '{filter_date}'",
+#         'Table4': f"SELECT * FROM {org_id}_match_scores_master WHERE created_at <= '{filter_date}'",
+#         'Table5': f"SELECT * FROM {org_id}_pitch_master",
+#         'Table6': f"SELECT * FROM {org_id}_ground_master",
+#         'Table7': f"SELECT * FROM {org_id}_machinery_master",
+#     }
+
+#     zip_buffer = BytesIO()
+
+#     with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
+#         for table_name, query in queries.items():
+#             with connection.cursor() as cursor:
+#                 cursor.execute(query)
+#                 columns = [col[0] for col in cursor.description]
+#                 rows = cursor.fetchall()
+
+#             sql_content = ""
+#             for row in rows:
+#                 values = []
+#                 for val in row:
+#                     if val is None:
+#                         values.append('NULL')
+#                     elif isinstance(val, str):
+#                         values.append("'" + val.replace("'", "''") + "'")
+#                     else:
+#                         values.append(str(val))
+
+#                 sql_content += f"INSERT INTO {table_name} ({', '.join(columns)}) VALUES ({', '.join(values)});\n"
+
+#             zip_file.writestr(f"{table_name}.sql", sql_content)
+
+#     zip_buffer.seek(0)
+#     return zip_buffer
+
+
+# def send_backup_email(zip_buffer, org_id):
+#     email = EmailMessage(
+#         subject=f"SQL Backup - {org_id}",
+#         body="Please find attached SQL backup.",
+#         from_email=settings.EMAIL_HOST_USER,
+#         to=["your_email@gmail.com"],  # 👈 change
+#     )
+
+#     email.attach(f"{org_id}_backup.zip", zip_buffer.read(), "application/zip")
+#     email.send()
+##################### end 48 auto backup data #####################

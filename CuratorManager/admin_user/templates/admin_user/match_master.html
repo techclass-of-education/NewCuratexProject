@@ -1,6 +1,7 @@
 {% include "admin_user/headertags.html" %}
 
 {% load static %}
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 <link href="{% static 'admin_user/css/gradient.css' %}" rel="stylesheet">
 <div class="wrapper grass-bg">
     <!-- Sidebar -->
@@ -159,7 +160,7 @@
                                 </div>
                                 <div class="col-lg-6 col-sm-12">
                                     <div class="row p-2 mx-2 alert box-bg">
-                                        <h3>Ground Levels</h3>
+                                        <h3>Pitch Details</h3>
                                         <hr>
 
                                         <!-- Is Pitch Level -->
@@ -209,25 +210,21 @@
                                     </div>
                                 </div>
 
-
-
-
-
                                 <!-- Match Date / From Date / To Date -->
 
                                 <div class="col-lg-5 mx-auto col-sm-12 p-2 alert box-bg" id="match-date-div">
-                                    <label for="nuteral_curator" class="form-label">Neutral Curator</label>
+                                    <label for="nuteral_curator" class="form-label">BCCI/Neutral Curator</label>
                                     <input type="text" name="nuteral_curator" class="form-control" id="nuteral_curator">
                                 </div>
                                 <!-- <div class="col-lg-3 col-sm-12 p-2 alert box-bg" id="match-date-div">
                                     
                                 </div> -->
-                                <div class="col-lg-5 col-sm-12 p-2 mx-auto alert box-bg" id="match-date-div">
+                                <!-- <div class="col-lg-5 col-sm-12 p-2 mx-auto alert box-bg" id="match-date-div">
                                     <label for="moisture" class="form-label">Moisture</label>
                                     <input type="text" id="moisture" placeholder="Moisture" name="moisture" class="form-control">
                                      <label for="clagg_hammer" class="form-label mt-2">Clagg Hammer</label>
                                     <input type="text" placeholder="Clagg Hammer" id="clagg_hammer" name="clagg_hammer" class="form-control">
-                                </div>
+                                </div> -->
 
                             </div>
                         </div>
@@ -271,8 +268,308 @@
                 <div class="tab-content mt-0 pb-4 rounded-bottom border-white" id="my-tabContent">
                             <div class="tab-pane fade  mt-4 show active" id="pitch-pill" role="tabpanel"
                                 aria-labelledby="home-tab" tabindex="0">
-<!-- watering -->
-                                                                        <div class="col-lg-12 col-sm-12">
+                                
+                                <!-- clagg hammer -->
+                                 <div class="col-lg-12 col-sm-12">
+
+                                    <div class="row">
+
+                                        <div class="col-lg-12 col-sm-12">
+
+                                             <details class="summary-shadow box-bg rounded">
+                                                                    <summary class="rounded-0">Clagg Hammer [<small>Impact Value (IV)</small>]</summary>
+                                                                     <fieldset class="form-group text-dark p-3 rounded">
+                                                                        <div class="row">
+                                                                            <div class="col-lg-6">
+                                                                                <div class="mb-3">
+                                                                                    <label for="value1" class="form-label">Date</label>
+                                                                                    <input type="date" class="form-control" id="chdate" placeholder="Value 1">
+                                                                                </div> 
+                                                                            </div>
+                                                                            <div class="col-lg-6">
+                                                                                 <div class="mb-3">
+                                                                                    <label for="value1" class="form-label">Time</label>
+                                                                                    <input type="time" class="form-control" id="chtime" placeholder="Value 1">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-lg-2">
+                                                                                <div class="mb-3">
+                                                                                    <label for="value1" class="form-label">Value 1</label>
+                                                                                    <input type="number" class="form-control" id="chvalue1" placeholder="Value 1">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-lg-2">
+                                                                                <div class="mb-3">
+                                                                                    <label for="value2" class="form-label">Value 2</label>
+                                                                                    <input type="number" class="form-control" id="chvalue2" placeholder="Value 2">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-lg-2">
+                                                                                <div class="mb-3">
+                                                                                    <label for="value3" class="form-label">Value 3</label>
+                                                                                    <input type="number" class="form-control" id="chvalue3" placeholder="Value 3">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-lg-2">
+                                                                                <div class="mb-3">
+                                                                                    <label for="value4" class="form-label">Value 4</label>
+                                                                                    <input type="number" class="form-control" id="chvalue4" placeholder="Value 4">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-lg-2">
+                                                                                <div class="mb-3">
+                                                                                    <label for="value5" class="form-label">Value 5</label>
+                                                                                    <input type="number" class="form-control" id="chvalue5" placeholder="Value 5">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-lg-2">
+                                                                                <div class="mb-3">
+                                                                                    <label for="value6" class="form-label">Value 6</label>
+                                                                                    <input type="number" class="form-control" id="chvalue6" placeholder="Value 6">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-lg-2">
+                                                                                <div class="mb-3">
+                                                                                    <label for="value7" class="form-label">Value 7</label>
+                                                                                    <input type="number" class="form-control" id="chvalue7" placeholder="Value 7">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-lg-2">
+                                                                                <div class="mb-3">
+                                                                                    <label for="value8" class="form-label">Value 8</label>
+                                                                                    <input type="number" class="form-control" id="chvalue8" placeholder="Value 8">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-lg-2">
+                                                                                <div class="mb-3">
+                                                                                    <label for="value9" class="form-label">Value 9</label>
+                                                                                    <input type="number" class="form-control" id="chvalue9" placeholder="Value 9">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-lg-2">
+                                                                                <div class="mb-3">
+                                                                                    <label for="value10" class="form-label">Value 10</label>
+                                                                                    <input type="number" class="form-control" id="chvalue10" placeholder="Value 10">
+                                                                                </div>
+                                                                            </div>
+                                                                         
+                                                                        </div>
+                                                                    <button type="button" class="btn btn-primary"
+                                                                    onclick="addClaggHammerEntry()">Add Clagg Hammer
+                                                                    Entry</button>
+  <div class="col-sm-12 col-lg-12">
+                                                                <details>
+                                                                    <summary>Clagg Hammer Entries</summary>
+                                                                      <div class="table-responsive transparent-bg">
+                                                                    <table class="table table-bordered mt-2"
+                                                                        id="claggHammerTable">
+                                                                        <thead class="table-dark">
+                                                                            <tr>
+                                                                                <th>Date</th>
+                                                                                <th>Time</th>
+                                                                                <th>Value 1</th>
+                                                                                <th>Value 2</th>
+                                                                                <th>Value 3</th>
+                                                                                <th>Value 4</th>
+                                                                                <th>Value 5</th>
+                                                                                <th>Value 6</th>
+                                                                                <th>Value 7</th>
+                                                                                <th>Value 8</th>
+                                                                                <th>Value 9</th>
+                                                                                <th>Value 10</th>
+                                                                                <th>Average</th>
+                                                                                <th>Action</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody></tbody>
+                                                                    </table>
+
+                                                                    <input type="hidden" name="claggHammer_entries_json"
+                                                                        id="claggHammer_entries_json">
+                                                                      </div>
+                                                                </details>
+
+
+                                                            </div>
+
+                                                                     </fieldset>
+                                                                     </details>
+                                                                     </div>
+                                                                     </div>
+                                 </div>
+
+
+                                <!-- moisture -->
+                                 <div class="col-lg-12 col-sm-12">
+
+                                   <div class="row">
+
+                                        <div class="col-lg-12 col-sm-12">
+
+                                             <details class="summary-shadow box-bg rounded">
+                                                                    <summary class="rounded-0">Moisture [<small>Volumetric Water Content (VWC)</small>]</summary>
+                                                                     <fieldset class="form-group text-dark p-3 rounded">
+                                                                        <div class="row">
+                                                                            <div class="col-lg-6">
+                                                                                <div class="mb-3">
+                                                                                    <label for="value1" class="form-label">Date</label>
+                                                                                    <input type="date" class="form-control" id="date" placeholder="Value 1">
+                                                                                </div> 
+                                                                            </div>
+                                                                            <div class="col-lg-6">
+                                                                                 <div class="mb-3">
+                                                                                    <label for="value1" class="form-label">Time</label>
+                                                                                    <input type="time" class="form-control" id="time" placeholder="Value 1">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-lg-12">
+                                                                                 <div class="mb-3">
+                                                                                    <label for="fileInput" class="form-label">Browse CSV File</label>
+                                                                                    <input type="file" class="form-control" id="fileInput" />
+                                                                                    
+                                                                                </div>
+                                                                                 <button type="button" class="btn btn-primary" onclick="addMainMoistureData()">Add Moisture Entry</button>
+
+                                                                            </div>
+
+                                                                              
+                                                            <div class="col-sm-12 col-lg-12">
+                                                                <details>
+                                                                    <summary>Moisture Entries</summary>
+                                                                      <div class="table-responsive transparent-bg">
+                                                                    <table class="table table-bordered mt-2"
+                                                                        id="moistureTable">
+                                                                        <thead class="table-dark">
+                                                                            <tr>
+                                                                                <th colspan="3">Date</th>
+                                                                                <th colspan="3">Time</th>
+                                                                                <th colspan="5">Action</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody id="moistureTableTbody"></tbody>
+                                                                    </table>
+
+                                                                    <input type="hidden" name="moisture_entries_json"
+                                                                        id="moisture_entries_json">
+                                                                      </div>
+                                                                </details>
+
+
+                                                            </div>
+                                                                        </div>
+
+                                                                        <!-- <div class="row">
+                                                                            <div class="col-lg-2">
+                                                                                <div class="mb-3">
+                                                                                    <label for="value1" class="form-label">Value 1</label>
+                                                                                    <input type="number" class="form-control" id="value1" placeholder="Value 1">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-lg-2">
+                                                                                <div class="mb-3">
+                                                                                    <label for="value2" class="form-label">Value 2</label>
+                                                                                    <input type="number" class="form-control" id="value2" placeholder="Value 2">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-lg-2">
+                                                                                <div class="mb-3">
+                                                                                    <label for="value3" class="form-label">Value 3</label>
+                                                                                    <input type="number" class="form-control" id="value3" placeholder="Value 3">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-lg-2">
+                                                                                <div class="mb-3">
+                                                                                    <label for="value4" class="form-label">Value 4</label>
+                                                                                    <input type="number" class="form-control" id="value4" placeholder="Value 4">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-lg-2">
+                                                                                <div class="mb-3">
+                                                                                    <label for="value5" class="form-label">Value 5</label>
+                                                                                    <input type="number" class="form-control" id="value5" placeholder="Value 5">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-lg-2">
+                                                                                <div class="mb-3">
+                                                                                    <label for="value6" class="form-label">Value 6</label>
+                                                                                    <input type="number" class="form-control" id="value6" placeholder="Value 6">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-lg-2">
+                                                                                <div class="mb-3">
+                                                                                    <label for="value7" class="form-label">Value 7</label>
+                                                                                    <input type="number" class="form-control" id="value7" placeholder="Value 7">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-lg-2">
+                                                                                <div class="mb-3">
+                                                                                    <label for="value8" class="form-label">Value 8</label>
+                                                                                    <input type="number" class="form-control" id="value8" placeholder="Value 8">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-lg-2">
+                                                                                <div class="mb-3">
+                                                                                    <label for="value9" class="form-label">Value 9</label>
+                                                                                    <input type="number" class="form-control" id="value9" placeholder="Value 9">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-lg-2">
+                                                                                <div class="mb-3">
+                                                                                    <label for="value10" class="form-label">Value 10</label>
+                                                                                    <input type="number" class="form-control" id="value10" placeholder="Value 10">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    <button type="button" class="btn btn-primary"
+                                                                    onclick="addMoistureEntry()">Add Moisture
+                                                                    Entry</button>
+  <div class="col-sm-12 col-lg-12">
+                                                                <details>
+                                                                    <summary>Moisture Entries</summary>
+                                                                      <div class="table-responsive transparent-bg">
+                                                                    <table class="table table-bordered mt-2"
+                                                                        id="moistureTable">
+                                                                        <thead class="table-dark">
+                                                                            <tr>
+                                                                                <th>Date</th>
+                                                                                <th>Time</th>
+                                                                                <th>Value 1</th>
+                                                                                <th>Value 2</th>
+                                                                                <th>Value 3</th>
+                                                                                <th>Value 4</th>
+                                                                                <th>Value 5</th>
+                                                                                <th>Value 6</th>
+                                                                                <th>Value 7</th>
+                                                                                <th>Value 8</th>
+                                                                                <th>Value 9</th>
+                                                                                <th>Value 10</th>
+                                                                                <th>Action</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody></tbody>
+                                                                    </table>
+
+                                                                    <input type="hidden" name="moisture_entries_json"
+                                                                        id="moisture_entries_json">
+                                                                      </div>
+                                                                </details>
+
+
+                                                            </div> -->
+
+                                                                     </fieldset>
+                                                                     </details>
+                                                             
+                                                             
+                                                                    </div>
+                                                                     </div>
+                                 </div>
+
+
+                                 <!-- watering -->
+                                <div class="col-lg-12 col-sm-12">
 
                                     <div class="row">
 
@@ -303,7 +600,7 @@
                                                     <input type="text" id="quantity_of_water" name="quantity_of_water"
                                                         class="form-control">
                                                 </div>
-   <div class="col-sm-12 col-lg-3 mt-5">
+                                            <div class="col-sm-12 col-lg-3 mt-5">
 
                                                                 <button type="button" class="btn btn-primary"
                                                                     onclick="addWateringEntry()">Add Watering
@@ -1590,6 +1887,8 @@
             // { id: "time_of_application_chemical", label: "Chem Time", type: "time", col: 2 },
             { id: "chemical_entries", label: "Chemical Entries", type: "hidden", col: 2 },
             { id: "watering_entries_json", label: "Watering Entries", type: "hidden", col: 3 },
+            { id: "moisture_entries_json", label: "Moisture Entries", type: "hidden", col: 3 },
+            { id: "claggHammer_entries_json", label: "Clagg Hammer Entries", type: "hidden", col: 3 },
 
             // { id: "mover_machine_type", label: "mover machine type", type: "text", col: 2 },
             // { id: "mover_machinery_name_operator", label: "mover machinery operator", type: "text", col: 2 },
@@ -1653,12 +1952,19 @@
 
         fields.forEach(field => {
             const formField = document.getElementById(field.id)
-            // console.log(field.id)
+            console.log(field.id)
             let input = document.createElement("input");
             const colDiv2 = document.createElement("div");
             colDiv2.className = "div-border";
             colDiv2.className = `col-lg-6 col-sm-12`;
-                       if (field.id=="watering_entries_json"||field.id === "chemical_entries"|| field.id === "rolling_entries_json" || field.id === "mover_entries_json") {
+                       if (
+                            field.id=="watering_entries_json"||
+                            field.id === "chemical_entries"|| 
+                            field.id === "rolling_entries_json" ||
+                            field.id === "mover_entries_json"|| 
+                            field.id === "moisture_entries_json"||
+                            field.id === "claggHammer_entries_json"
+                        ) {
          
                 const label = document.createElement("label");
                 label.setAttribute("for", `${field.id}_${rowIndex}`);
@@ -1680,28 +1986,56 @@
                 divData.className="alert alert-dark text-white p-2";
                 // tarea.value=(formField.value)
                 try {
-                    if(field.id === "rolling_entries_json")
+                    if(field.id === "rolling_entries_json" && formField.value)
                 {
                     JSON.parse(formField.value).forEach((element, i) => {
                         divData.innerHTML += `<li>${element.machineType}</li> <li>${element.machineryName}</li> <li>${element.operator}</li> <li>${element.speed}</li> <li>${element.unit}</li> <li>${element.date} ${element.time}</li> <li>${element.passes}</li>` + "<hr>"
                     });
                 }
-                else if(field.id === "mover_entries_json")
+                else if(field.id === "mover_entries_json" && formField.value)
                 {
                     JSON.parse(formField.value).forEach((element, i) => {
                         divData.innerHTML += `<li>${element.type}</li> <li>${element.machineryId}</li> <li>${element.machineryName}</li> <li>${element.operator}</li> <li>${element.mowHeight}</li> <li>${element.duration}</li> <li>${element.time}</li> <li>${element.date}</li> <li>${element.unit}</li>` + "<hr>"
                     });
                 }
-                else if(field.id === "chemical_entries")
+                else if(field.id === "chemical_entries" && formField.value)
                 {
                     JSON.parse(formField.value).forEach((element, i) => {
                         divData.innerHTML += `<li>${element.time}</li> <li>${element.chemName}</li> <li>${element.weight}</li> <li>${element.unit}</li> <li>${element.remark}</li>` + "\n"
                     });
                 }
-                 else if(field.id === "watering_entries_json")
+                 else if(field.id === "watering_entries_json" && formField.value)
                 {
                     JSON.parse(formField.value).forEach((element, i) => {
                         divData.innerHTML += `<li>${element.last_watering_on}</li> <li>${element.time_of_application}</li> <li>${element.quantity_of_water}</li>` + "\n"
+                    });
+                }
+                 else if(field.id === "moisture_entries_json" && formField.value)
+                {
+                    const formData=JSON.parse(formField.value)
+                                            
+                                                divData.innerHTML += `
+                                                <li>${document.getElementById("date").value}</li> 
+                                                <li>${document.getElementById("time").value}</li> 
+                                                <li>${formData.match_details}</li>
+                                                <li>${formData.data}</li>`+ "\n"
+                }
+                 else if(field.id === "claggHammer_entries_json" && formField.value)
+                {
+                    JSON.parse(formField.value).forEach((element, i) => {
+                        divData.innerHTML += `
+                        <li>${element.date}</li> 
+                        <li>${element.time}</li> 
+                        <li>${element.value1}</li>
+                        <li>${element.value2}</li>
+                        <li>${element.value3}</li>
+                        <li>${element.value4}</li>
+                        <li>${element.value5}</li>
+                        <li>${element.value6}</li>
+                        <li>${element.value7}</li>
+                        <li>${element.value8}</li>
+                        <li>${element.value9}</li>
+                        <li>${element.value10}</li>`+ "\n"
                     });
                 }
                 else
@@ -1787,6 +2121,321 @@
 
 <!-- main rolling -->
 <script>
+ let claggHammerEntries = [];
+
+    function addClaggHammerEntry() {
+        const date= document.getElementById("chdate").value;
+        const time = document.getElementById("chtime").value;
+        const value1 = document.getElementById("chvalue1").value;
+        const value2 = document.getElementById("chvalue2").value;
+        const value3 = document.getElementById("chvalue3").value;
+        const value4 = document.getElementById("chvalue4").value;
+        const value5 = document.getElementById("chvalue5").value;
+        const value6 = document.getElementById("chvalue6").value;
+        const value7 = document.getElementById("chvalue7").value;
+        const value8 = document.getElementById("chvalue8").value;
+        const value9 = document.getElementById("chvalue9").value;
+        const value10 = document.getElementById("chvalue10").value;
+      
+
+        if (!date || !time || !value1) {
+            alert("Please fill all fields before adding.");
+            return;
+        }
+
+        const entry = {
+            date,
+            time,
+            value1,
+            value2,
+            value3,
+            value4,
+            value5,
+            value6,
+            value7,
+            value8,
+            value9,
+            value10
+           
+        };
+
+        let avgCount=0
+        let totalVal=0
+        for(let key in entry)
+        {
+            if(key.includes("value"))
+        {
+            if(entry[key] && entry[key]>0 )
+            {
+                avgCount++
+                totalVal+=parseFloat(entry[key])
+            }
+            else{
+                entry[key]=0
+            }
+        }
+        }
+        console.log(avgCount,totalVal,(totalVal/avgCount).toFixed(2))
+
+        entry.avg=(totalVal/avgCount).toFixed(2)
+
+        claggHammerEntries.push(entry);
+        updateClaggHammerTable();
+    }
+    
+    function delClaggHammerEntry(event) {
+        const row = event.target.closest("tr");
+        const index = Array.from(row.parentNode.children).indexOf(row);
+        claggHammerEntries.splice(index, 1);
+        updateClaggHammerTable();
+    }
+
+    function updateClaggHammerTable() {
+        const tableBody = document.querySelector("#claggHammerTable tbody");
+        tableBody.innerHTML = "";
+
+        claggHammerEntries.forEach(entry => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${entry.date}</td>
+                <td>${entry.time}</td>
+                <td>${entry.value1}</td>
+                <td>${entry.value2}</td>
+                <td>${entry.value3}</td>
+                <td>${entry.value4}</td>
+                <td>${entry.value5}</td>
+                <td>${entry.value6}</td>
+                <td>${entry.value7}</td>
+                <td>${entry.value8}</td>
+                <td>${entry.value9}</td>
+                <td>${entry.value10}</td>
+                <td>${entry.avg}</td>
+              
+                  <td>
+                    <button type="button" class='btn btn-danger det-btn' onclick="delClaggHammerEntry(event)">X</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+
+        document.getElementById("claggHammer_entries_json").value = JSON.stringify(claggHammerEntries);
+        showToast("New Clagg Hammer entry added successfully!");
+
+    }
+ 
+ 
+
+
+
+    function renderTable(finalJSON) {
+        const data = finalJSON.data;
+        const tbody=document.querySelector("#moistureTableTbody")
+        const mDate=finalJSON.date
+        const mTime=finalJSON.time
+        tbody.innerHTML=`
+        <tr><th colspan="3">${mDate}</th><th colspan="3">${mTime}</th><th>
+            <button class='btn btn-danger' onclick='deleteMainMoisture()'>Clear</button>
+            </th></tr>
+        <tr><th colspan="7">Moisture Data</th></tr>
+        `
+         data.forEach(row => {
+            const tr=document.createElement("tr")
+        tr.innerHTML= `
+                   <td>${row.SubCollectionName}</td>
+                <td>${row.AreaName}</td>
+                <td>${row.GpsLatitude}</td>
+                <td>${row.GpsLongitude}</td>
+                 <td>${row.DataNote}</td>
+               <td>${row.RodLength}</td>
+              <td>${row.SoilType}</td>
+              <td>${row.Satellites}</td>
+                <td>${row.Fix}</td>
+                <td>${row.ec}</td>
+                <td>${row.period}</td>
+                <td>${row.salidx}</td>
+                <td>${row.temp}</td>
+                <td>${row.vwc}</td>`;
+                tbody.appendChild(tr)
+    });
+
+}
+
+
+
+    function deleteMainMoisture()
+{
+    document.querySelector("#moistureTableTbody").innerHTML=""
+    document.querySelector("#moisture_entries_json").value=""
+    
+}
+
+    function addMainMoistureData() {
+
+    const file = document.getElementById("fileInput").files[0];
+    const reader = new FileReader();
+
+    reader.onload = function(event) {
+
+        const data = new Uint8Array(event.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
+
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+
+        // 👉 A1 value
+        const A1 = sheet["A1"] ? sheet["A1"].v : null;
+
+        // 👉 Convert to JSON (array of arrays)
+        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+        let result = [];
+
+        // Column indexes (0 based)
+        const colMap = {
+             A: 0,
+            B: 1,
+            C: 2,
+            D: 3,
+            E: 4,
+            F: 5,
+            G: 6,
+            H: 7,
+            I: 8,
+            J: 9,
+            K: 10,
+            L: 11,
+            M: 12,
+            N: 13
+        };
+
+        // Skip header (row 0)
+        for (let i = 2; i < rows.length; i++) {
+            let row = rows[i];
+
+            if (!row || row.length === 0) continue;
+
+            result.push({
+                SubCollectionName: row[colMap.A] || "",
+                AreaName: row[colMap.B] || "",
+                GpsLatitude: row[colMap.C] || "",
+                GpsLongitude: row[colMap.D] || "",
+                DataNote: row[colMap.E] || "",
+                RodLength: row[colMap.F] || "",
+                SoilType: row[colMap.G] || "",
+                Satellites: row[colMap.H] || "",
+                Fix: row[colMap.I] || "",
+                ec: row[colMap.J] || "",
+                period: row[colMap.K] || "",
+                salidx: row[colMap.L] || "",
+                temp: row[colMap.M] || "",
+                vwc: row[colMap.N] || ""
+            });
+        }
+
+        const finalJSON = {
+            date: document.querySelector("#date").value,
+            time: document.querySelector("#time").value,
+            match_details: A1,
+            data: result
+        };
+
+        renderTable(finalJSON);
+        document.querySelector("#moisture_entries_json").value=JSON.stringify(finalJSON)
+
+    };
+
+    reader.readAsArrayBuffer(file);
+}
+
+
+
+
+
+      
+    let moistureEntries = [];
+
+    function addMoistureEntry() {
+        const date= document.getElementById("date").value;
+        const time = document.getElementById("time").value;
+        const value1 = document.getElementById("value1").value;
+        const value2 = document.getElementById("value2").value;
+        const value3 = document.getElementById("value3").value;
+        const value4 = document.getElementById("value4").value;
+        const value5 = document.getElementById("value5").value;
+        const value6 = document.getElementById("value6").value;
+        const value7 = document.getElementById("value7").value;
+        const value8 = document.getElementById("value8").value;
+        const value9 = document.getElementById("value9").value;
+        const value10 = document.getElementById("value10").value;
+      
+
+        if (!date || !time || !value1) {
+            alert("Please fill all fields before adding.");
+            return;
+        }
+
+        const entry = {
+            date,
+            time,
+            value1,
+            value2,
+            value3,
+            value4,
+            value5,
+            value6,
+            value7,
+            value8,
+            value9,
+            value10
+           
+        };
+
+        moistureEntries.push(entry);
+        updateMoistureTable();
+    }
+    
+    function delMoistureEntry(event) {
+        const row = event.target.closest("tr");
+        const index = Array.from(row.parentNode.children).indexOf(row);
+        moistureEntries.splice(index, 1);
+        updateMoistureTable();
+    }
+
+    function updateMoistureTable() {
+        const tableBody = document.querySelector("#moistureTable tbody");
+        tableBody.innerHTML = "";
+
+        moistureEntries.forEach(entry => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${entry.date}</td>
+                <td>${entry.time}</td>
+                <td>${entry.value1}</td>
+                <td>${entry.value2}</td>
+                <td>${entry.value3}</td>
+                <td>${entry.value4}</td>
+                <td>${entry.value5}</td>
+                <td>${entry.value6}</td>
+                <td>${entry.value7}</td>
+                <td>${entry.value8}</td>
+                <td>${entry.value9}</td>
+                <td>${entry.value10}</td>
+              
+                  <td>
+                    <button type="button" class='btn btn-danger det-btn' onclick="delMoistureEntry(event)">X</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+
+        document.getElementById("moisture_entries_json").value = JSON.stringify(moistureEntries);
+        showToast("New Moisture entry added successfully!");
+
+    }
+
+
+
+
  let wateringEntries = [];
 
     function addWateringEntry() {
@@ -2207,25 +2856,25 @@
                 divData.className="alert alert-dark text-white p-2";
                 // tarea.value=(formField.value)
                 try {
-                     if(field.id === "out_rolling_entries_json")
+                     if(field.id === "out_rolling_entries_json" && formField.value)
                 {
                     JSON.parse(formField.value).forEach((element, i) => {
                         divData.innerHTML += `<li>${element.machineType}</li> <li>${element.machineryName}</li> <li>${element.operator}</li> <li>${element.speed}</li> <li>${element.unit}</li> <li>${element.date} ${element.time}</li> <li>${element.passes}</li>` + "<hr>"
                     });
                 }
-                else if(field.id === "out_mover_entries_json")
+                else if(field.id === "out_mover_entries_json" && formField.value)
                 {
                     JSON.parse(formField.value).forEach((element, i) => {
                         divData.innerHTML += `<li>${element.type}</li> <li>${element.machineryId}</li> <li>${element.machineryName}</li> <li>${element.operator}</li> <li>${element.mowHeight}</li> <li>${element.duration}</li> <li>${element.time}</li> <li>${element.date}</li> <li>${element.unit}</li>` + "<hr>"
                     });
                 }
-                else if(field.id === "out_chemical_entries")
+                else if(field.id === "out_chemical_entries" && formField.value)
                 {
                     JSON.parse(formField.value).forEach((element, i) => {
                         divData.innerHTML += `<li>${element.time}<li> <li>${element.chemName}<li> <li>${element.weight}<li> <li>${element.unit}<li> <li>${element.remark}<li>` + "<hr>"
                     });
                 }
-                  else if(field.id === "out_watering_entries_json")
+                  else if(field.id === "out_watering_entries_json" && formField.value)
                                         {
                                             JSON.parse(formField.value).forEach((element, i) => {
                                                 divData.innerHTML += `<li>${element.last_watering_on}</li> <li>${element.time_of_application}</li> <li>${element.quantity_of_water}</li>` + "<hr>"

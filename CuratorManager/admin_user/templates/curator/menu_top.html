@@ -10,7 +10,11 @@
                   data-bs-toggle="dropdown">
                   <i class="bi bi-person-circle text-white"></i>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-end">
+                                       <ul class="dropdown-menu dropdown-menu-start" style="left: -150px !important;right:0!important;">
+                                           <li><a class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#staticBackdropProfileData">Profile</a></li>
+                  <!--<li><a class="dropdown-item" href="#">Curators/Groundmen</a></li>-->
+            <li>
+
                   <!-- <li><a class="dropdown-item" href="#">Profile</a></li>
                   <li><a class="dropdown-item" href="#">Settings</a></li> -->
                  
@@ -25,7 +29,14 @@
       
 <script>
   function changeMenuTitle(title) {
+    try
+    {
     document.querySelector("#menu-page-title").innerHTML = title
+    }
+    catch(err)
+    {
+      console.error(err)
+    }
   }
 
 
@@ -43,7 +54,7 @@
   //        const maxTemp = data.main.temp_max;
   //
   //        console.log(`Weather today in ${city}: ${weatherDescription}`);
-  //        console.log(`Temperature: Min ${minTemp}°C, Max ${maxTemp}°C`);
+  //        console.log(`Temperature: Min ${minTemp}째C, Max ${maxTemp}째C`);
   //    } else {
   //        console.error('Error fetching weather data:', data.message);
   //    }

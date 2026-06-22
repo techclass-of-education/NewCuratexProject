@@ -4,12 +4,10 @@
 {% load static %}
 <link href="{% static 'admin_user/css/gradient.css' %}" rel="stylesheet">
 <style>
-
-
   .a4-sheet-inner-div {
-  padding: 0 !important;
-  margin: 0 !important;
-  font-size: 10px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-size: 10px !important;
 
 
   }
@@ -18,149 +16,164 @@
     body {
       margin: 0;
     }
-  
-    #sidebar,nav,#form-div
-    {
+
+    #sidebar,
+    nav,
+    #form-div {
       display: none !important;
     }
 
-    body
-    {
-       margin: 0 !important;
-     background: white !important;
+    body {
+      margin: 0 !important;
+      background: white !important;
       padding: 0 !important;
     }
-    #a4-sheet
-    {
+
+    #a4-sheet {
       margin-top: 0px !important;
     }
-    .a4-sheet,#a4-inner-div,.a4-inner-div,#content {
+
+    .a4-sheet,
+    #a4-inner-div,
+    .a4-inner-div,
+    #content {
       margin: 0 !important;
-     width: 100%;
+      width: 100%;
       padding: 0 !important;
     }
   }
-
 </style>
 <div class="wrapper grass-bg">
-    <!-- Sidebar -->
-    {% include "admin_user/menu_side.html" %}
+  <!-- Sidebar -->
+  {% include "admin_user/menu_side.html" %}
 
 
-    <!-- Page Content -->
-    <div id="content" class="bg-form-page">
-        <!-- Navbar -->
-        {% include "admin_user/menu_top.html" %}
- 
- <div class="container mt-5" id="form-div">
-            <div class="card w-75 mx-auto transparent-bg">
-                <div class="card-header box-bg text-white">
+  <!-- Page Content -->
+  <div id="content" class="bg-form-page">
+    <!-- Navbar -->
+    {% include "admin_user/menu_top.html" %}
 
-                    <i class="bi bi-person-check me-2 text-info"></i>Chemicals Consumption Report
-                </div>
-                <div class="card-body box-gradient rounded-bottom">
-  <form method="get" action="/usr_admin/fetchChemicalsReport">
-    <div class="row mb-3">
-      <div class="col-lg-4 col-sm-12">
-        <label>Ground</label>
-        <select class="form-select" id="id_ground_id" required name="ground_id"></select>
-      </div>
-      <div class="col-lg-4 col-sm-12">
-        <label>From Date</label>
-        <input type="date" name="from_date" class="form-control" value="{{ from_date }}">
-      </div>
-          <div class="col-lg-4 col-sm-12">
-        <label>To Date</label>
-        <input type="date" name="to_date" class="form-control" value="{{ to_date }}">
-      </div>
-        <div class="col-lg-4 col-sm-12">
-        <label>Select Chemical Type</label>
-        <select id="chemical_type_select" name="chemical_type_select" class="form-control">
-                            <option value="">Select Chemical Type</option>
-                        </select>
-      </div>
-        <div class="col-lg-4 col-sm-12">
-        <label>Select Chemical</label>
-        <select class="form-select" id="chemical" name="chemical">
-          <option value="">Select any Chemical</option>
+    <div class="container mt-5" id="form-div">
+      <div class="card w-75 mx-auto transparent-bg">
+        <div class="card-header box-bg text-white">
 
-        </select>
-      </div>
-    
-
-      <div class="col-lg-12 col-sm-12 d-flex align-items-end flex-wrap gap-2 mt-2">
-        <button type="submit" class="btn btn-primary box-bg">Search</button>
-        {% if chem_records %}
-          <button type="button" id="downloadCsv" class="btn btn-success">Download CSV</button>
-          <button type="button" id="" class="btn btn-danger" onclick="window.print()">Download PDF</button>
-        {% endif %}
-      </div>
-    </div>
-  </form>
- </div>
-            </div>
-
+          <i class="bi bi-person-check me-2 text-info"></i>Chemicals Consumption Report
         </div>
-        
-       
-  {% if chem_records %}
+        <div class="card-body box-gradient rounded-bottom">
+          <form method="get" action="/usr_admin/fetchChemicalsReport">
+            <div class="row mb-3">
+              <div class="col-lg-4 col-sm-12">
+                <label>Ground</label>
+                <select class="form-select" id="id_ground_id" name="ground_id"></select>
+              </div>
+              <div class="col-lg-4 col-sm-12">
+                <label>From Date</label>
+                <input type="date" name="from_date" class="form-control" value="{{ from_date }}">
+              </div>
+              <div class="col-lg-4 col-sm-12">
+                <label>To Date</label>
+                <input type="date" name="to_date" class="form-control" value="{{ to_date }}">
+              </div>
+              <div class="col-lg-4 col-sm-12">
+                <label>Select Chemical Type</label>
+                <select id="chemical_type_select" name="chemical_type_select" class="form-control">
+                  <option value="">Select Chemical Type</option>
+                </select>
+              </div>
+              <div class="col-lg-4 col-sm-12">
+                <label>Select Chemical</label>
+                <select class="form-select" id="chemical" name="chemical">
+                  <option value="">Select any Chemical</option>
+
+                </select>
+              </div>
+              <div class="col-lg-4 col-sm-12">
+                <label>Ground Area</label>
+                <select class="form-select" id="area" name="area">
+                  <option value="">Select any Area</option>
+                  <option value="all">All</option>
+                  <option value="oufield">Outfield</option>
+                  <option value="practice-outfield">Practice Outfield</option>
+                  <option value="main-pitches">Main Pitches</option>
+                  <option value="practice-pitches">Practice Pitches</option>
+
+                </select>
+              </div>
+
+
+              <div class="col-lg-12 col-sm-12 d-flex align-items-end flex-wrap gap-2 mt-2">
+                <button type="submit" class="btn btn-primary box-bg">Search</button>
+                {% if chem_records %}
+                <button type="button" id="downloadCsv" class="btn btn-success">Download CSV</button>
+                <button type="button" id="" class="btn btn-danger" onclick="window.print()">Download PDF</button>
+                {% endif %}
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+
+
+    {% if chem_records %}
     <!-- Table for KG -->
-     <div class="a4-sheet w-75 rounded mt-4 mx-auto">
-    
-       <table class="table align-middle mb-0 w-75 mx-auto border-white caption-top transparent-bg rounded chem-table" id="kgTable">
-         <caption class="top text-center text-bg-light">
-           <h3>Chemical Report  </h3>
-         
-        <!-- <span>  {{ chemical_type_select|default:'All Types' }}
+    <div class="a4-sheet w-75 rounded mt-4 mx-auto">
+
+      <table class="table align-middle mb-0 w-75 mx-auto border-white caption-top transparent-bg rounded chem-table"
+        id="kgTable">
+        <caption class="top text-center text-bg-light">
+          <h3>Chemical Report </h3>
+
+          <!-- <span>  {{ chemical_type_select|default:'All Types' }}
            </span>   -->
-          
-         
-         </caption>
+
+
+        </caption>
         {% for chem in chem_records %}
-      <thead class="bg-light fs-5 box-bg report-table-title">
-        <tr>
-          <td colspan="3">
-            
-           <span class="badge text-bg-light">
-            <span class="badge text-bg-primary text-light">{{ chem.chemical }}</span> 
-          </span> 
-          
-          </td>
-        </tr>
-        <tr>
+        <thead class="bg-light fs-5 box-bg report-table-title">
+          <tr>
+            <td colspan="4">
+
+              <span class="badge text-bg-light">
+                <span class="badge text-bg-primary text-light">{{ chem.chemical }}</span>
+              </span>
+
+            </td>
+          </tr>
+          <tr>
             <th>Date</th>
+            <th>Area</th> <!-- 🔥 NEW -->
             <th>KG</th>
             <th>Liter</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for r in chem.rows %}
-        <tr>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in chem.rows %}
+          <tr>
             <td>{{ r.date| to_ddmmyyyy }}</td>
-            <td>{{ r.kg }}</td>
-            <td>{{ r.ltr }}</td>
-        </tr>
-        {% endfor %}
-        <tr style="font-weight:bold">
+            <td>{{ r.area }}</td> <!-- 🔥 -->
+            <td>{{ r.kg|default:"-" }}</td>
+            <td>{{ r.ltr|default:"-" }}</td>
+          </tr>
+          {% endfor %}
+          <tr style="font-weight:bold">
             <td>Total</td>
-            <td>{{ chem.total.kg }}</td>
-            <td>{{ chem.total.ltr }}</td>
-        </tr>
-        <tr>
-          <td class="bg-light" colspan="3">
-            
-          </td>
-        </tr>
-    </tbody>
-    
-    {% endfor %}
-    </table>
+            <td></td>
+            <td>{{ chem.total.kg|default:"0" }}</td>
+            <td>{{ chem.total.ltr|default:"0" }}</td>
+          </tr>
 
-    {% else %}
-    <p class="text-danger">No data found.</p>
-  {% endif %}
-</div>
-</div>
+        </tbody>
+
+        {% endfor %}
+      </table>
+
+      {% else %}
+      <p class="text-danger">No data found.</p>
+      {% endif %}
+    </div>
+  </div>
 </div>
 
 
@@ -180,26 +193,26 @@
 
 
 
-    document.addEventListener("DOMContentLoaded", function () {
-        axios.get("/usr_admin/get-chemical-types/")
-            .then(response => {
-                const types = response.data.types;
-                const select = document.getElementById("chemical_type_select");
+  document.addEventListener("DOMContentLoaded", function () {
+    axios.get("/usr_admin/get-chemical-types/")
+      .then(response => {
+        const types = response.data.types;
+        const select = document.getElementById("chemical_type_select");
 
-                types.forEach(type => {
-                    const option = document.createElement("option");
-                    option.value = type;
-                    option.textContent = type;
-                    select.appendChild(option);
-                });
-            })
-            .catch(error => {
-                console.error("Error fetching chemical types:", error);
-            });
-    });
+        types.forEach(type => {
+          const option = document.createElement("option");
+          option.value = type;
+          option.textContent = type;
+          select.appendChild(option);
+        });
+      })
+      .catch(error => {
+        console.error("Error fetching chemical types:", error);
+      });
+  });
 
 
-  
+
   // // CSV Download Logic
   // document.getElementById("downloadCsv")?.addEventListener("click", () => {
   //   let csvContent = "";
@@ -237,67 +250,68 @@
   });
 
 
-  
-    function addChemicalsToSelect(fertilizers, select) {
-        fertilizers.forEach(function (fert) {
-            const option = document.createElement("option");
-            option.value = fert.id;
-            option.textContent = `${fert.name} (${fert.type})`;
-            select.appendChild(option);
-        });
-    }
 
-    axios.get('/usr_admin/get-fertilizers-json/')
-        .then(function (response) {
-            const chemicals = response.data.fertilizers;
-            // console.log(fertilizers)
-            const select = document.getElementById("chemical");
-          
-            addChemicalsToSelect(chemicals, select)
-          
+  function addChemicalsToSelect(fertilizers, select) {
+    fertilizers.forEach(function (fert) {
+      const option = document.createElement("option");
+      option.value = fert.id;
+      option.textContent = `${fert.name} (${fert.type})`;
+      select.appendChild(option);
+    });
+  }
 
-        })
-        .catch(function (error) {
-            console.error("Error fetching fertilizers:", error);
-        });
+  axios.get('/usr_admin/get-fertilizers-json/')
+    .then(function (response) {
+      const chemicals = response.data.fertilizers;
+      // console.log(fertilizers)
+      const select = document.getElementById("chemical");
+
+      addChemicalsToSelect(chemicals, select)
+
+
+    })
+    .catch(function (error) {
+      console.error("Error fetching fertilizers:", error);
+    });
 
 </script>
 
 <script>
-document.getElementById("downloadCsv")?.addEventListener("click", () => {
+  document.getElementById("downloadCsv")?.addEventListener("click", () => {
 
-  let csvContent = "";
-  const tables = document.querySelectorAll(".chem-table");
+    let csvContent = "";
+    const tables = document.querySelectorAll(".chem-table");
 
-  tables.forEach((table, index) => {
+    tables.forEach((table, index) => {
 
-    // Table Caption (Chemical Name)
-    const caption = table.querySelector("caption h4");
-    if (caption) {
-      csvContent += `"${caption.innerText.trim()}"\n`;
-    }
+      // Table Caption (Chemical Name)
+      const caption = table.querySelector("caption h4");
+      if (caption) {
+        csvContent += `"${caption.innerText.trim()}"\n`;
+      }
 
-    const rows = table.querySelectorAll("tr");
-    rows.forEach(row => {
-      const cols = Array.from(row.children)
-        .map(td => `"${td.innerText.replace(/"/g, '""').trim()}"`);
-      csvContent += cols.join(",") + "\n";
+      const rows = table.querySelectorAll("tr");
+      rows.forEach(row => {
+        const cols = Array.from(row.children)
+          .map(td => `"${td.innerText.replace(/"/g, '""').trim()}"`);
+        csvContent += cols.join(",") + "\n";
+      });
+
+      csvContent += "\n\n";
     });
 
-    csvContent += "\n\n";
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "chemicals_consumption_report.csv";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   });
-
-  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
-
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "chemicals_consumption_report.csv";
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-});
 </script>
 
 </body>
+
 </html>

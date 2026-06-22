@@ -27,20 +27,36 @@
 
         })
 </script>
- {% if request.session.user.role == "admin" %}
-        <form method="get" action="/usr_admin/curator_daily_recording_list/filter">
-            <div class="row mx-auto w-75">
-            <div class="col-lg-3 col-sm-12">
+ <form method="get" action="/usr_admin/curator_daily_recording_list_filter_by_date/filter" >
+            
+        <div class="row mx-auto">
+                {% if request.session.user.role == "admin" %}
+                <div class="col-lg-3 col-sm-12">
+        <label for="js_date_filter" class="text-white">Ground Filter:</label>
                 
                 <select id="ground_id" name="ground_id" class="form-control"></select>
 
+                
+                
             </div>
-             <div class="col-lg-3 col-sm-12"><button class="btn btn-primary" type="submit">Search</button></div>
+            
+            {% endif %}
+            
+            <div class="col-lg-3 col-sm-12">
+                <label for="js_date_filter" class="text-white">From Date:</label>
+                <input type="date" id="from_date" name="from_date" value="{{request.GET.from_date}}" required class="form-control" placeholder="From date">
             </div>
-        </form>
-         {% endif %}
-        
-    {% load admin_user_filters %}
+            
+            <div class="col-lg-3 col-sm-12">
+                <label for="js_date_filter" class="text-white">To Date:</label>
+                <input type="date" id="to_date" name="to_date"  value="{{request.GET.to_date}}" required class="form-control" placeholder="To date">
+            </div>
+            <div class="col-lg-3 col-sm-12 d-flex align-items-center mt-4">
+                 <button class="btn btn-primary" type="submit">Search</button>
+
+             </div>
+        </div>
+    </form>
    
     
     <div class="accordion p-4">
@@ -118,7 +134,6 @@
                         <div class="col-sm-12 col-lg-12 transparent-bg border p-0">
                          
                             
-                           
                             <table class="table table-bordered caption-top">
                                  <caption class="caption caption-top fw-bolder fs-5 text-warning bg-dark text-center">Watering
                                 </caption>
@@ -177,7 +192,8 @@
                                 </tr>
                               
                                 </table> 
-                            <table class="table table-bordered caption-top">
+                           
+                                <table class="table table-bordered caption-top">
                                 <caption class="caption caption-top fw-bolder fs-5 text-warning bg-dark text-center">
                                     Rolling
                                 </caption>
@@ -251,6 +267,7 @@
                                 </tr>
                               
                                 </table>
+                            
                                 <table class="table table-bordered caption-top">
                                      <caption class="caption caption-top fw-bolder fs-5 text-warning bg-dark text-center">
                                     Mowing
@@ -422,6 +439,12 @@
                                     <td colspan="4">{{ recording.23 }}</td>
                                 </tr>
                                 </table>
+
+                                
+                                
+                                                
+                                           
+                           
                                
                             </div>
                             </details>
@@ -731,54 +754,9 @@
                                           
                                       </td>
                                 </tr>
-                                <!-- <tr>
-                                    
-                                    <th>Mower Machinery ID</th>
-                                    <td>
-                                         <ul>
-                                            {% for item in recording.91|split_by_delimiter %}
-                                              {% if item.strip %}
-                                                <li>{{ item }}</li>
-                                              {% endif %}
-                                            {% endfor %}
-                                          </ul>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Date Mowing Done Last</th>
-                                    <td>
-                                         <ul>
-                                            {% for item in recording.82|split_by_delimiter %}
-                                              {% if item.strip %}
-                                                <li>{{ item }}</li>
-                                              {% endif %}
-                                            {% endfor %}
-                                          </ul>
-                                       </td>
-                                </tr>
-                                <tr>
-                                    <th>Time of Application Mower</th>
-                                    <td>
-                                        <ul>
-                                            {% for item in recording.83|split_by_delimiter %}
-                                              {% if item.strip %}
-                                                <li>{{ item }}</li>
-                                              {% endif %}
-                                            {% endfor %}
-                                          </ul></td>
-                                </tr>
-                                <tr>
-                                    <th>Mowing Done at MM</th>
-                                    <td>
-                                         <ul>
-                                            {% for item in recording.84|split_by_delimiter %}
-                                              {% if item.strip %}
-                                                <li>{{ item }}</li>
-                                              {% endif %}
-                                            {% endfor %}
-                                          </ul></td>
-                                </tr> -->
-                                </table>
+
+                            
+                            </table>
                                 <table class="table table-bordered caption-top">
  
                                      <caption class="caption caption-top fw-bolder fs-5 text-warning bg-dark text-center">
@@ -1188,116 +1166,80 @@
                                     <td colspan="4">{{ recording.38 }}</td>
                                 </tr>
                                 </table>
-<!-- 
-                                    <table class="table table-bordered">
-                                        <caption class="caption caption-top fw-bolder bg-dark text-white text-center">Outfield</caption>
-                                        <tr>
-                                            <th>Machinery ID</th>
-                                            <td>{{ recording.66 }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>No. of Passes</th>
-                                            <td>{{ recording.25 }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Rolling Speed</th>
-                                            <td>{{ recording.26 }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Last Watering On</th>
-                                            <td>{{ recording.27 }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Quantity of Water</th>
-                                            <td>{{ recording.28 }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Time of Application</th>
-                                            <td>{{ recording.29 }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Time Roller</th>
-                                            <td>{{ recording.30 }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Mover Machinery ID</th>
-                                            <td>{{ recording.67 }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Date Mowing Done Last</th>
-                                            <td>{{ recording.32 }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Time of Application Out Mover</th>
-                                            <td>{{ recording.33 }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Mowing Done at MM</th>
-                                            <td>{{ recording.34 }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Is Fertilizers Used</th>
-                                            <td>
 
-                                                {% if recording.35 == "1" %}
-                                                Yes
-                                            {% else %}
-                                                No
-                                            {% endif %}
-                                            </td>
-                                        </tr>
+                                
+                                                    <table class="table table-bordered caption-top">
+                                                       
                                                       
-                                <tr>
-                                    <th>Fertilizers Details</th>
-                                    <td>
+                                                       
+                                                        <tr>
+                                                            <table class="table table-bordered mt-2"
+                                                                        id="claggHammerTable">
+                                                                        <thead class="table-dark">
+                                                                             <tr class="caption caption-top fw-bolder bg-dark text-white text-center">
+                                                                                <td colspan="13">
+                                                                                                                            <button class="me-2" onclick="getClaggHammer(event,'{{  recording.0 }}','o')">Fetch Clagg Hammer</button> </td>
 
-                                        <ul>
-                                            {% for item in recording.36|split_by_delimiter %}
-                                              {% if item.strip %}
-                                                <li>{{ item }}</li>
-                                              {% endif %}
-                                            {% endfor %}
-                                          </ul>
 
-                                    </td>
-                                    <td>
+                                                        </tr>
+                                                                            <tr>
+                                                                                <th>Date</th>
+                                                                                <th>Time</th>
+                                                                                <th>Value 1</th>
+                                                                                <th>Value 2</th>
+                                                                                <th>Value 3</th>
+                                                                                <th>Value 4</th>
+                                                                                <th>Value 5</th>
+                                                                                <th>Value 6</th>
+                                                                                <th>Value 7</th>
+                                                                                <th>Value 8</th>
+                                                                                <th>Value 9</th>
+                                                                                <th>Value 10</th>
+                                                                                <th>Average</th>
+                                                                                </tr>
+                                                                        </thead>
+                                                                        <tbody></tbody>
+                                                                    </table>
 
-                                        <ul>
-                                            {% for item in recording.96|split_by_delimiter %}
-                                              {% if item %}
-                                                <li style="list-style-type: none;">{{ item }}</li>
-                                              {% endif %}
-                                            {% endfor %}
-                                          </ul>
+                                                        </tr>
 
-                                    </td>
-                                    <td>
+                                                       
 
-                                        <ul>
-                                            {% for item in recording.97|split_by_delimiter %}
-                                              {% if item %}
-                                                <li style="list-style-type: none;">{{ item }}</li>
-                                              {% endif %}
-                                            {% endfor %}
-                                          </ul>
 
-                                    </td>
-                                </tr>
-                                         <tr>
-                                            <th>Fertilizers Details</th>
-                                            <td>{{ recording.36 }}</td>
-                                        </tr> 
-                                        <tr>
-                                            <th>Chemical Details Remark</th>
-                                            <td>{{ recording.37 }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Remark by Groundsman</th>
-                                            <td>{{ recording.38 }}</td>
-                                        </tr>
-                                        </table>
-                                         -->
-                                  
+                                                    </table>
+                                                
+                                           
+                                                    
+                                                    <table class="table table-bordered caption-top">
+                                                        
+                                                       
+                                                        <tr>
+                                                            
+                                                            <table class="table table-bordered mt-2"
+                                                                        id="outmoistureTable">
+                                                                        <thead class="table-dark">
+                                                                             <tr class="caption caption-top fw-bolder bg-dark text-white text-center">
+                                                            <td colspan="14">
+                                                             <button class="me-2" onclick="renderMoisture(event,'{{ recording.0}}','o')">Fetch Moisture</button> <b>Moisture</b>
+                                                             </td>
+                                                        </tr>
+                                                                            <tr>
+                                                                                <th colspan="3">Date</th>
+                                                                                <th colspan="3">Time</th>
+                                                                                <th colspan="8"></th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody id="moistureTableTbody"></tbody>
+                                                                    </table>
+
+                                                        </tr>
+
+                                                       
+
+
+                                                    </table>
+                                               
+                               
                                         </div>
                                          </details>
                                     {% endif %}
@@ -1604,6 +1546,75 @@
                                 </tr>
                                
                              
+                                                    <table class="table table-bordered caption-top">
+                                                       
+                                                      
+                                                       
+                                                        <tr>
+                                                            <table class="table table-bordered mt-2"
+                                                                        id="claggHammerTable">
+                                                                        <thead class="table-dark">
+                                                                             <tr class="caption caption-top fw-bolder bg-dark text-white text-center">
+                                                                                 <td colspan="13">
+                                                                                   <button class="me-2" onclick="getClaggHammer(event,'{{  recording.0 }}','p')">Fetch Clagg Hammer</button> 
+                                                                                </td>
+                                                                             </tr>
+                                                                            <tr>
+                                                                                <th>Date</th>
+                                                                                <th>Time</th>
+                                                                                <th>Value 1</th>
+                                                                                <th>Value 2</th>
+                                                                                <th>Value 3</th>
+                                                                                <th>Value 4</th>
+                                                                                <th>Value 5</th>
+                                                                                <th>Value 6</th>
+                                                                                <th>Value 7</th>
+                                                                                <th>Value 8</th>
+                                                                                <th>Value 9</th>
+                                                                                <th>Value 10</th>
+                                                                                 <th>Average</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody></tbody>
+                                                                    </table>
+
+                                                        </tr>
+
+                                                       
+
+
+                                                    </table>
+                                                
+                                           
+                                                    
+                                                    <table class="table table-bordered caption-top">
+                                                        
+                                                       
+                                                        <tr>
+                                                            
+                                                            <table class="table table-bordered mt-2"
+                                                                        id="pfmoistureTable">
+                                                                        <thead class="table-dark">
+                                                                             <tr class="caption caption-top fw-bolder bg-dark text-white text-center">
+                                                            <td colspan="14">
+                                                             <button class="me-2" onclick="renderMoisture(event,'{{ recording.0}}','p')">Fetch Moisture</button> <b>Moisture</b>
+                                                             </td>
+                                                        </tr>
+                                                                            <tr>
+                                                                                <th colspan="3">Date</th>
+                                                                                <th colspan="3">Time</th>
+                                                                                <th colspan="8"></th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody id="moistureTableTbody"></tbody>
+                                                                    </table>
+
+                                                        </tr>
+
+                                                       
+
+
+                                                    </table>
                              
                                 <tr>
                                     <th>Remark by Groundsman</th>
@@ -1634,6 +1645,130 @@
 
 {% include "admin_user/footertags.html" %}
     <script>
+
+
+    function getClaggHammer(event,id,f)
+    {
+        
+         axios.get(`/usr_admin/get-clagghammer/${id}/d/${f}/`)
+                .then(function (response) {
+                   
+                    const tableBody = $(event.target).parentsUntil("table").parent().find("tbody");
+                    // console.log($(event.target).parentsUntil("table"))
+                    console.log(tableBody)
+        $(tableBody).html("");
+    if( response.data.data.length>0)
+    {
+        response.data.data.forEach(entry => {
+            const row = document.createElement("tr");
+                 let avgCount=0
+        let totalVal=0
+        for(let i=4;i<entry.length;i++)
+        {
+           
+            if(entry[i] && entry[i]>0 )
+            {
+                avgCount++
+                totalVal+=parseFloat(entry[i])
+            }
+            else{
+                entry[i]=0
+            }
+        
+        }
+        console.log(avgCount,totalVal,(totalVal/avgCount).toFixed(2))
+
+        entry.push((totalVal/avgCount).toFixed(2))
+
+            row.innerHTML = `
+                <td>${entry[2]}</td>
+                <td>${entry[3]}</td>
+                <td>${entry[4]}</td>
+                <td>${entry[5]}</td>
+                <td>${entry[6]}</td>
+                <td>${entry[7]}</td>
+                <td>${entry[8]}</td>
+                <td>${entry[9]}</td>
+                <td>${entry[10]}</td>
+                <td>${entry[11]}</td>
+                <td>${entry[12]}</td>
+                <td>${entry[13]}</td>
+                <td>${entry[14]}</td>
+
+              
+                
+            `;
+            $(tableBody).append(row);
+        });
+    }
+    else
+    {
+        alert("Data not found")
+    }
+
+                }).then(function()
+{
+    // myModal.hide()
+})
+                .catch(function (error) {
+                    console.error('Error deleting Match:', error);
+                    myModal.hide()
+                });
+    }
+
+
+    
+    function renderMoisture(event,id,f) {
+       
+      axios.get(`/usr_admin/get-moisture/${id}/d/${f}/`)
+                .then(function (response) {
+        const data = JSON.parse(response.data.data);
+        const tbody= $(event.target).parentsUntil("table").parent().find("tbody");
+        
+        const mDate=response.data.date
+        const mTime=response.data.time
+         $(tbody).html(`
+        <tr><th colspan="3">${mDate}</th><th colspan="3">${mTime}</th><th colspan="8">
+           
+            </th></tr>
+        <tr><th colspan="7">Moisture Data</th></tr>
+        `)
+        if(data.length>0)
+        {
+         data.forEach(row => {
+            const tr=document.createElement("tr")
+            tr.innerHTML= `
+                <td>${row.SubCollectionName}</td>
+                <td>${row.AreaName}</td>
+                <td>${row.GpsLatitude}</td>
+                <td>${row.GpsLongitude}</td>
+                <td>${row.DataNote}</td>
+                <td>${row.RodLength}</td>
+                <td>${row.SoilType}</td>
+                <td>${row.Satellites}</td>
+                <td>${row.Fix}</td>
+                <td>${row.ec}</td>
+                <td>${row.period}</td>
+                <td>${row.salidx}</td>
+                <td>${row.temp}</td>
+                <td>${row.vwc}</td>`;
+                $(tbody).append(tr)
+    });
+}
+else
+{
+    alert("Data not found")
+}
+}) .catch(function (error) {
+                    console.error('Error deleting Match:', error);
+                     alert("Data not found")
+                });
+
+}
+
+
+
+
         // changeMenuTitle("Curator Daily Recording List")
   $(document).ready(function () {
           
@@ -1735,7 +1870,51 @@
         getGround() */
 
        
-    </script>
+       $(document).ready(function () {
+    // Enter key press event
+    $('#js_date_filter').on('change', function (e) {
+        if ( $(this).val().length==10) { // 13 is the Enter key
+            const selectedDate = $(this).val(); // Format: YYYY-MM-DD
+            filterRecordingsByDate(selectedDate);
+        }
+    });
+});
+
+function filterRecordingsByDate(selectedDate) {
+    if (!selectedDate) {
+        // Agar date empty hai toh sab dikhao
+        $('.accordion-item').show();
+        return;
+    }
+
+    // Date format convert karein (Input YYYY-MM-DD ko DD-MM-YYYY banane ke liye agar zarurat ho)
+    // Kyunki aapka filter 'to_ddmmyyyy' use kar raha hai
+    const parts = selectedDate.split('-');
+    const formattedDate = parts[2] + "-" + parts[1] + "-" + parts[0]; 
+    // Agar aapka to_ddmmyyyy filter '/' use karta hai toh '-' ki jagah '/' lagayein
+
+    $('.accordion-item').each(function () {
+        // Har accordion item ke andar ki date text nikalna
+        // Hum us span ko target kar rahe hain jisme date likhi hai
+        const rowDateText = $(this).find('.pe-4.fs-6 small').text().trim();
+
+        // Match check karein
+        if (rowDateText.includes(formattedDate) || rowDateText.includes(selectedDate)) {
+            $(this).show();
+        } else {
+            $(this).hide();
+        }
+    });
+}
+
+function clearDateFilter() {
+    $('#js_date_filter').val('');
+    $('.accordion-item').show();
+}
+   
+   </script>
+
+
 
 
 

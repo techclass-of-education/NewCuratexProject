@@ -13,26 +13,45 @@
     <div id="content" class="bg-form-page match-scores-list">
         <!-- Navbar -->
         {% include "admin_user/menu_top.html" %}
-        {% if request.session.user.role == "admin" %}
-        <form method="get" action="/usr_admin/matches_filter">
-            <div class="row mx-auto w-75">
-            <div class="col-lg-3 col-sm-12">
+        <!-- <form method="post" onsubmit="handleSubmit(event)" > -->
+        <form method="get" action="/usr_admin/match_list_filter_by_date" >
+            
+        <div class="row mx-auto">
+                {% if request.session.user.role == "admin" %}
+                <div class="col-lg-3 col-sm-12">
+        <label for="js_date_filter" class="text-white">Ground Filter:</label>
                 
                 <select id="ground_id" name="ground_id" class="form-control"></select>
 
+                
+                
             </div>
-             <div class="col-lg-3 col-sm-12"><button class="btn btn-primary" type="submit">Search</button></div>
+            
+            {% endif %}
+            
+            <div class="col-lg-3 col-sm-12">
+                <label for="js_date_filter" class="text-white">From Date:</label>
+                <input type="date" id="from_date" name="from_date" value="{{request.GET.from_date}}" required class="form-control" placeholder="From date">
             </div>
-        </form>
-         {% endif %}
+            
+            <div class="col-lg-3 col-sm-12">
+                <label for="js_date_filter" class="text-white">To Date:</label>
+                <input type="date" id="to_date" name="to_date"  value="{{request.GET.to_date}}" required class="form-control" placeholder="To date">
+            </div>
+            <div class="col-lg-3 col-sm-12 d-flex align-items-center mt-4">
+                 <button class="btn btn-primary" type="submit">Search</button>
 
+             </div>
+        </div>
+    </form>
+        
         <div class="accordion p-4 " id="accordionDR">
 
             {% load admin_user_filters %}
             {% for match in matches %}
             {% if flag %}
 
-            <div class="accordion-item" onclick="getMachine(this)">
+            <div class="accordion-item" onclick="getMachine(this);">
                 <h2 class="accordion-header" id="heading-{{ match.0 }}">
                     <button class="accordion-button d-flex" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapse-{{ match.0 }}" aria-expanded="true"
@@ -63,7 +82,7 @@
                     aria-labelledby="heading{{ match.0 }}" data-bs-parent="#accordionDR" style="overflow-x: auto;">
                     <div class="accordion-body">
                         <a class="btn btn-success mb-2 edit-btn" data-match-date="{{ match.6 }}"
-                            data-from-date="{{ match.7 }}" href="{% url 'update_match' match.0 %}">Edit</a>
+                            data-from-date="{{ match.7 }}" data-start-time="{{ match.10 }}" data-match-type="{{match.1}}" href="{% url 'update_match' match.0 %}">Edit</a>
                         <a class="btn btn-warning  mb-2" href="{% url 'add_score' match.0 %}">Add Scores</a>
                         <a class="btn btn-danger  mb-2" href="{% url 'match_scores_list' match.0 %}">List Scores</a>
 
@@ -71,6 +90,11 @@
                         {% if request.session.user.role == "admin" %}
                         <a href="{% url 'delete_match' match.0 %}" class="btn btn-danger mb-2"
                             dataid="{{match.0}}">Delete Match Recording</a>
+                        {% endif %}
+
+                        {% if request.session.user.role == "admin" %}
+                        <a href="{% url 'save_icc_pitch_form' match.0 %}" class="btn btn-danger mb-2"
+                            dataid="{{match.0}}">Pitch Report</a>
                         {% endif %}
                         <div class="row">
                             <div class="col">
@@ -489,6 +513,81 @@
 
                                                 </tr>
 
+                                                
+                                                <tr>
+                                                    <table class="table table-bordered caption-top">
+
+                                                       
+                                                       
+                                                        <tr>
+                                                            <table class="table table-bordered mt-2"
+                                                                        id="claggHammerTable">
+                                                                        <thead class="table-dark">
+                                                                             <tr class="caption caption-top fw-bolder bg-dark text-white text-center">
+                                                                <td colspan="13">
+                                                                    <button class="me-2" onclick="getClaggHammer(event,'{{ match.0 }}')">Fetch Clagg Hammer</button> 
+                                                                </td>
+
+                                                        </tr>
+                                                                            <tr>
+                                                                                <th>Date</th>
+                                                                                <th>Time</th>
+                                                                                <th>Value 1</th>
+                                                                                <th>Value 2</th>
+                                                                                <th>Value 3</th>
+                                                                                <th>Value 4</th>
+                                                                                <th>Value 5</th>
+                                                                                <th>Value 6</th>
+                                                                                <th>Value 7</th>
+                                                                                <th>Value 8</th>
+                                                                                <th>Value 9</th>
+                                                                                <th>Value 10</th>
+                                                                                <th>Average</th>
+                                                                                </tr>
+                                                                        </thead>
+                                                                        <tbody></tbody>
+                                                                    </table>
+
+                                                        </tr>
+
+                                                       
+
+
+                                                    </table>
+                                                </tr>
+                                           
+                                           
+
+                                                <tr>
+                                                    
+                                                    <table class="table table-bordered caption-top">
+
+                                                      
+                                                        <tr>
+                                                            <table class="table table-bordered mt-2"
+                                                                        id="moistureTable">
+                                                                        <thead class="table-dark">
+                                                                            <tr>
+                                                                                <button class="me-2" onclick="renderMoisture(event,'{{match.0}}')">Fetch Moisture</button> <b>Moisture</b>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <th colspan="3">Date</th>
+                                                                                <th colspan="3">Time</th>
+                                                                                <th colspan="8"></th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody id="moistureTableTbody"></tbody>
+                                                                    </table>
+
+                                                        </tr>
+
+                                                       
+
+
+                                                    </table>
+                                                </tr>
+                                           
+
                                                 <tr>
                                                     <th>Remark by Groundsman</th>
                                                     <td colspan="4">{{ match.37 }}</td>
@@ -854,7 +953,7 @@
 
             {% else %}
 
-            <div class="accordion-item" onclick="getMachine(this)">
+            <div class="accordion-item" onclick="getMachine(this);">
                 <h2 class="accordion-header" id="heading-{{ match.0 }}">
                     <button class="accordion-button d-flex" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapse-{{ match.0 }}" aria-expanded="true"
@@ -882,7 +981,7 @@
                     aria-labelledby="heading{{ match.0 }}" data-bs-parent="#accordionDR" style="overflow-x: auto;">
                     <div class="accordion-body">
                         <a class="btn btn-success mb-2 edit-btn" data-match-date="{{ match.6 }}"
-                            data-from-date="{{ match.7 }}" href="{% url 'update_match' match.0 %}">Edit</a>
+                            data-from-date="{{ match.7 }}"  data-start-time="{{ match.10 }}" data-match-type="{{match.1}}" href="{% url 'update_match' match.0 %}">Edit</a>
 
                         <a class="btn btn-warning mb-2" href="{% url 'add_score' match.0 %}">Add Scores</a>
                         <a class="btn btn-danger mb-2" href="{% url 'match_scores_list' match.0 %}">List Scores</a>
@@ -891,7 +990,10 @@
                             dataid="{{match.0}}">Delete Recording</button>
                         {% endif %}
                         <!-- <a href="{% url 'delete_match' match.0 %}" class="btn btn-danger mb-2" dataid="{{match.0}}">Delete Match Recording</a> -->
-
+   {% if request.session.user.role == "admin" %}
+                        <a href="{% url 'save_icc_pitch_form' match.0 %}" class="btn btn-danger mb-2"
+                            dataid="{{match.0}}">Pitch Report</a>
+                        {% endif %}
                         <div class="row">
                             <div class="col">
                                 <table class="table table-bordered">
@@ -1221,6 +1323,8 @@
                                                         </tr>
                                                     </table>
                                                 </tr>
+
+                                                
                                                 <tr>
                                                     <table class="table table-bordered caption-top">
 
@@ -1317,6 +1421,87 @@
 
                                                     </table>
                                                 </tr>
+                                           
+
+                                                <tr>
+                                                    <table class="table table-bordered caption-top">
+                                                       
+                                                      
+                                                       
+                                                        <tr>
+                                                            <table class="table table-bordered mt-2"
+                                                                        id="claggHammerTable">
+                                                                        <thead class="table-dark">
+                                                                             <tr class="caption caption-top fw-bolder bg-dark text-white text-center">
+                                                          <td colspan="13">  
+                                                                                <button class="me-2" onclick="getClaggHammer(event,'{{ match.0 }}')">Fetch Clagg Hammer</button> 
+                                                            
+                                                            <b>Clagg Hammer</b></td>
+
+                                                        </tr>
+                                                                            <tr>
+                                                                                <th>Date</th>
+                                                                                <th>Time</th>
+                                                                                <th>Value 1</th>
+                                                                                <th>Value 2</th>
+                                                                                <th>Value 3</th>
+                                                                                <th>Value 4</th>
+                                                                                <th>Value 5</th>
+                                                                                <th>Value 6</th>
+                                                                                <th>Value 7</th>
+                                                                                <th>Value 8</th>
+                                                                                <th>Value 9</th>
+                                                                                <th>Value 10</th>
+                                                                                <th>Average</th>
+                                                                                </tr>
+                                                                        </thead>
+                                                                        <tbody></tbody>
+                                                                    </table>
+
+                                                        </tr>
+
+                                                       
+
+
+                                                    </table>
+                                                </tr>
+                                           
+                                           
+
+                                                <tr>
+                                                    
+                                                    <table class="table table-bordered caption-top">
+                                                        
+                                                       
+                                                        <tr>
+                                                            
+                                                            <table class="table table-bordered mt-2"
+                                                                        id="moistureTable">
+                                                                        <thead class="table-dark">
+                                                                             <tr class="caption caption-top fw-bolder bg-dark text-white text-center">
+                                                            <td colspan="14">
+                                                             <button class="me-2" onclick="renderMoisture(event,'{{match.0}}')">Fetch Moisture</button> <b>Moisture</b>
+                                                             </td>
+                                                        </tr>
+                                                                            <tr>
+                                                                                <th colspan="3">Date</th>
+                                                                                <th colspan="3">Time</th>
+                                                                                <th colspan="8"></th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody id="moistureTableTbody"></tbody>
+                                                                    </table>
+
+                                                        </tr>
+
+                                                       
+
+
+                                                    </table>
+                                                </tr>
+                                           
+                                           
+                                           
                                             </table>
 
                                 </details>
@@ -1678,8 +1863,240 @@
 </div>
 
 
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="waitmodalLabel" aria-hidden="true" style="background-color: transparent;">
+    <div class="modal-dialog" style="background-color: transparent;">
+    <div class="modal-content" style="background-color: transparent;">
+      
+      <div class="modal-body text-center" style="background-color: transparent;">
+        <div class="spinner-border text-white text-center" role="status">
+  <span class="visually-hidden">Loading...</span>
+</div>
+      </div>
+      
+    </div>
+  </div>
+ 
+</div>
 {% include "admin_user/footertags.html" %}
 <script>
+
+//     function handleSubmit(event)
+//     {
+//         event.preventDefault()
+//         // action="/usr_admin/matches_filter"
+//         const formData = new FormData(event.target);
+// const values = Object.fromEntries(formData);
+
+//  axios.post(`/usr_admin/match_list_filter_by_date/`,values)
+//                 .then(function (response) {
+//                     console.log(response.data)
+//                     const tableBody = $(event.target).parentsUntil("table").parent().find("tbody");
+//                     // console.log($(event.target).parentsUntil("table"))
+//                     // console.log(tableBody)
+//         $(tableBody).html("");
+
+//         response.data.data.forEach(entry => {
+//             const row = document.createElement("tr");
+//             row.innerHTML = `
+//                 <td>${entry[2]}</td>
+//                 <td>${entry[3]}</td>
+//                 <td>${entry[4]}</td>
+//                 <td>${entry[5]}</td>
+//                 <td>${entry[6]}</td>
+//                 <td>${entry[7]}</td>
+//                 <td>${entry[8]}</td>
+//                 <td>${entry[9]}</td>
+//                 <td>${entry[10]}</td>
+//                 <td>${entry[11]}</td>
+//                 <td>${entry[12]}</td>
+//                 <td>${entry[13]}</td>
+              
+                
+//             `;
+//             $(tableBody).append(row);
+//         });
+
+//                 }).catch(function (error) {
+//                     console.error('Error deleting Match:', error);
+//                     myModal.hide()
+//                 });
+//     }
+ 
+ 
+    const myModal= new bootstrap.Modal('#exampleModal')
+
+
+ // Source - https://stackoverflow.com/a/32070987
+// Posted by Arun P Johny
+// Retrieved 2026-05-20, License - CC BY-SA 3.0
+
+// $(function() {
+//   $(".collapse").on('show.bs.collapse', function(e) {
+   
+//     setTimeout(function()
+// {
+//     myModal.hide()
+// },1000)
+//       myModal.show()
+//   })
+// });
+
+
+
+    function getClaggHammer(event,id)
+    {
+        
+        axios.get(`/usr_admin/get-clagghammer/${id}/m/m/`)
+                .then(function (response) {
+                   
+                    const tableBody = $(event.target).parentsUntil("table").parent().find("tbody");
+                    // console.log($(event.target).parentsUntil("table"))
+                    console.log(tableBody)
+        $(tableBody).html("");
+if( response.data.data.length>0)
+    {
+        response.data.data.forEach(entry => {
+            const row = document.createElement("tr");
+             let avgCount=0
+        let totalVal=0
+        for(let i=4;i<entry.length;i++)
+        {
+           
+            if(entry[i] && entry[i]>0 )
+            {
+                avgCount++
+                totalVal+=parseFloat(entry[i])
+            }
+            else{
+                entry[i]=0
+            }
+        
+        }
+        console.log(avgCount,totalVal,(totalVal/avgCount).toFixed(2))
+
+        entry.push((totalVal/avgCount).toFixed(2))
+
+            row.innerHTML = `
+                <td>${entry[2]}</td>
+                <td>${entry[3]}</td>
+                <td>${entry[4]}</td>
+                <td>${entry[5]}</td>
+                <td>${entry[6]}</td>
+                <td>${entry[7]}</td>
+                <td>${entry[8]}</td>
+                <td>${entry[9]}</td>
+                <td>${entry[10]}</td>
+                <td>${entry[11]}</td>
+                <td>${entry[12]}</td>
+                <td>${entry[13]}</td>
+                <td>${entry[14]}</td>
+              
+                
+            `;
+            $(tableBody).append(row);
+        });
+    }
+         else
+    {
+        alert("Data not found")
+    }
+
+                }).then(function()
+{
+    // myModal.hide()
+})
+                .catch(function (error) {
+                    console.error('Error deleting Match:', error);
+                    myModal.hide()
+                });
+    }
+
+
+    
+    function renderMoisture(event,id) {
+       
+        axios.get(`/usr_admin/get-moisture/${id}/m/m/`)
+                .then(function (response) {
+        const data = JSON.parse(response.data.data);
+        const tbody= $(event.target).parentsUntil("table").parent().find("tbody");
+        
+        const mDate=response.data.date
+        const mTime=response.data.time
+         $(tbody).html(`
+        <tr><th colspan="3">${mDate}</th><th colspan="3">${mTime}</th><th colspan="8">
+           
+            </th></tr>
+        <tr><th colspan="7">Moisture Data</th></tr>
+        `)
+         if(data.length>0)
+        {
+         data.forEach(row => {
+            const tr=document.createElement("tr")
+        tr.innerHTML= `
+                   <td>${row.SubCollectionName}</td>
+                <td>${row.AreaName}</td>
+                <td>${row.GpsLatitude}</td>
+                <td>${row.GpsLongitude}</td>
+                 <td>${row.DataNote}</td>
+               <td>${row.RodLength}</td>
+              <td>${row.SoilType}</td>
+              <td>${row.Satellites}</td>
+                <td>${row.Fix}</td>
+                <td>${row.ec}</td>
+                <td>${row.period}</td>
+                <td>${row.salidx}</td>
+                <td>${row.temp}</td>
+                <td>${row.vwc}</td>`;
+                $(tbody).append(tr)
+    });
+}
+else
+{
+    alert("Data not found")
+}
+}) .catch(function (error) {
+                    console.error('Error deleting Match:', error);
+                     alert("Data not found")
+                });
+
+}
+
+
+
+  function updateClaggHammerTable() {
+        const tableBody = document.querySelector("#claggHammerTable tbody");
+        tableBody.innerHTML = "";
+
+        claggHammerEntries.forEach(entry => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${entry.date}</td>
+                <td>${entry.time}</td>
+                <td>${entry.value1}</td>
+                <td>${entry.value2}</td>
+                <td>${entry.value3}</td>
+                <td>${entry.value4}</td>
+                <td>${entry.value5}</td>
+                <td>${entry.value6}</td>
+                <td>${entry.value7}</td>
+                <td>${entry.value8}</td>
+                <td>${entry.value9}</td>
+                <td>${entry.value10}</td>
+              
+                  <td>
+                    <button type="button" class='btn btn-danger det-btn' onclick="delClaggHammerEntry(event)">X</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+
+        document.getElementById("claggHammer_entries_json").value = JSON.stringify(claggHammerEntries);
+        showToast("New Clagg Hammer entry added successfully!");
+
+    }
+
+
     changeMenuTitle("Match Recording List")
 
     function deleteMatch(matchId) {
@@ -1754,8 +2171,10 @@
 
     }
 
+   
     function getMachine(div) {
-        console.log(div)
+       
+        
         const liMach = $(div).find(".machinery-id td")
 
         Array.from(liMach).forEach(li => {
@@ -1785,10 +2204,15 @@
             const today = new Date().toISOString().split("T")[0];  // Get current date in yyyy-mm-dd format
 
             document.querySelectorAll(".edit-btn").forEach(btn => {
+                const type=btn.getAttribute("data-match-type");
+                const startTime=btn.getAttribute("data-start-time");
                 const matchDate = btn.getAttribute("data-match-date");
                 const fromDate = btn.getAttribute("data-from-date");
+                const mDateStr= type==="Multidays"?fromDate:matchDate;
 
-                if (matchDate === today || fromDate === today) {
+                const matchDateTime=new Date(`${mDateStr}T${startTime}`)
+                // alert(matchDateTime)
+                if (matchDateTime.getTime()< new Date().getTime()) {
                     btn.classList.add("disabled");
                     btn.classList.remove("btn-success");
                     btn.classList.add("btn-secondary");
@@ -1810,11 +2234,60 @@
                 $("#ground_id").append(`<option value='${g.ground[0]}'>${g.ground[6]}</option>`)
             })
 
-        }).catch((error) => {
+        }).then(function()
+    {
+
+        document.querySelector("#ground_id").value='{{request.GET.ground_id}}'
+    }) .catch((error) => {
             console.log(error)
 
         })
     });
+
+           $(document).ready(function () {
+    // Enter key press event
+    $('#js_date_filter').on('change', function (e) {
+        if ( $(this).val().length==10) {  // 13 is the Enter key
+            const selectedDate = $(this).val(); // Format: YYYY-MM-DD
+            filterRecordingsByDate(selectedDate);
+        }
+    });
+});
+
+function filterRecordingsByDate(selectedDate) {
+    if (!selectedDate) {
+        // Agar date empty hai toh sab dikhao
+        $('.accordion-item').show();
+        return;
+    }
+
+    // Date format convert karein (Input YYYY-MM-DD ko DD-MM-YYYY banane ke liye agar zarurat ho)
+    // Kyunki aapka filter 'to_ddmmyyyy' use kar raha hai
+    const parts = selectedDate.split('-');
+    const formattedDate = parts[2] + "-" + parts[1] + "-" + parts[0]; 
+    // Agar aapka to_ddmmyyyy filter '/' use karta hai toh '-' ki jagah '/' lagayein
+
+    $('.accordion-item').each(function () {
+        // Har accordion item ke andar ki date text nikalna
+        // Hum us span ko target kar rahe hain jisme date likhi hai
+        const rowDateText = $(this).find('.pe-4.fs-6 small').text().trim();
+
+        // Match check karein
+        if (rowDateText.includes(formattedDate) || rowDateText.includes(selectedDate)) {
+            $(this).show();
+        } else {
+            $(this).hide();
+        }
+    });
+}
+
+function clearDateFilter() {
+    $('#js_date_filter').val('');
+    $('.accordion-item').show();
+}
+  
+
+
 </script>
 
 

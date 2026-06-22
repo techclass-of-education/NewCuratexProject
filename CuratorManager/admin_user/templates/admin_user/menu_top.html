@@ -10,7 +10,8 @@
             data-bs-toggle="dropdown">
             <i class="bi bi-person-circle text-white"></i>
           </a>
-          <ul class="dropdown-menu dropdown-menu-end">
+                   <ul class="dropdown-menu dropdown-menu-start" style="left: -150px !important;right:0!important;">
+
             <li><a class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#staticBackdropProfileData">Profile</a></li>
                   <li><a class="dropdown-item" href="#">Curators/Groundmen</a></li>
             <li>
@@ -28,7 +29,14 @@
 
 <script>
   function changeMenuTitle(title) {
+     try
+    {
     document.querySelector("#menu-page-title").innerHTML = title
+    }
+    catch(err)
+    {
+      console.error(err)
+    }
   }
 
   
@@ -166,7 +174,11 @@ function setCurators() {
     
     result.data.curators.forEach((curator) => {
        curatorsListUL.innerHTML += `<li class="list-group-item mb-1 rounded">
-               <a href="/usr_admin/login_auth_role_direct?id=${curator[0]}&role=Curator">${curator[1]} <small>Click for Dashbaord</small></a>
+               <a href="/usr_admin/login_auth_role_direct?id=${curator[0]}&role=Curator">
+              <span class="fw-1"> ${curator[1]} <small>Click for Dashbaord</small></span>
+               <br>
+              <span style='font-size:0.7em'> ${curator[2]}</span>
+               </a>
              </li>`;
 
    
@@ -272,8 +284,74 @@ let selectedMachineType=""
 
        // Click Event to set the selected machinery
        modelRow.onclick = function () {
+        if (modalType == "out_dust") {
+         document.getElementById('out_dust_machinery_id').value = machine.id;
+         document.getElementById('out_dust_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+        }
+        else if (modalType == "out_aeration") {
+         document.getElementById('out_aeration_machinery_id').value = machine.id;
+         document.getElementById('out_aeration_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+        }
+        else if (modalType == "out_scarifying") {
+         document.getElementById('out_scarifying_machinery_id').value = machine.id;
+         document.getElementById('out_scarifying_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+        }
+        else if (modalType == "out_verticut") {
+         document.getElementById('out_verticut_machinery_id').value = machine.id;
+         document.getElementById('out_verticut_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+        }
+        else if (modalType == "pp_dust") {
+         document.getElementById('pp_dust_machinery_id').value = machine.id;
+         document.getElementById('pp_dust_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+        }
+        else if (modalType == "pp_aeration") {
+         document.getElementById('pp_aeration_machinery_id').value = machine.id;
+         document.getElementById('pp_aeration_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+        }
+        else if (modalType == "pp_scarifying") {
+         document.getElementById('pp_scarifying_machinery_id').value = machine.id;
+         document.getElementById('pp_scarifying_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+        }
+        else if (modalType == "pp_verticut") {
+         document.getElementById('pp_verticut_machinery_id').value = machine.id;
+         document.getElementById('pp_verticut_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+        }
+        else if (modalType == "po_dust") {
+         document.getElementById('po_dust_machinery_id').value = machine.id;
+         document.getElementById('po_dust_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+        }
+        else if (modalType == "po_aeration") {
+         document.getElementById('po_aeration_machinery_id').value = machine.id;
+         document.getElementById('po_aeration_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+        }
+        else if (modalType == "po_scarifying") {
+         document.getElementById('po_scarifying_machinery_id').value = machine.id;
+         document.getElementById('po_scarifying_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+        }
+        else if (modalType == "po_verticut") {
+         document.getElementById('po_verticut_machinery_id').value = machine.id;
+         document.getElementById('po_verticut_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+        }
+        else if (modalType == "main_dust") {
+         document.getElementById('main_dust_machinery_id').value = machine.id;
+         document.getElementById('main_dust_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+        }
+        else if (modalType == "main_aeration") {
+         document.getElementById('main_aeration_machinery_id').value = machine.id;
+         document.getElementById('main_aeration_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+        }
+        else if (modalType == "main_scarifying") {
+         document.getElementById('main_scarifying_machinery_id').value = machine.id;
+         document.getElementById('main_scarifying_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+        }
+        else if (modalType == "main_verticut") {
+         document.getElementById('main_verticut_machinery_id').value = machine.id;
+         document.getElementById('main_verticut_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+        }
 
-        if (modalType == "out_roller") {
+
+
+        else if (modalType == "out_roller") {
          document.getElementById('out_machinery_id').value = machine.id;
          document.getElementById('out_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
         }
@@ -345,6 +423,22 @@ let selectedMachineType=""
 
   $(document).ready(function () {
         $("#roller_machine_type, #mover_machine_type, #out_roller_machine_type, #out_mover_machine_type, #pp_roller_machine_type, #pp_mover_machine_type, #practice_roller_machine_type, #practice_mover_machine_type").change(function () {
+      // alert($(this).val());
+        selectedMachineType=$(this).val().trim()
+  })
+        $("#out_verticut_machine_type,#out_scarifying_machine_type, #out_dust_machine_type, #out_aeration_machine_type").change(function () {
+      // alert($(this).val());
+        selectedMachineType=$(this).val().trim()
+  })
+        $("#pp_verticut_machine_type,#pp_scarifying_machine_type, #pp_dust_machine_type, #pp_aeration_machine_type").change(function () {
+      // alert($(this).val());
+        selectedMachineType=$(this).val().trim()
+  })
+        $("#po_verticut_machine_type,#po_scarifying_machine_type, #po_dust_machine_type, #po_aeration_machine_type").change(function () {
+      // alert($(this).val());
+        selectedMachineType=$(this).val().trim()
+  })
+        $("#main_verticut_machine_type,#main_scarifying_machine_type, #main_dust_machine_type, #main_aeration_machine_type").change(function () {
       // alert($(this).val());
         selectedMachineType=$(this).val().trim()
   })

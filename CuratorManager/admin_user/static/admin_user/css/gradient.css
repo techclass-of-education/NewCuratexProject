@@ -11,6 +11,10 @@
   background-color: rgb(1, 1, 66);
 }
 
+.corner-rounded{
+  border-radius: 15px !important;
+}
+
 @media (min-width: 992px) {
   .dropdown-menu
 {

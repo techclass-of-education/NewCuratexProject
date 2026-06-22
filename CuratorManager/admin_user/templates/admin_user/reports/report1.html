@@ -78,9 +78,12 @@
   padding: 0 !important;
   margin: 0 !important;
   font-size: 10px !important;
-
-
   }
+
+  input[type='checkbox']
+{
+  transform: scale(1.5);
+}
 
   @media print {
     body {
@@ -328,8 +331,88 @@
                                
                             </tbody>
                         </table>
+                
                     </div>
+
                 </div>
+                   {% if records != "none" %}
+                 {% if clagg %}
+                <div class="card  mx-auto transparent-bg mt-1 a4-inner-div">
+                    <div class="card-header box-bg text-white">
+
+                    <i class="bi bi-person-check me-2 text-info"></i>Clagg Hammer
+                </div>
+                    <div class="card-body box-bg px-3 py-1">
+                     
+                        <div class="table-responsive">
+                        
+                        <table class="table table-bordered table-striped">
+    
+        <thead class="table-dark">
+    
+            <tr>
+                <th>ID</th>
+                <!-- <th>Match ID</th> -->
+                <th>Date</th>
+                <th>Time</th>
+    
+                <th>Reading 1</th>
+                <th>Reading 2</th>
+                <th>Reading 3</th>
+                <th>Reading 4</th>
+                <th>Reading 5</th>
+                <th>Reading 6</th>
+                <th>Reading 7</th>
+                <th>Reading 8</th>
+                <th>Reading 9</th>
+                <th>Reading 10</th>
+    
+                <th>Remark</th>
+                <th>Created At</th>
+            </tr>
+    
+        </thead>
+    
+        <tbody>
+    
+            {% for row in clagg %}
+    
+            <tr>
+    
+                <td>{{ row.0 }}</td>
+                <!-- <td>{{ row.1 }}</td> -->
+                <td class="px-0">{{ row.2 }}</td>
+                <td>{{ row.3 }}</td>
+    
+                <td>{{ row.4 }}</td>
+                <td>{{ row.5 }}</td>
+                <td>{{ row.6 }}</td>
+                <td>{{ row.7 }}</td>
+                <td>{{ row.8 }}</td>
+    
+                <td>{{ row.9 }}</td>
+                <td>{{ row.10 }}</td>
+                <td>{{ row.11 }}</td>
+                <td>{{ row.12 }}</td>
+                <td>{{ row.13 }}</td>
+    
+                <td>{{ row.14 }}</td>
+                <td class="px-0">{{ row.15 }}</td>
+    
+            </tr>
+    
+            {% endfor %}
+    
+        </tbody>
+    
+    </table>
+    </div>
+                    </div>
+
+                </div>
+                 {% endif %}
+                 {% endif %}
+
 
             </div>
         </div>
@@ -873,6 +956,544 @@
         <!-- Match Records Table -->
 
       </div>
+     
+<div class="py-2" style="overflow-x: auto;">
+    <table class="table align-middle mb-0 w-75 mx-auto chemical-remport-table">
+      <thead class="bg-light fs-5 box-bg report-table-title">
+        <tr>
+          <th colspan="10">
+
+            <h2>Match Scores List</h2>
+              <h3 class="p-2 grass-bg shadow-sm text-light rounded"
+                  style="width: fit-content;text-transform: uppercase;"><small> Toss</small> <span id="wonby-span"
+                    class="badge text-light bg-dark me-4"></span>
+
+                  <small> Elected</small> <span id="elected-span" class="badge text-light bg-dark"></span>
+                </h3>
+          </th>
+          <!-- <th colspan="3">
+
+          </th>
+
+          <th colspan="3">
+          </th> -->
+          <!-- <a class="btn btn-warning mb-2 text-left" href="{% url 'fertilizer_add' %}">Add New Chemical</a> -->
+        </tr>
+        <tr>
+          <th>#</th>
+          <th>Day</th>
+          <th>Inning</th>
+          <th>Team</th>
+          <th>Session</th>
+          <th>Runs</th>
+          <th>Wickets</th>
+          <th>Overs</th>
+          <th>Winner</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="score-table-body">
+        <!-- Scores will be dynamically inserted here -->
+      </tbody>
+    </table>
+</div>
+      <!-- match summary -->
+      <div class="container mt-4 transparent-bg p-4 w-75 mx-auto">
+        <h3 class="text-dark text-center text-uppercase mb-0 py-3 fw-bold rounded-top" style="background-color: rgba(255, 255, 255, 0.891);">Match Summary</h3>
+         <div id="match-result-summary" class="border p-3 bg-dark text-light shadow-sm text-center text-light border-bottom-0">
+              <!-- Result Summary will be displayed here -->
+              
+            </div>
+         <div id="finalSummery" class="border p-3 bg-dark text-light shadow-sm text-center text-light border-top-0">
+              <!-- Result Summary will be displayed here -->
+              
+            </div>
+            
+
+
+        <div class="row">
+          <div class="col-12">
+            <table id="result-table" class="table transparent-bg table-bordered text-center ">
+              
+              <tbody id="result-table-body"></tbody>
+            </table>
+          </div>
+          <!-- <div class="col-12">
+           
+          </div> -->
+        </div>
+
+
+        
+
+
+      </div>
+
+       <div class="row" id="icc-report">
+        <div class="col-md-12 px-5" id="a4-inner-div">
+          <!--                <h2>Admin User List</h2>-->
+          <!-- <div class="card-header text-white text-center py-1 border-bottom-0">
+
+            <i class="bi bi-person-check me-2 text-info"></i><span class="fs-4">PITCH REPORT</span>
+          </div> -->
+
+          <div class="card  mx-auto transparent-bg mt-1 a4-inner-div">
+            <!-- <div class="card-header box-bg text-white">
+
+                    <i class="bi bi-person-check me-2 text-info"></i>Tournament Information
+                </div> -->
+            <div class="card-body px-3 py-1" id="report-container">
+              <div class="container my-4">
+
+                <div class="card shadow">
+                  <div class="card-body box-bg">
+
+                    <!-- 🔵 HEADER -->
+                    <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
+                      <h2 class="text-white fw-bold">PITCH REPORT</h2>
+                      <div>
+
+                        <h5 class="fw-bold mx-5">PITCH AND OUTFIELD REPORT</h5>
+                        Tournament Name:<input type="text" readonly class="form-control" id="match_name"
+                          value="">
+                        Teams:<span id="team1"></span> vs <span id="team2"></span>
+                        Venue/Ground:<input type="text" class="form-control" id="ground" readonly>
+                      <div class="ft-date">
+                        From Date : <input type="date" class="form-control" id="from_date" value="" name="from_date">
+                        To Date : <input type="date" class="form-control" id="to_date" value="" name="to_date">
+                      </div>
+                       <div class="m-date">
+                        Match Date: <input type="date" readonly class="form-control" id="match_date" name="match_date"
+                          value="">
+                      </div>
+                       
+                      </div>
+                    </div>
+
+                  
+                      {% csrf_token %}
+
+                      <!-- 🔶 REFEREE -->
+                      <div class="mb-3">
+                        <label class="form-label fw-bold">Referee</label>
+                        <input type="text" name="referee" class="form-control">
+                      </div>
+
+                      <!-- 🔶 GRASS -->
+                      <div class="card mb-3">
+                        <div class="card-header box-bg text-white fw-bold">
+                          1. Grass Cover
+                        </div>
+
+                        <div class="card-body box-gradient">
+
+                          <label class="fw-bold">Uniform:</label><br>
+                          <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="grass_uniform" value="Yes">
+                            <label class="form-check-label">Yes</label>
+                          </div>
+
+                          <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="grass_uniform" value="No">
+                            <label class="form-check-label">No</label>
+                          </div>
+
+                          <br><br>
+
+                          <label class="fw-bold">Cover:</label>
+                          <select name="grass_cover" class="form-select w-25">
+                            <option>Light</option>
+                            <option>Medium</option>
+                            <option>Heavy</option>
+                          </select>
+
+                          <textarea name="grass_details" class="form-control mt-2" placeholder="Details"></textarea>
+
+                        </div>
+                      </div>
+
+                      <!-- 🔶 PITCH DRY -->
+                      <div class="card mb-3">
+                        <div class="card-header box-bg text-white fw-bold">
+                          2. Pitch Dry?
+                        </div>
+                        <div class="card-body box-gradient">
+
+                          <div class="form-check form-check-inline">
+                            <input type="radio" name="pitch_dry" value="Yes" class="form-check-input">
+                            <label>Yes</label>
+                          </div>
+
+                          <div class="form-check form-check-inline">
+                            <input type="radio" name="pitch_dry" value="No" class="form-check-input">
+                            <label>No</label>
+                          </div>
+
+                          <textarea name="pitch_dry_details" class="form-control mt-2"
+                            placeholder="Pitch Dry Details"></textarea>
+                        </div>
+
+                      </div>
+
+                      <!-- 🔶 COMMENT -->
+                      <div class="card mb-3">
+                        <div class="card-header box-bg text-white fw-bold">
+                          3. Comment
+                        </div>
+                        <div class="card-body box-gradient">
+                          <textarea name="pitch_comment" class="form-control"></textarea>
+                        </div>
+                      </div>
+
+                      <!-- 🔴 HEAVY ROLLER -->
+                      <div class="card mb-3">
+                        <div class="card-header box-bg text-white fw-bold">
+                          4. Use of the Heavy Roller
+                        </div>
+
+                        <div class="card-body box-bg text-white box-gradient">
+
+                          <table class="table table-bordered text-center">
+                            <tr class="bg-light fs-5 box-bg report-table-title">
+                              <th></th>
+                              <th>Day1</th>
+                              <th>Day2</th>
+                              <th>Day3</th>
+                              <th>Day4</th>
+                              <th>Day5</th>
+                            </tr>
+
+                            <tr>
+                              <td>A. Used?</td>
+                              <td><input type="checkbox" name="roller_day1"></td>
+                              <td><input type="checkbox" name="roller_day2"></td>
+                              <td><input type="checkbox" name="roller_day3"></td>
+                              <td><input type="checkbox" name="roller_day4"></td>
+                              <td><input type="checkbox" name="roller_day5"></td>
+                            </tr>
+
+                            <tr>
+                              <td>B. Pace of the pitch Affected?</td>
+                              <td><input type="checkbox" name="roller_effect_day1" value="yes"></td>
+                              <td><input type="checkbox" name="roller_effect_day2" value="yes"></td>
+                              <td><input type="checkbox" name="roller_effect_day3" value="yes"></td>
+                              <td><input type="checkbox" name="roller_effect_day4" value="yes"></td>
+                              <td><input type="checkbox" name="roller_effect_day5" value="yes"></td>
+                            </tr>
+
+                          </table>
+
+                        </div>
+                      </div>
+
+                      <!-- 🔵 BOUNCE -->
+                      <div class="card mb-3">
+                        <div class="card-header box-bg text-white fw-bold">
+                          5. Bounce of the Pitch
+                        </div>
+
+                        <div class="card-body box-bg text-white box-gradient">
+
+                          <table class="table table-bordered text-center">
+                            <tr class="bg-light fs-5 box-bg report-table-title">
+                              <th></th>
+                              <th>Day1</th>
+                              <th>Day2</th>
+                              <th>Day3</th>
+                              <th>Day4</th>
+                              <th>Day5</th>
+                            </tr>
+
+                            <tr>
+                              <td>Low</td>
+                              <td><input type="checkbox" name="bounce_low_1"></td>
+                              <td><input type="checkbox" name="bounce_low_2"></td>
+                              <td><input type="checkbox" name="bounce_low_3"></td>
+                              <td><input type="checkbox" name="bounce_low_4"></td>
+                              <td><input type="checkbox" name="bounce_low_5"></td>
+                            </tr>
+                            <tr>
+                              <td>Medium / Low</td>
+                              <td><input type="checkbox" name="bounce_ml_1"></td>
+                              <td><input type="checkbox" name="bounce_ml_2"></td>
+                              <td><input type="checkbox" name="bounce_ml_3"></td>
+                              <td><input type="checkbox" name="bounce_ml_4"></td>
+                              <td><input type="checkbox" name="bounce_ml_5"></td>
+                            </tr>
+                            <tr>
+                              <td>Medium</td>
+                              <td><input type="checkbox" name="bounce_med_1"></td>
+                              <td><input type="checkbox" name="bounce_med_2"></td>
+                              <td><input type="checkbox" name="bounce_med_3"></td>
+                              <td><input type="checkbox" name="bounce_med_4"></td>
+                              <td><input type="checkbox" name="bounce_med_5"></td>
+                            </tr>
+                            <tr>
+                              <td>Medium / High</td>
+                              <td><input type="checkbox" name="bounce_mh_1"></td>
+                              <td><input type="checkbox" name="bounce_mh_2"></td>
+                              <td><input type="checkbox" name="bounce_mh_3"></td>
+                              <td><input type="checkbox" name="bounce_mh_4"></td>
+                              <td><input type="checkbox" name="bounce_mh_5"></td>
+                            </tr>
+                            <tr>
+                              <td>High</td>
+                              <td><input type="checkbox" name="bounce_high_1"></td>
+                              <td><input type="checkbox" name="bounce_high_2"></td>
+                              <td><input type="checkbox" name="bounce_high_3"></td>
+                              <td><input type="checkbox" name="bounce_high_4"></td>
+                              <td><input type="checkbox" name="bounce_high_5"></td>
+                            </tr>
+
+                          </table>
+
+                        </div>
+                      </div>
+
+
+                      <div class="card mb-3">
+                        <div class="card-header box-bg text-white fw-bold">
+                          6. Consistency of the Bounce
+                        </div>
+
+                        <div class="card-body box-bg text-white box-gradient">
+
+                          <table class="table table-bordered text-center">
+                            <tr class="bg-light fs-5 box-bg report-table-title">
+                              <th></th>
+                              <th>Day1</th>
+                              <th>Day2</th>
+                              <th>Day3</th>
+                              <th>Day4</th>
+                              <th>Day5</th>
+                            </tr>
+
+                            <tr>
+                              <td>Consistent</td>
+                              <td><input type="checkbox" name="consist_1_1"></td>
+                              <td><input type="checkbox" name="consist_1_2"></td>
+                              <td><input type="checkbox" name="consist_1_3"></td>
+                              <td><input type="checkbox" name="consist_1_4"></td>
+                              <td><input type="checkbox" name="consist_1_5"></td>
+                            </tr>
+
+                            <tr>
+                              <td>Variable</td>
+                              <td><input type="checkbox" name="consist_2_1"></td>
+                              <td><input type="checkbox" name="consist_2_2"></td>
+                              <td><input type="checkbox" name="consist_2_3"></td>
+                              <td><input type="checkbox" name="consist_2_4"></td>
+                              <td><input type="checkbox" name="consist_2_5"></td>
+                            </tr>
+
+                            <tr>
+                              <td>Highly Variable</td>
+                              <td><input type="checkbox" name="consist_3_1"></td>
+                              <td><input type="checkbox" name="consist_3_2"></td>
+                              <td><input type="checkbox" name="consist_3_3"></td>
+                              <td><input type="checkbox" name="consist_3_4"></td>
+                              <td><input type="checkbox" name="consist_3_5"></td>
+                            </tr>
+
+                            <tr>
+                              <td>Excessive Unevenness</td>
+                              <td><input type="checkbox" name="consist_4_1"></td>
+                              <td><input type="checkbox" name="consist_4_2"></td>
+                              <td><input type="checkbox" name="consist_4_3"></td>
+                              <td><input type="checkbox" name="consist_4_4"></td>
+                              <td><input type="checkbox" name="consist_4_5"></td>
+                            </tr>
+
+                          </table>
+
+                        </div>
+                      </div>
+
+                      <!-- 🔵 Seam Movement -->
+                      <div class="card mb-3">
+                        <div class="card-header box-bg text-white fw-bold">
+                          7. Seam Movement
+                        </div>
+
+                        <div class="card-body box-bg text-white box-gradient">
+
+                          <table class="table table-bordered text-center">
+                            <tr class="bg-light fs-5 box-bg report-table-title">
+                              <th></th>
+                              <th>Day1</th>
+                              <th>Day2</th>
+                              <th>Day3</th>
+                              <th>Day4</th>
+                              <th>Day5</th>
+                            </tr>
+
+                            <tr>
+                              <td>Little or No</td>
+                              <td><input type="checkbox" name="seam1"></td>
+                              <td><input type="checkbox" name="seam2"></td>
+                              <td><input type="checkbox" name="seam3"></td>
+                              <td><input type="checkbox" name="seam4"></td>
+                              <td><input type="checkbox" name="seam5"></td>
+                            </tr>
+
+                            <tr>
+                              <td>Occasional</td>
+                              <td><input type="checkbox" name="seam_occ1"></td>
+                              <td><input type="checkbox" name="seam_occ2"></td>
+                              <td><input type="checkbox" name="seam_occ3"></td>
+                              <td><input type="checkbox" name="seam_occ4"></td>
+                              <td><input type="checkbox" name="seam_occ5"></td>
+                            </tr>
+
+                            <tr>
+                              <td>More than Occasional</td>
+                              <td><input type="checkbox" name="seam_1_1"></td>
+                              <td><input type="checkbox" name="seam_1_2"></td>
+                              <td><input type="checkbox" name="seam_1_3"></td>
+                              <td><input type="checkbox" name="seam_1_4"></td>
+                              <td><input type="checkbox" name="seam_1_5"></td>
+                            </tr>
+
+                            <tr>
+                              <td>Excessive</td>
+                              <td><input type="checkbox" name="seam_2_1"></td>
+                              <td><input type="checkbox" name="seam_2_2"></td>
+                              <td><input type="checkbox" name="seam_2_3"></td>
+                              <td><input type="checkbox" name="seam_2_4"></td>
+                              <td><input type="checkbox" name="seam_2_5"></td>
+                            </tr>
+
+
+                          </table>
+
+                        </div>
+                      </div>
+
+
+                      <!-- 🔵 Turn -->
+                      <div class="card mb-3">
+                        <div class="card-header box-bg text-white fw-bold">
+                          8. Turn
+                        </div>
+
+                        <div class="card-body box-bg text-white box-gradient">
+
+                          <table class="table table-bordered text-center">
+                            <tr class="bg-light fs-5 box-bg report-table-title">
+                              <th></th>
+                              <th>Day1</th>
+                              <th>Day2</th>
+                              <th>Day3</th>
+                              <th>Day4</th>
+                              <th>Day5</th>
+                            </tr>
+
+                            <tr>
+                              <td>Little Turn</td>
+                              <td><input type="checkbox" name="turn1"></td>
+                              <td><input type="checkbox" name="turn2"></td>
+                              <td><input type="checkbox" name="turn3"></td>
+                              <td><input type="checkbox" name="turn4"></td>
+                              <td><input type="checkbox" name="turn5"></td>
+                            </tr>
+
+                            <tr>
+                              <td>Moderate</td>
+                              <td><input type="checkbox" name="turn_mod1"></td>
+                              <td><input type="checkbox" name="turn_mod2"></td>
+                              <td><input type="checkbox" name="turn_mod3"></td>
+                              <td><input type="checkbox" name="turn_mod4"></td>
+                              <td><input type="checkbox" name="turn_mod5"></td>
+                            </tr>
+
+                            <tr>
+                              <td>Considerable Turn</td>
+                              <td><input type="checkbox" name="trun_consistency_1"></td>
+                              <td><input type="checkbox" name="trun_consistency_2"></td>
+                              <td><input type="checkbox" name="trun_consistency_3"></td>
+                              <td><input type="checkbox" name="trun_consistency_4"></td>
+                              <td><input type="checkbox" name="trun_consistency_5"></td>
+                            </tr>
+
+                            <tr>
+                              <td>Excessive Turn</td>
+                              <td><input type="checkbox" name="trun_excessive_1"></td>
+                              <td><input type="checkbox" name="trun_excessive_2"></td>
+                              <td><input type="checkbox" name="trun_excessive_3"></td>
+                              <td><input type="checkbox" name="trun_excessive_4"></td>
+                              <td><input type="checkbox" name="trun_excessive_5"></td>
+                            </tr>
+
+
+                          </table>
+
+                        </div>
+                      </div>
+
+
+
+
+                      <!-- 🟣 RATINGS -->
+                      <div class="card mb-3">
+                        <div class="card-header box-bg text-white fw-bold">
+                          Ratings
+                        </div>
+
+                        <div class="card-body box-gradient">
+
+                          <label>9. Pitch Rating</label>
+                          <select name="pitch_rating" class="form-select mb-2">
+                            <option>Very good</option>
+                            <option>Good</option>
+                            <option>Average</option>
+                            <option>Below Average</option>
+                            <option>Poor</option>
+                            <option>Unfit</option>
+                          </select>
+
+                          <label>10. Outfield Rating</label>
+                          <select name="outfield_rating" class="form-select">
+                            <option>Very good</option>
+                            <option>Good</option>
+                            <option>Average</option>
+                            <option>Below Average</option>
+                            <option>Poor</option>
+                            <option>Unfit</option>
+                          </select>
+
+                        </div>
+                      </div>
+
+                      <!-- 🟤 FINAL COMMENT -->
+                      <div class="card mb-3">
+                        <div class="card-header box-bg text-white fw-bold">
+                          11. Final Comment
+                        </div>
+
+                        <div class="card-body box-gradient">
+                          <textarea name="final_comment" class="form-control"></textarea>
+                        </div>
+                      </div>
+
+                    
+                     
+
+                 
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+
+
+        </div>
+      </div>
+
+
+
     </div>
     {% else %}
 
@@ -1075,6 +1696,567 @@
 
   getMachine()
 </script>
+<script>
+
+
+function addOvers(existingOvers, newOvers) {
+    // split kare overs ko overs + balls format me    
+    let [ex_ov, ex_ball] = existingOvers.toString().split('.').map(Number);
+    let [new_ov, new_ball] = newOvers.toString().split('.').map(Number);
+
+    // undefined (.0 case) handle
+    ex_ball = ex_ball || 0;
+    new_ball = new_ball || 0;
+
+    // convert total balls
+    let totalBalls = (ex_ov * 6 + ex_ball) + (new_ov * 6 + new_ball);
+
+    // convert back to overs format
+    let finalOvers = Math.floor(totalBalls / 6);
+    let finalBalls = totalBalls % 6;
+
+    return Number(finalOvers + "." + finalBalls);
+}
+
+let firstScore={}
+  // Function to fetch and display scores based on match_id
+  function fetchScores(matchId) {
+    axios.get(`/usr_admin/get_match_scores/${matchId}/`)
+      .then(function (response) {
+        console.log(response.data);
+        const scores = response.data.scores;
+        const matchData = response.data.match;
+        const ground = response.data.ground;
+        const tableBody = document.getElementById('score-table-body');
+        tableBody.innerHTML = '';
+        firstScore = scores[0] || {}
+
+        // document.getElementById('update-team').innerHTML = `
+        //     <option value="${firstScore.team1.trim()}">${firstScore.team1}</option>
+        //     <option value="${firstScore.team2.trim()}">${firstScore.team2}</option>
+        // `;
+        // document.getElementById('update-winner').innerHTML = `
+        //    <option value="-1">Not Yet</option>
+        //                 <option value="0">Draw</option>
+                       
+        //     <option value="1">${firstScore.team1}</option>
+        //     <option value="2">${firstScore.team2}</option>
+        // `;
+        scores.forEach((score, index) => {
+          const newRow = document.createElement('tr');
+          const winner = "{{ score.winner }}"
+        
+        newRow.innerHTML = `
+          <td class='bg-dark text-light'>${index + 1}</td>
+          <td>${score.day}</td>
+          <td>${score.inning}</td>
+          <td>${score.team}</td>
+          <td>${score.session}</td>
+          <td>${score.runs}</td>
+          <td>${score.wickets}</td>
+          <td>${score.overs}</td>
+
+        <td>${getWinner(score.winner, score.team1, score.team2)}</td>
+         <td> 
+            <button class="btn btn-primary update-btn box-bg" data-id="${score.id}">Update</button>
+            <button class="btn btn-danger delete-btn" data-id="${score.id}">Delete</button>
+          </td>
+        `;
+
+        s = scores[0]
+        $("#wonby-span").html(s.wonby)
+        $("#elected-span").html(s.elected)
+        // newRow.innerHTML = `
+        //   <td class='bg-dark text-light'>${index + 1}</td>
+        //   <td>${score.day}</td>
+        //   <td>${score.inning}</td>
+        //   <td>${score.team}</td>
+        //   <td>${score.session}</td>
+        //   <td>${score.runs}</td>
+        //   <td>${score.wickets}</td>
+        //   <td>${score.overs}</td>
+
+        // <td>${getWinner(score.winner, score.team1, score.team2)}</td>
+          // <td> 
+          //   <button class="btn btn-primary update-btn box-bg mb-3" data-id="${score.id}">Update</button>
+          //   <button class="btn btn-danger delete-btn" data-id="${score.id}">Delete</button>
+          // </td>
+        // `;
+        tableBody.appendChild(newRow);
+
+        // Add update and delete functionality to the buttons
+        newRow.querySelector('.delete-btn').addEventListener('click', function () {
+          deleteScore(score.id);
+        });
+
+        newRow.querySelector('.update-btn').addEventListener('click', function () {
+          openUpdateForm(score);
+        });
+                 generateResultTable(scores,matchData,ground);
+
+      });
+  })
+    .catch (function(error) {
+    console.error('Error fetching scores:', error);
+  });
+}
+
+  let winnerFinal = "";
+  let remark = "";
+  let lastSummery = ""
+  function generateResultTable(scores,matchData,ground) {
+    const resultTableBody = document.getElementById("result-table-body");
+    resultTableBody.innerHTML = "";
+
+
+    // Group data by team and day
+    const summary = {};
+    let matchType=scores[0]?.match_type.trim() || ""
+if(matchType.toLowerCase()!=="multidays"){
+
+
+scores.forEach(score => {
+
+    const team = score.team.trim(); // playing team
+
+    // Agar pehli baar update ho raha hai to object create karo
+    if (!summary[team]) {
+        summary[team] = { team, runs: 0, wickets: 0, overs: 0 };
+    }
+
+    // Totals add karo
+    summary[team].runs += parseInt(score.runs);
+    summary[team].wickets += parseInt(score.wickets);
+    // summary[team].overs += parseFloat(score.overs);
+    summary[team].overs = addOvers(summary[team].overs, parseFloat(score.overs));
+
+
+    // Winner track karte rehna hai
+    winnerFinal = getWinner(score.winner,score.team1,score.team2);
+
+});
+
+  }
+  else
+{
+    // const summary = {};
+scores.forEach(score => {
+
+    const innKey = `Inn${score.inning}`;
+
+  
+    if (!summary[innKey]) {
+
+        summary[innKey] = [
+            { team: score.team1.trim(), runs: 0, wickets: 0, overs: 0,inn:score.inning },
+            { team: score.team2.trim(), runs: 0, wickets: 0, overs: 0,inn:score.inning }
+        ];
+    }
+
+    // अब check करो की score किस team का है
+    let index = (score.team.trim().toLowerCase() === score.team1.trim().toLowerCase()) ? 0 : 1;
+
+    summary[innKey][index].runs += parseInt(score.runs);
+    summary[innKey][index].wickets += parseInt(score.wickets);
+    // summary[innKey][index].overs += parseFloat(score.overs);
+    summary[innKey][index].overs = addOvers(summary[innKey][index].overs, parseFloat(score.overs));
+
+
+    winnerFinal = getWinner(score.winner,score.team1,score.team2);
+
+});
+}
+
+
+
+console.log("Summery",summary)
+
+    // Create rows
+    let row = document.createElement("tr");
+      row.innerHTML = `
+       <td colspan=2 class='border-end-0'>
+        <span class="badge text-bg-light fs-2">${firstScore.team1}</span>
+        </td>
+      <td colspan=2 class='border-0'></td>
+      <td colspan=2 class='border-start-0'>
+         <span class="badge text-bg-light fs-2">${firstScore.team2}</span>
+        </td>
+     
+    `;
+      resultTableBody.appendChild(row);
+      if(matchType.toLowerCase()==="multidays"){
+     const innsKey=Object.keys(summary)
+
+    Object.values(summary).forEach((s, index) => {
+      // console.log(s)
+       row = document.createElement("tr");
+      
+      row.innerHTML = `
+      <td colspan=2 class='border-end-0'>
+        <div class="alert alert-warning mx-auto" style='width:fit-content;'>
+          <span class="d-block fw-bold fs-3">${s[0].runs}</span>
+          <span class="fs-6 pe-3">(${s[0].overs.toFixed(1)} Ov)</span>
+          <span class="fs-6">(${s[0].wickets} W)</span> 
+        </div>
+      </td>
+
+      <td colspan=2 class='border-0'>
+        <span class="badge text-bg-secondary fs-6 mt-4">${innsKey[index]}</span>
+      </td>
+
+      <td colspan=2 class='border-start-0'>
+        <div class="alert alert-light mx-auto" style='width:fit-content;'>
+          <span class="d-block fw-bold fs-3">${s[1].runs}</span>
+          <span class="fs-6 pe-3">(${s[1].overs.toFixed(1)} Ov)</span>
+          <span class="fs-6">(${s[1].wickets} W)</span> 
+        </div>
+      </td> 
+    `;
+      resultTableBody.appendChild(row);
+    });
+  }else
+  {
+      // const innsKey=Object.keys(summary)
+
+ 
+      let s1=summary[firstScore.team1.trim()]
+      let s2=summary[firstScore.team2.trim()]
+       row = document.createElement("tr");
+      
+      row.innerHTML = `
+      <td colspan=2 class='border-end-0'>
+        <div class="alert alert-warning mx-auto" style='width:fit-content;'>
+          <span class="d-block fw-bold fs-3">${s1.runs}</span>
+          <span class="fs-6 pe-3">(${s1.overs.toFixed(1)} Ov)</span>
+          <span class="fs-6">(${s1.wickets} W)</span> 
+        </div>
+      </td>
+
+      <td colspan=2 class='border-0'>
+      </td>
+
+      <td colspan=2 class='border-start-0'>
+        <div class="alert alert-light mx-auto" style='width:fit-content;'>
+          <span class="d-block fw-bold fs-3">${s2.runs}</span>
+          <span class="fs-6 pe-3">(${s2.overs.toFixed(1)} Ov)</span>
+          <span class="fs-6">(${s2.wickets} W)</span> 
+        </div>
+      </td> 
+    `;
+      resultTableBody.appendChild(row);
+      
+          
+    
+  }
+
+    // --- Calculate and display match summary ---
+    displayMatchResult(scores,matchData,ground);
+    // console.log("Winner Final: " + winnerFinal)
+
+    if (winnerFinal.trim() !== "Not Yet" && winnerFinal.trim() !== "Draw" && winnerFinal.trim() !== "") {
+      // setLastSummery(scores)
+      document.getElementById("finalSummery").innerHTML = `<span class="badge text-dark text-uppercase text-bg-light fw-bold fs-4 me-1">WINNER</span><span class="badge text-white text-uppercase text-bg-success fw-bold fs-4">${winnerFinal}</span>`
+
+    }
+    else if (winnerFinal.trim() == "Not Yet") {
+      lastSummery = ""
+      document.getElementById("finalSummery").innerHTML = `<span class="badge text-white text-uppercase text-bg-success fw-bold fs-4">${lastSummery}</span>`
+      // document.getElementById("divRemark").innerHTML = lastSummery
+      // document.getElementById("divWinner").innerHTML = "Winner: " + lastSummery
+    }
+    else if (winnerFinal.trim() == "Draw") {
+      lastSummery = "Match Drawn"
+      document.getElementById("finalSummery").innerHTML = `<span class="badge text-white text-uppercase text-bg-success fw-bold fs-4">${lastSummery}</span>`
+      // document.getElementById("divWinner").innerHTML = "NO Winner"
+    } else {
+      lastSummery = ""
+      document.getElementById("finalSummery").innerHTML = `<span class="badge text-white text-uppercase text-bg-success fw-bold fs-4">${lastSummery}</span>`
+      // document.getElementById("divWinner").innerHTML = ""
+    }
+
+  }
+
+  function setLastSummery(scores) {
+    const winningTeamArray = scores.filter(t => t.team.trim().toLowerCase() === winnerFinal.trim().toLowerCase())
+    const lossTeamArray = scores.filter(t => t.team.trim().toLowerCase() !== winnerFinal.trim().toLowerCase())
+    // console.log(winningTeamArray)
+    // console.log(lossTeamArray)
+    const winTeamLastScores = winningTeamArray[winningTeamArray.length - 1]
+    const lossTeamLastScores = lossTeamArray[lossTeamArray.length - 1]
+    // console.log(winTeamLastScores)
+    // console.log(lossTeamLastScores)
+    let wonByWickets = -1
+    let wonByRuns = winTeamLastScores.runs - lossTeamLastScores.runs
+    const lastScore = scores[scores.length - 1];
+    if (lastScore.day_end.trim() == "yes") {
+      remark = lastScore.remark
+
+      console.log(winTeamLastScores.wickets + "<" + lossTeamLastScores.wickets)
+      if (winTeamLastScores.wickets < lossTeamLastScores.wickets) {
+
+        wonByWickets = lossTeamLastScores.wickets - winTeamLastScores.wickets
+        lastSummery = `${winnerFinal} won by runs ${wonByRuns} and ${wonByWickets} wickets`
+      }
+      else {
+
+        lastSummery = `${winnerFinal} won by runs ${wonByRuns}`
+      }
+      document.getElementById("finalSummery").innerHTML = lastSummery
+      // document.getElementById("divRemark").innerHTML = lastSummery
+    }
+    else {
+      remark = ""
+    }
+  }
+
+  function displayMatchResult(scores,matchData,ground) {
+    console.log(ground)
+    const s=scores[0]
+    if (scores.length === 0) {
+      document.getElementById("match-result-summary").innerHTML = `<h5>No scores yet.</h5>`;
+      return;
+    }
+
+    // const team1 = "{{match.3}}";
+    // const team2 = "{{match.4}}";
+    // const matchType = "{{match.1}}";
+    // const matchDate = "{{match.6}}";
+    // const fromDate = "{{match.7}}";
+    // const toDate = "{{match.8}}";
+    // const days = "{{match.9}}";
+
+    const team1 = firstScore.team1;
+    const team2 = firstScore.team1;
+    const matchType = firstScore.match_type;
+    const matchDate = matchData[2];
+    const fromDate = matchData[3];
+    const toDate = matchData[4];
+
+    // Calculate total runs by team
+    const teamTotals = {};
+    scores.forEach(score => {
+      if (!teamTotals[score.team]) {
+        teamTotals[score.team] = 0;
+      }
+      teamTotals[score.team] += parseInt(score.runs);
+    });
+
+    // Determine winner
+    // console.log(teamTotals)
+    // if (teamTotals[team1] > teamTotals[team2]) {
+    //   winner = team1;
+    //   remark = `${team1} won by ${teamTotals[team1] - teamTotals[team2]} runs`;
+    // } else if (teamTotals[team2] > teamTotals[team1]) {
+    //   winner = team2;
+    //   remark = `${team2} won by ${teamTotals[team2] - teamTotals[team1]} runs`;
+    // } else {
+    //   winner = "Draw";
+    //   remark = "Match Drawn";
+    // }
+
+    // Date text based on match type
+    // let dateText = "";
+    // if (matchType.toLowerCase() === "multidays") {
+    //   dateText = `<strong>${fromDate}</strong> - <strong>${toDate}</strong>`;
+    // } else {
+    //   dateText = `<strong>${matchDate}</strong>`;
+    // }
+
+      document.getElementById("match-result-summary").innerHTML = `
+      <div class="row text-uppercase">
+      <div class="col-lg-12">
+        <button type="button" class="btn btn-primary fs-6">
+        ${matchType.toLowerCase() === "multidays"?
+        `Date <span class="badge text-bg-light me-2">${fromDate}</span>
+        <span class="badge text-bg-light">${toDate}</span>`:
+        `Date <span class="badge text-bg-light">${matchDate}</span>`
+      }
+        </button>
+        <button type="button" class="btn btn-primary fs-6">
+          Toss <span class="badge text-bg-light">${s.wonby}</span>
+        </button>
+        <button type="button" class="btn btn-primary fs-6">
+          Elected <span class="badge text-bg-light">${s.elected}</span>
+        </button>
+      </div>
+      <div class="col-lg-12 mt-3">
+        <span class="badge text-bg-warning text-light">${matchData[1]}</span>
+      </div>
+      <div class="col-lg-12 mt-3">
+       <span class="badge text-bg-light">${ground[0]}</span>
+      </div>
+      </div>
+      `;
+      // <h6 id="divRemark">Remark:</h6>
+     // <h5 class="text-success mt-2" id="divWinner"></h5>
+  }
+
+  function getWinner(winner, t1, t2) {
+    winner = parseInt(winner)
+    let w = -1
+    if (winner == -1) {
+      w = "Not Yet"
+    }
+    else if (winner == 0) {
+      w = "Draw"
+    }
+    else if (winner == 1) {
+      w = t1
+    }
+    else if (winner == 2) {
+      w = t2
+    }
+    return w
+  }
+  // Call the function to fetch scores for the specific match (replace matchId dynamically)
+
+  
+
+    function loadReport(matchId) {
+      // event.preventDefault()
+      // alert()
+      // const matchId = document.querySelector("#match_id").value
+          document.querySelector("#icc-report").style.display="block"
+
+      axios.get(`/usr_admin/get-icc-report/${matchId}/`)
+        .then(res => {
+
+          const data = res.data.data
+          const mData = res.data.match_data
+          // console.log(mData)
+
+          // ================= BASIC FIELDS =================
+
+          document.querySelector("[name='referee']").value = data.referee || ""
+
+          document.querySelector("[name='grass_details']").value = data.grass_details || ""
+          document.querySelector("[name='pitch_dry_details']").value = data.pitch_dry_details || ""
+          document.querySelector("[name='pitch_comment']").value = data.pitch_comment || ""
+          document.querySelector("[name='final_comment']").value = data.final_comment || ""
+
+          document.querySelector("#match_name").value = mData.match_type+" "+mData.match_name || ""
+
+          document.querySelector("#team1").innerHTML = mData.team1 || ""
+          document.querySelector("#team2").innerHTML = mData.team2 || ""
+          document.querySelector("#ground").value = mData.ground_name || ""
+          
+          if(mData.match_type=="Multidays")
+          {
+            document.querySelector(".m-date").style.display = "none"
+            document.querySelector(".ft-date").style.display = "block"
+            document.querySelector("#from_date").value = mData.from_date || ""
+            document.querySelector("#to_date").value = mData.to_date || ""
+            
+          }
+          else
+          {
+           document.querySelector(".m-date").style.display = "block"
+            document.querySelector(".ft-date").style.display = "none"
+            document.querySelector("#match_date").value = mData.match_date || ""
+
+        }
+          
+
+          // readonly कर दो
+          document.querySelectorAll("input, textarea, select").forEach(el => {
+            el.setAttribute("readonly", true)
+            // el.setAttribute("disabled", true)
+          })
+
+          // ================= RADIO =================
+          let el = document.querySelector(`input[name="grass_uniform"][value="${data.grass_uniform}"]`)
+          if (el) el.checked = true
+          el = document.querySelector(`input[name="pitch_dry"][value="${data.pitch_dry}"]`)
+          if (el) el.checked = true
+
+          // ================= SELECT =================
+
+          document.querySelector("[name='grass_cover']").value = data.grass_cover
+          document.querySelector("[name='pitch_rating']").value = data.pitch_rating
+          document.querySelector("[name='outfield_rating']").value = data.outfield_rating
+
+          // ================= HEAVY ROLLER =================
+
+          if (data.heavy_roller_days) {
+            data.heavy_roller_days.split(",").forEach(day => {
+              let num = day.replace("Day", "")
+              el = document.querySelector(`[name="roller_day${num}"]`)
+              if (el) el.checked = true
+            })
+          }
+
+          Object.entries(data.heavy_roller_effect || {}).forEach(([day, val]) => {
+            let num = day.replace("day", "")
+            if (val.effect) {
+              el = document.querySelector(`[name="roller_effect_day${num}"]`)
+              if (el) el.checked = true
+            }
+          })
+
+          // ================= BOUNCE =================
+
+          Object.entries(data.bounce || {}).forEach(([day, val]) => {
+            let num = day.replace("day", "")
+
+            if (val.low) document.querySelector(`[name="bounce_low_${num}"]`).checked = true
+            if (val.medium) document.querySelector(`[name="bounce_med_${num}"]`).checked = true
+            if (val.high) document.querySelector(`[name="bounce_high_${num}"]`).checked = true
+            if (val.medium_low) document.querySelector(`[name="bounce_ml_${num}"]`).checked = true
+            if (val.medium_high) document.querySelector(`[name="bounce_mh_${num}"]`).checked = true
+          })
+
+          // ================= CONSISTENCY =================
+
+          Object.entries(data.bounce_consistency || {}).forEach(([day, val]) => {
+            let num = day.replace("day", "")
+
+            if (val.consistent) document.querySelector(`[name="consist_1_${num}"]`).checked = true
+            if (val.variable) document.querySelector(`[name="consist_2_${num}"]`).checked = true
+            if (val.highly_variable) document.querySelector(`[name="consist_3_${num}"]`).checked = true
+            if (val.uneven) document.querySelector(`[name="consist_4_${num}"]`).checked = true
+          })
+
+          // ================= SEAM =================
+
+          Object.entries(data.seam_movement || {}).forEach(([day, val]) => {
+            let num = day.replace("day", "")
+
+            if (val.little) document.querySelector(`[name="seam${num}"]`).checked = true
+            if (val.occasional) document.querySelector(`[name="seam_occ${num}"]`).checked = true
+            if (val.more_than_occasional) document.querySelector(`[name="seam_1_${num}"]`).checked = true
+            if (val.excessive) document.querySelector(`[name="seam_2_${num}"]`).checked = true
+          })
+
+          // ================= TURN =================
+
+          Object.entries(data.turn || {}).forEach(([day, val]) => {
+            let num = day.replace("day", "")
+
+            if (val.little) document.querySelector(`[name="turn${num}"]`).checked = true
+            if (val.moderate) document.querySelector(`[name="turn_mod${num}"]`).checked = true
+            if (val.considerable) document.querySelector(`[name="trun_consistency_${num}"]`).checked = true
+            if (val.excessive) document.querySelector(`[name="trun_excessive_${num}"]`).checked = true
+          })
+
+        })
+        .catch(err => {
+          console.error(err)
+          document.querySelector("#icc-report").style.display="none"
+          // alert("No Report Found")
+        })
+    }
+
+
+  fetchScores("{{records.0.match_id}}");
+
+
+  
+  loadReport("{{records.0.match_id}}");
+
+</script>
+
+
+
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>

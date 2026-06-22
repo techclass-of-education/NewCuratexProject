@@ -1,0 +1,424 @@
+{% include "admin_user/headertags.html" %}
+
+{% load static %}
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<link href="{% static 'admin_user/css/gradient.css' %}" rel="stylesheet">
+<div class="wrapper grass-bg">
+    <!-- Sidebar -->
+    {% include "admin_user/menu_side.html" %}
+
+
+    <!-- Page Content -->
+    <div id="content" class="bg-form-page">
+        <!-- Navbar -->
+        {% include "admin_user/menu_top.html" %}
+
+
+<div class="row">
+
+    <div class="col-md-3">
+       
+
+         <div class="form-group">
+                <label>Select Ground</label>
+                <select id="ground_id" name="ground_id" class="form-control">
+                   
+                </select>
+            </div>
+    </div>
+
+    <div class="col-md-3">
+        <label>From Date</label>
+        <input type="date" id="from_date"
+        class="form-control">
+    </div>
+
+    <div class="col-md-3">
+        <label>To Date</label>
+        <input type="date" id="to_date"
+        class="form-control">
+    </div>
+
+    <div class="col-md-3">
+        <label>Area</label>
+
+        <select id="area" class="form-select">
+
+            <option value="all">All Area</option>
+
+            <option value="outfield">
+                Outfield
+            </option>
+
+            <option value="practice-outfield">
+                Practice Outfield
+            </option>
+
+            <option value="main-pitches">
+                Main Pitches
+            </option>
+
+            <option value="practice-pitches">
+                Practice Pitches
+            </option>
+
+        </select>
+
+    </div>
+
+</div>
+
+<button class="btn btn-primary mt-3"
+onclick="loadAnnualReport()">
+
+Search
+
+</button>
+
+
+<hr>
+
+<div id="reportData"></div>
+
+</div>
+</div>
+
+<script>
+
+function loadGrounds(){
+
+    axios.get("/usr_admin/get_grounds")
+
+    .then(res=>{
+
+        let html = `
+        <option value="">
+            Select Ground
+        </option>
+        `
+
+        res.data.grounds.forEach(g=>{
+
+            html += `
+            <option value="${g.ground[0]}">
+                ${g.ground[6]}
+            </option>
+            `
+        })
+
+        document.querySelector("#ground_id").innerHTML = html
+
+    })
+
+}
+
+loadGrounds()
+
+</script>
+
+<script>
+
+function loadAnnualReport(){
+
+    const ground_id =
+    document.querySelector("#ground_id").value
+
+    const from_date =
+    document.querySelector("#from_date").value
+
+    const to_date =
+    document.querySelector("#to_date").value
+
+    const area =
+    document.querySelector("#area").value
+
+
+    axios.get("/usr_admin/annual-maintenance-report-api/",{
+        params:{
+            ground_id,
+            from_date,
+            to_date,
+            area
+        }
+    })
+
+    .then(res=>{
+
+        const rows = res.data.records
+        const selectedArea = res.data.selectedArea
+
+        let html = ``
+
+        if(rows.length==0){
+
+            html = `
+            <h4 class="text-danger">
+                No Records Found
+            </h4>
+            `
+
+            document.querySelector("#reportData").innerHTML=html
+
+            return
+        }
+
+        // ✅ Ground Details
+        const ground = rows[0]
+
+        html += `
+
+        <div class="card mb-3">
+
+            <div class="card-header bg-dark text-white">
+                Ground Details
+            </div>
+
+            <div class="card-body box-bg">
+
+                <div class="row text-uppercase">
+
+                    <div class="col-md-3">
+                        <b>Ground:</b>
+                        ${ground.ground_name}
+                    </div>
+
+                    <div class="col-md-3">
+                        <b>City:</b>
+                        ${ground.city_name}
+                    </div>
+
+                    <div class="col-md-3">
+                        <b>State:</b>
+                        ${ground.state_name}
+                    </div>
+
+                    <div class="col-md-3">
+                        <b >Area:</b>
+                        ${selectedArea || ""}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        `
+
+
+        html += `
+
+        <table class="table table-bordered table-striped">
+
+        <thead class="table-dark">
+
+        <tr>
+
+            <th>Date</th>
+            <th>Area</th>
+
+            <th>Dusting</th>
+
+            <th>Aeration</th>
+
+            <th>Scarifying</th>
+
+            <th>Verticut</th>
+
+        </tr>
+
+        </thead>
+
+        <tbody>
+        `
+
+        rows.forEach(row=>{
+
+            html += `
+
+            <tr>
+
+                <td>${row.mdate}</td>
+
+                <td>${row.area}</td>
+
+                <td>
+
+                    <b>Date:</b>
+                    ${row.dusting_date || ""}
+
+                    <br>
+
+                    <b>Time:</b>
+                    ${row.dusting_time || ""}
+
+                    <br>
+
+                    <b>Soil:</b>
+                   <span class="stype">${row.dusting_soil_type || ""}</span>
+
+                    <br>
+                    <b>Qty:</b>
+                  <span class="sqty"> ${row.dusting_quantity || ""}</span> CFT
+
+                    <br>
+
+                    <b>Operator:</b>
+                    ${row.dusting_operator || ""}
+
+                    <br>
+
+
+                    <b>Remark:</b>
+                    ${row.dusting_remarks || ""}
+
+                </td>
+
+                <td>
+
+                    <b>Date:</b>
+                    ${row.aeration_date || ""}
+
+                    <br>
+
+                    <b>Time:</b>
+                    ${row.aeration_time || ""}
+
+                    <br>
+
+                    <b>Type:</b>
+                    ${row.aeration_type || ""}
+
+                    <br>
+
+                    <b>Operator:</b>
+                    ${row.aeration_operator || ""}
+
+                    <br>
+
+                    <b>Remark:</b>
+                    ${row.aeration_remarks_input || ""}
+
+                </td>
+
+                <td>
+
+                    <b>Date:</b>
+                    ${row.scarifying_date || ""}
+
+                    <br>
+
+                    <b>Time:</b>
+                    ${row.scarifying_time || ""}
+
+                    <br>
+
+                    <b>Height:</b>
+                    ${row.scarifying_height_value || ""}
+                    ${row.scarifying_height_unit || ""}
+
+                    <br>
+
+                    <b>Operator:</b>
+                    ${row.scarifying_operator || ""}
+
+                    <br>
+
+                    <b>Remark:</b>
+                    ${row.scarifying_reason_remarks || ""}
+
+                </td>
+
+                <td>
+
+                    <b>Date:</b>
+                    ${row.verti_cutting_date || ""}
+
+                    <br>
+
+                    <b>Time:</b>
+                    ${row.verti_cutting_time || ""}
+
+                    <br>
+
+                    <b>Height:</b>
+                    ${row.verti_cutting_height_value || ""}
+                    ${row.verti_cutting_height_unit || ""}
+
+                    <br>
+
+                    <b>Operator:</b>
+                    ${row.verti_cutting_operator || ""}
+
+                    <br>
+
+                    <b>Remark:</b>
+                    ${row.verti_cutting_reason_remarks || ""}
+
+                </td>
+
+            </tr>
+            `
+        })
+
+        html += `
+        </tbody>
+        <tfoot>
+            <tr>
+                <td></td>
+                <td></td>
+                <td id="totalQty">
+                    
+                    </td>
+                    <td colspan='3'></td>
+            </tr>
+        </tfoot>    
+        </table>
+        `
+
+        document.querySelector("#reportData").innerHTML = html
+
+    }).then(function()
+{
+    let sQtys=[0,0]
+    let qtys=Array.from($(".sqty"))
+     Array.from($(".stype")).forEach(function(e,i){
+        switch(e.innerHTML.trim())
+        {
+            case "Sand":
+                sQtys[0]+=parseFloat(qtys[i].innerHTML.trim())
+                break
+            case "Soil":
+                sQtys[1]+=parseFloat(qtys[i].innerHTML.trim())
+        }
+     })
+     $("#totalQty").html(`<b class="fs-6 text-warning"><li>Sand Total Qty= ${sQtys[0]} CFT</li><li>Soil Total Qty= ${sQtys[1]} CFT</li></b>`)
+})
+
+}
+
+
+  $(document).ready(function () {
+        axios.get("/usr_admin/get_grounds").then((result) => {
+            $("#ground_id").html("")
+            $("#ground_id").append(`<option value=''>Select Ground</option>`)
+            //                $("#ground_id").append(`<option value='all'>All Grounds</option>`)
+
+            result.data.grounds.forEach(function (g) {
+                $("#ground_id").append(`<option value='${g.ground[0]}'>${g.ground[6]}</option>`)
+            })
+
+        }).catch((error) => {
+            console.log(error)
+
+        })
+    })
+
+    //   $(document).ready(function () {
+
+       
+
+    //   })
+
+
+</script>
+
