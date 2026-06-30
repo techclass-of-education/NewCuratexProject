@@ -3490,11 +3490,128 @@ def curator_daily_recording_form(request):
 def update_daily(request,daily_id):
     try:
         org_id = request.session["org_id"]
+        
        
         with connection.cursor() as cursor:
             cursor.execute(f'SELECT * FROM {org_id}_curator_daily_recording_master WHERE id = %s', [daily_id])
             dailyRecord = cursor.fetchone()
             # print(dailyRecord)
+          
+          # for outfield clagg and moisture
+            cursor.execute(f'''SELECT id,
+                                `daily_id`,
+                                `date`,
+                                `time`,
+                                `value1`,
+                                `value2`,
+                                `value3`,
+                                `value4`,
+                                `value5`,
+                                `value6`,
+                                `value7`,
+                                `value8`,
+                                `value9`,
+                                `value10` from {org_id}_daily_outfield_clagghammer WHERE daily_id= %s''', [daily_id])
+            clagg=cursor.fetchall()
+            cursor.execute(f'''SELECT `id`,
+                                `daily_id`,
+                                `date`,
+                                `time`,
+                                `match_details`,
+                                `data` FROM {org_id}_daily_outfield_moisture WHERE daily_id= %s''', [daily_id])
+            moisture=cursor.fetchone()
+            if moisture:
+                dataMoisture={
+                    'id':moisture[0],
+                                    'daily_id':moisture[1],
+                                    'date':moisture[2],
+                                    'time':moisture[3],
+                                    'match_details':moisture[4],
+                                    'data':moisture[5]
+                }
+            else:
+                dataMoisture={}
+            # print(dataMoisture)
+            dataClagg = []
+
+            for row in clagg:
+                dataClagg.append({
+                    "id": row[0],
+                    "daily_id": row[1],
+                    "date": str(row[2]),
+                    "time": row[3],
+                    "value1": row[4],
+                    "value2": row[5],
+                    "value3": row[6],
+                    "value4": row[7],
+                    "value5": row[8],
+                    "value6": row[9],
+                    "value7": row[10],
+                    "value8": row[11],
+                    "value9": row[12],
+                    "value10": row[13]
+                  
+                
+                })
+            
+            
+            cursor.execute(f'''SELECT id,
+                                `daily_id`,
+                                `date`,
+                                `time`,
+                                `value1`,
+                                `value2`,
+                                `value3`,
+                                `value4`,
+                                `value5`,
+                                `value6`,
+                                `value7`,
+                                `value8`,
+                                `value9`,
+                                `value10` from {org_id}_daily_pf_clagghammer WHERE daily_id= %s''', [daily_id])
+            clagg=cursor.fetchall()
+            cursor.execute(f'''SELECT `id`,
+                                `daily_id`,
+                                `date`,
+                                `time`,
+                                `match_details`,
+                                `data` FROM {org_id}_daily_pf_moisture WHERE daily_id= %s''', [daily_id])
+            moisture=cursor.fetchone()
+         
+            if moisture:
+                dataMoisturePf={
+                    'id':moisture[0],
+                                    'daily_id':moisture[1],
+                                    'date':moisture[2],
+                                    'time':moisture[3],
+                                    'match_details':moisture[4],
+                                    'data':moisture[5]
+                }
+            else:
+                dataMoisture={}
+            # print(dataMoisture)
+            dataClaggPf = []
+
+            for row in clagg:
+                dataClaggPf.append({
+                    "id": row[0],
+                    "match_id": row[1],
+                    "date": str(row[2]),
+                    "time": row[3],
+                    "value1": row[4],
+                    "value2": row[5],
+                    "value3": row[6],
+                    "value4": row[7],
+                    "value5": row[8],
+                    "value6": row[9],
+                    "value7": row[10],
+                    "value8": row[11],
+                    "value9": row[12],
+                    "value10": row[13]
+                  
+                
+                })
+            
 
         if not dailyRecord:
             raise Exception("dailyRecord not found")
@@ -4234,6 +4351,369 @@ def update_daily(request,daily_id):
 
                 cursor.execute(query, cleaned_values)
                 # print("Hello")
+                
+                try:
+                        claggHammer_entries_json = (request.POST.get("claggHammer_entries_json") or '').strip() or None
+                        claggHammer_entries = json.loads(claggHammer_entries_json) if claggHammer_entries_json else []
+                        
+                        sql =f"select id from `{org_id}_daily_outfield_clagghammer` where daily_id=%s"
+                        cursor.execute(sql,[daily_id])
+                        claggDbids= {row[0] for row in cursor.fetchall()}
+
+                        formClaggIds = {int(clagg.get("id")) for clagg in claggHammer_entries if clagg.get("id")}
+                        # print(claggDbids)     # {1, 2, 11, 12}
+                        # print(formClaggIds)   # {1, 2}
+
+                        delClaggIds = claggDbids - formClaggIds
+
+                        # print(delClaggIds)    # {11, 12}   
+                        
+                        if delClaggIds:
+                            placeholders = ",".join(["%s"] * len(delClaggIds))
+
+                            sql = f"""
+                            DELETE FROM `{org_id}_daily_outfield_clagghammer`
+                            WHERE id IN ({placeholders})
+                            """
+
+                            cursor.execute(sql, list(delClaggIds))     
+                                                        
+                        
+                        print(claggHammer_entries)
+                        if(len(claggHammer_entries)>0):
+                            for clagg in claggHammer_entries:
+                                row_id = clagg.get("id")
+                                date=clagg["date"]
+                                time=clagg["time"]
+                                value1=clagg["value1"]
+                                value2=clagg["value2"]
+                                value3=clagg["value3"]
+                                value4=clagg["value4"]
+                                value5=clagg["value5"]
+                                value6=clagg["value6"]
+                                value7=clagg["value7"]
+                                value8=clagg["value8"]
+                                value9=clagg["value9"]
+                                value10=clagg["value10"]
+                                if row_id:   # Update
+                                    sql = f"""UPDATE `{org_id}_daily_outfield_clagghammer`
+                                                SET
+                                                    `date`=%s,
+                                                    `time`=%s,
+                                                    `value1`=%s,
+                                                    `value2`=%s,
+                                                    `value3`=%s,
+                                                    `value4`=%s,
+                                                    `value5`=%s,
+                                                    `value6`=%s,
+                                                    `value7`=%s,
+                                                    `value8`=%s,
+                                                    `value9`=%s,
+                                                    `value10`=%s
+                                                WHERE `id`=%s"""
+                                    v=[
+                                    date,
+                                    time,
+                                    value1,
+                                    value2,
+                                    value3,
+                                    value4,
+                                    value5,
+                                    value6,
+                                    value7,
+                                    value8,
+                                    value9,
+                                    value10,
+                                    
+                                ]
+                                
+                                    # print(v)
+                                    cursor.execute(sql, v + [row_id])
+                                else:
+                                    v=[
+                                    date,
+                                    time,
+                                    value1,
+                                    value2,
+                                    value3,
+                                    value4,
+                                    value5,
+                                    value6,
+                                    value7,
+                                    value8,
+                                    value9,
+                                    value10
+                                    
+                                ]
+                                    sql = f"""INSERT INTO `{org_id}_daily_outfield_clagghammer`
+                                                (
+                                                    daily_id,date,time,
+                                                    value1,value2,value3,value4,value5,
+                                                    value6,value7,value8,value9,value10
+                                                )
+                                                VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+
+                                    cursor.execute(sql, [daily_id] + v)
+                                    
+                        else:
+                            print("No clagg hammer data")
+                            
+                        moisture_entries_json = (request.POST.get("moisture_entries_json") or "").strip()
+                        moisture_entries = json.loads(moisture_entries_json) if moisture_entries_json else {}
+
+                        if moisture_entries.get("data"):
+
+                            row_id = moisture_entries.get("id")
+
+                            date = moisture_entries.get("date")
+                            time = moisture_entries.get("time")
+                            match_details = moisture_entries.get("match_details")
+                            data = moisture_entries.get("data")
+
+                            if row_id:   # UPDATE
+
+                                sql = f"""
+                                UPDATE `{org_id}_daily_outfield_moisture`
+                                SET
+                                    daily_id=%s,
+                                    date=%s,
+                                    time=%s,
+                                    match_details=%s,
+                                    data=%s
+                                WHERE id=%s
+                                """
+
+                                values = [
+                                    daily_id,
+                                    date,
+                                    time,
+                                    match_details,
+                                    data,
+                                    row_id
+                                ]
+
+                                cursor.execute(sql, values)
+
+                            else:       # INSERT
+
+                                sql = f"""
+                                            INSERT INTO `{org_id}_daily_outfield_moisture`
+                                            (
+                                                daily_id,
+                                                date,
+                                                time,
+                                                match_details,
+                                                data
+                                            )
+                                            VALUES(%s,%s,%s,%s,%s)
+                                            """
+
+                            cursor.execute(sql, [
+                                daily_id,
+                                date,
+                                time,
+                                match_details,
+                                json.dumps(data)
+                            ])
+
+                        else:
+                            print("No Moisture Data")
+                            sql = f"""delete from `{org_id}_daily_outfield_moisture` where daily_id=%s"""
+
+                            values = [
+                                    daily_id
+                                   
+                                ]
+
+                            cursor.execute(sql, values)
+
+               
+                            # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
+                        
+                except Exception as e:
+                    print(e)
+                    
+                    
+                try:
+                        claggHammer_entries_json= (request.POST.get("claggHammer_entries_json_pp") or '').strip() or None
+                        claggHammer_entries = json.loads(claggHammer_entries_json) if claggHammer_entries_json else []
+                        
+                        sql =f"select id from `{org_id}_daily_pf_clagghammer` where daily_id=%s"
+                        cursor.execute(sql,[daily_id])
+                        claggDbids= {row[0] for row in cursor.fetchall()}
+
+                        formClaggIds = {int(clagg.get("id")) for clagg in claggHammer_entries if clagg.get("id")}
+                        # print(claggDbids)     # {1, 2, 11, 12}
+                        # print(formClaggIds)   # {1, 2}
+
+                        delClaggIds = claggDbids - formClaggIds
+
+                        # print(delClaggIds)    # {11, 12}   
+                        
+                        if delClaggIds:
+                            placeholders = ",".join(["%s"] * len(delClaggIds))
+
+                            sql = f"""
+                            DELETE FROM `{org_id}_daily_pf_clagghammer`
+                            WHERE id IN ({placeholders})
+                            """
+
+                            cursor.execute(sql, list(delClaggIds))     
+                                                        
+                        
+                        print(claggHammer_entries)
+                        if(len(claggHammer_entries)>0):
+                            for clagg in claggHammer_entries:
+                                row_id = clagg.get("id")
+                                date=clagg["date"]
+                                time=clagg["time"]
+                                value1=clagg["value1"]
+                                value2=clagg["value2"]
+                                value3=clagg["value3"]
+                                value4=clagg["value4"]
+                                value5=clagg["value5"]
+                                value6=clagg["value6"]
+                                value7=clagg["value7"]
+                                value8=clagg["value8"]
+                                value9=clagg["value9"]
+                                value10=clagg["value10"]
+                                if row_id:   # Update
+                                    sql = f"""UPDATE `{org_id}_daily_pf_clagghammer`
+                                                SET
+                                                    `date`=%s,
+                                                    `time`=%s,
+                                                    `value1`=%s,
+                                                    `value2`=%s,
+                                                    `value3`=%s,
+                                                    `value4`=%s,
+                                                    `value5`=%s,
+                                                    `value6`=%s,
+                                                    `value7`=%s,
+                                                    `value8`=%s,
+                                                    `value9`=%s,
+                                                    `value10`=%s
+                                                WHERE `id`=%s"""
+                                    v=[
+                                    date,
+                                    time,
+                                    value1,
+                                    value2,
+                                    value3,
+                                    value4,
+                                    value5,
+                                    value6,
+                                    value7,
+                                    value8,
+                                    value9,
+                                    value10,
+                                    
+                                ]
+                                
+                                    # print(v)
+                                    cursor.execute(sql, v + [row_id])
+                                else:
+                                    v=[
+                                    date,
+                                    time,
+                                    value1,
+                                    value2,
+                                    value3,
+                                    value4,
+                                    value5,
+                                    value6,
+                                    value7,
+                                    value8,
+                                    value9,
+                                    value10
+                                    
+                                ]
+                                    sql = f"""INSERT INTO `{org_id}_daily_pf_clagghammer`
+                                                (
+                                                    daily_id,date,time,
+                                                    value1,value2,value3,value4,value5,
+                                                    value6,value7,value8,value9,value10
+                                                )
+                                                VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+
+                                    cursor.execute(sql, [daily_id] + v)
+                                    
+                        else:
+                            print("No clagg hammer data")
+                            
+                        moisture_entries_json = (request.POST.get("moisture_entries_json_pp") or "").strip()
+                        moisture_entries = json.loads(moisture_entries_json) if moisture_entries_json else {}
+
+                        if moisture_entries.get("data"):
+
+                            row_id = moisture_entries.get("id")
+
+                            date = moisture_entries.get("date")
+                            time = moisture_entries.get("time")
+                            match_details = moisture_entries.get("match_details")
+                            data = moisture_entries.get("data")
+
+                            if row_id:   # UPDATE
+
+                                sql = f"""
+                                UPDATE `{org_id}_daily_pf_moisture`
+                                SET
+                                    daily_id=%s,
+                                    date=%s,
+                                    time=%s,
+                                    match_details=%s,
+                                    data=%s
+                                WHERE id=%s
+                                """
+
+                                values = [
+                                    daily_id,
+                                    date,
+                                    time,
+                                    match_details,
+                                    data,
+                                    row_id
+                                ]
+
+                                cursor.execute(sql, values)
+
+                            else:       # INSERT
+
+                                sql = f"""
+                                            INSERT INTO `{org_id}_daily_pf_moisture`
+                                            (
+                                                daily_id,
+                                                date,
+                                                time,
+                                                match_details,
+                                                data
+                                            )
+                                            VALUES(%s,%s,%s,%s,%s)
+                                            """
+
+                            cursor.execute(sql, [
+                                daily_id,
+                                date,
+                                time,
+                                match_details,
+                                json.dumps(data)
+                            ])
+
+                        else:
+                            print("No Moisture Data")
+                            sql = f"""delete from `{org_id}_daily_pf_moisture` where daily_id=%s"""
+
+                            values = [
+                                    daily_id
+                                   
+                                ]
+
+                            cursor.execute(sql, values)
+
+               
+                            # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
+                        
+                except Exception as e:
+                    print(e)
          
          
          
@@ -4243,7 +4723,15 @@ def update_daily(request,daily_id):
 
         
 
-        return render(request, 'admin_user/update_daily_recording_form.html', {'daily': dailyRecord})
+        return render(request, 'admin_user/update_daily_recording_form.html', {
+                                                                                'daily': dailyRecord,
+                                                                                "clagg":json.dumps(dataClagg),
+                                                                                # "moisture":json.dumps(dataMoisture),
+                                                                                # "clen":len(dataClagg),
+                                                                                "claggpf":json.dumps(dataClaggPf),
+                                                                                # "moisturepf":json.dumps(dataMoisturePf),
+                                                                                # "clenpf":len(dataClaggPf)
+                                                                                })
     except Exception as e:
         print(e)
 
@@ -5734,6 +6222,68 @@ def update_match(request, match_id):
         with connection.cursor() as cursor:
             cursor.execute(f'SELECT * FROM {org_id}_match_master WHERE id = %s', [match_id])
             match = cursor.fetchone()
+            cursor.execute(f'''SELECT id,
+                                `match_id`,
+                                `date`,
+                                `time`,
+                                `value1`,
+                                `value2`,
+                                `value3`,
+                                `value4`,
+                                `value5`,
+                                `value6`,
+                                `value7`,
+                                `value8`,
+                                `value9`,
+                                `value10` from {org_id}_match_main_clagghammer WHERE match_id= %s''', [match_id])
+            clagg=cursor.fetchall()
+            cursor.execute(f'''SELECT `id`,
+                                `match_id`,
+                                `date`,
+                                `time`,
+                                `match_details`,
+                                `data` FROM {org_id}_match_main_moisture WHERE match_id= %s''', [match_id])
+            moisture=cursor.fetchone()
+            if moisture:
+                dataMoisture={
+                    'id':moisture[0],
+                                    'match_id':moisture[1],
+                                    'date':moisture[2],
+                                    'time':moisture[3],
+                                    'match_details':moisture[4],
+                                    'data':moisture[5]
+                }
+            else:
+                dataMoisture={}
+            # print(dataMoisture)
+            dataClagg = []
+
+            for row in clagg:
+                dataClagg.append({
+                    "id": row[0],
+                    "match_id": row[1],
+                    "date": str(row[2]),
+                    "time": row[3],
+                    "value1": row[4],
+                    "value2": row[5],
+                    "value3": row[6],
+                    "value4": row[7],
+                    "value5": row[8],
+                    "value6": row[9],
+                    "value7": row[10],
+                    "value8": row[11],
+                    "value9": row[12],
+                    "value10": row[13]
+                  
+                
+                })
+            
+            
+            
+            
+            
+            # print(clagg)
+            # print(moisture)
 
         if not match:
             raise Exception("Match not found")
@@ -6034,7 +6584,7 @@ def update_match(request, match_id):
                         out_fertilizers_unit=%s, 
                         chemical_weight=%s, 
                         out_chemical_weight=%s,
-            out_mover_machine_type=%s,
+                        out_mover_machine_type=%s,
                             out_mover_machinery_name_operator=%s, 
                             out_moving_passes_unit=%s, 
                             out_mowing_duration=%s,
@@ -6078,7 +6628,7 @@ def update_match(request, match_id):
                          pitch_main_chemical_weight,
                          outfield_chemical_weight,
                         
- out_mover_machine_type,
+                            out_mover_machine_type,
                             out_mover_machinery_name_operator, 
                             out_moving_passes_unit, 
                             out_mowing_duration,
@@ -6100,6 +6650,187 @@ def update_match(request, match_id):
                             moisture,
                         match_id
                     ]
+                    cursor.execute(sql, values)
+                    try:
+                        claggHammer_entries_json = (request.POST.get("claggHammer_entries_json") or '').strip() or None
+                        claggHammer_entries = json.loads(claggHammer_entries_json) if claggHammer_entries_json else []
+                        
+                        sql =f"select id from `{org_id}_match_main_clagghammer` where match_id=%s"
+                        cursor.execute(sql,[match_id])
+                        claggDbids= {row[0] for row in cursor.fetchall()}
+
+                        formClaggIds = {int(clagg.get("id")) for clagg in claggHammer_entries if clagg.get("id")}
+                        # print(claggDbids)     # {1, 2, 11, 12}
+                        # print(formClaggIds)   # {1, 2}
+
+                        delClaggIds = claggDbids - formClaggIds
+
+                        # print(delClaggIds)    # {11, 12}   
+                        
+                        if delClaggIds:
+                            placeholders = ",".join(["%s"] * len(delClaggIds))
+
+                            sql = f"""
+                            DELETE FROM `{org_id}_match_main_clagghammer`
+                            WHERE id IN ({placeholders})
+                            """
+
+                            cursor.execute(sql, list(delClaggIds))     
+                                                        
+                        
+                        print(claggHammer_entries)
+                        if(len(claggHammer_entries)>0):
+                            for clagg in claggHammer_entries:
+                                row_id = clagg.get("id")
+                                date=clagg["date"]
+                                time=clagg["time"]
+                                value1=clagg["value1"]
+                                value2=clagg["value2"]
+                                value3=clagg["value3"]
+                                value4=clagg["value4"]
+                                value5=clagg["value5"]
+                                value6=clagg["value6"]
+                                value7=clagg["value7"]
+                                value8=clagg["value8"]
+                                value9=clagg["value9"]
+                                value10=clagg["value10"]
+                                if row_id:   # Update
+                                    sql = f"""UPDATE `{org_id}_match_main_clagghammer`
+                                                SET
+                                                    `date`=%s,
+                                                    `time`=%s,
+                                                    `value1`=%s,
+                                                    `value2`=%s,
+                                                    `value3`=%s,
+                                                    `value4`=%s,
+                                                    `value5`=%s,
+                                                    `value6`=%s,
+                                                    `value7`=%s,
+                                                    `value8`=%s,
+                                                    `value9`=%s,
+                                                    `value10`=%s
+                                                WHERE `id`=%s"""
+                                    v=[
+                                    date,
+                                    time,
+                                    value1,
+                                    value2,
+                                    value3,
+                                    value4,
+                                    value5,
+                                    value6,
+                                    value7,
+                                    value8,
+                                    value9,
+                                    value10,
+                                    
+                                ]
+                                
+                                    # print(v)
+                                    cursor.execute(sql, v + [row_id])
+                                else:
+                                    v=[
+                                    date,
+                                    time,
+                                    value1,
+                                    value2,
+                                    value3,
+                                    value4,
+                                    value5,
+                                    value6,
+                                    value7,
+                                    value8,
+                                    value9,
+                                    value10
+                                    
+                                ]
+                                    sql = f"""INSERT INTO `{org_id}_match_main_clagghammer`
+                                                (
+                                                    match_id,date,time,
+                                                    value1,value2,value3,value4,value5,
+                                                    value6,value7,value8,value9,value10
+                                                )
+                                                VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+
+                                    cursor.execute(sql, [match_id] + v)
+                                    
+                        else:
+                            print("No clagg hammer data")
+                            
+                        moisture_entries_json = (request.POST.get("moisture_entries_json") or "").strip()
+                        moisture_entries = json.loads(moisture_entries_json) if moisture_entries_json else {}
+
+                        if moisture_entries.get("data"):
+
+                            row_id = moisture_entries.get("id")
+
+                            date = moisture_entries.get("date")
+                            time = moisture_entries.get("time")
+                            match_details = moisture_entries.get("match_details")
+                            data = moisture_entries.get("data")
+
+                            if row_id:   # UPDATE
+
+                                sql = f"""
+                                UPDATE `{org_id}_match_main_moisture`
+                                SET
+                                    match_id=%s,
+                                    date=%s,
+                                    time=%s,
+                                    match_details=%s,
+                                    data=%s
+                                WHERE id=%s
+                                """
+
+                                values = [
+                                    match_id,
+                                    date,
+                                    time,
+                                    match_details,
+                                    json.dumps(data),
+                                    row_id
+                                ]
+
+                                cursor.execute(sql, values)
+
+                            else:       # INSERT
+
+                                sql = f"""
+                                            INSERT INTO {org_id}_match_main_moisture
+                                            (
+                                                match_id,
+                                                date,
+                                                time,
+                                                match_details,
+                                                data
+                                            )
+                                            VALUES(%s,%s,%s,%s,%s)
+                                            """
+
+                            cursor.execute(sql, [
+                                match_id,
+                                date,
+                                time,
+                                match_details,
+                                json.dumps(data)
+                            ])
+
+                        else:
+                            print("No Moisture Data")
+                            sql = f"""delete from `{org_id}_match_main_moisture` where match_id=%s"""
+
+                            values = [
+                                    match_id
+                                   
+                                ]
+
+                            cursor.execute(sql, values)
+
+               
+                            # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
+                        
+                    except Exception as e:
+                        print(e)
                 
                 elif(btnSubmit=="save"):
                     sql=f'''INSERT INTO {org_id}_match_master 
@@ -6266,14 +6997,35 @@ def update_match(request, match_id):
                             moisture
                       
                     ]
+                    cursor.execute(sql, values)
                 
                 # print(sql)
-                cursor.execute(sql, values)
+                # cursor.execute(sql, values)
+                # try:
+                #         moisture_entries_json = (request.POST.get("moisture_entries_json") or '').strip() or None
+                #         moisture_entries = json.loads(moisture_entries_json) if moisture_entries_json else []
+                #         if(moisture_entries["date"]):
+                #             date=moisture_entries["date"]
+                #             time=moisture_entries["time"]
+                #             match_details=moisture_entries["match_details"]
+                #             data=moisture_entries["data"]
+                #             sqlNew=f'''INSERT INTO `{org_id}_match_main_moisture` (`match_id`,`date`,`time`,`match_details`,`data`) VALUES (%s,%s,%s,%s,%s)'''
+                #             v=[match_id,date,time,match_details,json.dumps(data)]
+                #             cursor.execute(sqlNew, v)
+                            
+                            
+                #             # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
+                #         else:
+                #             print("No Moisture Data")
+                # except Exception as e:
+                #         print(e)
+                    
+                
 
             return redirect('match_list')
 
         # Pass match data to the form for editing
-        return render(request, 'admin_user/match_update_master.html', {'match': match})
+        return render(request, 'admin_user/match_update_master.html', {'match': match,"clagg":json.dumps(dataClagg),"moisture":json.dumps(dataMoisture),"clen":len(clagg)})
 
     except Exception as e:
         print("Error:", e)
@@ -6404,6 +7156,10 @@ def match_list_filter(request):
            		 
                 
             matches = cursor.fetchall()
+            
+            
+            
+            
 
 
         return render(request, 'admin_user/match_list.html', {'matches': matches})

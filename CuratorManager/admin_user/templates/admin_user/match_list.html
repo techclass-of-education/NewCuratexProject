@@ -2212,7 +2212,7 @@ else
 
                 const matchDateTime=new Date(`${mDateStr}T${startTime}`)
                 // alert(matchDateTime)
-                if (matchDateTime.getTime()< new Date().getTime()) {
+                if (matchDateTime.getTime()< new Date().getTime() && "{{request.session.user.role }}"!="admin" ) {
                     btn.classList.add("disabled");
                     btn.classList.remove("btn-success");
                     btn.classList.add("btn-secondary");
