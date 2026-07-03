@@ -1,0 +1,1776 @@
+<title>Routine/Annual Maintenance Dashboard</title>
+
+
+{% include "admin_user/headertags.html" %}
+
+{% load static %}
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<link href="{% static 'admin_user/css/gradient.css' %}" rel="stylesheet">
+<div class="wrapper grass-bg">
+    <!-- Sidebar -->
+    {% include "admin_user/menu_side.html" %}
+
+
+    <!-- Page Content -->
+    <div id="content" class="bg-form-page">
+        <!-- Navbar -->
+        {% include "admin_user/menu_top.html" %}
+
+        <style>
+            /* CSS Variables for Consistency */
+            :root {
+                --primary-bg: #000b1a;
+                --header-bg: #3f3e3e;
+                --accent-blue: #2b7de9;
+                --gradient-bg: linear-gradient(180deg, #0052cc 0%, #001a33 100%);
+                --text-light: #dbe2ef;
+                --input-bg: #ffffff;
+                --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            }
+
+            body {
+                font-family: 'Segoe UI', Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: var(--primary-bg);
+                color: var(--text-light);
+            }
+
+            /* Header & Navbar */
+            .header {
+                background-color: var(--header-bg);
+                padding: 15px 40px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 2px solid #4a90e2;
+            }
+
+            .header h1 {
+                margin: 0;
+                font-size: 22px;
+                letter-spacing: 1px;
+            }
+
+            .navbar span {
+                cursor: pointer;
+                font-size: 24px;
+                color: var(--text-light);
+            }
+
+            /* Main Container */
+            .container {
+                width: 90%;
+                max-width: 1300px;
+                margin: 30px auto;
+            }
+
+            /* Selection Top Bar */
+            .selection-panel {
+                display: flex;
+                gap: 50px;
+                background: rgba(255, 255, 255, 0.05);
+                padding: 20px;
+                border-radius: 8px;
+                margin-bottom: 30px;
+                border: 1px aria-solid rgba(255, 255, 255, 0.1);
+            }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 8px;
+                font-weight: bold;
+                font-size: 14px;
+            }
+
+            .form-control {
+                padding: 8px;
+                border-radius: 4px;
+                border: none;
+                width: 200px;
+            }
+
+            .checkbox-group {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .checkbox-item {
+                display: flex;
+                align-items: center;
+                font-size: 13px;
+                gap: 8px;
+            }
+
+            /* Sections Styling */
+            .maintenance-section {
+                margin-bottom: 25px;
+                border-radius: 8px;
+                overflow: hidden;
+                border: 1px solid #4a90e2;
+                display: none;
+                /* Hidden by default */
+            }
+
+            .section-header {
+                background: var(--accent-blue);
+                color: white;
+                padding: 12px 20px;
+                cursor: pointer;
+                font-weight: bold;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .section-content {
+                background: var(--gradient-bg);
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 20px;
+                padding: 25px;
+            }
+
+            /* Card Styling (Sub-columns) */
+            .card {
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                padding: 20px;
+                border-radius: 6px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .card-title {
+                font-size: 15px;
+                font-weight: bold;
+                margin-bottom: 15px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+                width: 100%;
+                text-align: center;
+                padding-bottom: 5px;
+            }
+
+            /* Input Styling within Cards */
+            .card-input-group {
+                width: 100%;
+                margin-bottom: 12px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .card-input-group label {
+                font-size: 11px;
+                margin-bottom: 4px;
+                width: 80%;
+            }
+
+            .card input,
+            .card select,
+            .card textarea {
+                width: 100%;
+                padding: 6px;
+                border-radius: 4px;
+                border: none;
+                font-size: 12px;
+            }
+
+            .double-input {
+                display: flex;
+                gap: 5px;
+                width: 85%;
+            }
+
+            .unit-select {
+                background: #ccc;
+                font-weight: bold;
+                width: 40% !important;
+            }
+
+            .val-input {
+                width: 60% !important;
+            }
+
+            /* Save Button */
+            .save-btn {
+                background: #e0e0e0;
+                color: #333;
+                padding: 12px 60px;
+                border: none;
+                border-radius: 4px;
+                font-weight: bold;
+                font-size: 18px;
+                cursor: pointer;
+                display: block;
+                margin: 40px auto;
+                transition: 0.3s;
+            }
+
+            .save-btn:hover {
+                background: #fff;
+                transform: scale(1.05);
+            }
+
+          .checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 10px 16px;
+    border-radius: 6px;
+    transition: background 0.2s ease;
+    cursor: pointer;
+}
+
+.checkbox-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.checkbox-item input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent-blue);
+    cursor: pointer;
+    margin: 0;
+}
+
+.checkbox-item label {
+    color: #fff;
+    cursor: pointer;
+    margin: 0;
+    font-weight: 500;
+}
+        </style>
+
+        
+<div class="card w-75 mx-auto transparent-bg border-0">
+  <div class="card-header box-bg text-white w-50 align-items-center">
+    <i class="bi bi-person-check me-2 text-info"></i>
+    <span class="fw-semibold">Annual Report</span>
+  </div>
+
+  <div class="card-body box-gradient rounded-bottom w-50 p-4">
+
+    <!-- View All Reports Button -->
+    <div class="d-flex justify-content-end mb-4">
+      <button type="button" class="btn btn-info text-white" data-bs-toggle="modal"
+              data-bs-target="#maintenanceListModal" onclick="loadMaintenanceList()">
+        <i class="bi bi-list-ul me-1"></i>View All Reports
+      </button>
+    </div>
+
+    <!-- Filters Row -->
+    <div class="row align-items-end ">
+      <div class="col-lg-7 col-sm-12 form-group">
+        <label for="groundSelect">Select Ground</label>
+        <select id="groundSelect" name="ground_id" class="form-control">
+        </select>
+      </div>
+
+      <div class="col-lg-5 col-sm-12 form-group">
+        <label for="mDate">Date</label>
+        <input id="mDate" type="date" class="form-control">
+      </div>
+
+      <div class="col-lg-12 col-sm-12 d-flex gap-2 my-3">
+        <button class="btn btn-primary box-bg flex-fill" onclick="loadMaintenance()">
+          <i class="bi bi-search me-1"></i>Fetch
+        </button>
+      </div>
+    </div>
+
+    <hr class="my-4 border-light opacity-25">
+
+    <!-- Ground Area Selection -->
+    <div class="row g-3">
+      <div class="col-12 form-group">
+        <label class="d-block mb-3">Select Ground Area</label>
+
+         <div class="checkbox-group">
+        <div class="checkbox-item">
+            <input type="checkbox" id="selectAll">
+            <label for="selectAll">All Area</label>
+        </div>
+
+        <div class="checkbox-item">
+            <input type="checkbox" id="chk-outfield" class="area-check" data-section="outfield">
+            <label for="chk-outfield">Outfield</label>
+        </div>
+
+        <div class="checkbox-item">
+            <input type="checkbox" id="chk-practiceOutfield" class="area-check" data-section="practice-outfield">
+            <label for="chk-practiceOutfield">Practice Outfield</label>
+        </div>
+
+        <div class="checkbox-item">
+            <input type="checkbox" id="chk-mainPitches" class="area-check" data-section="main-pitches">
+            <label for="chk-mainPitches">Main Pitches</label>
+        </div>
+
+        <div class="checkbox-item">
+            <input type="checkbox" id="chk-practicePitches" class="area-check" data-section="practice-pitches">
+            <label for="chk-practicePitches">Practice Pitches</label>
+        </div>
+    </div>
+      </div>
+    </div>
+
+    <!-- Download Button -->
+    <div class="d-flex justify-content-start mt-4">
+      <button id="" type="button" class="btn btn-danger" onclick="window.print()">
+        <i class="bi bi-file-earmark-pdf me-1"></i>Download PDF
+      </button>
+    </div>
+
+  </div>
+</div>
+
+
+        <div class="container">
+            <!-- Top Controls -->
+          
+          
+
+            <!-- Dynamic Sections -->
+
+            <!-- 1. Outfield Section -->
+            <div id="outfield" class="maintenance-section">
+
+                <div class="section-header"><span>&#9660;</span> Outfield</div>
+
+             
+                <div class="section-content">
+                    <!-- Column 1 -->
+                    <div class="card">
+                        <div class="card-title">Dusting/Top Dressing</div>
+                        <div class="card-input-group"><label>Date</label><input type="date"></div>
+                        <div class="card-input-group"><label>Time</label><input type="time"></div>
+                        <div class="card-input-group">
+                            <select>
+                                <option>Type of Soil</option>
+                                <option>Sand</option>
+                                <option>Soil</option>
+                            </select>
+                        </div>
+                        <div class="card-input-group">
+
+
+
+
+                            <label for="roller_machine_type" class="form-label">Select
+                                Machine Type</label>
+                            <select class="form-select" id="out_dust_machine_type">
+                                <option selected>Select Type</option>
+                                <option value="Manual">Manual</option>
+                                <option value="Mechanised">Mechanised</option>
+                            </select>
+
+
+
+
+
+
+                            <input type="hidden" class="mid" id="out_dust_machinery_id">
+                            <div class="input-group mt-4">
+                                <input type="text" id="out_dust_machinery_name" class="form-control" readonly
+                                    placeholder="Click to select machinery">
+                                <span class="input-group-text bg-light" onclick="realoadMachineryList(event)">
+                                    <i class="bi bi-arrow-clockwise text-danger"></i>
+                                </span>
+                            </div>
+
+                            <button type="button mt-2" class="btn btn-warning align-self-end"
+                                onclick="openMachineryModal('out_dust')">Select
+                                Machinery</button>
+
+
+
+                        </div>
+                        <div class="card-input-group"><label>Operator</label><input class="op" type="text"></div>
+                        <div class="card-input-group"><label>Quantity</label><input class="qty" type="text"></div>
+                        <div class="card-input-group"><label>Remark</label><textarea></textarea></div>
+                    </div>
+
+                    <!-- Column 2 -->
+                    <div class="card">
+                        <div class="card-title">Aeration (Coring)</div>
+                        <div class="card-input-group"><label>Date</label><input type="date"></div>
+                        <div class="card-input-group"><label>Time</label><input type="time"></div>
+                        <div class="card-input-group">
+                            <select>
+                                <option>Type of Coring</option>
+                                <option>Hollow</option>
+                                <option>Solid</option>
+                            </select>
+                        </div>
+                        <div class="card-input-group"><label>Remark</label><textarea></textarea></div>
+                        <div class="card-input-group">
+
+                            <label for="roller_machine_type" class="form-label">Select
+                                Machine Type</label>
+                            <select class="form-select" id="out_aeration_machine_type">
+                                <option selected>Select Type</option>
+                                <option value="Manual">Manual</option>
+                                <option value="Mechanised">Mechanised</option>
+                            </select>
+
+
+                            <input type="hidden" class="mid" id="out_aeration_machinery_id">
+                            <div class="input-group mt-4">
+                                <input type="text" id="out_aeration_machinery_name" class="form-control" readonly
+                                    placeholder="Click to select machinery">
+                                <span class="input-group-text bg-light" onclick="realoadMachineryList(event)">
+                                    <i class="bi bi-arrow-clockwise text-danger"></i>
+                                </span>
+                            </div>
+
+                            <button type="button mt-2" class="btn btn-warning align-self-end"
+                                onclick="openMachineryModal('out_aeration')">Select
+                                Machinery</button>
+
+
+                        </div>
+                        <div class="card-input-group"><label>Operator</label><input class="op" type="text"></div>
+
+
+                    </div>
+
+                    <!-- Column 3 -->
+                    <div class="card">
+                        <div class="card-title">Scarifying</div>
+                        <div class="card-input-group"><label>Date</label><input type="date"></div>
+                        <div class="card-input-group"><label>Time</label><input type="time"></div>
+                        <div class="card-input-group">
+                            <label>Height of Scarifying</label>
+                            <div class="double-input">
+                                <input type="text" class="val-input" placeholder="Value">
+                                <select class="unit-select">
+                                    <option>Unit</option>
+                                    <option>mm</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-input-group">
+
+                            <label for="roller_machine_type" class="form-label">Select
+                                Machine Type</label>
+                            <select class="form-select" id="out_scarifying_machine_type">
+                                <option selected>Select Type</option>
+                                <option value="Manual">Manual</option>
+                                <option value="Mechanised">Mechanised</option>
+                            </select>
+
+
+                            <input type="hidden" class="mid" id="out_scarifying_machinery_id">
+                            <div class="input-group mt-4">
+                                <input type="text" id="out_scarifying_machinery_name" class="form-control" readonly
+                                    placeholder="Click to select machinery">
+                                <span class="input-group-text bg-light" onclick="realoadMachineryList(event)">
+                                    <i class="bi bi-arrow-clockwise text-danger"></i>
+                                </span>
+                            </div>
+
+                            <button type="button mt-2" class="btn btn-warning align-self-end"
+                                onclick="openMachineryModal('out_scarifying')">Select
+                                Machinery</button>
+
+
+                        </div>
+                        <div class="card-input-group"><label>Operator</label><input type="text" class="op"></div>
+                        <div class="card-input-group"><label>Remark</label><textarea></textarea></div>
+
+                    </div>
+
+                    <!-- Column 4 -->
+                    <div class="card">
+                        <div class="card-title">Verti Cutting</div>
+                        <div class="card-input-group"><label>Date</label><input type="date"></div>
+                        <div class="card-input-group"><label>Time</label><input type="time"></div>
+                        <div class="card-input-group">
+                            <label>Height of Verticut</label>
+                            <div class="double-input">
+                                <input type="text" class="val-input" placeholder="Value">
+                                <select class="unit-select">
+                                    <option>Unit</option>
+                                    <option>mm</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-input-group">
+
+                            <label for="roller_machine_type" class="form-label">Select
+                                Machine Type</label>
+                            <select class="form-select" id="out_verticut_machine_type">
+                                <option selected>Select Type</option>
+                                <option value="Manual">Manual</option>
+                                <option value="Mechanised">Mechanised</option>
+                            </select>
+
+
+                            <input type="hidden" class="mid" id="out_verticut_machinery_id">
+                            <div class="input-group mt-4">
+                                <input type="text" id="out_verticut_machinery_name" class="form-control" readonly
+                                    placeholder="Click to select machinery">
+                                <span class="input-group-text bg-light" onclick="realoadMachineryList(event)">
+                                    <i class="bi bi-arrow-clockwise text-danger"></i>
+                                </span>
+                            </div>
+
+                            <button type="button mt-2" class="btn btn-warning align-self-end"
+                                onclick="openMachineryModal('out_verticut')">Select
+                                Machinery</button>
+
+
+                        </div>
+                        <div class="card-input-group"><label>Operator</label><input type="text" class="op"></div>
+
+                        <div class="card-input-group"><label>Remark/Reason</label><textarea></textarea></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Other sections (Placeholders) -->
+            <div id="practice-outfield" class="maintenance-section">
+                <div class="section-header"><span>&#9660;</span> Practice Outfield</div>
+
+                <div class="section-content">
+                    <!-- Column 1 -->
+                    <div class="card">
+                        <div class="card-title">Dusting/Top Dressing</div>
+                        <div class="card-input-group"><label>Date</label><input type="date"></div>
+                        <div class="card-input-group"><label>Time</label><input type="time"></div>
+                        <div class="card-input-group">
+                            <select>
+                                <option>Type of Soil</option>
+                                <option>Sand</option>
+                                <option>Soil</option>
+                            </select>
+                        </div>
+                        <div class="card-input-group">
+
+
+
+
+                            <label for="po_dust_machine_type" class="form-label">Select
+                                Machine Type</label>
+                            <select class="form-select" id="po_dust_machine_type">
+                                <option selected>Select Type</option>
+                                <option value="Manual">Manual</option>
+                                <option value="Mechanised">Mechanised</option>
+                            </select>
+
+
+
+
+
+
+                            <input type="hidden" class="mid" id="po_dust_machinery_id">
+                            <div class="input-group mt-4">
+                                <input type="text" id="po_dust_machinery_name" class="form-control" readonly
+                                    placeholder="Click to select machinery">
+                                <span class="input-group-text bg-light" onclick="realoadMachineryList(event)">
+                                    <i class="bi bi-arrow-clockwise text-danger"></i>
+                                </span>
+                            </div>
+
+                            <button type="button mt-2" class="btn btn-warning align-self-end"
+                                onclick="openMachineryModal('po_dust')">Select
+                                Machinery</button>
+
+
+
+                        </div>
+                        <div class="card-input-group"><label>Operator</label><input class="op" type="text"></div>
+                        <div class="card-input-group"><label>Quantity</label><input class="qty" type="text"></div>
+                        <div class="card-input-group"><label>Remark</label><textarea></textarea></div>
+                    </div>
+
+                    <!-- Column 2 -->
+                    <div class="card">
+                        <div class="card-title">Aeration (Coring)</div>
+                        <div class="card-input-group"><label>Date</label><input type="date"></div>
+                        <div class="card-input-group"><label>Time</label><input type="time"></div>
+                        <div class="card-input-group">
+                            <select>
+                                <option>Type of Coring</option>
+                                <option>Hollow</option>
+                                <option>Solid</option>
+                            </select>
+                        </div>
+                        <div class="card-input-group"><label>Remark</label><textarea></textarea></div>
+                        <div class="card-input-group">
+
+                            <label for="po_aeration_machine_type" class="form-label">Select
+                                Machine Type</label>
+                            <select class="form-select" id="po_aeration_machine_type">
+                                <option selected>Select Type</option>
+                                <option value="Manual">Manual</option>
+                                <option value="Mechanised">Mechanised</option>
+                            </select>
+
+
+                            <input type="hidden" class="mid" id="po_aeration_machinery_id">
+                            <div class="input-group mt-4">
+                                <input type="text" id="po_aeration_machinery_name" class="form-control" readonly
+                                    placeholder="Click to select machinery">
+                                <span class="input-group-text bg-light" onclick="realoadMachineryList(event)">
+                                    <i class="bi bi-arrow-clockwise text-danger"></i>
+                                </span>
+                            </div>
+
+                            <button type="button mt-2" class="btn btn-warning align-self-end"
+                                onclick="openMachineryModal('po_aeration')">Select
+                                Machinery</button>
+
+
+                        </div>
+                        <div class="card-input-group"><label>Operator</label><input class="op" type="text"></div>
+
+
+                    </div>
+
+                    <!-- Column 3 -->
+                    <div class="card">
+                        <div class="card-title">Scarifying</div>
+                        <div class="card-input-group"><label>Date</label><input type="date"></div>
+                        <div class="card-input-group"><label>Time</label><input type="time"></div>
+                        <div class="card-input-group">
+                            <label>Height of Scarifying</label>
+                            <div class="double-input">
+                                <input type="text" class="val-input" placeholder="Value">
+                                <select class="unit-select">
+                                    <option>Unit</option>
+                                    <option>mm</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-input-group">
+
+                            <label for="po_scarifying_machine_type" class="form-label">Select
+                                Machine Type</label>
+                            <select class="form-select" id="po_scarifying_machine_type">
+                                <option selected>Select Type</option>
+                                <option value="Manual">Manual</option>
+                                <option value="Mechanised">Mechanised</option>
+                            </select>
+
+
+                            <input type="hidden" class="mid" id="po_scarifying_machinery_id">
+                            <div class="input-group mt-4">
+                                <input type="text" id="po_scarifying_machinery_name" class="form-control" readonly
+                                    placeholder="Click to select machinery">
+                                <span class="input-group-text bg-light" onclick="realoadMachineryList(event)">
+                                    <i class="bi bi-arrow-clockwise text-danger"></i>
+                                </span>
+                            </div>
+
+                            <button type="button mt-2" class="btn btn-warning align-self-end"
+                                onclick="openMachineryModal('po_scarifying')">Select
+                                Machinery</button>
+
+
+                        </div>
+                        <div class="card-input-group"><label>Operator</label><input type="text" class="op"></div>
+                        <div class="card-input-group"><label>Remark</label><textarea></textarea></div>
+
+                    </div>
+
+                    <!-- Column 4 -->
+                    <div class="card">
+                        <div class="card-title">Verti Cutting</div>
+                        <div class="card-input-group"><label>Date</label><input type="date"></div>
+                        <div class="card-input-group"><label>Time</label><input type="time"></div>
+                        <div class="card-input-group">
+                            <label>Height of Verticut</label>
+                            <div class="double-input">
+                                <input type="text" class="val-input" placeholder="Value">
+                                <select class="unit-select">
+                                    <option>Unit</option>
+                                    <option>mm</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-input-group">
+
+                            <label for="po_verticut_machine_type" class="form-label">Select
+                                Machine Type</label>
+                            <select class="form-select" id="po_verticut_machine_type">
+                                <option selected>Select Type</option>
+                                <option value="Manual">Manual</option>
+                                <option value="Mechanised">Mechanised</option>
+                            </select>
+
+
+                            <input type="hidden" class="mid" id="po_verticut_machinery_id">
+                            <div class="input-group mt-4">
+                                <input type="text" id="po_verticut_machinery_name" class="form-control" readonly
+                                    placeholder="Click to select machinery">
+                                <span class="input-group-text bg-light" onclick="realoadMachineryList(event)">
+                                    <i class="bi bi-arrow-clockwise text-danger"></i>
+                                </span>
+                            </div>
+
+                            <button type="button mt-2" class="btn btn-warning align-self-end"
+                                onclick="openMachineryModal('po_verticut')">Select
+                                Machinery</button>
+
+
+                        </div>
+                        <div class="card-input-group"><label>Operator</label><input type="text" class="op"></div>
+
+                        <div class="card-input-group"><label>Remark/Reason</label><textarea></textarea></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="main-pitches" class="maintenance-section">
+                <div class="section-header"><span>&#9660;</span> Main Pitches</div>
+                <div class="section-content">
+                    <!-- Column 1 -->
+                    <div class="card">
+                        <div class="card-title">Dusting/Top Dressing</div>
+                        <div class="card-input-group"><label>Date</label><input type="date"></div>
+                        <div class="card-input-group"><label>Time</label><input type="time"></div>
+                        <div class="card-input-group">
+                            <select>
+                                <option>Type of Soil</option>
+                                <option>Sand</option>
+                                <option>Soil</option>
+                            </select>
+                        </div>
+                        <div class="card-input-group">
+
+
+
+
+                            <label for="main_dust_machine_type" class="form-label">Select
+                                Machine Type</label>
+                            <select class="form-select" id="main_dust_machine_type">
+                                <option selected>Select Type</option>
+                                <option value="Manual">Manual</option>
+                                <option value="Mechanised">Mechanised</option>
+                            </select>
+
+
+
+
+
+
+                            <input type="hidden" class="mid" id="main_dust_machinery_id">
+                            <div class="input-group mt-4">
+                                <input type="text" id="main_dust_machinery_name" class="form-control" readonly
+                                    placeholder="Click to select machinery">
+                                <span class="input-group-text bg-light" onclick="realoadMachineryList(event)">
+                                    <i class="bi bi-arrow-clockwise text-danger"></i>
+                                </span>
+                            </div>
+
+                            <button type="button mt-2" class="btn btn-warning align-self-end"
+                                onclick="openMachineryModal('main_dust')">Select
+                                Machinery</button>
+
+
+
+                        </div>
+                        <div class="card-input-group"><label>Operator</label><input class="op" type="text"></div>
+                        <div class="card-input-group"><label>Quantity</label><input class="qty" type="text"></div>
+                        <div class="card-input-group"><label>Remark</label><textarea></textarea></div>
+                    </div>
+
+                    <!-- Column 2 -->
+                    <div class="card">
+                        <div class="card-title">Aeration (Coring)</div>
+                        <div class="card-input-group"><label>Date</label><input type="date"></div>
+                        <div class="card-input-group"><label>Time</label><input type="time"></div>
+                        <div class="card-input-group">
+                            <select>
+                                <option>Type of Coring</option>
+                                <option>Hollow</option>
+                                <option>Solid</option>
+                            </select>
+                        </div>
+                        <div class="card-input-group"><label>Remark</label><textarea></textarea></div>
+                        <div class="card-input-group">
+
+                            <label for="roller_machine_type" class="form-label">Select
+                                Machine Type</label>
+                            <select class="form-select" id=main_aeration_machine_type">
+                                <option selected>Select Type</option>
+                                <option value="Manual">Manual</option>
+                                <option value="Mechanised">Mechanised</option>
+                            </select>
+
+
+                            <input type="hidden" class="mid" id="main_aeration_machinery_id">
+                            <div class="input-group mt-4">
+                                <input type="text" id="main_aeration_machinery_name" class="form-control" readonly
+                                    placeholder="Click to select machinery">
+                                <span class="input-group-text bg-light" onclick="realoadMachineryList(event)">
+                                    <i class="bi bi-arrow-clockwise text-danger"></i>
+                                </span>
+                            </div>
+
+                            <button type="button mt-2" class="btn btn-warning align-self-end"
+                                onclick="openMachineryModal('main_aeration')">Select
+                                Machinery</button>
+
+
+                        </div>
+                        <div class="card-input-group"><label>Operator</label><input class="op" type="text"></div>
+
+
+                    </div>
+
+                    <!-- Column 3 -->
+                    <div class="card">
+                        <div class="card-title">Scarifying</div>
+                        <div class="card-input-group"><label>Date</label><input type="date"></div>
+                        <div class="card-input-group"><label>Time</label><input type="time"></div>
+                        <div class="card-input-group">
+                            <label>Height of Scarifying</label>
+                            <div class="double-input">
+                                <input type="text" class="val-input" placeholder="Value">
+                                <select class="unit-select">
+                                    <option>Unit</option>
+                                    <option>mm</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-input-group">
+
+                            <label for="roller_machine_type" class="form-label">Select
+                                Machine Type</label>
+                            <select class="form-select" id="main_scarifying_machine_type">
+                                <option selected>Select Type</option>
+                                <option value="Manual">Manual</option>
+                                <option value="Mechanised">Mechanised</option>
+                            </select>
+
+
+                            <input type="hidden" class="mid" id="main_scarifying_machinery_id">
+                            <div class="input-group mt-4">
+                                <input type="text" id="main_scarifying_machinery_name" class="form-control" readonly
+                                    placeholder="Click to select machinery">
+                                <span class="input-group-text bg-light" onclick="realoadMachineryList(event)">
+                                    <i class="bi bi-arrow-clockwise text-danger"></i>
+                                </span>
+                            </div>
+
+                            <button type="button mt-2" class="btn btn-warning align-self-end"
+                                onclick="openMachineryModal('main_scarifying')">Select
+                                Machinery</button>
+
+
+                        </div>
+                        <div class="card-input-group"><label>Operator</label><input type="text" class="op"></div>
+                        <div class="card-input-group"><label>Remark</label><textarea></textarea></div>
+
+                    </div>
+
+                    <!-- Column 4 -->
+                    <div class="card">
+                        <div class="card-title">Verti Cutting</div>
+                        <div class="card-input-group"><label>Date</label><input type="date"></div>
+                        <div class="card-input-group"><label>Time</label><input type="time"></div>
+                        <div class="card-input-group">
+                            <label>Height of Verticut</label>
+                            <div class="double-input">
+                                <input type="text" class="val-input" placeholder="Value">
+                                <select class="unit-select">
+                                    <option>Unit</option>
+                                    <option>mm</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-input-group">
+
+                            <label for="roller_machine_type" class="form-label">Select
+                                Machine Type</label>
+                            <select class="form-select" id="main_verticut_machine_type">
+                                <option selected>Select Type</option>
+                                <option value="Manual">Manual</option>
+                                <option value="Mechanised">Mechanised</option>
+                            </select>
+
+
+                            <input type="hidden" class="mid" id="main_verticut_machinery_id">
+                            <div class="input-group mt-4">
+                                <input type="text" id="main_verticut_machinery_name" class="form-control" readonly
+                                    placeholder="Click to select machinery">
+                                <span class="input-group-text bg-light" onclick="realoadMachineryList(event)">
+                                    <i class="bi bi-arrow-clockwise text-danger"></i>
+                                </span>
+                            </div>
+
+                            <button type="button mt-2" class="btn btn-warning align-self-end"
+                                onclick="openMachineryModal('main_verticut')">Select
+                                Machinery</button>
+
+
+                        </div>
+                        <div class="card-input-group"><label>Operator</label><input type="text" class="op"></div>
+
+                        <div class="card-input-group"><label>Remark/Reason</label><textarea></textarea></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="practice-pitches" class="maintenance-section">
+                <div class="section-header"><span>&#9660;</span> Practice Pitches</div>
+                <div class="section-content">
+                    <!-- Column 1 -->
+                    <div class="card">
+                        <div class="card-title">Dusting/Top Dressing</div>
+                        <div class="card-input-group"><label>Date</label><input type="date"></div>
+                        <div class="card-input-group"><label>Time</label><input type="time"></div>
+                        <div class="card-input-group">
+                            <select>
+                                <option>Type of Soil</option>
+                                <option>Sand</option>
+                                <option>Soil</option>
+                            </select>
+                        </div>
+                        <div class="card-input-group">
+
+
+
+
+                            <label for="roller_machine_type" class="form-label">Select
+                                Machine Type</label>
+                            <select class="form-select" id="pp_dust_machine_type">
+                                <option selected>Select Type</option>
+                                <option value="Manual">Manual</option>
+                                <option value="Mechanised">Mechanised</option>
+                            </select>
+
+
+
+
+
+
+                            <input type="hidden" class="mid" id="pp_dust_machinery_id">
+                            <div class="input-group mt-4">
+                                <input type="text" id="pp_dust_machinery_name" class="form-control" readonly
+                                    placeholder="Click to select machinery">
+                                <span class="input-group-text bg-light" onclick="realoadMachineryList(event)">
+                                    <i class="bi bi-arrow-clockwise text-danger"></i>
+                                </span>
+                            </div>
+
+                            <button type="button mt-2" class="btn btn-warning align-self-end"
+                                onclick="openMachineryModal('pp_dust')">Select
+                                Machinery</button>
+
+
+
+                        </div>
+                        <div class="card-input-group"><label>Operator</label><input class="op" type="text"></div>
+                        <div class="card-input-group"><label>Quantity</label><input class="qty" type="text"></div>
+                        <div class="card-input-group"><label>Remark</label><textarea></textarea></div>
+                    </div>
+
+                    <!-- Column 2 -->
+                    <div class="card">
+                        <div class="card-title">Aeration (Coring)</div>
+                        <div class="card-input-group"><label>Date</label><input type="date"></div>
+                        <div class="card-input-group"><label>Time</label><input type="time"></div>
+                        <div class="card-input-group">
+                            <select>
+                                <option>Type of Coring</option>
+                                <option>Hollow</option>
+                                <option>Solid</option>
+                            </select>
+                        </div>
+                        <div class="card-input-group"><label>Remark</label><textarea></textarea></div>
+                        <div class="card-input-group">
+
+                            <label for="roller_machine_type" class="form-label">Select
+                                Machine Type</label>
+                            <select class="form-select" id="pp_aeration_machine_type">
+                                <option selected>Select Type</option>
+                                <option value="Manual">Manual</option>
+                                <option value="Mechanised">Mechanised</option>
+                            </select>
+
+
+                            <input type="hidden" class="mid" id="pp_aeration_machinery_id">
+                            <div class="input-group mt-4">
+                                <input type="text" id="pp_aeration_machinery_name" class="form-control" readonly
+                                    placeholder="Click to select machinery">
+                                <span class="input-group-text bg-light" onclick="realoadMachineryList(event)">
+                                    <i class="bi bi-arrow-clockwise text-danger"></i>
+                                </span>
+                            </div>
+
+                            <button type="button mt-2" class="btn btn-warning align-self-end"
+                                onclick="openMachineryModal('pp_aeration')">Select
+                                Machinery</button>
+
+
+                        </div>
+                        <div class="card-input-group"><label>Operator</label><input class="op" type="text"></div>
+
+
+                    </div>
+
+                    <!-- Column 3 -->
+                    <div class="card">
+                        <div class="card-title">Scarifying</div>
+                        <div class="card-input-group"><label>Date</label><input type="date"></div>
+                        <div class="card-input-group"><label>Time</label><input type="time"></div>
+                        <div class="card-input-group">
+                            <label>Height of Scarifying</label>
+                            <div class="double-input">
+                                <input type="text" class="val-input" placeholder="Value">
+                                <select class="unit-select">
+                                    <option>Unit</option>
+                                    <option>mm</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-input-group">
+
+                            <label for="roller_machine_type" class="form-label">Select
+                                Machine Type</label>
+                            <select class="form-select" id="pp_scarifying_machine_type">
+                                <option selected>Select Type</option>
+                                <option value="Manual">Manual</option>
+                                <option value="Mechanised">Mechanised</option>
+                            </select>
+
+
+                            <input type="hidden" class="mid" id="pp_scarifying_machinery_id">
+                            <div class="input-group mt-4">
+                                <input type="text" id="pp_scarifying_machinery_name" class="form-control" readonly
+                                    placeholder="Click to select machinery">
+                                <span class="input-group-text bg-light" onclick="realoadMachineryList(event)">
+                                    <i class="bi bi-arrow-clockwise text-danger"></i>
+                                </span>
+                            </div>
+
+                            <button type="button mt-2" class="btn btn-warning align-self-end"
+                                onclick="openMachineryModal('pp_scarifying')">Select
+                                Machinery</button>
+
+
+                        </div>
+                        <div class="card-input-group"><label>Operator</label><input type="text" class="op"></div>
+                        <div class="card-input-group"><label>Remark</label><textarea></textarea></div>
+
+                    </div>
+
+                    <!-- Column 4 -->
+                    <div class="card">
+                        <div class="card-title">Verti Cutting</div>
+                        <div class="card-input-group"><label>Date</label><input type="date"></div>
+                        <div class="card-input-group"><label>Time</label><input type="time"></div>
+                        <div class="card-input-group">
+                            <label>Height of Verticut</label>
+                            <div class="double-input">
+                                <input type="text" class="val-input" placeholder="Value">
+                                <select class="unit-select">
+                                    <option>Unit</option>
+                                    <option>mm</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-input-group">
+
+                            <label for="roller_machine_type" class="form-label">Select
+                                Machine Type</label>
+                            <select class="form-select" id="pp_verticut_machine_type">
+                                <option selected>Select Type</option>
+                                <option value="Manual">Manual</option>
+                                <option value="Mechanised">Mechanised</option>
+                            </select>
+
+
+                            <input type="hidden" class="mid" id="pp_verticut_machinery_id">
+                            <div class="input-group mt-4">
+                                <input type="text" id="pp_verticut_machinery_name" class="form-control" readonly
+                                    placeholder="Click to select machinery">
+                                <span class="input-group-text bg-light" onclick="realoadMachineryList(event)">
+                                    <i class="bi bi-arrow-clockwise text-danger"></i>
+                                </span>
+                            </div>
+
+                            <button type="button mt-2" class="btn btn-warning align-self-end"
+                                onclick="openMachineryModal('pp_verticut')">Select
+                                Machinery</button>
+
+
+                        </div>
+                        <div class="card-input-group"><label>Operator</label><input type="text" class="op"></div>
+
+                        <div class="card-input-group"><label>Remark/Reason</label><textarea></textarea></div>
+                    </div>
+                </div>
+                <button class="update-btn">Update</button>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+
+<div class="modal fade transparent-bg" id="machineryModal" tabindex="-1" aria-labelledby="machineryModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered transparent-bg">
+        <div class="modal-content box-bg">
+            <div class="modal-header">
+                <h5 class="modal-title" id="machineryModalLabel">Select Machinery</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-white grass-bg">
+                <table class="table table-bordered">
+                    <thead class="bg-dark text-white">
+                        <tr>
+                            <th>Equipment Type</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody id="machineryList" class="text-white"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade transparent-bg" id="maintenanceListModal">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable transparent-bg">
+        <div class="modal-content box-bg">
+
+            <div class="modal-header">
+                <h5>Annual Maintenance List</h5>
+
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <table class="table table-bordered table-hover">
+
+                    <thead>
+
+                        <tr>
+                            <th>ID</th>
+                            <th>Ground</th>
+                            <th>Date</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="maintenanceListBody">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+
+    // Helper function to get CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+
+    function loadMaintenanceList() {
+
+        axios.get("/usr_admin/maintenance-list/")
+
+            .then(res => {
+
+                let html = "";
+
+                res.data.records.forEach(row => {
+
+                    html += `
+
+            <tr
+            style="cursor:pointer"
+            onclick="selectMaintenance(${row.ground_id},
+                                        '${row.mdate}')">
+
+                <td>${row.id}</td>
+
+                <td>${row.ground_name}</td>
+
+                <td>${row.mdate}</td>
+
+            </tr>
+
+            `;
+
+                });
+
+                document.getElementById("maintenanceListBody").innerHTML = html;
+
+            });
+
+    }
+
+    function selectMaintenance(groundId, mdate) {
+
+        document.getElementById("groundSelect").value = groundId;
+
+        document.getElementById("mDate").value = mdate;
+
+        bootstrap.Modal
+            .getInstance(document.getElementById("maintenanceListModal"))
+            .hide();
+
+
+        axios.get("/usr_admin/get-maintenance/", {
+
+            params: {
+
+                ground_id: groundId,
+                mdate: mdate
+
+            }
+
+        }).then(res => {
+
+            annual_id = res.data.annual.id;
+
+            fillForm(res.data);
+
+        });
+
+    }
+
+    $(document).ready(function () {
+        axios.get("/usr_admin/get_grounds").then((result) => {
+            $("#groundSelect").html("")
+            $("#groundSelect").append(`<option value=''>Select Ground</option>`)
+            //                $("#ground_id").append(`<option value='all'>All Grounds</option>`)
+
+            result.data.grounds.forEach(function (g) {
+                $("#groundSelect").append(`<option value='${g.ground[0]}'>${g.ground[6]}</option>`)
+            })
+
+        }).catch((error) => {
+            console.log(error)
+
+        })
+    })
+
+    // Logic to show/hide sections based on checkboxes
+    const areaChecks = document.querySelectorAll('.area-check');
+    const selectAll = document.getElementById('selectAll');
+    const groundSelect = document.getElementById('groundSelect');
+
+    function updateVisibility() {
+        areaChecks.forEach(check => {
+            const section = document.getElementById(check.dataset.section);
+            if (selectAll.checked || check.checked) {
+                section.style.display = 'block';
+            } else {
+                section.style.display = 'none';
+            }
+        });
+    }
+
+    areaChecks.forEach(check => {
+        check.addEventListener('change', () => {
+            if (!check.checked) selectAll.checked = false;
+            updateVisibility();
+        });
+    });
+
+    selectAll.addEventListener('change', () => {
+        areaChecks.forEach(check => check.checked = selectAll.checked);
+        updateVisibility();
+    });
+
+    // Toggle section content on header click
+    document.querySelectorAll('.section-header').forEach(header => {
+        header.addEventListener('click', () => {
+            const content = header.nextElementSibling;
+            content.style.display = content.style.display === 'none' ? 'grid' : 'none';
+        });
+    });
+</script>
+
+
+<!-- Is code ko apne template mein use karein -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
+
+
+<!-- select machine code in menu_top file-->
+
+
+<script>
+
+    let annualId = 0;
+    document.querySelector('.update-btn').addEventListener('click', async function () {
+
+        const groundId = document.getElementById('groundSelect').value;
+        const mDate = document.getElementById('mDate').value;
+
+        if (!groundId) {
+            alert("Please select a ground first!");
+            return;
+        }
+
+        if (!annual_id) {
+            alert("No Maintenance Record Loaded.");
+            return;
+        }
+
+        const areasData = [];
+
+        document.querySelectorAll('.area-check:checked').forEach(checkbox => {
+
+            const sectionId = checkbox.getAttribute('data-section');
+            const section = document.getElementById(sectionId);
+
+            if (section) {
+
+                areasData.push({
+
+                    area_name: sectionId,
+
+                    // Dusting
+
+                    dusting_date: section.querySelector('.card:nth-child(1) input[type="date"]')?.value || null,
+
+                    dusting_time: section.querySelector('.card:nth-child(1) input[type="time"]')?.value || null,
+
+                    dusting_soil_type: section.querySelector('.card:nth-child(1) select:nth-of-type(1)')?.value || null,
+
+                    dusting_machine_id: section.querySelector('.card:nth-child(1) .mid')?.value || null,
+
+                    dusting_operator: section.querySelector('.card:nth-child(1) .op:nth-of-type(1)')?.value || null,
+
+                    dusting_remarks: section.querySelector('.card:nth-child(1) textarea')?.value || null,
+
+                    dusting_quantity: section.querySelector('.card:nth-child(1) .qty:nth-of-type(1)')?.value || null,
+
+                    // Aeration
+
+                    aeration_date: section.querySelector('.card:nth-child(2) input[type="date"]')?.value || null,
+
+                    aeration_time: section.querySelector('.card:nth-child(2) input[type="time"]')?.value || null,
+
+                    aeration_type: section.querySelector('.card:nth-child(2) select:nth-of-type(1)')?.value || null,
+
+                    aeration_remarks_input: section.querySelector('.card:nth-child(2) textarea')?.value || null,
+
+                    aeration_operator: section.querySelector('.card:nth-child(2) .op:nth-of-type(1)')?.value || null,
+
+                    aeration_machine_id: section.querySelector('.card:nth-child(2) .mid')?.value || null,
+
+                    // Scarifying
+
+                    scarifying_date: section.querySelector('.card:nth-child(3) input[type="date"]')?.value || null,
+
+                    scarifying_time: section.querySelector('.card:nth-child(3) input[type="time"]')?.value || null,
+
+                    scarifying_height_value: section.querySelector('.card:nth-child(3) .val-input')?.value || null,
+
+                    scarifying_height_unit: section.querySelector('.card:nth-child(3) .unit-select')?.value || null,
+
+                    scarifying_machine_id: section.querySelector('.card:nth-child(3) .mid')?.value || null,
+
+                    scarifying_operator: section.querySelector('.card:nth-child(3) .op:nth-of-type(1)')?.value || null,
+
+                    scarifying_reason_remarks: section.querySelector('.card:nth-child(3) textarea')?.value || null,
+
+                    // Verticut
+
+                    verti_cutting_date: section.querySelector('.card:nth-child(4) input[type="date"]')?.value || null,
+
+                    verti_cutting_time: section.querySelector('.card:nth-child(4) input[type="time"]')?.value || null,
+
+                    verti_cutting_height_value: section.querySelector('.card:nth-child(4) .val-input')?.value || null,
+
+                    verti_cutting_height_unit: section.querySelector('.card:nth-child(4) .unit-select')?.value || null,
+
+                    verti_cutting_machine_id: section.querySelector('.card:nth-child(4) .mid')?.value || null,
+
+                    verti_cutting_operator: section.querySelector('.card:nth-child(4) .op:nth-of-type(1)')?.value || null,
+
+                    verti_cutting_reason_remarks: section.querySelector('.card:nth-child(4) textarea')?.value || null
+
+                });
+
+            }
+
+        });
+
+
+        try {
+
+            const response = await axios.post("/usr_admin/update-maintenance/", {
+
+                annual_id: annual_id,
+
+                ground_id: groundId,
+
+                mDate: mDate,
+
+                areas: areasData
+
+            }, {
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            });
+
+
+            if (response.data.status == "success") {
+
+                alert("Maintenance Updated Successfully");
+
+            }
+            else {
+
+                alert(response.data.message);
+
+            }
+
+        }
+        catch (err) {
+
+            console.log(err);
+
+            alert("Update Failed");
+
+        }
+
+    });
+
+
+
+
+
+    async function loadMaintenance() {
+
+        const groundId = $("#groundSelect").val();
+        const mDate = $("#mDate").val();
+
+        if (!groundId || !mDate) {
+            return;
+        }
+
+        try {
+
+            const res = await axios.get(`/usr_admin/get-maintenance/${groundId}/${mDate}`, {
+
+            });
+
+            if (res.data.status != "success") {
+
+                annual_id = 0;
+
+                alert("Record not found");
+
+                return;
+
+            }
+
+            annual_id = res.data.annual.id;
+
+
+
+            fillForm(res.data);
+
+        }
+        catch (err) {
+
+            console.log(err);
+
+            annual_id = 0;
+
+            alert("No Record Found");
+
+        }
+
+    }
+
+
+
+
+    function setElementValue(element, value) {
+
+        if (!element) return;
+
+        if (element.tagName === "SELECT" ||
+            element.tagName === "INPUT" ||
+            element.tagName === "TEXTAREA") {
+
+            element.value = value ?? "";
+        }
+
+    }
+
+    async function setMachinery(element, value) {
+        element.value = value ?? "";
+
+
+        try {
+
+            const res = await axios.get(`/usr_admin/machinery/${value}`)
+            const printName = `${res.data.machinery.equipment_name}- Type:${res.data.machinery.type} ${res.data.machinery.print_details}`
+
+            $(element).parent().find("select").val(res.data.machinery.type)
+            $(element).parent().find("input[type='text']").val(printName)
+
+
+
+
+
+            fillForm(res.data);
+
+        }
+        catch (err) {
+
+            console.log(err);
+
+
+
+
+
+        }
+    }
+
+    function fillArea(section, row) {
+
+        // Dusting
+        setElementValue(
+            section.querySelector('.card:nth-child(1) input[type="date"]'),
+            row.dusting_date
+        );
+
+        setElementValue(
+            section.querySelector('.card:nth-child(1) input[type="time"]'),
+            row.dusting_time
+        );
+
+        setElementValue(
+            section.querySelector('.card:nth-child(1) select:nth-of-type(1)'),
+            row.dusting_soil_type
+        );
+
+        setMachinery(
+            section.querySelector('.card:nth-child(1) .mid'),
+            row.dusting_machine_id
+        );
+
+        setElementValue(
+            section.querySelector('.card:nth-child(1) .op:nth-of-type(1)'),
+            row.dusting_operator
+        );
+
+
+
+        setElementValue(
+            section.querySelector('.card:nth-child(1) .qty:nth-of-type(1)'),
+            row.dusting_quantity
+        );
+
+        setElementValue(
+            section.querySelector('.card:nth-child(1) textarea'),
+            row.dusting_remarks
+        );
+
+
+        // ================= Aeration =================
+
+        setElementValue(
+            section.querySelector('.card:nth-child(2) input[type="date"]'),
+            row.aeration_date
+        );
+
+        setElementValue(
+            section.querySelector('.card:nth-child(2) input[type="time"]'),
+            row.aeration_time
+        );
+
+        setElementValue(
+            section.querySelector('.card:nth-child(2) select:nth-of-type(1)'),
+            row.aeration_type
+        );
+
+        setMachinery(
+            section.querySelector('.card:nth-child(2) .mid'),
+            row.aeration_machine_id
+        );
+
+        setElementValue(
+            section.querySelector('.card:nth-child(2) .op:nth-of-type(1)'),
+            row.aeration_operator
+        );
+
+        setElementValue(
+            section.querySelector('.card:nth-child(2) textarea'),
+            row.aeration_remarks_input
+        );
+
+
+        // ================= Scarifying =================
+
+        setElementValue(
+            section.querySelector('.card:nth-child(3) input[type="date"]'),
+            row.scarifying_date
+        );
+
+        setElementValue(
+            section.querySelector('.card:nth-child(3) input[type="text"]'),
+            row.scarifying_time
+        );
+
+        setElementValue(
+            section.querySelector('.card:nth-child(3) .val-input'),
+            row.scarifying_height_value
+        );
+
+        setElementValue(
+            section.querySelector('.card:nth-child(3) .unit-select'),
+            row.scarifying_height_unit
+        );
+
+        setMachinery(
+            section.querySelector('.card:nth-child(3) .mid'),
+            row.scarifying_machine_id
+        );
+
+        setElementValue(
+            section.querySelector('.card:nth-child(3) .op:nth-of-type(1)'),
+            row.scarifying_operator
+        );
+
+        setElementValue(
+            section.querySelector('.card:nth-child(3) textarea'),
+            row.scarifying_reason_remarks
+        );
+
+
+        // ================= Verticut =================
+
+        setElementValue(
+            section.querySelector('.card:nth-child(4) input[type="date"]'),
+            row.verti_cutting_date
+        );
+
+        setElementValue(
+            section.querySelector('.card:nth-child(4) input[type="time"]'),
+            row.verti_cutting_time
+        );
+
+        setElementValue(
+            section.querySelector('.card:nth-child(4) .val-input'),
+            row.verti_cutting_height_value
+        );
+
+        setElementValue(
+            section.querySelector('.card:nth-child(4) .unit-select'),
+            row.verti_cutting_height_unit
+        );
+
+        setMachinery(
+            section.querySelector('.card:nth-child(4) .mid'),
+            row.verti_cutting_machine_id
+        );
+
+        setElementValue(
+            section.querySelector('.card:nth-child(4) .op:nth-of-type(1)'),
+            row.verti_cutting_operator
+        );
+
+        setElementValue(
+            section.querySelector('.card:nth-child(4) textarea'),
+            row.verti_cutting_reason_remarks
+        );
+
+    }
+
+
+    function fillForm(res) {
+
+        console.log(res)
+        annual_id = res.annual.id;
+       
+
+        // Hide all sections
+        document.querySelectorAll(".area-check").forEach(c => {
+            c.checked = false;
+        });
+
+        updateVisibility();
+
+
+        // Selected Areas
+        res.annual.area.forEach(area => {
+
+            const chk = document.querySelector(`.area-check[data-section="${area}"]`);
+
+            if (chk) {
+
+                chk.checked = true;
+
+            }
+
+        });
+
+        updateVisibility();
+
+
+        // Fill every section
+        res.areas.forEach(row => {
+
+            const section = document.getElementById(row.area);
+
+
+            if (section) {
+
+                fillArea(section, row);
+
+            }
+
+        });
+
+    }
+</script>
+
+<script>
+    axios.get("/usr_admin/get-maintenance/", {
+        params: {
+            ground_id: groundId,
+            mdate: mDate
+        }
+    })
+</script>

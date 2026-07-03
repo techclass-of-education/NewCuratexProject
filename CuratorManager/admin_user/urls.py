@@ -79,12 +79,22 @@ urlpatterns = [
     path('save_icc_pitch_form/<int:id>/', views.save_icc_pitch_form, name='save_icc_pitch_form'),
     path('save_icc_pitch_save/', views.save_icc_pitch_save, name='save_icc_pitch_save'),
     # path('save_icc_pitch_save/<int:id>/', views.save_icc_pitch_report, name='save_icc_pitch_report'),
+    path("maintenance-list/",views.maintenance_list,name="maintenance_list"),
+    path("icc-match-report-update/",views.icc_match_report_update,name="icc_match_report_update"),
+    path('update-icc-pitch-report/', views.update_icc_pitch_save, name='update_icc_pitch_report'),
+    path('view-icc-pitch-report/', views.view_icc_pitch_report, name='view_icc_pitch_report'),
+    path('check-icc-pitch-report/', views.check_icc_pitch_report_exists, name='check_icc_pitch_report_exists'),
 
 
     path('annualreportform/', views.annual_report_form, name='annual_report_form'),
     path('save-maintenance/', views.save_maintenance, name='save-maintenance'),
     path('annual-maintenance-report-page/', views.annual_maintenance_report_page, name='annual-maintenance-report-page'),
+    # udpate form
+    path("get-maintenance/<int:ground_id>/<str:mdate>/",views.get_maintenance,name="get_maintenance"),
+    path("udpate-annualreportform/",views.udpate_annualreportform,name="udpate_annualreportform"),
+    path("update-maintenance/",views.update_maintenance,name="update_maintenance"),
 
+    path('pitch-reports-list/', views.get_pitch_reports_list, name='pitch_reports_list'),
     path("annual-maintenance-report-api/",views.annual_maintenance_report_api,name="annual_maintenance_report_api"),
     path("get-clagghammer/<int:id>/<str:t>/<str:f>/",views.get_clagghammer,name="get_clagghammer"),
     path("get-moisture/<int:id>/<str:t>/<str:f>/",views.get_moisture,name="get_moisture"),

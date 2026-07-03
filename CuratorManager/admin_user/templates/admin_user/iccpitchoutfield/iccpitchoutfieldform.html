@@ -226,18 +226,6 @@ Ratings
 </style>
 <script>
 
-  // axios.get(`/get-match-details/${match_id}/`)
-  // .then(res => {
-  //     document.getElementById("match_name").value = res.data.match_name;
-  //     document.getElementById("match_date").value = res.data.match_date;
-  //     document.getElementById("ground_name").value = res.data.ground_name;
-  //     document.getElementById("ground_id").value = res.data.ground_id;
-  //     document.getElementById("match_id").value = res.data.match_id;
-  //     document.getElementById("team1").value = res.data.team1;
-  //     document.getElementById("team2").value = res.data.team2;
-  //     document.getElementById("from_date").value = res.data.from_date;
-  //     document.getElementById("to_date").value = res.data.to_date;
-  // });
 
 </script>
 
@@ -270,14 +258,15 @@ Ratings
               <p>Match Type: {{ match_type }}</p>
               <p>
               {% if match_type == "Multidays" %}
-              From Date : <input type="date" id="from_date" value="{{ from_date }}" name="from_date">
-              To Date : <input type="date" id="to_date" value="{{ to_date }}" name="to_date">
-
+                From Date  <span id="from_date" name="from_date">{{ from_date }}</span>
+                To Date :<span id="to_date" value="" name="to_date">{{ to_date }}</span>
+            
               {% else %}
              Match Date : {{ match_date }}
 
               {% endif %}
               </p>
+                 <p>Days Count :  <span id="match_days_count">{{days_count}}</span></p>
               <p>
               Tournament Name : {{ match_name }}
               </p>
@@ -719,3 +708,51 @@ Ratings
  
   </div>
 </div>
+
+
+<script>
+  $(document).ready(function () {
+
+    // 🔹 days_count value nikalo (span se, jisme Django template value render hui hai)
+    const daysCountRaw = $('#match_days_count').text().trim();
+    const daysCount = parseInt(daysCountRaw) || 0;
+
+    // Safety: agar days_count 0 ho ya invalid ho, to kuch mat karo (sab enabled rehne do)
+    if (daysCount <= 0) return;
+
+    // 🔹 Har us table ko target karo jisme Day1-Day5 columns hain
+    $('.card-body table.table-bordered').each(function () {
+        const $table = $(this);
+
+        // Header row me "Day" wale columns dhundo aur unka column index nikalo
+        const dayColumnIndexes = [];
+        $table.find('tr').first().find('th').each(function (index) {
+            const headerText = $(this).text().trim();
+            if (/^Day\s*\d+$/i.test(headerText)) {
+                const dayNum = parseInt(headerText.replace(/[^\d]/g, ''));
+                dayColumnIndexes[dayNum] = index; // 0-based column index
+            }
+        });
+
+        // 🔹 Har data row me, jo din days_count se zyada hai unke checkbox disable karo
+        $table.find('tr').slice(1).each(function () {
+            const $row = $(this);
+            const $cells = $row.find('td');
+
+            for (let day = 1; day <= 5; day++) {
+                const colIndex = dayColumnIndexes[day];
+                if (colIndex === undefined) continue;
+
+                if (day > daysCount) {
+                    const $cell = $cells.eq(colIndex);
+                    const $checkbox = $cell.find('input[type="checkbox"], input[type="radio"]');
+                    $checkbox.prop('checked', false);
+                    $checkbox.prop('disabled', true);
+                    $cell.addClass('disabled-day-cell');
+                }
+            }
+        });
+    });
+
+});
+</script>

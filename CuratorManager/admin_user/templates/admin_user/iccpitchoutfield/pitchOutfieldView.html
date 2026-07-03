@@ -33,15 +33,11 @@ input[type='checkbox']
   transform: scale(1.5);
 }
 
-</style>
 
-<style>
   label {
     font-weight: 700;
   }
-</style>
 
-<style>
   h2 {
     background-color: #0d6efd;
     color: white;
@@ -140,71 +136,7 @@ input[type='checkbox']
 
     {% load admin_user_filters %}
 
-    <div class="container mt-5" id="form-div">
-      <div class="card w-75 mx-auto transparent-bg">
-        <div class="card-header box-bg text-white">
-
-          <i class="bi bi-person-check me-2 text-info"></i>PITCH OUTFILED REPORT
-        </div>
-        <div class="card-body box-gradient rounded-bottom">
-          <form class="p-4 rounded" onsubmit="loadReport(event)">
-            <div class="row g-3">
-
-
-              <div class="col-lg-4 col-sm-12">
-                <label for="match_type" class="form-label">Match Type</label>
-                <select id="match_type" name="match_type" class="form-select">
-                  <option value="">Select Match Type</option>
-                  <option value="Multidays">Multidays</option>
-                  <option value="One Day">One Day</option>
-                  <option value="T20">T20</option>
-                </select>
-              </div>
-              <div class="col-lg-4 col-sm-12">
-                <label for="season_year" class="form-label">Season Year</label>
-                <input type="text" id="season_year" name="season_year" class="form-control" placeholder="yyyy">
-              </div>
-              <div class="col-lg-4 col-sm-12">
-                <label for="name_tournament" class="form-label">Tournament</label>
-                <select id="name_tournament" name="name_tournament" class="form-select">
-                  <option value="">Select Tournament</option>
-                </select>
-              </div>
-
-              <div class="col-lg-4 col-sm-12">
-                <label for="city_name" class="form-label">City</label>
-                <select id="city_name" name="city_name" class="form-select">
-                  <option value="">Select City</option>
-                </select>
-              </div>
-              <div class="col-lg-4 col-sm-12">
-                <label for="ground_name" class="form-label">Ground</label>
-                <select id="ground_name" name="ground_name" class="form-select">
-                  <option value="">Select Ground</option>
-                </select>
-              </div>
-              <div class="col-lg-4 col-sm-12">
-                <label for="match_id" class="form-label">Match</label>
-                <select id="match_id" name="match_id" class="form-select">
-                  <option value="">Select Match</option>
-                </select>
-              </div>
-
-
-              <div class="col-lg-12 me-2 mt-5 mt-2 col-sm-12 d-flex flex-wrap align-items-end">
-                <button type="submit" class="btn btn-primary box-bg">Search</button>
-                <button id="" type="button" class="btn btn-danger" onclick="window.print()">Download PDF</button>
-
-                <!-- <button type="submit" formmethod="get" formaction="{% url 'download_csv' %}" class="btn btn-success">Download</button> -->
-                <!-- <button type="submit" formmethod="get" formaction="{% url 'download_pdf' %}" class="btn btn-danger">Download PDF</button> -->
-
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-
-    </div>
+   
 
     <!-- Admin Info (show only once, assuming same in all rows) -->
     <div class="a4-sheet w-100 rounded mt-4 transparent-bg" id="a4-sheet">
@@ -685,9 +617,11 @@ input[type='checkbox']
         </div>
       </div>
 
+                <button id="" type="button" class="btn btn-danger" onclick="window.print()">Download PDF</button>
 
+                
+    
     </div>
-
   </div>
 
 
@@ -698,85 +632,15 @@ input[type='checkbox']
   {% include "admin_user/footertags.html" %}
 
 
-  <script>
-    $(document).ready(function () {
-      // Fetch tournaments
-      function fetchMatch() {
-        const match_type = $('#match_type').val();
-        const season_year = $('#season_year').val();
-        if (match_type && season_year) {
-          $.get('/usr_admin/fetch-tournaments/', { match_type, season_year }, function (data) {
-            // console.log(data.tournaments)
-            $('#name_tournament').html('<option value="">Select Tournament</option>');
-            data.tournaments.forEach(t => {
-              $('#name_tournament').append(`<option value="${t}">${t}</option>`);
-            });
-          });
-        }
-      }
-      $('#match_type, #season_year').on('change', function () {
-        fetchMatch()
-      });
-      //       $('#match_type, #season_year',"#name_tournament").on({
-      //   change: fetchMatch(),
-
-      //   click: fetchMatch()
-      // });
-
-      // Fetch cities
-      function fetchCities() {
-
-      }
-      $('#name_tournament').on('change', function () {
-        const name_tournament = $(this).val();
-        if (name_tournament) {
-          $.get('/usr_admin/fetch-cities/', { name_tournament }, function (data) {
-            $('#city_name').html('<option value="">Select City</option>');
-            data.cities.forEach(c => {
-              $('#city_name').append(`<option value="${c}">${c}</option>`);
-            });
-          });
-        }
-      });
-
-      // Fetch grounds
-      $('#city_name').on('change', function () {
-        const city_name = $(this).val();
-        const name_tournament = $('#name_tournament').val();
-        if (city_name && name_tournament) {
-          $.get('/usr_admin/fetch-grounds/', { name_tournament, city_name }, function (data) {
-            $('#ground_name').html('<option value="">Select Ground</option>');
-            data.grounds.forEach(g => {
-              $('#ground_name').append(`<option value="${g.id}">${g.name}</option>`);
-            });
-          });
-        }
-      });
-
-      // Fetch matches
-      $('#ground_name').on('change', function () {
-        const ground_id = $(this).val();
-        const name_tournament = $('#name_tournament').val();
-        if (ground_name && name_tournament) {
-          $.get('/usr_admin/fetch-matches/', { name_tournament, ground_id }, function (data) {
-            $('#match_id').html('<option value="">Select Match</option>');
-            data.matches.forEach(m => {
-              $('#match_id').append(`<option value="${m.id}">${m.label}</option>`);
-            });
-          });
-        }
-      });
-    });
-  </script>
 
 
   <script>
 
 
-    function loadReport(event) {  
-      event.preventDefault()
+    function loadReport(matchId) {
+     
       // alert()
-      const matchId = document.querySelector("#match_id").value
+    //   const matchId = document.querySelector("#match_id").value
 
       axios.get(`/usr_admin/get-icc-report/${matchId}/`)
         .then(res => {
@@ -908,7 +772,13 @@ input[type='checkbox']
         })
     }
 
- 
+    const urlParams = new URLSearchParams(window.location.search);
+const id = urlParams.get('id');
+
+
+
+    loadReport(460)
+
  </script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>

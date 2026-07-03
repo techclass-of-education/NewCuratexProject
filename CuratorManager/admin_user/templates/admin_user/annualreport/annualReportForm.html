@@ -202,12 +202,105 @@
 
         .save-btn:hover { background: #fff; transform: scale(1.05); }
 
+        
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 10px 16px;
+    border-radius: 6px;
+    transition: background 0.2s ease;
+    cursor: pointer;
+}
+
+.checkbox-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.checkbox-item input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent-blue);
+    cursor: pointer;
+    margin: 0;
+}
+
+.checkbox-item label {
+    color: #fff;
+    cursor: pointer;
+    margin: 0;
+    font-weight: 500;
+}
+
     </style>
 
 
     <div class="container">
+
+        <div class="card w-100 mx-auto transparent-bg border-0">
+            <div class="card-header box-bg text-white w-50 w-sm-100 align-items-center">
+                <i class="bi bi-person-check me-2 text-info"></i>
+                <span class="fw-semibold">Annual Report Form</span>
+            </div>
+
+            <div class="card-body box-gradient rounded-bottom p-4 w-50 w-sm-100">
+                 <div class="row">   
+                    <div class="col-lg-12 col-sm-12 form-group">
+                        <label for="groundSelect">Select Ground</label>
+                        <select id="groundSelect" name="ground_id" class="form-control">
+                        </select>
+                    </div>
+
+                    <div class="col-lg-12 col-sm-12 form-group">
+                        <label for="mDate">Date</label>
+                        <input id="mDate" type="date" class="form-control">
+                    </div>
+
+                </div>
+            
+            <hr class="my-4 border-light opacity-25">
+
+              <!-- Ground Area Selection -->
+            <div class="row g-3">
+          <div class="col-12 form-group">
+    <label class="d-block mb-3">Select Ground Area</label>
+
+    <div class="checkbox-group">
+        <div class="checkbox-item">
+            <input type="checkbox" id="selectAll">
+            <label for="selectAll">All Area</label>
+        </div>
+
+        <div class="checkbox-item">
+            <input type="checkbox" id="chk-outfield" class="area-check" data-section="outfield">
+            <label for="chk-outfield">Outfield</label>
+        </div>
+
+        <div class="checkbox-item">
+            <input type="checkbox" id="chk-practiceOutfield" class="area-check" data-section="practice-outfield">
+            <label for="chk-practiceOutfield">Practice Outfield</label>
+        </div>
+
+        <div class="checkbox-item">
+            <input type="checkbox" id="chk-mainPitches" class="area-check" data-section="main-pitches">
+            <label for="chk-mainPitches">Main Pitches</label>
+        </div>
+
+        <div class="checkbox-item">
+            <input type="checkbox" id="chk-practicePitches" class="area-check" data-section="practice-pitches">
+            <label for="chk-practicePitches">Practice Pitches</label>
+        </div>
+    </div>
+</div>
+            </div>
+
+            </div>
+
+        </div>
         <!-- Top Controls -->
-        <div class="row">
+        <!-- <div class="row">
             <div class="col-lg-4 col-sm-12">
                 <label class="form-label">Select Ground</label>
                 <select id="groundSelect" name="ground_id" class="form-control">
@@ -229,7 +322,7 @@
                 <label class="form-label">Date</label>
                 <input id="mDate" type="date" class="form-control">
             </div>
-        </div>
+        </div> -->
 
         <!-- Dynamic Sections -->
         
@@ -380,7 +473,7 @@
                                                             
                     
                     </div>
-                    <div class="card-input-group"><label>Operator</label><input type="text"></div>
+                    <div class="card-input-group"><label>Operator</label><input type="text" class="op"></div>
                     <div class="card-input-group"><label>Remark</label><textarea></textarea></div>
 
                 </div>
@@ -426,7 +519,7 @@
                                                             
                     
                     </div>
-                    <div class="card-input-group"><label>Operator</label><input type="text"></div>
+                    <div class="card-input-group"><label>Operator</label><input type="text" class="op"></div>
 
                     <div class="card-input-group"><label>Remark/Reason</label><textarea></textarea></div>
                 </div>
@@ -581,7 +674,7 @@
                                                             
                     
                     </div>
-                    <div class="card-input-group"><label>Operator</label><input type="text"></div>
+                    <div class="card-input-group"><label>Operator</label><input type="text" class="op"></div>
                     <div class="card-input-group"><label>Remark</label><textarea></textarea></div>
 
                 </div>
@@ -627,7 +720,7 @@
                                                             
                     
                     </div>
-                    <div class="card-input-group"><label>Operator</label><input type="text"></div>
+                    <div class="card-input-group"><label>Operator</label><input type="text" class="op"></div>
 
                     <div class="card-input-group"><label>Remark/Reason</label><textarea></textarea></div>
                 </div>
@@ -780,7 +873,7 @@
                                                             
                     
                     </div>
-                    <div class="card-input-group"><label>Operator</label><input type="text"></div>
+                    <div class="card-input-group"><label>Operator</label><input type="text" class="op"></div>
                     <div class="card-input-group"><label>Remark</label><textarea></textarea></div>
 
                 </div>
@@ -826,7 +919,7 @@
                                                             
                     
                     </div>
-                    <div class="card-input-group"><label>Operator</label><input type="text"></div>
+                    <div class="card-input-group"><label>Operator</label><input type="text" class="op"></div>
 
                     <div class="card-input-group"><label>Remark/Reason</label><textarea></textarea></div>
                 </div>
@@ -978,7 +1071,7 @@
                                                             
                     
                     </div>
-                    <div class="card-input-group"><label>Operator</label><input type="text"></div>
+                    <div class="card-input-group"><label>Operator</label><input type="text" class="op"></div>
                     <div class="card-input-group"><label>Remark</label><textarea></textarea></div>
 
                 </div>
@@ -1024,19 +1117,19 @@
                                                             
                     
                     </div>
-                    <div class="card-input-group"><label>Operator</label><input type="text"></div>
+                    <div class="card-input-group"><label>Operator</label><input type="text" class="op"></div>
 
                     <div class="card-input-group"><label>Remark/Reason</label><textarea></textarea></div>
                 </div>
             </div>
         </div>
 
-        <button class="save-btn">Save</button>
     </div>
-   
-
+    
+    
+    <button class="save-btn">Save</button>
 </div>
-    </div>
+</div>
     
     <div class="modal fade transparent-bg" id="machineryModal" tabindex="-1" aria-labelledby="machineryModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered transparent-bg">
@@ -1107,8 +1200,8 @@
 document.querySelector('.save-btn').addEventListener('click', async function() {
     const groundId = document.getElementById('groundSelect').value;
     const mDate = document.getElementById('mDate').value;
-    if (!groundId) {
-        alert("Please select a ground first!");
+    if (!groundId && !mDate) {
+        alert("Please select a ground and date first!");
         return;
     }
 
@@ -1117,8 +1210,11 @@ document.querySelector('.save-btn').addEventListener('click', async function() {
     document.querySelectorAll('.area-check:checked').forEach(checkbox => {
         const sectionId = checkbox.getAttribute('data-section');
         const section = document.getElementById(sectionId);
-
+        
+        
+        
         if (section) {
+            // document.querySelector(".save-btn").style.visibility="visible"
             // Data Object for one area
             const data = {
                 area_name: sectionId,
@@ -1145,7 +1241,7 @@ document.querySelector('.save-btn').addEventListener('click', async function() {
                 scarifying_height_value: section.querySelector('.card:nth-child(3) .val-input')?.value || null,
                 scarifying_height_unit: section.querySelector('.card:nth-child(3) .unit-select')?.value || null,
                 scarifying_machine_id: section.querySelector('.card:nth-child(3) .mid')?.value || null,
-                scarifying_operator: section.querySelector('.card:nth-child(3) input[type="text"]')?.value || null,
+                scarifying_operator: section.querySelector('.card:nth-child(3) .op:nth-of-type(1)')?.value || null,
                 scarifying_reason_remarks: section.querySelector('.card:nth-child(3) textarea')?.value || null,
 
                 // Verti Cutting
@@ -1154,12 +1250,14 @@ document.querySelector('.save-btn').addEventListener('click', async function() {
                 verti_cutting_height_value: section.querySelector('.card:nth-child(4) .val-input')?.value || null,
                 verti_cutting_height_unit: section.querySelector('.card:nth-child(4) .unit-select')?.value || null,
                 verti_cutting_machine_id: section.querySelector('.card:nth-child(4) .mid')?.value || null,
-                verti_cutting_operator: section.querySelector('.card:nth-child(4) input[type="text"]')?.value || null,
+                verti_cutting_operator: section.querySelector('.card:nth-child(4) .op:nth-of-type(1)')?.value || null,
                 verti_cutting_reason_remarks: section.querySelector('.card:nth-child(4) textarea')?.value || null
             };
             areasData.push(data);
         }
     });
+
+    
 
     if (areasData.length === 0) {
         alert("Please select at least one area!");
@@ -1204,6 +1302,8 @@ function getCookie(name) {
 
 
   $(document).ready(function () {
+   
+    //  document.querySelector(".save-btn").style.visibility="hidden"
         axios.get("/usr_admin/get_grounds").then((result) => {
             $("#groundSelect").html("")
             $("#groundSelect").append(`<option value=''>Select Ground</option>`)

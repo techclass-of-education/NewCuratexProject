@@ -127,6 +127,7 @@ input[type='checkbox']
 {% load admin_user_filters %}
 <script src="https://cdn.jsdelivr.net/npm/axios@<x.x.x>/dist/axios.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
 <link href="{% static 'admin_user/css/gradient.css' %}" rel="stylesheet">
 <div class="wrapper grass-bg">
   <!-- Sidebar -->
@@ -146,6 +147,10 @@ input[type='checkbox']
 
           <i class="bi bi-person-check me-2 text-info"></i>PITCH OUTFILED REPORT
         </div>
+        <button type="button" class="btn btn-info text-white" data-bs-toggle="modal"
+        data-bs-target="#pitchReportsModal" onclick="loadPitchReportsList()">
+  <i class="bi bi-list-ul me-1"></i>View All Reports
+</button>
         <div class="card-body box-gradient rounded-bottom">
           <form class="p-4 rounded" onsubmit="loadReport(event)">
             <div class="row g-3">
@@ -205,6 +210,11 @@ input[type='checkbox']
       </div>
 
     </div>
+
+       <form method="POST" action="/usr_admin/update-icc-pitch-report/">
+            {% csrf_token %}
+
+
 
     <!-- Admin Info (show only once, assuming same in all rows) -->
     <div class="a4-sheet w-100 rounded mt-4 transparent-bg" id="a4-sheet">
@@ -271,6 +281,9 @@ input[type='checkbox']
                         <label class="form-label fw-bold">Referee</label>
                         <input type="text" name="referee" class="form-control">
                       </div>
+
+                      <input type="hidden" name="match_id" id="m_id">
+                      <input type="hidden" name="ground_id" id="ground_id">
 
                       <!-- 🔶 GRASS -->
                       <div class="card mb-3">
@@ -668,7 +681,7 @@ input[type='checkbox']
                         </div>
                       </div>
 
-                    
+                    <button type="submit">Update</button>
                      
 
                  
@@ -688,18 +701,56 @@ input[type='checkbox']
 
     </div>
 
+    </form>
+
   </div>
 
 
 
-
+<div class="modal fade transparent-bg" id="pitchReportsModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl transparent-bg">
+    <div class="modal-content box-bg">
+      <div class="modal-header box-bg text-white">
+        <h5 class="modal-title"><i class="bi bi-list-ul me-2"></i>All Pitch &amp; Outfield Reports</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered align-middle mb-0" id="pitchReportsTable">
+            <thead class="table-dark">
+              <tr>
+                <th>Report ID</th>
+                <th>Match ID</th>
+                <th>Match Type</th>
+                <th>Tournament</th>
+                <th>Team 1</th>
+                <th>Team 2</th>
+                <th>Match Date</th>
+                <th>Ground</th>
+                <th>Referee</th>
+                <th>Pitch Rating</th>
+                <th>Outfield Rating</th>
+                
+              </tr>
+            </thead>
+            <tbody id="pitchReportsTableBody">
+              <tr><td colspan="12" class="text-center">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 
   {% include "admin_user/footertags.html" %}
 
 
-  <script>
-    $(document).ready(function () {
+<script>
+
+
+$(document).ready(function () {
       // Fetch tournaments
       function fetchMatch() {
         const match_type = $('#match_type').val();
@@ -767,13 +818,148 @@ input[type='checkbox']
         }
       });
     });
-  </script>
+  
+  
+function loadPitchReportsList() {
+  $('#pitchReportsTableBody').html('<tr><td colspan="12" class="text-center">Loading...</td></tr>');
+
+  axios.get('/usr_admin/pitch-reports-list/')
+    .then(function (response) {
+      const reports = response.data.reports || [];
+
+      console.log(reports)
+
+      if (!reports.length) {
+        $('#pitchReportsTableBody').html('<tr><td colspan="12" class="text-center">No records found</td></tr>');
+        return;
+      }
+
+      let rowsHtml = '';
+      reports.forEach(r => {
+        rowsHtml += `
+          <tr class="pitch-report-row" style="cursor:pointer"
+              data-match_id="${r.match_id ?? ''}"
+              data-ground_id="${r.ground_id ?? ''}"
+              data-ground_name="${r.ground_name ?? ''}"
+              data-match_type="${r.match_type ?? ''}"
+              data-team1="${r.team1 ?? ''}"
+              data-team2="${r.team2 ?? ''}"
+              data-city-name="${r.city_name ?? ''}"
+              data-name_tournament="${r.name_tournament ?? ''}"
+              data-match_date="${r.match_date ?? ''}">
+            <td>${r.id}</td>
+            <td>${r.match_id ?? ''}</td>
+            <td>${r.match_type ?? ''}</td>
+            <td>${r.name_tournament ?? ''}</td>
+            <td>${r.team1 ?? ''}</td>
+            <td>${r.team2 ?? ''}</td>
+            <td>${r.match_date ?? ''}</td>
+            <td>${r.ground_name ?? ''}</td>
+            <td>${r.referee ?? ''}</td>
+            <td>${r.pitch_rating ?? ''}</td>
+            <td>${r.outfield_rating ?? ''}</td>
+           
+          </tr>`;
+      });
+
+      $('#pitchReportsTableBody').html(rowsHtml);
+    })
+    .catch(function (error) {
+      console.error('Error loading pitch reports:', error);
+      $('#pitchReportsTableBody').html('<tr><td colspan="12" class="text-center text-danger">Failed to load records</td></tr>');
+    });
+}
 
 
-  <script>
+$(document).on('click', '.pitch-report-row', function () {
+  const d = $(this).data();
+
+  console.log("herer :",d)
+  // Match Type
+  if (d.match_type) {
+    $('#match_type').val(d.match_type);
+  }
+
+  // Season year — derived from match_date
+  if (d.match_date) {
+    const yr = new Date(d.match_date).getFullYear();
+    if (!isNaN(yr)) $('#season_year').val(yr);
+  }
+
+  // Tournament
+  if (d.name_tournament) {
+    if ($('#name_tournament option').filter(function () {
+      return $(this).val() === String(d.name_tournament);
+    }).length === 0) {
+      $('#name_tournament').append(`<option value="${d.name_tournament}">${d.name_tournament}</option>`);
+    }
+    $('#name_tournament').val(d.name_tournament);
+  }
+
+  // City  <-- yeh missing tha, ab add kiya
+  if (d.cityName) {
+    if ($('#city_name option').filter(function () {
+      return $(this).val() === String(d.cityName);
+    }).length === 0) {
+      $('#city_name').append(`<option value="${d.cityName}">${d.cityName}</option>`);
+    }
+    $('#city_name').val(d.cityName);
+  }
+
+  // Ground
+  if (d.ground_id) {
+    if ($('#ground_name option').filter(function () {
+      return String($(this).val()) === String(d.ground_id);
+    }).length === 0) {
+      $('#ground_name').append(`<option value="${d.ground_id}">${d.ground_name}</option>`);
+    }
+    $('#ground_name').val(String(d.ground_id));
+  }
+
+  // Match — value ko string me compare karo (numeric vs string mismatch se bachne ke liye)
+//   if (d.match_id) {
+//     const matchIdStr = String(d.match_id);
+//     const optionExists = $('#match_id option').filter(function () {
+//       return String($(this).val()) === matchIdStr;
+//     }).length > 0;
+
+//     if (!optionExists) {
+//       const label = (d.team1 || d.team2)
+//         ? `${d.team1 ?? ''} vs ${d.team2 ?? ''} (${d.match_date ?? ''})`
+//         : `Match #${d.match_id}`;
+//       $('#match_id').append(`<option value="${d.match_id}">${label}</option>`);
+//     }
+//     $('#match_id').val(matchIdStr);
+//   }
+
+  // Match
+  if (d.match_id) {
+    if ($('#match_id option[value="' + d.match_id + '"]').length === 0) {
+      $('#match_id').append(`<option value="${d.match_id}">${d.team1} vs ${d.team2} (${d.match_date})</option>`);
+    }
+    $('#match_id').val(d.match_id);
+  }
+
+//   console.log('Selected values ->', {
+//     match_type: $('#match_type').val(),
+//     season_year: $('#season_year').val(),
+//     name_tournament: $('#name_tournament').val(),
+//     city_name: $('#city_name').val(),
+//     ground_name: $('#ground_name').val(),
+//     match_id: $('#match_id').val()
+//   });
+
+  // Close modal
+  const modalEl = document.getElementById('pitchReportsModal');
+  const modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+  modalInstance.hide();
+
+  // Trigger the same flow as Search button -> loadReport()
+  $('#form-div form').trigger('submit');
+});
 
 
-    function loadReport(event) {  
+function loadReport(event) {
       event.preventDefault()
       // alert()
       const matchId = document.querySelector("#match_id").value
@@ -783,12 +969,13 @@ input[type='checkbox']
 
           const data = res.data.data
           const mData = res.data.match_data
-          console.log(mData)
+        //   console.log(mData)
 
           // ================= BASIC FIELDS =================
 
           document.querySelector("[name='referee']").value = data.referee || ""
-
+          document.querySelector("#m_id").value=data.match_id
+          document.querySelector("#ground_id").value=data.ground_id
           document.querySelector("[name='grass_details']").value = data.grass_details || ""
           document.querySelector("[name='pitch_dry_details']").value = data.pitch_dry_details || ""
           document.querySelector("[name='pitch_comment']").value = data.pitch_comment || ""
@@ -820,11 +1007,11 @@ input[type='checkbox']
         }
           
 
-          // readonly कर दो
-          document.querySelectorAll("input, textarea, select").forEach(el => {
-            el.setAttribute("readonly", true)
-            // el.setAttribute("disabled", true)
-          })
+        //   // readonly कर दो
+        //   document.querySelectorAll("input, textarea, select").forEach(el => {
+        //     el.setAttribute("readonly", true)
+        //     // el.setAttribute("disabled", true)
+        //   })
 
           // ================= RADIO =================
           let el = document.querySelector(`input[name="grass_uniform"][value="${data.grass_uniform}"]`)
@@ -908,8 +1095,9 @@ input[type='checkbox']
         })
     }
 
+
  
- </script>
+</script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   </body>

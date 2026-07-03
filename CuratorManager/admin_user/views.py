@@ -1608,6 +1608,7 @@ def fertilizer_delete(request, id):
     except Exception as e:
         print(e)
 
+
 def login_auth(request):
     if request.method == 'POST':
         org_id = request.POST.get('org_id').lower()
@@ -1641,6 +1642,7 @@ def login_auth(request):
     else:
         messages.error(request, 'Invalid username or password')
         return redirect("login")
+
 
 def login_auth_role(request):
 
@@ -1695,6 +1697,7 @@ def login_auth_role(request):
         messages.error(request, 'Invalid username or password')
         return redirect("login")
 
+
 def login_auth_role_direct(request):
 
     if request.method == 'GET':
@@ -1740,6 +1743,7 @@ def login_auth_role_direct(request):
     else:
         messages.error(request, 'Invalid username or password')
         return redirect("login")
+
 
 def org_dashboard(request):
     user_id = request.session.get("user").get("id")  # Retrieve the stored ID from the session
@@ -5424,12 +5428,12 @@ def get_machinery_details(request, machinery_id):
         data = {
             'id': row[0],
             'equipment_name': row[1],
-            'model': row[2],
-            'type': row[3],
+            'model': row[6],
+            'type': row[2],
 
-            'specification': row[4],
-            'unit': row[5],
-            'value': row[6],
+            'date_purchase': row[3],
+            'unit': row[4],
+            'value': row[5],
             'print_details': row[7],
         }
         return JsonResponse({'machinery': data})
@@ -7651,14 +7655,14 @@ def save_icc_pitch_form(request,id):
         with connection.cursor() as cursor:
             cursor.execute(f"""
                 SELECT m.id, m.name_tournament, m.match_date, 
-                    g.id, g.ground_name,m.team1,m.team2,m.from_date,m.to_date,m.match_type
+                    g.id, g.ground_name,m.team1,m.team2,m.from_date,m.to_date,m.match_type,m.days_count
                 FROM {org_id}_match_master m
                 JOIN {org_id}_ground_master g ON m.ground_id = g.id
                 WHERE m.id = %s
             """, [id])
 
             row = cursor.fetchone()
-
+            
             return render(request, 'admin_user/iccpitchoutfield/iccpitchoutfieldform.html',{
                 "match_id": row[0],
                 "match_name": row[1],
@@ -7669,7 +7673,8 @@ def save_icc_pitch_form(request,id):
                 "team2":row[6],
                 "from_date":row[7],
                 "to_date":row[8],
-                "match_type":row[9]
+                "match_type":row[9],
+                "days_count":row[10]
                 
             })
     except Exception as e:
@@ -7782,6 +7787,180 @@ def save_icc_pitch_save(request):
         print(e)
 
 
+def icc_match_report_update(request):
+    return render(request, 'admin_user/iccpitchoutfield/pitchOutfieldUpdate.html')
+
+def update_icc_pitch_save(request):
+    org_id = request.session["org_id"]
+    try:
+        if request.method == "POST":
+            data = request.POST
+            # print(data)
+
+            match_id = data.get("match_id")
+
+            if not match_id:
+                return JsonResponse({"status": "error", "message": "match_id is required"}, status=400)
+
+            # 🔹 Roller Days
+            roller_days = [f"Day{i}" for i in range(1, 6) if data.get(f"roller_day{i}")]
+            roller_days_str = ",".join(roller_days)
+
+            # 🔹 Roller Effect JSON
+            roller_effect = {}
+            for i in range(1, 6):
+                roller_effect[f"day{i}"] = {
+                    "effect": bool(data.get(f"roller_effect_day{i}")),
+                }
+
+            # 🔹 Bounce JSON
+            bounce = {}
+            for i in range(1, 6):
+                bounce[f"day{i}"] = {
+                    "low": bool(data.get(f"bounce_low_{i}")),
+                    "medium_low": bool(data.get(f"bounce_ml_{i}")),
+                    "medium": bool(data.get(f"bounce_med_{i}")),
+                    "medium_high": bool(data.get(f"bounce_mh_{i}")),
+                    "high": bool(data.get(f"bounce_high_{i}"))
+                }
+
+            # 🟡 Consistency JSON
+            consistency = {}
+            for i in range(1, 6):
+                consistency[f"day{i}"] = {
+                    "consistent": bool(data.get(f"consist_1_{i}")),
+                    "variable": bool(data.get(f"consist_2_{i}")),
+                    "highly_variable": bool(data.get(f"consist_3_{i}")),
+                    "uneven": bool(data.get(f"consist_4_{i}"))
+                }
+
+            # 🔹 Seam Movement JSON
+            seam = {}
+            for i in range(1, 6):
+                seam[f"day{i}"] = {
+                    "little": bool(data.get(f"seam{i}")),
+                    "occasional": bool(data.get(f"seam_occ{i}")),
+                    "more_than_occasional": bool(data.get(f"seam_1_{i}")),
+                    "excessive": bool(data.get(f"seam_2_{i}"))
+                }
+
+            # 🔹 Turn JSON
+            turn = {}
+            for i in range(1, 6):
+                turn[f"day{i}"] = {
+                    "little": bool(data.get(f"turn{i}")),
+                    "moderate": bool(data.get(f"turn_mod{i}")),
+                    "considerable": bool(data.get(f"trun_consistency_{i}")),
+                    "excessive": bool(data.get(f"trun_excessive_{i}"))
+                }
+
+            with connection.cursor() as cursor:
+                query = f"""
+                UPDATE {org_id}_icc_pitch_report
+                SET
+                    ground_id = %s,
+                    referee = %s,
+                    grass_uniform = %s,
+                    grass_cover = %s,
+                    grass_details = %s,
+                    pitch_dry = %s,
+                    pitch_dry_details = %s,
+                    pitch_comment = %s,
+                    heavy_roller_days = %s,
+                    heavy_roller_effect = %s,
+                    bounce = %s,
+                    bounce_consistency = %s,
+                    seam_movement = %s,
+                    turn = %s,
+                    pitch_rating = %s,
+                    outfield_rating = %s,
+                    final_comment = %s
+                WHERE match_id = %s
+                """
+
+                cursor.execute(query, [
+                    data.get("ground_id"),
+                    data.get("referee"),
+
+                    data.get("grass_uniform"),
+                    data.get("grass_cover"),
+                    data.get("grass_details"),
+
+                    data.get("pitch_dry"),
+                    data.get("pitch_dry_details"),
+                    data.get("pitch_comment"),
+
+                    roller_days_str,
+                    json.dumps(roller_effect),
+
+                    json.dumps(bounce),
+                    json.dumps(consistency),
+                    json.dumps(seam),
+                    json.dumps(turn),
+
+                    data.get("pitch_rating"),
+                    data.get("outfield_rating"),
+                    data.get("final_comment"),
+
+                    match_id
+                ])
+
+                if cursor.rowcount == 0:
+                    return JsonResponse({"status": "error", "message": "No record found for this match_id"}, status=404)
+
+            return render(request, 'admin_user/iccpitchoutfield/pitchOutfieldUpdate.html')
+
+    except Exception as e:
+        print(e)
+        return JsonResponse({"status": "error", "message": str(e)}, status=500)
+
+
+def view_icc_pitch_report(request):
+    return render(request, 'admin_user/iccpitchoutfield/pitchOutfieldView.html')
+
+def check_icc_pitch_report_exists(request):
+    org_id = request.session["org_id"]
+    mid = request.GET.get("mid")
+
+    if not mid:
+        return JsonResponse({"exists": False, "message": "mid is required"}, status=400)
+
+    with connection.cursor() as cursor:
+        cursor.execute(f"""
+            SELECT id FROM {org_id}_icc_pitch_report WHERE match_id = %s
+        """, [mid])
+        row = cursor.fetchone()
+
+    if row:
+        return JsonResponse({"exists": True, "id": row[0]})
+    else:
+        return JsonResponse({"exists": False})
+
+
+
+def get_pitch_reports_list(request):
+    org_id=request.session["org_id"]
+    with connection.cursor() as cursor:
+        cursor.execute(f"""
+            SELECT 
+                pr.id, pr.match_id, pr.ground_id, pr.referee, pr.grass_uniform,
+                pr.grass_cover, pr.pitch_dry, pr.pitch_rating, pr.outfield_rating,
+                pr.final_comment, pr.created_at,
+                m.match_type, m.name_tournament, m.team1, m.team2,
+                m.match_date, m.from_date, m.to_date,
+                g.ground_name, g.city_name  
+            FROM {org_id}_icc_pitch_report pr
+            LEFT JOIN {org_id}_match_master m ON pr.match_id = m.id
+            LEFT JOIN {org_id}_ground_master g ON pr.ground_id = g.id
+            ORDER BY pr.id DESC
+        """)
+        columns = [col[0] for col in cursor.description]
+        rows = [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+    return JsonResponse({"reports": rows}, encoder=DjangoJSONEncoder, safe=False)
+
+
+
 def annual_report_form(request):
     return render(request, 'admin_user/annualreport/annualReportForm.html')
 
@@ -7853,9 +8032,491 @@ def save_maintenance(request):
             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
     return JsonResponse({'status': 'invalid method'}, status=405)
+import json
+from django.http import JsonResponse
+from django.db import connection
 
 
-# views.py
+def get_maintenance(request,ground_id,mdate):
+
+    org_id = request.session["org_id"]
+
+    # ground_id = request.GET.get("ground_id")
+    # mdate = request.GET.get("mdate")
+
+    if not ground_id or not mdate:
+        return JsonResponse({
+            "status":"error",
+            "message":"Ground and Date required"
+        })
+
+    try:
+
+        with connection.cursor() as cursor:
+
+            ###########################################
+            # Main Table
+            ###########################################
+
+            sql=f"""
+            SELECT
+                id,
+                ground_id,
+                mdate,
+                area
+            FROM `{org_id}_annual_maintenance`
+            WHERE ground_id=%s
+            AND mdate=%s
+            LIMIT 1
+            """
+
+            cursor.execute(sql,[ground_id,mdate])
+
+            annual=cursor.fetchone()
+
+            if not annual:
+
+                return JsonResponse({
+                    "status":"not_found"
+                })
+
+            annual_id=annual[0]
+
+            try:
+                areas=json.loads(annual[3])
+            except:
+                areas=[]
+
+            annual_json={
+                "id":annual[0],
+                "ground_id":annual[1],
+                "mdate":str(annual[2]),
+                "area":areas
+            }
+
+            ###########################################
+            # Ground Details
+            ###########################################
+
+            sql=f"""
+            SELECT
+                id,
+                ground_name,
+                city_name,
+                state_name
+            FROM `{org_id}_ground_master`
+            WHERE id=%s
+            """
+
+            cursor.execute(sql,[ground_id])
+
+            g=cursor.fetchone()
+
+            ground={}
+
+            if g:
+                ground={
+                    "id":g[0],
+                    "ground_name":g[1],
+                    "city_name":g[2],
+                    "state_name":g[3]
+                }
+
+            ###########################################
+            # Area Table
+            ###########################################
+
+            sql=f"""
+            SELECT *
+
+            FROM `{org_id}_annual_maintenance_area`
+
+            WHERE annual_id=%s
+
+            ORDER BY id
+            """
+
+            cursor.execute(sql,[annual_id])
+
+            cols=[i[0] for i in cursor.description]
+
+            rows=cursor.fetchall()
+
+            areaData=[]
+
+            for row in rows:
+
+                obj={}
+
+                for c,v in zip(cols,row):
+
+                    if hasattr(v,"isoformat"):
+                        obj[c]=v.isoformat()
+
+                    else:
+                        obj[c]=v
+
+                areaData.append(obj)
+
+            return JsonResponse({
+
+                "status":"success",
+
+                "annual":annual_json,
+
+                "ground":ground,
+
+                "areas":areaData
+
+            })
+
+    except Exception as e:
+
+        print(e)
+
+        return JsonResponse({
+
+            "status":"error",
+
+            "message":str(e)
+
+        })
+
+
+def maintenance_list(request):
+
+    org_id=request.session["org_id"]
+
+    with connection.cursor() as cursor:
+
+        cursor.execute(f"""
+
+        SELECT
+        a.id,
+        a.ground_id,
+        g.ground_name,
+        a.mdate
+
+        FROM {org_id}_annual_maintenance a
+
+        INNER JOIN {org_id}_ground_master g
+
+        ON g.id=a.ground_id
+
+        ORDER BY a.mdate DESC
+
+        """)
+
+        rows=cursor.fetchall()
+
+    data=[]
+
+    for r in rows:
+
+        data.append({
+
+            "id":r[0],
+            "ground_id":r[1],
+            "ground_name":r[2],
+            "mdate":str(r[3])
+
+        })
+
+    return JsonResponse({"records":data})
+
+
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from django.db import connection, transaction
+import json
+
+def udpate_annualreportform(request):
+    return render(request,"admin_user/annualreport/annualReportDataUpdate.html")
+
+@csrf_exempt
+def update_maintenance(request):
+
+    org_id=request.session["org_id"]
+
+    if request.method!="POST":
+        return JsonResponse({"status":"error","message":"Invalid Method"})
+
+    try:
+
+        raw=json.loads(request.body)
+
+        annual_id=raw.get("annual_id")
+        ground_id=raw.get("ground_id")
+        mDate=raw.get("mDate")
+        areas=raw.get("areas",[])
+
+        with transaction.atomic():
+
+            with connection.cursor() as cursor:
+
+                #########################################
+                # UPDATE MAIN TABLE
+                #########################################
+
+                area_json=json.dumps([x["area_name"] for x in areas])
+
+                sql=f"""
+                UPDATE `{org_id}_annual_maintenance`
+                SET
+                    ground_id=%s,
+                    mdate=%s,
+                    area=%s
+                WHERE id=%s
+                """
+
+                cursor.execute(sql,[
+                    ground_id,
+                    mDate,
+                    area_json,
+                    annual_id
+                ])
+
+                #########################################
+                # Existing Areas
+                #########################################
+
+                cursor.execute(f"""
+                    SELECT id,area
+                    FROM `{org_id}_annual_maintenance_area`
+                    WHERE annual_id=%s
+                """,[annual_id])
+
+                dbRows=cursor.fetchall()
+
+                dbAreas={}
+
+                for r in dbRows:
+                    dbAreas[r[1]]=r[0]
+
+                formAreas=set()
+
+                #########################################
+                # UPDATE OR INSERT
+                #########################################
+
+                for a in areas:
+
+                    area=a["area_name"]
+
+                    formAreas.add(area)
+
+                    if area in dbAreas:
+
+                        #################################
+                        # UPDATE
+                        #################################
+
+                        sql=f"""
+                        UPDATE `{org_id}_annual_maintenance_area`
+                        SET
+
+                        dusting_date=%s,
+                        dusting_time=%s,
+                        dusting_soil_type=%s,
+                        dusting_machine_id=%s,
+                        dusting_operator=%s,
+                        dusting_quantity=%s,
+                        dusting_remarks=%s,
+
+                        aeration_date=%s,
+                        aeration_time=%s,
+                        aeration_type=%s,
+                        aeration_remarks_input=%s,
+                        aeration_machine_id=%s,
+                        aeration_operator=%s,
+
+                        scarifying_date=%s,
+                        scarifying_time=%s,
+                        scarifying_height_value=%s,
+                        scarifying_height_unit=%s,
+                        scarifying_machine_id=%s,
+                        scarifying_operator=%s,
+                        scarifying_reason_remarks=%s,
+
+                        verti_cutting_date=%s,
+                        verti_cutting_time=%s,
+                        verti_cutting_height_value=%s,
+                        verti_cutting_height_unit=%s,
+                        verti_cutting_machine_id=%s,
+                        verti_cutting_operator=%s,
+                        verti_cutting_reason_remarks=%s
+
+                        WHERE id=%s
+                        """
+
+                        cursor.execute(sql,[
+
+                            a.get("dusting_date"),
+                            a.get("dusting_time"),
+                            a.get("dusting_soil_type"),
+                            a.get("dusting_machine_id"),
+                            a.get("dusting_operator"),
+                            a.get("dusting_quantity"),
+                            a.get("dusting_remarks"),
+
+                            a.get("aeration_date"),
+                            a.get("aeration_time"),
+                            a.get("aeration_type"),
+                            a.get("aeration_remarks_input"),
+                            a.get("aeration_machine_id"),
+                            a.get("aeration_operator"),
+
+                            a.get("scarifying_date"),
+                            a.get("scarifying_time"),
+                            a.get("scarifying_height_value"),
+                            a.get("scarifying_height_unit"),
+                            a.get("scarifying_machine_id"),
+                            a.get("scarifying_operator"),
+                            a.get("scarifying_reason_remarks"),
+
+                            a.get("verti_cutting_date"),
+                            a.get("verti_cutting_time"),
+                            a.get("verti_cutting_height_value"),
+                            a.get("verti_cutting_height_unit"),
+                            a.get("verti_cutting_machine_id"),
+                            a.get("verti_cutting_operator"),
+                            a.get("verti_cutting_reason_remarks"),
+
+                            dbAreas[area]
+
+                        ])
+
+                    else:
+
+                        #################################
+                        # INSERT NEW AREA
+                        #################################
+
+                        sql=f"""
+                        INSERT INTO `{org_id}_annual_maintenance_area`
+                        (
+                        annual_id,
+                        area,
+
+                        dusting_date,
+                        dusting_time,
+                        dusting_soil_type,
+                        dusting_machine_id,
+                        dusting_operator,
+                        dusting_quantity,
+                        dusting_remarks,
+
+                        aeration_date,
+                        aeration_time,
+                        aeration_type,
+                        aeration_remarks_input,
+                        aeration_machine_id,
+                        aeration_operator,
+
+                        scarifying_date,
+                        scarifying_time,
+                        scarifying_height_value,
+                        scarifying_height_unit,
+                        scarifying_machine_id,
+                        scarifying_operator,
+                        scarifying_reason_remarks,
+
+                        verti_cutting_date,
+                        verti_cutting_time,
+                        verti_cutting_height_value,
+                        verti_cutting_height_unit,
+                        verti_cutting_machine_id,
+                        verti_cutting_operator,
+                        verti_cutting_reason_remarks,
+
+                        create_at
+                        )
+
+                        VALUES
+                        (
+                        %s,%s,
+
+                        %s,%s,%s,%s,%s,%s,%s,
+
+                        %s,%s,%s,%s,%s,%s,
+
+                        %s,%s,%s,%s,%s,%s,%s,
+
+                        %s,%s,%s,%s,%s,%s,%s,
+
+                        NOW()
+                        )
+                        """
+
+                        cursor.execute(sql,[
+
+                            annual_id,
+                            area,
+
+                            a.get("dusting_date"),
+                            a.get("dusting_time"),
+                            a.get("dusting_soil_type"),
+                            a.get("dusting_machine_id"),
+                            a.get("dusting_operator"),
+                            a.get("dusting_quantity"),
+                            a.get("dusting_remarks"),
+
+                            a.get("aeration_date"),
+                            a.get("aeration_time"),
+                            a.get("aeration_type"),
+                            a.get("aeration_remarks_input"),
+                            a.get("aeration_machine_id"),
+                            a.get("aeration_operator"),
+
+                            a.get("scarifying_date"),
+                            a.get("scarifying_time"),
+                            a.get("scarifying_height_value"),
+                            a.get("scarifying_height_unit"),
+                            a.get("scarifying_machine_id"),
+                            a.get("scarifying_operator"),
+                            a.get("scarifying_reason_remarks"),
+
+                            a.get("verti_cutting_date"),
+                            a.get("verti_cutting_time"),
+                            a.get("verti_cutting_height_value"),
+                            a.get("verti_cutting_height_unit"),
+                            a.get("verti_cutting_machine_id"),
+                            a.get("verti_cutting_operator"),
+                            a.get("verti_cutting_reason_remarks")
+                        ])
+
+                #########################################
+                # DELETE REMOVED AREAS
+                #########################################
+
+                deleteAreas=set(dbAreas.keys())-formAreas
+
+                for area in deleteAreas:
+
+                    cursor.execute(f"""
+                    DELETE FROM `{org_id}_annual_maintenance_area`
+                    WHERE annual_id=%s
+                    AND area=%s
+                    """,[annual_id,area])
+
+        return JsonResponse({
+            "status":"success",
+            "annual_id":annual_id,
+            "message":"Updated Successfully"
+        })
+
+    except Exception as e:
+
+        print(e)
+
+        return JsonResponse({
+            "status":"error",
+            "message":str(e)
+        })
+
+
+from django.core.serializers.json import DjangoJSONEncoder
+
 
 from django.http import JsonResponse
 from django.db import connection
@@ -7990,6 +8651,8 @@ def get_match_details(request, match_id):
 
 from django.http import JsonResponse
 from django.db import connection
+
+
 
 
 # # View to get all Ground IDs

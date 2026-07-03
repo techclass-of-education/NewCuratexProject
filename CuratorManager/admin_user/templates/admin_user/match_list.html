@@ -4,6 +4,31 @@
 
 {% load static %}
 <link href="{% static 'admin_user/css/gradient.css' %}" rel="stylesheet">
+
+  <script>
+                          function outfieldPitchReport(event,mid) {
+                            event.preventDefault()
+                                const trimmedMid = mid.trim();
+                                // alert(mid)
+
+                                axios.get('/usr_admin/check-icc-pitch-report/', {
+                                    params: { mid: trimmedMid }
+                                })
+                                .then(function (response) {
+                                    if (response.data.exists) {
+                                        location.href = "/usr_admin/view-icc-pitch-report?id=" + trimmedMid;
+                                    } else {
+                                        alert("No pitch report found for this match!");
+                                        location.href = "/usr_admin/save_icc_pitch_form/"+trimmedMid;
+                                    }
+                                })
+                                .catch(function (error) {
+                                    console.error(error);
+                                    alert("Something went wrong while checking the report!");
+
+                                });
+                            }
+                        </script>
 <div class="wrapper grass-bg" style=" overflow-x: auto; ">
     <!-- Sidebar -->
     {% include "admin_user/menu_side.html" %}
@@ -91,10 +116,9 @@
                         <a href="{% url 'delete_match' match.0 %}" class="btn btn-danger mb-2"
                             dataid="{{match.0}}">Delete Match Recording</a>
                         {% endif %}
-
+                      
                         {% if request.session.user.role == "admin" %}
-                        <a href="{% url 'save_icc_pitch_form' match.0 %}" class="btn btn-danger mb-2"
-                            dataid="{{match.0}}">Pitch Report</a>
+                        <button onclick="outfieldPitchReport(event,'{{match.0}}')" class="btn btn-danger mb-2">Pitch Report</button>
                         {% endif %}
                         <div class="row">
                             <div class="col">
@@ -991,8 +1015,7 @@
                         {% endif %}
                         <!-- <a href="{% url 'delete_match' match.0 %}" class="btn btn-danger mb-2" dataid="{{match.0}}">Delete Match Recording</a> -->
    {% if request.session.user.role == "admin" %}
-                        <a href="{% url 'save_icc_pitch_form' match.0 %}" class="btn btn-danger mb-2"
-                            dataid="{{match.0}}">Pitch Report</a>
+                         <button onclick="outfieldPitchReport(event,'{{match.0}}')" class="btn btn-danger mb-2">Pitch Report</button>
                         {% endif %}
                         <div class="row">
                             <div class="col">
