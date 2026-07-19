@@ -32,7 +32,7 @@
         <div class="row mx-auto">
                 {% if request.session.user.role == "admin" %}
                 <div class="col-lg-3 col-sm-12">
-        <label for="js_date_filter" class="text-white">Ground Filter:</label>
+             <label for="js_date_filter" class="text-white">Ground Filter:</label>
                 
                 <select id="ground_id" name="ground_id" class="form-control"></select>
 
@@ -64,35 +64,35 @@
        
 
         <div class="accordion-item" onclick="getMachine(this)">
-            <h2 class="accordion-header" id="heading-{{ recording.0 }}">
+            <h2 class="accordion-header" id="heading-{{ recording.id }}">
                 <button class="accordion-button text-center" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#collapse-{{ recording.0 }}" aria-expanded="true"
-                    aria-controls="collapse-{{ recording.0 }}">
+                    data-bs-target="#collapse-{{ recording.id }}" aria-expanded="true"
+                    aria-controls="collapse-{{ recording.id }}">
                     <span class="fs-5 fw-bolder me-2 text-dark record-type"  style="text-transform: uppercase;">
-                                    {% if recording.2 == "all area" %}
+                                    {% if recording.pitch_location == "all area" %}
                                         All Area
                                 
                                      {% else %}
-                                     {{recording.2}}
+                                     {{recording.pitch_location}}
                                     {% endif %}</span>
-                    <span class="pe-3">  <b class="td-ground fs-6">{{ recording.63 }} <span class="text-warning">({{ recording.0 }})</span></b></span>
+                    <span class="pe-3">  <b class="td-ground fs-6">{{ recording.ground_name }} <span class="text-warning">({{ recording.id }})</span></b></span>
                     
                     
-                    <span class="pe-4 fs-6"> <b class="">Date</b><small><br> {{ recording.3| to_ddmmyyyy  }}</small></span>
-                    <span class="pe-4 fs-6"> <b class="fs-6">Actual Entry Date-time</b><small><br> {{ recording.59 }}</small></span>
-                    <span class="fs-6"> <b>Record Updated Date-time</b><small><br> {{ recording.60 }}</small></span>
+                    <span class="pe-4 fs-6"> <b class="">Date</b><small><br> {{ recording.rolling_start_date|to_ddmmyyyy  }}</small></span>
+                    <span class="pe-4 fs-6"> <b class="fs-6">Actual Entry Date-time</b><small><br> {{ recording.created_at }}</small></span>
+                    <span class="fs-6"> <b>Record Updated Date-time</b><small><br> {{ recording.updated_at }}</small></span>
 
                    
                 </button>
             </h2>
 
-            <div id="collapse-{{ recording.0 }}" class="accordion-collapse collapse"
-                aria-labelledby="heading{{ recording.0 }}" data-bs-parent="#accordionDR">
+            <div id="collapse-{{ recording.id }}" class="accordion-collapse collapse"
+                aria-labelledby="heading{{ recording.id }}" data-bs-parent="#accordionDR">
                 <div class="accordion-body">
                     <div class="table-responsive transparent-bg">
-                  <a class="btn btn-success mx-2" href="{% url 'update_daily' recording.0 %}">EDIT</a>
+                  <a class="btn btn-success mx-2" href="{% url 'update_daily' recording.id %}">EDIT</a>
                    {% if request.session.user.role == "admin" %}
-                    <input class="btn btn-danger del-btn" dataid="{{recording.0}}" value="DELETE" type="button"/>
+                    <input class="btn btn-danger del-btn" dataid="{{recording.id}}" value="DELETE" type="button"/>
                      {% endif %}
                     <div class="row mt-2">
                         <div class="col-sm-12 col-lg-12">
@@ -107,28 +107,26 @@
             <th>Minimum Temperature</th>
             <th>Maximum Temperature</th>
             <th>Forecast</th>
-            <th>Clagg Hammer</th>
-            <th>Moisture</th>
+          
         </tr>
         
           <tr>
-            <td>{{ recording.0 }}</td>
-            <td>{{ recording.61}} {{ recording.62}}</td>
-            <td class="td-ground">{{ recording.63 }}</td>
-            <!-- <td>{{ recording.2 }}</td> -->
-            <td>{{ recording.3| to_ddmmyyyy }}</td>
-            <td>{{ recording.4 }}</td>
-            <td>{{ recording.5 }}</td>
-            <td>{{ recording.6 }}</td>
-            <td>{{ recording.7 }}</td>
-            <td>{{ recording.8 }}</td>
+            <td>{{ recording.id }}</td>
+            <td>{{ recording.pitch_type}} {{ recording.pitch_placement}}</td>
+            <td class="td-ground">{{ recording.ground_name }}</td>
+            <!-- <td>{{ recording.pitch_location }}</td> -->
+            <td>{{ recording.rolling_start_date|to_ddmmyyyy }}</td>
+            <td>{{ recording.min_temp }}</td>
+            <td>{{ recording.max_temp }}</td>
+            <td>{{ recording.forecast }}</td>
+          
         </tr>
                              
                             </table>
                         </div>
                   
 
-                        {% if recording.70 == "1" %}
+                        {% if recording.pitch_main == "1" %}
                          <details class="summary-shadow transparent-bg  box-bg rounded">
                                                                     <summary class="rounded-0">Main Pitch</summary>
                         <div class="col-sm-12 col-lg-12 transparent-bg border p-0">
@@ -146,7 +144,7 @@
                                     <td>
                                          
                                         <table>
-                                             {% for item in recording.12|split_by_delimiter %}
+                                             {% for item in recording.rolling_speed|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
@@ -162,7 +160,7 @@
                                     <td>
                                          
                                         <table>
-                                             {% for item in recording.14|split_by_delimiter %}
+                                             {% for item in recording.time_of_application|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
@@ -177,7 +175,7 @@
                                       <td>
                                          
                                         <table>
-                                             {% for item in recording.13|split_by_delimiter %}
+                                             {% for item in recording.quantity_of_water|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
@@ -207,7 +205,7 @@
                                      <td>
                                          
                                         <table>
-                                             {% for item in recording.9|split_by_delimiter %}
+                                             {% for item in recording.machinery_id|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr class="machinery-id">
                                                 <td>
@@ -222,7 +220,7 @@
                                      <td>
                                          
                                         <table>
-                                             {% for item in recording.15|split_by_delimiter %}
+                                             {% for item in recording.time_roller|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
@@ -237,7 +235,7 @@
                                     <td>
                                          
                                         <table>
-                                             {% for item in recording.10|split_by_delimiter %}
+                                             {% for item in recording.no_of_passes|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
@@ -252,7 +250,7 @@
                                      <td>
                                          
                                         <table>
-                                             {% for item in recording.11|split_by_delimiter %}
+                                             {% for item in recording.rolling_speed|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
@@ -284,7 +282,7 @@
                                       <td>
                                           
                                           <table>
-                                              {% for item in recording.16|split_by_delimiter %}
+                                              {% for item in recording.mover_machinery_id|split_by_delimiter %}
                                                 {% if item.strip %}
                                               <tr class="machinery-id">
                                                   <td>
@@ -299,7 +297,7 @@
                                       <td>
                                           
                                           <table>
-                                              {% for item in recording.17|split_by_delimiter %}
+                                              {% for item in recording.date_mowing_done_last|split_by_delimiter %}
                                                 {% if item.strip %}
                                               <tr>
                                                   <td>
@@ -314,7 +312,7 @@
                                       <td>
                                           
                                           <table>
-                                              {% for item in recording.18|split_by_delimiter %}
+                                              {% for item in recording.time_of_application_mover|split_by_delimiter %}
                                                 {% if item.strip %}
                                               <tr>
                                                   <td>
@@ -329,7 +327,7 @@
                                       <td>
                                           
                                           <table>
-                                              {% for item in recording.19|split_by_delimiter %}
+                                              {% for item in recording.mowing_done_at_mm|split_by_delimiter %}
                                                 {% if item.strip %}
                                               <tr>
                                                   <td>
@@ -344,8 +342,8 @@
                                 </tr>
                             
                               </table>
-                            
-                                <table class="table table-bordered caption-top">
+<!--                             
+            <table class="table table-bordered caption-top">
  
                                      <caption class="caption caption-top fw-bolder fs-5 text-warning bg-dark text-center">
                                     Chemicals
@@ -361,7 +359,7 @@
                                    <td>
                                          
                                         <table>
-                                             {% for item in recording.21|split_by_delimiter %}
+                                             {% for item in recording.fertilizers_details|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr class="chemical-id">
                                                 <td>
@@ -416,7 +414,7 @@
                                     </td>
                                     <td>
                                        <table>
-                                             {% for item in recording.22|split_by_delimiter %}
+                                             {% for item in recording.chemical_details_remark|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
@@ -436,20 +434,47 @@
                              
                                 <tr>
                                     <th>Remark by Groundsman</th>
-                                    <td colspan="4">{{ recording.23 }}</td>
+                                    <td colspan="4">{{ recording.remark_by_groundsman }}</td>
                                 </tr>
-                                </table>
+                </table>
+
+                                 -->
+
+
 
                                 
-                                
-                                                
+                                 <table class="table table-bordered">
+
+                                        <caption class="caption-top bg-dark text-white text-center fw-bold">
+                                            Chemicals
+                                        </caption>
+
+                                        <thead>
+                                            <tr>
+                                                <th>Chemical Details</th>
+                                                <th>Weight</th>
+                                                <th>Unit</th>
+                                                <th>Time</th>
+                                                <th>Chemical Remarks</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody id="mainchemicalBody">
+                                        </tbody>
+
+                                        <tr>
+                                            <th>Remark by Groundsman</th>
+                                            <td colspan="4">{{ recording.23 }}</td>
+                                        </tr>
+
+                                    </table>                   
                                            
                            
                                
                             </div>
                             </details>
                             {% endif %}
-                            {% if recording.71 == "1" %}
+                            {% if recording.pitch_practice == "1" %}
                             <details class="summary-shadow transparent-bg  box-bg rounded">
                                                                     <summary class="rounded-0">Practice Pitch</summary>
                             <div class="col-sm-12 transparent-bg col-lg-12">
@@ -469,7 +494,7 @@
                                     <td>
                                          
                                         <table>
-                                             {% for item in recording.77|split_by_delimiter %}
+                                             {% for item in recording.pp_last_watering_on|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
@@ -485,7 +510,7 @@
                                     <td>
                                          
                                         <table>
-                                             {% for item in recording.79|split_by_delimiter %}
+                                             {% for item in recording.pp_time_of_application|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
@@ -500,7 +525,7 @@
                                       <td>
                                          
                                         <table>
-                                             {% for item in recording.78|split_by_delimiter %}
+                                             {% for item in recording.pp_quantity_of_water|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
@@ -518,7 +543,7 @@
                                     <td>
                                         <td>
                                           <ul>
-                                            {% for item in recording.77|split_by_delimiter %}
+                                            {% for item in recording.pp_last_watering_on|split_by_delimiter %}
                                               {% if item.strip %}
                                                 <li>{{ item }}</li>
                                               {% endif %}
@@ -532,7 +557,7 @@
                                     <td>
                                         <td>
                                           <ul>
-                                            {% for item in recording.78|split_by_delimiter %}
+                                            {% for item in recording.pp_quantity_of_water|split_by_delimiter %}
                                               {% if item.strip %}
                                                 <li>{{ item }}</li>
                                               {% endif %}
@@ -547,7 +572,7 @@
                                       
                                         <td>
                                           <ul>
-                                            {% for item in recording.79|split_by_delimiter %}
+                                            {% for item in recording.pp_time_of_application|split_by_delimiter %}
                                               {% if item.strip %}
                                                 <li>{{ item }}</li>
                                               {% endif %}
@@ -571,7 +596,7 @@
                                      <td>
                                          
                                         <table>
-                                             {% for item in recording.74|split_by_delimiter %}
+                                             {% for item in recording.pp_machinery_id|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr class="machinery-id">
                                                 <td>
@@ -586,7 +611,7 @@
                                      <td>
                                          
                                         <table>
-                                             {% for item in recording.80|split_by_delimiter %}
+                                             {% for item in recording.pp_time_roller|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
@@ -601,7 +626,7 @@
                                     <td>
                                          
                                         <table>
-                                             {% for item in recording.75|split_by_delimiter %}
+                                             {% for item in recording.pp_no_of_passes|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
@@ -616,7 +641,7 @@
                                      <td>
                                          
                                         <table>
-                                             {% for item in recording.76|split_by_delimiter %}
+                                             {% for item in recording.pp_rolling_speed|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
@@ -645,7 +670,7 @@
                                     <th>No of Passes</th>
                                     <td>
                                           <ul>
-                                            {% for item in recording.75|split_by_delimiter %}
+                                            {% for item in recording.pp_no_of_passes|split_by_delimiter %}
                                               {% if item.strip %}
                                                 <li>{{ item }}</li>
                                               {% endif %}
@@ -658,7 +683,7 @@
                                     <th>Rolling Speed</th>
                                     <td>
                                         <ul>
-                                            {% for item in recording.76|split_by_delimiter %}
+                                            {% for item in recording.pp_rolling_speed|split_by_delimiter %}
                                               {% if item.strip %}
                                                 <li>{{ item }}</li>
                                               {% endif %}
@@ -671,7 +696,7 @@
                                     <th>Time Roller</th>
                                     <td>
                                          <ul>
-                                            {% for item in recording.80|split_by_delimiter %}
+                                            {% for item in recording.pp_time_roller|split_by_delimiter %}
                                               {% if item.strip %}
                                                 <li>{{ item }}</li>
                                               {% endif %}
@@ -680,6 +705,7 @@
                                     </td>
                                 </tr> -->
                                 </table>
+                               
                                 <table class="table table-bordered caption-top">
                                      <caption class="caption caption-top fw-bolder fs-5 text-warning bg-dark text-center">
                                     Mowing
@@ -696,7 +722,7 @@
                                       <td>
                                           
                                           <table>
-                                              {% for item in recording.81|split_by_delimiter %}
+                                              {% for item in recording.pp_mover_machinery_id|split_by_delimiter %}
                                                 {% if item.strip %}
                                               <tr class="machinery-id">
                                                   <td>
@@ -711,7 +737,7 @@
                                       <td>
                                           
                                           <table>
-                                              {% for item in recording.82|split_by_delimiter %}
+                                              {% for item in recording.pp_date_mowing_done_last|split_by_delimiter %}
                                                 {% if item.strip %}
                                               <tr>
                                                   <td>
@@ -726,7 +752,7 @@
                                       <td>
                                           
                                           <table>
-                                              {% for item in recording.83|split_by_delimiter %}
+                                              {% for item in recording.pp_time_of_application_mover|split_by_delimiter %}
                                                 {% if item.strip %}
                                               <tr>
                                                   <td>
@@ -741,7 +767,7 @@
                                       <td>
                                           
                                           <table>
-                                              {% for item in recording.84|split_by_delimiter %}
+                                              {% for item in recording.pp_mowing_done_at_mm|split_by_delimiter %}
                                                 {% if item.strip %}
                                               <tr>
                                                   <td>
@@ -757,7 +783,7 @@
 
                             
                             </table>
-                                <table class="table table-bordered caption-top">
+                <!-- <table class="table table-bordered caption-top">
  
                                      <caption class="caption caption-top fw-bolder fs-5 text-warning bg-dark text-center">
                                     Chemicals
@@ -848,15 +874,41 @@
                                     <td colspan="4">{{ recording.88 }}</td>
                                 </tr>
                            
-                                </table>
-                               
+            </table> -->
+                              
+            
+                <table class="table table-bordered">
+
+                                        <caption class="caption-top bg-dark text-white text-center fw-bold">
+                                            Chemicals
+                                        </caption>
+
+                                        <thead>
+                                            <tr>
+                                                <th>Chemical Details</th>
+                                                <th>Weight</th>
+                                                <th>Unit</th>
+                                                <th>Time</th>
+                                                <th>Chemical Remarks</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody id="ppchemicalBody">
+                                        </tbody>
+
+                                        <tr>
+                                            <th>Remark by Groundsman</th>
+                                            <td colspan="4">{{ recording.88 }}</td>
+                                        </tr>
+
+                                    </table>       
                           
                             </div>
                           
                              </details>
                                 {% endif %}
                             
-                            {% if recording.72 == "1" %}
+                            {% if recording.outfield == "1" %}
                             <details class="summary-shadow transparent-bg  box-bg rounded">
                                                                     <summary class="rounded-0">Outfield</summary>
                                 <div class="col-sm-12 transparent-bg col-lg-12">
@@ -876,7 +928,7 @@
                                     <td>
                                          
                                         <table>
-                                             {% for item in recording.27|split_by_delimiter %}
+                                             {% for item in recording.out_last_watering_on|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
@@ -892,7 +944,7 @@
                                     <td>
                                          
                                         <table>
-                                             {% for item in recording.29|split_by_delimiter %}
+                                             {% for item in recording.out_time_of_application|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
@@ -907,7 +959,7 @@
                                       <td>
                                          
                                         <table>
-                                             {% for item in recording.28|split_by_delimiter %}
+                                             {% for item in recording.out_quantity_of_water|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
@@ -936,7 +988,7 @@
                                      <td>
                                          
                                         <table>
-                                             {% for item in recording.24|split_by_delimiter %}
+                                             {% for item in recording.out_machinery_id|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr class="machinery-id">
                                                 <td>
@@ -951,7 +1003,7 @@
                                      <td>
                                          
                                         <table>
-                                             {% for item in recording.30|split_by_delimiter %}
+                                             {% for item in recording.out_time_roller|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
@@ -966,7 +1018,7 @@
                                     <td>
                                          
                                         <table>
-                                             {% for item in recording.25|split_by_delimiter %}
+                                             {% for item in recording.out_no_of_passes|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
@@ -981,7 +1033,7 @@
                                      <td>
                                          
                                         <table>
-                                             {% for item in recording.26|split_by_delimiter %}
+                                             {% for item in recording.out_rolling_speed|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
@@ -1012,7 +1064,7 @@
                                       <td>
                                           
                                           <table>
-                                              {% for item in recording.31|split_by_delimiter %}
+                                              {% for item in recording.out_mover_machinery_id|split_by_delimiter %}
                                                 {% if item.strip %}
                                               <tr class="machinery-id">
                                                   <td>
@@ -1027,7 +1079,7 @@
                                       <td>
                                           
                                           <table>
-                                              {% for item in recording.32|split_by_delimiter %}
+                                              {% for item in recording.out_date_mowing_done_last|split_by_delimiter %}
                                                 {% if item.strip %}
                                               <tr>
                                                   <td>
@@ -1042,7 +1094,7 @@
                                       <td>
                                           
                                           <table>
-                                              {% for item in recording.33|split_by_delimiter %}
+                                              {% for item in recording.time_of_application_out_mover|split_by_delimiter %}
                                                 {% if item.strip %}
                                               <tr>
                                                   <td>
@@ -1057,7 +1109,7 @@
                                       <td>
                                           
                                           <table>
-                                              {% for item in recording.34|split_by_delimiter %}
+                                              {% for item in recording.out_mowing_done_at_mm|split_by_delimiter %}
                                                 {% if item.strip %}
                                               <tr>
                                                   <td>
@@ -1072,100 +1124,33 @@
                                 </tr>
                               
                                 </table>
-                                <table class="table table-bordered caption-top">
- 
-                                      <caption class="caption caption-top fw-bolder fs-5 text-warning bg-dark text-center">
-                                    Chemicals
-                                </caption>
-                                 <tr>
-                                   
-                                   
-                                    <th colspan="3">Chemical Details</th>
-                                    <th>Time</th>
-                                    <th>Chemical Remarks</th>
-                                </tr>
-                                <tr>
-                                   <td>
-                                         
-                                        <table>
-                                             {% for item in recording.36|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr class="chemical-id">
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                            
-                                            {% endif %}
-                                            {% endfor %}
-                                          </table>
-                                          </td>
-                                    <td>
-                                             <table>
-                                             {% for item in recording.96|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                             </table>
-                                             </td> 
-                                    <td>
-                                              <table>
-                                             {% for item in recording.97|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                        
-                                    </td>
+                               
+                                    <table class="table table-bordered">
 
-                                    <td>
-                                       <table>
-                                             {% for item in recording.55|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                    </td>
-                                    <td>
-                                       <table>
-                                             {% for item in recording.37|split_by_delimiter %}
-                                              {% if item.strip %}
-                                            <tr>
-                                                <td>
-                                                    {{ item }}
-                                                </td>
-                                            </tr>
-                                              {% endif %}
-                                             {% endfor %}
-                                        </table>
-                                    </td>
+                                        <caption class="caption-top bg-dark text-white text-center fw-bold">
+                                            Chemicals
+                                        </caption>
 
+                                        <thead>
+                                            <tr>
+                                                <th>Chemical Details</th>
+                                                <th>Weight</th>
+                                                <th>Unit</th>
+                                                <th>Time</th>
+                                                <th>Chemical Remarks</th>
+                                            </tr>
+                                        </thead>
 
-                                </tr>
+                                        <tbody id="outchemicalBody">
+                                        </tbody>
+
+                                        <tr>
+                                            <th>Remark by Groundsman</th>
+                                            <td colspan="4">{{ recording.out_remark_by_groundsman }}</td>
+                                        </tr>
+
+                                    </table>
                             
-                                
-                         
-                             
-                                <tr>
-                                    <th>Remark by Groundsman</th>
-                                    <td colspan="4">{{ recording.38 }}</td>
-                                </tr>
-                                </table>
 
                                 
                                                     <table class="table table-bordered caption-top">
@@ -1178,7 +1163,7 @@
                                                                         <thead class="table-dark">
                                                                              <tr class="caption caption-top fw-bolder bg-dark text-white text-center">
                                                                                 <td colspan="13">
-                                                                                                                            <button class="me-2" onclick="getClaggHammer(event,'{{  recording.0 }}','o')">Fetch Clagg Hammer</button> </td>
+                                                                                                                            <button class="me-2" onclick="getClaggHammer(event,'{{  recording.id }}','o')">Fetch Clagg Hammer</button> </td>
 
 
                                                         </tr>
@@ -1220,7 +1205,7 @@
                                                                         <thead class="table-dark">
                                                                              <tr class="caption caption-top fw-bolder bg-dark text-white text-center">
                                                             <td colspan="14">
-                                                             <button class="me-2" onclick="renderMoisture(event,'{{ recording.0}}','o')">Fetch Moisture</button> <b>Moisture</b>
+                                                             <button class="me-2" onclick="renderMoisture(event,'{{ recording.id}}','o')">Fetch Moisture</button> <b>Moisture</b>
                                                              </td>
                                                         </tr>
                                                                             <tr>
@@ -1243,7 +1228,7 @@
                                         </div>
                                          </details>
                                     {% endif %}
-                                    {% if recording.73 == "1" %}
+                                    {% if recording.practice_area == "1" %}
                                     <details class="summary-shadow transparent-bg  box-bg rounded">
                                                                     <summary class="rounded-0">Practice Area</summary>
                                         <div class="col-sm-12 transparent-bg col-lg-12">
@@ -1263,7 +1248,7 @@
                                     <td>
                                          
                                         <table>
-                                             {% for item in recording.42|split_by_delimiter %}
+                                             {% for item in recording.practice_last_watering_on|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
@@ -1279,7 +1264,7 @@
                                     <td>
                                          
                                         <table>
-                                             {% for item in recording.44|split_by_delimiter %}
+                                             {% for item in recording.practice_time_of_application|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
@@ -1294,7 +1279,7 @@
                                       <td>
                                          
                                         <table>
-                                             {% for item in recording.43|split_by_delimiter %}
+                                             {% for item in recording.practice_quantity_of_water|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
@@ -1323,7 +1308,7 @@
                                      <td>
                                          
                                         <table>
-                                             {% for item in recording.39|split_by_delimiter %}
+                                             {% for item in recording.practice_machinery_id|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr class="machinery-id">
                                                 <td>
@@ -1338,7 +1323,7 @@
                                      <td>
                                          
                                         <table>
-                                             {% for item in recording.45|split_by_delimiter %}
+                                             {% for item in recording.practice_time_roller|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
@@ -1353,7 +1338,7 @@
                                     <td>
                                          
                                         <table>
-                                             {% for item in recording.40|split_by_delimiter %}
+                                             {% for item in recording.practice_no_of_passes|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
@@ -1368,7 +1353,7 @@
                                      <td>
                                          
                                         <table>
-                                             {% for item in recording.41|split_by_delimiter %}
+                                             {% for item in recording.practice_rolling_speed|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
@@ -1398,7 +1383,7 @@
                                       <td>
                                           
                                           <table>
-                                              {% for item in recording.46|split_by_delimiter %}
+                                              {% for item in recording.practice_mover_machinery_id|split_by_delimiter %}
                                                 {% if item.strip %}
                                               <tr class="machinery-id">
                                                   <td>
@@ -1413,7 +1398,7 @@
                                       <td>
                                           
                                           <table>
-                                              {% for item in recording.47|split_by_delimiter %}
+                                              {% for item in recording.practice_date_mowing_done_last|split_by_delimiter %}
                                                 {% if item.strip %}
                                               <tr>
                                                   <td>
@@ -1428,7 +1413,7 @@
                                       <td>
                                           
                                           <table>
-                                              {% for item in recording.48|split_by_delimiter %}
+                                              {% for item in recording.time_of_application_practice_mover|split_by_delimiter %}
                                                 {% if item.strip %}
                                               <tr>
                                                   <td>
@@ -1443,7 +1428,7 @@
                                       <td>
                                           
                                           <table>
-                                              {% for item in recording.49|split_by_delimiter %}
+                                              {% for item in recording.practice_mowing_done_at_mm|split_by_delimiter %}
                                                 {% if item.strip %}
                                               <tr>
                                                   <td>
@@ -1459,7 +1444,7 @@
                             
                              
                                 </table>
-                                <table class="table table-bordered caption-top">
+                        <!-- <table class="table table-bordered caption-top">
  
                                      <caption class="caption caption-top fw-bolder fs-5 text-warning bg-dark text-center">
                                     Chemicals
@@ -1475,7 +1460,7 @@
                                    <td>
                                          
                                         <table>
-                                             {% for item in recording.51|split_by_delimiter %}
+                                             {% for item in recording.practice_fertilizers_details|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr class="chemical-id">
                                                 <td>
@@ -1530,7 +1515,7 @@
                                     </td>
                                     <td>
                                        <table>
-                                             {% for item in recording.52|split_by_delimiter %}
+                                             {% for item in recording.practice_chemical_details_remark|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
@@ -1544,8 +1529,36 @@
 
 
                                 </tr>
-                               
+                        </table>
+                                -->
                              
+
+  <table class="table table-bordered">
+
+                                        <caption class="caption-top bg-dark text-white text-center fw-bold">
+                                            Chemicals
+                                        </caption>
+
+                                        <thead>
+                                            <tr>
+                                                <th>Chemical Details</th>
+                                                <th>Weight</th>
+                                                <th>Unit</th>
+                                                <th>Time</th>
+                                                <th>Chemical Remarks</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody id="pfchemicalBody">
+                                        </tbody>
+
+                                        <tr>
+                                            <th>Remark by Groundsman</th>
+                                            <td colspan="4">{{ recording.practice_remark_by_groundsman }}</td>
+                                        </tr>
+
+                                    </table>
+
                                                     <table class="table table-bordered caption-top">
                                                        
                                                       
@@ -1556,7 +1569,7 @@
                                                                         <thead class="table-dark">
                                                                              <tr class="caption caption-top fw-bolder bg-dark text-white text-center">
                                                                                  <td colspan="13">
-                                                                                   <button class="me-2" onclick="getClaggHammer(event,'{{  recording.0 }}','p')">Fetch Clagg Hammer</button> 
+                                                                                   <button class="me-2" onclick="getClaggHammer(event,'{{  recording.id }}','p')">Fetch Clagg Hammer</button> 
                                                                                 </td>
                                                                              </tr>
                                                                             <tr>
@@ -1597,7 +1610,7 @@
                                                                         <thead class="table-dark">
                                                                              <tr class="caption caption-top fw-bolder bg-dark text-white text-center">
                                                             <td colspan="14">
-                                                             <button class="me-2" onclick="renderMoisture(event,'{{ recording.0}}','p')">Fetch Moisture</button> <b>Moisture</b>
+                                                             <button class="me-2" onclick="renderMoisture(event,'{{ recording.id}}','p')">Fetch Moisture</button> <b>Moisture</b>
                                                              </td>
                                                         </tr>
                                                                             <tr>
@@ -1804,7 +1817,7 @@ else
         }
 
           function getChemical(div) {
-            const chemicalli = $(div).find(".chemical-id td")
+            const chemicalli = $(div).find(".chemical-id")
 
             Array.from(chemicalli).forEach(li => {
                 let id=$(li).text().trim()
@@ -1911,13 +1924,111 @@ function clearDateFilter() {
     $('#js_date_filter').val('');
     $('.accordion-item').show();
 }
+
+
+
+
+
    
    </script>
 
 
 
 
+<script>
 
+    
+function loadChemicalTable(
+    chemicalStr,
+    weightStr,
+    unitStr,
+    timeStr,
+    remarkStr,
+    tbodyId
+){
+    const tbody=document.getElementById(tbodyId);
+
+    const chemicals = (chemicalStr || "").split("__####__");
+    const weights   = (weightStr || "").split("__####__");
+    const units     = (unitStr || "").split("__####__");
+    const times     = (timeStr || "").split("__####__");
+    const remarks   = (remarkStr || "").split("__####__");
+
+    const maxLen = Math.max(
+        chemicals.length,
+        weights.length,
+        units.length,
+        times.length,
+        remarks.length
+    );
+
+    let html = "";
+
+    for(let i=0;i<maxLen;i++){
+
+        const chemical = (chemicals[i] || "").trim();
+        const weight   = (weights[i] || "").trim();
+        const unit     = (units[i] || "").trim();
+        const time     = (times[i] || "").trim();
+        const remark   = (remarks[i] || "").trim();
+
+       if(!chemical && !weight && !unit && !time && !remark)
+            continue;
+
+        tbody.insertAdjacentHTML("beforeend",`
+            <tr>
+                <td class="chemical-id">${chemical}</td>
+                <td>${weight}</td>
+                <td>${unit}</td>
+                <td>${time}</td>
+                <td>${remark}</td>
+            </tr>
+        `);
+    }
+
+    document.getElementById(tbodyId).innerHTML += html;
+}
+      
+{% for recording in recordings %}
+
+loadChemicalTable(
+    `{{ recording.out_fertilizers_details|default:''|escapejs }}`,
+    `{{ recording.outfield_chemical_weight|default:''|escapejs }}`,
+    `{{ recording.outfield_chemical_unit|default:''|escapejs }}`,
+    `{{ recording.out_time_of_application_chemical|default:''|escapejs }}`,
+    `{{ recording.out_chemical_details_remark|default:''|escapejs }}`,
+    "outchemicalBody"
+);
+
+loadChemicalTable(
+    `{{ recording.fertilizers_details|default:''|escapejs }}`,
+    `{{ recording.pitch_main_chemical_weight|default:''|escapejs }}`,
+    `{{ recording.pitch_main_chemical_unit|default:''|escapejs }}`,
+    `{{ recording.time_of_application_chemical|default:''|escapejs }}`,
+    `{{ recording.chemical_details_remark|default:''|escapejs }}`,
+    "mainchemicalBody"
+);
+
+loadChemicalTable(
+    `{{ recording.practice_fertilizers_details|default:''|escapejs }}`,
+    `{{ recording.pitch_practice_chemical_weight|default:''|escapejs }}`,
+    `{{ recording.pitch_practice_chemical_unit|default:''|escapejs }}`,
+    `{{ recording.practice_time_of_application_chemical|default:''|escapejs }}`,
+    `{{ recording.practice_chemical_details_remark|default:''|escapejs }}`,
+    "ppchemicalBody"
+);
+
+loadChemicalTable(
+    `{{ recording.pp_fertilizers_details|default:''|escapejs }}`,
+    `{{ recording.practice_area_chemical_weight|default:''|escapejs }}`,
+    `{{ recording.practice_area_chemical_unit|default:''|escapejs }}`,
+    `{{ recording.pp_time_of_application_chemical|default:''|escapejs }}`,
+    `{{ recording.pp_chemical_details_remark|default:''|escapejs }}`,
+    "pfchemicalBody"
+);
+
+{% endfor %}
+</script>
 
 
 

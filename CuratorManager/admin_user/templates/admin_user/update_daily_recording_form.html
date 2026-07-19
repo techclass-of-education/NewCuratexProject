@@ -25,99 +25,136 @@
                             <div class="card-body box-gradient rounded-bottom">
                                 {% csrf_token %}
                                 <input type="hidden" name="id" value="{{daily.0}}"/>
-                                <fieldset class="form-group border mt-4 p-3">
-                                    <div class="row">
-                                        <div class="col-sm-12 col-lg-4">
-                                            <label for="recording_type" class="form-label">Select Recording Type</label>
+                                   <fieldset class="form-group mt-4 card-shadow">
+                                    <!-- <legend class="w-auto px-2">Common Entries</legend> -->
+                                    <div class="row mb-3">
+                                        <div class="col-sm-12 col-lg-2">
+                                            <label for="recording_type" class="form-label">Recording Type</label>
                                             <select id="recording_type" name="recording_type" class="form-control">
                                                 <option value="daily">Daily</option>
+                                                <!-- <option value="match">Match Preperation</option>
+                                    <option value="both">Both</option> -->
                                             </select>
                                         </div>
 
                                         <div class="col-sm-12 col-lg-4">
-                                            <!-- <label id="ground_id_label" class="bg-dark text-white" style="color:white;background-color: black;padding: 2px 10px;">Ground Id: {{daily.58}}</label> -->
                                             <input type="hidden" name="ground_id_text" id="ground_id_text" value="{{daily.58}}" />
+
                                             <label for="ground_id" class="form-label">Select Ground:</label>
                                             <select id="ground_id" required name="ground_id" class="form-control">
+
+
                                             </select>
+
                                         </div>
-                                        <div class="col-sm-12 col-lg-4">
-                                            <!-- <label id="pitch_id_label" class="bg-dark text-white" style="color:white;background-color: black;padding: 2px 10px;"></label> -->
+                                        <div class="col-sm-12 col-lg-2">
                                             <input type="hidden" name="pitch_id_text" id="pitch_id_text" value="{{daily.1}}" />
+
                                             <label for="pitch_id" class="form-label">Select Pitch:</label>
                                             <select id="pitch_id" name="pitch_id" class="form-control">
+
                                             </select>
                                         </div>
+                                         <div class="col-lg-4 col-sm-12">
+                                            <input type="hidden" id="pitch_location" value="{{daily.2}}" name="pitch_location" class="form-control">
+
+                                            <label for="pitch_location" class="form-label">Pitch Map Location:</label>
+                                            <input type="text" id="pitch_location" name="pitch_location"
+                                                class="form-control">
+                                        </div>
+
                                     </div>
 
-                                    <div class="row">
-                                        <div class="col-lg-4 col-sm-12">
-                                            <label for="pitch_location" class="form-label">Pitch Location:</label>
-                                            <input type="text" id="pitch_location" value="{{daily.2}}" name="pitch_location" class="form-control">
+                                  <div class="row">
+                                    <div class="col-lg-6 col-sm-12">
+                                         <div class="row d-flex flex-column">
+
+                                        <div class="col-sm-12 mb-3 col-lg-12">
+                                            <label for="rolling_start_date" class="form-label">Date:</label>
+                                            <input type="date" onchange="getWeatherByThis(this,`daily`)" id="rolling_start_date" name="rolling_start_date" value="{{daily.3}}" class="form-control">
+
                                         </div>
-                                        <div class="col-lg-4 col-sm-12 checkboxes tab-checkboxes d-flex align-items-center mt-4 justify-content-center">
+                                   
+                                        <div class="col-sm-12 mb-3 col-lg-12">
+                                            <label for="min_temp" class="form-label">Minimum Temperature °C</label>
+                                           <input type="text" id="min_temp" placeholder="Minimum Temprature" value="{{daily.4}}" name="min_temp" class="form-control">
+
+
+                                        </div>
+                                        <div class="col-sm-12 mb-3 col-lg-12">
+                                            <label for="max_temp" class="form-label">Maximum Temperature °C</label>
+                                            <input type="text" placeholder="Maximum temperature" id="max_temp"  value="{{daily.5}}"
+                                                name="max_temp" class="form-control">
+
+                                        </div>
+
+                                        <div class="col-sm-12 mb-3 col-lg-12">
+                                            <label for="forecast" class="form-label">Forecast Prediction
+                                                Available:</label>
+                                            <input id="forecast" name="forecast"
+                                                placeholder="Forecast Prediction Available" value="{{daily.6}}"
+                                                class="form-control">
+                                        </div>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="col-lg-4 col-sm-12">
+                                    <div class="row d-flex flex-column">
+                                  
+                                                <div class="col-sm-12 mb-3 col-lg-12">
+                                                    <label for="moisture" class="form-label">Moisture</label>
+                                                    <input type="text" id="moisture" placeholder="Moisture"
+                                                        name="moisture" class="form-control">
+
+                                                </div>
+                                                <div class="col-sm-12 mb-3 col-lg-12">
+                                                    <label for="clagg_hammer" class="form-label">Clagg Hammer</label>
+                                                    <input type="text" placeholder="Clagg Hammer" id="clagg_hammer"
+                                                        name="clagg_hammer" class="form-control">
+
+                                                </div>
+                                            </div>
+                                    </div> -->
+                                    <div class="col-lg-6 col-sm-12">
+                                    <div class="row">
+                                        <div
+                                            class="col-lg-12 col-sm-12 checkboxes d-flex r mt-4 flex-column">
                                             <div class="form-check d-flex">
-                                                <input class="form-check-input" type="checkbox" name="pitch-main" {% if daily.61 == "1" %}checked{% endif %} id="pitch-main">
-                                                <label class="form-check-label" for="pitch-main">
+                                                <input class="form-check-input" type="checkbox" {% if daily.61 == "1" %}checked{% endif %}
+                                                    name="pitch-main" id="pitch-main">
+                                                <label class="form-check-label" for="flexCheckDefault">
                                                     Pitch Main
                                                 </label>
                                             </div>
                                             <div class="form-check d-flex">
-                                                <input class="form-check-input" type="checkbox" name="pitch-practice" {% if daily.62 == "1" %}checked{% endif %} id="pitch-practice">
-                                                <label class="form-check-label" for="pitch-practice">
+                                                <input class="form-check-input" type="checkbox" {% if daily.62 == "1" %}checked{% endif %}
+                                                    name="pitch-practice" id="pitch-practice">
+                                                <label class="form-check-label" for="flexCheckChecked">
                                                     Pitch Practice
                                                 </label>
                                             </div>
                                             <div class="form-check d-flex">
-                                                <input class="form-check-input" type="checkbox" name="outfield" {% if daily.63 == "1" %}checked{% endif %} id="outfield">
-                                                <label class="form-check-label" for="outfield">
+                                                <input class="form-check-input" type="checkbox" name="outfield"  {% if daily.63 == "1" %}checked{% endif %}
+                                                    id="outfield">
+                                                <label class="form-check-label" for="flexCheckChecked">
                                                     Outfield
                                                 </label>
                                             </div>
                                             <div class="form-check d-flex">
-                                                <input class="form-check-input" type="checkbox" name="practice-area" {% if daily.64 == "1" %}checked{% endif %} id="practice-area">
-                                                <label class="form-check-label" for="practice-area">
+                                                <input class="form-check-input" type="checkbox" {% if daily.64 == "1" %}checked{% endif %}
+                                                    name="practice-area" id="practice-area">
+                                                <label class="form-check-label" for="flexCheckChecked">
                                                     Practice Area
                                                 </label>
                                             </div>
                                         </div>
-
-                                        <div class="col-sm-12 col-lg-4">
-                                            <label for="rolling_start_date" class="form-label">Date:</label>
-                                            <input type="date" onchange="getWeatherByThis(this,`daily`)" id="rolling_start_date" name="rolling_start_date" value="{{daily.3}}" class="form-control">
-                                        </div>
+</div>
                                     </div>
-
-
-                                    <div class="row">
-                                        <div class="col-sm-12 col-lg-4">
-                                            <label for="min_temp" class="form-label">Minimum Temprature °C</label>
-                                            <input type="text" id="min_temp" placeholder="Minimum Temprature" value="{{daily.4}}" name="min_temp" class="form-control">
-                                        </div>
-                                        <div class="col-sm-12 col-lg-4">
-                                            <label for="max_temp" class="form-label">Maximum Temprature °C</label>
-                                            <input type="text" placeholder="Maximum Temprature" id="max_temp" name="max_temp" value="{{daily.5}}" class="form-control">
-                                        </div>
-                                        <div class="col-sm-12 col-lg-4">
-                                            <label for="forecast" class="form-label">Forecast Prediction Available:</label>
-                                            <textarea id="forecast" name="forecast" placeholder="Forecast Prediction Available" class="form-control">{{daily.6}}</textarea>
-                                        </div>
                                     </div>
+                                       
+                                       
 
-                                    <!-- <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="row">
-                                                <div class="col">
-                                                    <label for="moisture" class="form-label">Moisture</label>
-                                                    <input type="text" id="moisture" placeholder="Moisture" value="{{daily.8}}" name="moisture" class="form-control">
-                                                </div>
-                                                <div class="col">
-                                                    <label for="clagg_hammer" class="form-label">Clagg Hammer</label>
-                                                    <input type="text" placeholder="Clagg Hammer" id="clagg_hammer" value="{{daily.7}}" name="clagg_hammer" class="form-control">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div> -->
+                                        
+                                
                                 </fieldset>
                                 <hr>
 
@@ -1013,7 +1050,7 @@
                                                                                 
 
                                                                                         </fieldset>
-                                                            </details>
+                                                                </details>
                                                 </div>
                                         </div>
                                                     
@@ -1197,44 +1234,42 @@
                                                     </div>
                                             
 
-                                            <div class="row">
-                                                <div class="col-sm-12 col-lg-12">
-                                                    <fieldset class="form-group border mt-4 text-dark p-3 box-bg rounded">
-                                                        <legend class="w-auto px-2">Watering</legend>
-                                                        <div class="row">
-                                                            <div class="col-sm-12 col-lg-4">
-                                                                <label for="last_watering_on" class="form-label">Watering On:</label>
-                                                                <input type="date" id="last_watering_on" name="last_watering_on" class="form-control">
+                                         <!-- Watering Section -->
+        <div class="row">
+            <div class="col-sm-12 col-lg-12">
+                 <details class="summary-shadow box-bg rounded">
+                                                                    <summary class="rounded-0">Watering
+                                   <span class="badge text-bg-warning" id="out-water-add-count"></span>
+
+                                                                    </summary>
+                <fieldset class="form-group border mt-4 text-dark p-3 box-bg rounded">
+                    <!-- <legend class="w-auto px-2">Watering</legend> -->
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-4">
+                            <label for="out_last_watering_on" class="form-label">Watering On:</label>
+                            <input type="date" id="out_last_watering_on" name="out_last_watering_on" class="form-control">
+                        </div>
+                        <div class="col-sm-12 col-lg-4">
+                            <label for="out_time_of_application" class="form-label">Time of Watering:</label>
+                            <input type="time" id="out_time_of_application" name="out_time_of_application" class="form-control">
+                        </div>
+                        <div class="col-sm-12 col-lg-4">
+                            <label for="out_quantity_of_water" class="form-label">Quantity of Water:</label>
+                            <input type="text" id="out_quantity_of_water" name="out_quantity_of_water" class="form-control">
+                        </div>
+
+                          <div class="col-sm-12 col-lg-3 mt-5">
+
+                            <button type="button" class="btn btn-primary" onclick="addOutWateringEntry()">Add Watering Entry</button>
+
                                                             </div>
-                                                            <div class="col-sm-12 col-lg-4">
-                                                                <label for="time_of_application" class="form-label">Time of Watering:</label>
-                                                                <div class="d-flex align-items-center justify-content-center">
-                                                                    <input type="time" id="time_of_application" name="time_of_application"  class="form-control">
-                                                                    <button type="button" class="btn d-flex align-items-center justify-content-center p-0 time-reset" style="width: 38px;">
-                                                                        <svg xmlns="https://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
-                                                                            <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
-                                                                            <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
-                                                                        </svg>
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-4">
-                                                                <label for="quantity_of_water" class="form-label">Quantity of Water:</label>
-                                                                <input type="text" id="quantity_of_water" name="quantity_of_water" class="form-control">
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-4">
-                                                               
-                                                                <button type="button" class="btn btn-primary my-4"
-                                                                      onclick="addWateringEntry()">Add Watering
-                                                                      Entry</button>
-                                                            </div>
-                                                        </div>
-                                                              <div class="col-sm-12 col-lg-12">
+
+                                                            <div class="col-sm-12 col-lg-12">
                                                                 <details>
                                                                     <summary>Watering Entries</summary>
                                                                       <div class="table-responsive transparent-bg">
                                                                     <table class="table table-bordered mt-2"
-                                                                        id="wateringTable">
+                                                                        id="outwateringTable">
                                                                         <thead class="table-dark">
                                                                             <tr>
                                                                                 <th>Watering On</th>
@@ -1246,310 +1281,306 @@
                                                                         <tbody></tbody>
                                                                     </table>
 
-                                                                    <input type="hidden" name="watering_entries_json"
-                                                                        id="watering_entries_json">
+                                                                    <input type="hidden" name="out_watering_entries_json"
+                                                                        id="out_watering_entries_json">
                                                                       </div>
                                                                 </details>
 
 
                                                             </div>
-                                                    </fieldset>
-                                                </div>
-                                            </div>
+                                                   
+                    </div>
+                </fieldset>
+                </details>
+            </div>
+        </div>
+        <!-- Rolling Section -->
+        <div class="row">
+            <div class="col-sm-12 col-lg-12">
+                 <details class="summary-shadow box-bg rounded">
+                                                                    <summary class="rounded-0">Rolling
+                                   <span class="badge text-bg-warning" id="out-roll-add-count"></span>
 
-                                            <div class="row">
-                                                <div class="col-sm-12 col-lg-12">
-                                                    <fieldset class="form-group border mt-4 text-dark p-3 box-bg rounded">
-                                                        <legend class="w-auto px-2">Rolling</legend>
-                                                        <div class="row">
-                                                            <div class="col-sm-12 col-lg-2">
-                                                                <label for="roller_machine_type" class="form-label">Select Machine Type</label>
-                                                                <select class="form-select" id="roller_machine_type" name="roller_machine_type">
-                                                                    <option selected>Select Type</option>
-                                                                    <option value="Manual">Manual</option>
-                                                                    <option value="Mechanized">Mechanized</option>
-                                                                </select>
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-3 mt-4">
-                                                                <input type="hidden" name="machinery_id" id="machinery_id">
-                                                                 <div class="input-group">
-                                                                <input type="text" name="machinery_name" id="machinery_name" class="form-control" readonly placeholder="Click to select machinery">
-                                                                 <span class="input-group-text bg-light" onclick="realoadMachineryList(event)">
-                                                                  <i class="bi bi-arrow-clockwise text-danger"></i>
-                                                                </span>
-                                                                </div>
-                                                                <button type="button" class="btn btn-warning align-self-end" style="font-size:70%" onclick="openMachineryModal('roller')">Select Machinery</button>
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-3">
-                                                                <label for="roller_machinery_name_operator" class="form-label">Operator Name:</label>
-                                                                <input type="text" name="roller_machinery_name_operator" id="roller_machinery_name_operator" class="form-control">
-                                                            </div>
-                                                               <div class="col-sm-12 col-lg-3">
-                                                    <label for="rolling_date"
-                                                        class="form-label">Date:</label>
-                                                    <input type="date" name="rolling_date"
-                                                        id="rolling_date" class="form-control">
+                                                                    </summary>
+                <fieldset class="form-group border mt-4 text-dark p-3 box-bg rounded">
+                    <!-- <legend class="w-auto px-2">Rolling</legend> -->
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-2">
+                            <label for="out_roller_machine_type" class="form-label">Select Machine Type</label>
+                            <select class="form-select" id="out_roller_machine_type" name="out_roller_machine_type" required>
+                                <option selected>Select Type</option>
+                                <option value="Manual">Manual</option>
+                                <option value="Mechanized">Mechanized</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-12 col-lg-3 mt-4">
+                            <input type="hidden" id="out_machinery_id">
+                            <div class="input-group">
+                            <input type="text" id="out_machinery_name" class="form-control" readonly placeholder="Click to select machinery">
+                            
+                            <span class="input-group-text bg-light" onclick="realoadMachineryList(event)">
+                                    <i class="bi bi-arrow-clockwise text-danger"></i>
+                            </span>
+                        </div>
+                            <button type="button" class="btn btn-dark mt-2 align-self-end" style="font-size:70%" onclick="openMachineryModal('out_roller')">Select Machinery</button>
+                        </div>
+                        <div class="col-sm-12 col-lg-3">
+                            <label for="out_roller_machinery_name_operator" class="form-label">Operator Name:</label>
+                            <input type="text" id="out_roller_machinery_name_operator" class="form-control">
+                        </div>
+                        <div class="col-sm-12 col-lg-2">
+                            <label for="out_time_roller" class="form-label">Time of Rolling:</label>
+                            <input type="time" id="out_time_roller" class="form-control">
+                        </div>
+                        <div class="col-sm-12 col-lg-2">
+                            <label for="out_rolling_speed" class="form-label">Rolling Speed (km/hr):</label>
+                            <input type="number" id="out_rolling_speed" class="form-control">
+                        </div>
+                        <div class="col-sm-12 col-lg-3 mt-4">
+                            <label for="out_passes_unit" class="form-label">Select Unit:</label>
+                            <select class="form-select" id="out_passes_unit" name="out_passes_unit">
+                                <option selected>Select Unit</option>
+                                <option value="passes">Passes</option>
+                                <option value="time">Time</option>
+                                <option value="hours">Hours</option>
+                                <option value="minutes">Minutes</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-12 col-lg-4 mt-4">
+                            <label for="out_no_of_passes" class="form-label">Number of Passes:</label>
+                            <input type="text" id="out_no_of_passes" name="out_no_of_passes" class="form-control">
+                        </div>
+                        <div class="col-sm-12 col-lg-3 mt-5">
+                            <button type="button" class="btn btn-primary" onclick="outaddRollingEntry()">Add Rolling Entry</button>
+                        </div>
+                        <div class="col-sm-12 col-lg-12">
+                            <details>
+                                <summary>Rolling Entries</summary>
+                                  <div class="table-responsive transparent-bg">
+                                    <table class="table table-bordered" id="outrollingTable" style="font-size: 70%;">
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th>Machine Type</th>
+                                                <th>Machinery</th>
+                                                <th>Operator</th>
+                                                <th>Speed</th>
+                                                <th>Passes</th>
+                                                <th>Unit</th>
+                                                <th>Time</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                    <input type="hidden" name="out_rolling_entries_json" id="out_rolling_entries_json">
+                                </div>
+                            </details>
+                        </div>
+                    </div>
+                </fieldset>
+                </details>
+            </div>
+        </div>
+        <!-- Mower Section -->
+        <div class="row">
+            <div class="col-sm-12 col-lg-12">
+                 <details class="summary-shadow box-bg rounded">
+                                                                    <summary class="rounded-0">Mowing
+                                   <span class="badge text-bg-warning" id="out-mower-add-count"></span>
 
-                                                </div>
-                                                 <div class="col-sm-12 col-lg-2">
-                                                                <label for="time_roller" class="form-label">Time of Rolling:</label>
-                                                                <div class="d-flex align-items-center justify-content-center">
-                                                                    <input type="time" id="time_roller" name="time_roller" class="form-control">
-                                                                    <button type="button" class="btn d-flex align-items-center justify-content-center p-0 time-reset" style="width: 38px;">
-                                                                        <svg xmlns="https://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
-                                                                            <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
-                                                                            <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
-                                                                        </svg>
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-2">
-                                                                <label for="rolling_speed" class="form-label">Rolling Type:</label>
-                                                                <input type="text" id="rolling_speed" name="rolling_speed" class="form-control">
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-3 mt-4">
-                                                                <label for="passes_unit" class="form-label">Select Unit:</label>
-                                                                <select class="form-select" id="passes_unit" name="passes_unit">
-                                                                    <option selected>Select Unit</option>
-                                                                    <option value="passes">Passes</option>
-                                                                    <option value="time">Time</option>
-                                                                    <option value="hours">Hours</option>
-                                                                    <option value="minutes">Minutes</option>
-                                                                </select>
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-4 mt-4">
-                                                                <label for="no_of_passes" class="form-label">Number of Passes:</label>
-                                                                <input type="number" id="no_of_passes" name="no_of_passes" class="form-control">
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-3 mt-5">
-                                                                <button type="button" class="btn btn-primary" onclick="addRollingEntry()">Add Rolling Entry</button>
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-12">
-                                                                <details>
-                                                                    <summary>Rolling Entries</summary>
-                                                                    <div class="table-responsive transparent-bg">
+                                                                    </summary>
+                <fieldset class="form-group border mt-4 text-dark p-3 box-bg rounded">
+                    <!-- <legend class="w-auto px-2">Mower</legend> -->
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <label for="out_mover_machine_type" class="form-label">Select Machine Type</label>
+                            <select class="form-select" id="out_mover_machine_type" name="out_mover_machine_type" required>
+                                <option selected>Select Type</option>
+                                <option value="Manual">Manual</option>
+                                <option value="Mechanized">Mechanized</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-4 col-sm-12">
+                            <label for="out_mover_machinery_id" class="form-label">Select Machinery/Mower</label>
+                            <input type="hidden" name="out_mover_machinery_id" id="out_mover_machinery_id">
+                             <div class="input-group">
+                            <input type="text" name="out_mover_machinery_name" id="out_mover_machinery_name" class="form-control" readonly placeholder="Click to select machinery">
+                            
+                            <span class="input-group-text bg-light" onclick="realoadMachineryList(event)">
+                                    <i class="bi bi-arrow-clockwise text-danger"></i>
+                            </span>
+       </div>
+                            <button type="button" class="btn btn-dark mt-2 align-self-end" style="font-size:70%" onclick="openMachineryModal('out_mover')">Select Machinery</button>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <label for="out_mover_machinery_name_operator" class="form-label">Operator Name:</label>
+                            <input type="text" name="out_mover_machinery_name_operator" id="out_mover_machinery_name_operator" class="form-control">
+                        </div>
+                        <div class="col-lg-2 col-sm-12">
+                            <label for="out_date_mowing_done_last" class="form-label">Last Mowing Date:</label>
+                            <input type="date" id="out_date_mowing_done_last" name="out_date_mowing_done_last" class="form-control">
+                        </div>
+                        <div class="col-lg-2 col-sm-12 mt-4">
+                            <label for="out_time_of_application_mover" class="form-label">Time of Application Mower:</label>
+                            <input type="time" id="out_time_of_application_mover" name="out_time_of_application_mover" class="form-control">
+                        </div>
+                        <div class="col-lg-2 col-sm-12 mt-4">
+                            <label for="out_mowing_done_at_mm" class="form-label">Mowing Height (mm):</label>
+                            <input type="number" id="out_mowing_done_at_mm" name="out_mowing_done_at_mm" class="form-control">
+                        </div>
+                        <div class="col-lg-2 col-sm-12 mt-4">
+                            <label for="out_clipping" class="form-label">Clipping:</label>
+                            <input type="number" id="out_clipping" name="out_clipping" class="form-control">
+                        </div>
+                        <div class="col-lg-2 col-sm-12 mt-4">
+                            <label for="out_moving_passes_unit" class="form-label">Unit:</label>
+                            <select class="form-select" id="out_moving_passes_unit" name="out_moving_passes_unit">
+                                <option selected>Select Unit</option>
+                                <option value="time">Time</option>
+                                <option value="hours">Hours</option>
+                                <option value="minutes">Minutes</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-2 col-sm-12 mt-4">
+                            <label for="out_mowing_duration" class="form-label">Duration</label>
+                            <input type="number" id="out_mowing_duration" name="out_mowing_duration" class="form-control">
+                        </div>
+                        <div class="col-lg-2 col-sm-12 mt-5">
+                            <button type="button" class="btn btn-primary" onclick="outaddMoverEntry()">Add Mower Entry</button>
+                        </div>
+                        <div class="col-sm-12 col-lg-12">
+                            <details>
+                                <summary>Mower Entries</summary>
+                                  <div class="table-responsive transparent-bg">
+                                    <table class="table table-bordered" id="outmoverTable" style="font-size: 70%;">
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th>Machine Type</th>
+                                                <th>Machinery</th>
+                                                <th>Operator</th>
+                                                <th>Height (mm)</th>
+                                                <th>Duration</th>
+                                                <th>Unit</th>
+                                                <th>Time</th>
+                                                <th>Date</th>
+                                                <th>Clipping</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                    <input type="hidden" name="out_mover_entries_json" id="out_mover_entries_json">
+                                </div>
+                            </details>
+                        </div>
+                    </div>
+                </fieldset>
+                </details>
+            </div>
+        </div>
+        <!-- Chemical Section -->
+        <div class="row">
+         <div class="form-group gray-box text-dark rounded">
+                                                    <details class="summary-shadow box-bg rounded">
+                                                                        <summary class="rounded-0">
+                                                                            Chemical
+                                   <span class="badge text-bg-warning" id="out-chem-add-count"></span>
+                                                                        
+                                                                        </summary>
+            <fieldset>
+                <!-- <legend class="w-auto px-2">Chemical Entries</legend> -->
+                <hr>
+                <div class="row">
+                    <div class="col-sm-12 col-lg-6">
+                        <div class="input-group mb-3 rounded">
+                            <div class="input-group-text bg-light border-0" style="background-color:white !important;">
+                                <input class="form-check-input mt-0 border-left" type="checkbox" aria-label="Checkbox for following text input" name="out_is_fertilizers_used" id="out_is_fertilizers_used">
+                            </div>
+                            <input type="text" class="form-control border-0" value="Is Chemicals Used" style="background-color:white" readonly aria-label="Text input with checkbox">
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-lg-6">
+                        <div class="row">
+                            <div class="col-sm-12 col-lg-6">
+                                <label for="out_time_of_application_chemical" class="form-label">Time of Application Chemical:</label>
+                            </div>
+                            <div class="col-sm-12 col-lg-6">
+                                <input type="time" id="out_time_of_application_chemical" name="out_time_of_application_chemical" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label for="out_fertilizers_details" class="form-label">Chemical Details:</label>
+                        <select id="out_fertilizers_details" name="out_fertilizers_details" class="form-control">
+                            <option value="">Select Any Chemical</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label for="out_chemical_weight" class="form-label">Weight:</label>
+                        <input type="text" id="out_chemical_weight" placeholder="Weight" name="out_chemical_weight" class="form-control">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label for="out_fertilizers_unit" class="form-label">Unit:</label>
+                        <select id="out_fertilizers_unit" name="out_fertilizers_unit" class="form-control">
+                            <option value="">Select Any Unit</option>
+                            <option value="kg">KG</option>
+                            <option value="gm">GM</option>
+                            <option value="ltr">Liters</option>
+                            <option value="ml">Milli Liters</option>
+                            <option value="NA">NA</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label for="out_chemical_details_remark" class="form-label">Remarks:</label>
+                        <input type="text" id="out_chemical_details_remark" placeholder="Remarks" name="out_chemical_details_remark" class="form-control">
+                    </div>
+                </div>
+                <div class="text-end">
+                    <button type="button" class="btn btn-sm btn-primary" id="outaddChemicalBtn">+ Add Chemical Entry</button>
+                </div>
+                  <details>
+                                <summary>Chemical Entries
+                                    
+                                </summary>
+                  <div class="table-responsive transparent-bg">
+                <table class="table table-bordered mt-3" id="outchemicalTable">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Used</th>
+                            <th>Time</th>
+                            <th>Chemical</th>
+                            <th>Weight</th>
+                            <th>Unit</th>
+                            <th>Remark</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                
+                <input type="hidden" name="out_chemical_entries" id="out_chemical_entries">
+                </div>
+                </details>
+            </fieldset>
+            </details>
+        </div>
+        </div>
 
-                                                                    <table class="table table-bordered mt-2" id="rollingTable">
-                                                                        <thead class="table-dark">
-                                                                            <tr>
-                                                                                 <th>Date</th>
-                                                                                <th>Machine Type</th>
-                                                                                <th>Machinery</th>
-                                                                                <th>Operator</th>
-                                                                                <th>Speed</th>
-                                                                                <th>Passes</th>
-                                                                                <th>Unit</th>
-                                                                                <th>Time</th>
-                                                                                <th>Action</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody></tbody>
-                                                                    </table>
-                                                                    <input type="hidden" name="rolling_entries_json" id="rolling_entries_json">
-                                                                    </div>
-                                                                </details>
-                                                            </div>
-                                                        </div>
-                                                    </fieldset>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-sm-12 col-lg-12">
-                                                    <fieldset class="form-group border mt-4 text-dark p-3 box-bg rounded">
-                                                        <legend class="w-auto px-2">Mower</legend>
-                                                        <div class="row">
-                                                            <div class="col-lg-3 col-sm-12">
-                                                                <label for="mover_machine_type" class="form-label">Select Machine Type</label>
-                                                                <select class="form-select" id="mover_machine_type" name="mover_machine_type">
-                                                                    <option selected>Select Type</option>
-                                                                    <option value="Manual">Manual</option>
-                                                                    <option value="Mechanized">Mechanized</option>
-                                                                </select>
-                                                            </div>
-                                                            <div class="col-lg-4 col-sm-12">
-                                                                <div class="row">
-                                                                    <div class="col-lg-12">
-                                                                        <label class="form-label">Select Machinery/Mower</label>
-                                                                        <input type="hidden" name="mover_machinery_id" id="mover_machinery_id">
-                                                                          <div class="input-group">
-                                                                        <input type="text" name="mover_machinery_name" id="mover_machinery_name" class="form-control" readonly placeholder="Click to select machinery">
-                                                                         <span class="input-group-text bg-light" onclick="realoadMachineryList(event)">
-                                                                  <i class="bi bi-arrow-clockwise text-danger"></i>
-                                                                </span>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col-lg-12 d-flex">
-                                                                        <button type="button" class="btn btn-dark mt-2 align-self-end" style="font-size:70%" onclick="openMachineryModal('mover')">Select Machinery</button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-lg-3 col-sm-12">
-                                                                <label for="mover_machinery_name_operator" class="form-label">Operator Name:</label>
-                                                                <input type="text" name="mover_machinery_name_operator" id="mover_machinery_name_operator" class="form-control">
-                                                            </div>
-                                                            <div class="col-lg-2 col-sm-12">
-                                                                <label for="date_mowing_done_last" class="form-label">Last Mowing Date:</label>
-                                                                <input type="date" id="date_mowing_done_last" name="date_mowing_done_last" class="form-control">
-                                                            </div>
-                                                            <div class="col-lg-2 col-sm-12 mt-4">
-                                                                <label for="time_of_application_mover" class="form-label">Time of Application Mower:</label>
-                                                                <div class="d-flex align-items-center justify-content-center">
-                                                                    <input type="time" id="time_of_application_mover" name="time_of_application_mover" class="form-control">
-                                                                    <button type="button" class="btn d-flex align-items-center justify-content-center p-0 time-reset" style="width: 38px;">
-                                                                        <svg xmlns="https://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
-                                                                            <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
-                                                                            <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
-                                                                        </svg>
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-lg-2 col-sm-12 mt-4">
-                                                                <label for="mowing_done_at_mm" class="form-label">Mowing Height (mm):</label>
-                                                                <input type="number" id="mowing_done_at_mm" name="mowing_done_at_mm" class="form-control">
-                                                            </div>
-                                                            <div class="col-lg-2 col-sm-12 mt-4">
-                                                                <label for="moving_passes_unit" class="form-label">Unit:</label>
-                                                                <select class="form-select" id="moving_passes_unit" name="moving_passes_unit">
-                                                                    <option selected>Select Unit</option>
-                                                                    <option value="time">Time</option>
-                                                                    <option value="hours">Hours</option>
-                                                                    <option value="minutes">Minutes</option>
-                                                                </select>
-                                                            </div>
-                                                            <div class="col-lg-2 col-sm-12 mt-4">
-                                                                <label for="mowing_duration" class="form-label">Duration</label>
-                                                                <input type="number" id="mowing_duration" name="mowing_duration" class="form-control">
-                                                            </div>
-                                                            <div class="col-lg-2 col-sm-12 mt-5">
-                                                                <button type="button" class="btn btn-primary" onclick="addMoverEntry()">Add Mower Entry</button>
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-12">
-                                                                <details>
-                                                                    <summary>Mower Entries</summary>
-                                                                    <div class="table-responsive transparent-bg">
-
-                                                                    <table class="table table-bordered" id="moverTable">
-                                                                        <thead class="table-dark">
-                                                                            <tr>
-                                                                                <th>Machine Type</th>
-                                                                                <th>Machinery</th>
-                                                                                <th>Operator</th>
-                                                                                <th>Height (mm)</th>
-                                                                                <th>Duration</th>
-                                                                                <th>Unit</th>
-                                                                                <th>Time</th>
-                                                                                <th>Date</th>
-                                                                                <th>Action</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody></tbody>
-                                                                    </table>
-                                                                    <input type="hidden" name="mover_entries_json" id="mover_entries_json">
-                                                                    </div>
-                                                                </details>
-                                                            </div>
-                                                        </div>
-                                                    </fieldset>
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group gray-box border mt-4 text-dark p-3 rounded alert box-bg">
-                                                <fieldset>
-                                                    <legend class="w-auto px-2">Chemical Entries</legend>
-                                                    <hr>
-                                                    <div class="row">
-                                                        <div class="col-sm-12 col-lg-3 mt-4">
-                                                            <div class="input-group mb-3 rounded">
-                                                                <div class="input-group-text bg-light border-0">
-                                                                    <input class="form-check-input mt-0 border-left" type="checkbox" id="is_fertilizers_used" name="is_fertilizers_used">
-                                                                </div>
-                                                                <input type="text" class="form-control border-0" value="Is Fertilizers Used" readonly>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="col-sm-12 col-lg-3">
-                                                            <label for="time_of_application_chemical" class="form-label">Time of Application Chemical:</label>
-                                                            <div class="d-flex align-items-center justify-content-center">
-                                                                <input type="time" id="time_of_application_chemical" name="time_of_application_chemical" class="form-control">
-                                                                <button type="button" class="btn d-flex align-items-center justify-content-center p-0 time-reset" style="width: 38px;">
-                                                                    <svg xmlns="https://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
-                                                                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
-                                                                        <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
-                                                                    </svg>
-                                                                </button>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="col-sm-12 col-lg-3">
-                                                            <label for="fertilizers_details" class="form-label">Chemical Details:</label>
-                                                            <select id="fertilizers_details" name="fertilizers_details" class="form-control">
-                                                                <option value="">Select Any Chemical</option>
-                                                            </select>
-                                                        </div>
-
-                                                        <div class="col-sm-12 col-lg-3">
-                                                            <label for="chemical_weight" class="form-label">Chemical Weight:</label>
-                                                            <input type="text" id="chemical_weight" placeholder="Weight" name="chemical_weight" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-sm-12 col-lg-3">
-                                                            <label for="fertilizers_unit" class="form-label">Chemical Unit:</label>
-                                                            <select id="fertilizers_unit" name="fertilizers_unit" class="form-control">
-                                                                <option value="">Select Any Unit</option>
-                                                                <option value="kg">KG</option>
-                                                                <option value="gm">GM</option>
-                                                                <option value="ltr">Liters</option>
-                                                                <option value="ml">Milli Liters</option>
-                                                                <option value="NA">NA</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="col-sm-12 col-lg-4">
-                                                            <label for="chemical_details_remark" class="form-label">Chemical Remarks:</label>
-                                                            <input type="text" id="chemical_details_remark" placeholder="Remarks" name="chemical_details_remark"  class="form-control">
-                                                        </div>
-                                                        <div class="col-sm-12 col-lg-4 mt-4">
-                                                            <button type="button" class="btn btn-sm btn-primary" id="addChemicalBtn" >+ Add Chemical Entry</button>
-                                                        </div>
-                                                    </div>
-
-                                                    <details class="transparent-bg">
-                                                        <summary>Chemical Entries</summary>
-                                                        <div class="table-responsive transparent-bg">
-                                                        <table class="table table-bordered mt-3" id="chemicalTable">
-                                                            <thead class="table-dark">
-                                                                <tr>
-                                                                    <th>Used</th>
-                                                                    <th>Time</th>
-                                                                    <th>Chemical</th>
-                                                                    <th>Weight</th>
-                                                                    <th>Unit</th>
-                                                                    <th>Remark</th>
-                                                                    <th>Action</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody></tbody>
-                                                        </table>
-                                                        <input type="hidden" name="chemical_entries" id="chemical_entries">
-                                                        </div>
-                                                    </details>
-                                                </fieldset>
-                                            </div>
-
-                                            <div class="row form-group gray-box mt-4 text-dark p-3 rounded alert ">
-                                                <div class="col-sm-12 col-lg-6 box-bg p-3 rounded">
-                                                    <label for="remark_by_groundsman" class="form-label">Remark by Groundsman:</label>
-                                                    <textarea id="remark_by_groundsman" placeholder="Pitch Curing Remarks" name="remark_by_groundsman" class="form-control"></textarea>
-                                                </div>
-                                            </div>
+         <div class="row form-group box-bg mt-4 text-dark p-3 rounded alert ">
+            <div class="col-sm-12 col-lg-12">
+                <label for="out_remark_by_groundsman" class="form-label">Remark by Groundsman:</label>
+                <textarea id="out_remark_by_groundsman" placeholder="Pitch Curing Remarks" name="out_remark_by_groundsman" class="form-control">{{daily.38}}</textarea>
+            </div>
                                           
                                         </div>
                                 
                                 
                                 
+                                </div>
                                 </div>
                                 
 
@@ -1899,698 +1930,346 @@
                                                     </div>
 
 
-                                            <div class="row">
-                                                <div class="col-sm-12 col-lg-12">
-                                                    <fieldset class="form-group border mt-4 text-dark p-3 box-bg rounded">
-                                                        <legend class="w-auto px-2">Watering</legend>
-                                                        
-                                                        <div class="row">
-                                                            <div class="col-sm-12 col-lg-4">
-                                                                <label for="out_last_watering_on" class="form-label">Watering On:</label>
-                                                                <input type="date" id="out_last_watering_on" name="out_last_watering_on" value="" class="form-control">
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-4">
-                                                                <label for="out_time_of_application" class="form-label">Time of Watering:</label>
-                                                                <div class="d-flex align-items-center justify-content-center">
-                                                                    <input type="time" id="out_time_of_application" name="out_time_of_application" value="" class="form-control">
-                                                                    <button type="button" class="btn d-flex align-items-center justify-content-center p-0 time-reset" style="width: 38px;">
-                                                                        <svg xmlns="https://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
-                                                                            <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
-                                                                            <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
-                                                                        </svg>
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-4">
-                                                                <label for="out_quantity_of_water" class="form-label">Quantity of Water:</label>
-                                                                <input type="text" id="out_quantity_of_water" name="out_quantity_of_water" value="" class="form-control">
-                                                            </div>
-
-                                                              <div class="col-sm-12 col-lg-3 mt-5">
-
-                                                             <button type="button" class="btn btn-primary" onclick="addOutWateringEntry()">Add Watering Entry</button>
-
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-12 mt-4">
-                                                                <details>
-                                                                    <summary>Watering Entries</summary>
-                                                                      <div class="table-responsive transparent-bg">
-                                                                    <table class="table table-bordered mt-2"
-                                                                        id="outwateringTable">
-                                                                        <thead class="table-dark">
-                                                                            <tr>
-                                                                                <th>Watering On</th>
-                                                                                <th>Time of Watering</th>
-                                                                                <th>Quantity of Water</th>
-                                                                                <th>Action</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody></tbody>
-                                                                    </table>
-
-                                                                    <input type="hidden" name="out_watering_entries_json"
-                                                                        id="out_watering_entries_json">
-                                                                      </div>
-                                                                </details>
+                                            <!-- Watering Section -->
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-12">
+                            <details class="summary-shadow box-bg rounded">
+                                                                                <summary class="rounded-0">
+                                                                                    Watering 
+                                                                                    <span class="badge text-bg-warning" id="practice-water-add-count"></span>
+                                                                                </summary>
+                            <fieldset class="form-group border mt-4 text-dark p-3 box-bg rounded">
+                                <!-- <legend class="w-auto px-2">Watering</legend>  -->
+                                <div class="row">
+                                    <div class="col-sm-12 col-lg-4">
+                                        <label for="practice_last_watering_on" class="form-label">Watering On:</label>
+                                        <input type="date" id="practice_last_watering_on" name="practice_last_watering_on" class="form-control">
+                                    </div>
+                                    <div class="col-sm-12 col-lg-4">
+                                        <label for="practice_time_of_application" class="form-label">Time of Watering:</label>
+                                        <input type="time" id="practice_time_of_application" name="practice_time_of_application" class="form-control">
+                                    </div>
+                                    <div class="col-sm-12 col-lg-4">
+                                        <label for="practice_quantity_of_water" class="form-label">Quantity of Water:</label>
+                                        <input type="text" id="practice_quantity_of_water" name="practice_quantity_of_water" class="form-control">
+                                    </div>
 
 
-                                                            </div>
-                                   
-                                                        </div>
-                                                    </fieldset>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-sm-12 col-lg-12">
-                                                    <fieldset class="form-group border mt-4 text-dark p-3 box-bg rounded">
-                                                        <legend class="w-auto px-2">Rolling</legend>
-                                                        <hr>
-                                                        <div class="row">
-                                                            <div class="col-sm-12 col-lg-3">
-                                                                <label for="out_roller_machine_type" class="form-label">Select Machine Type</label>
-                                                                <select class="form-select" id="out_roller_machine_type" name="out_roller_machine_type" required>
-                                                                    <option selected>Select Type</option>
-                                                                    <option value="Manual">Manual</option>
-                                                                    <option value="Mechanized">Mechanized</option>
-                                                                </select>
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-6 mt-4">
-                                                                <input type="hidden" name="out_machinery_id" id="out_machinery_id">
-                                                                  <div class="input-group">
-                                                                <input type="text" name="out_machinery_name" id="out_machinery_name" class="form-control" readonly placeholder="Click to select machinery">
-                                                                 <span class="input-group-text bg-light" onclick="realoadMachineryList(event)">
-                                                                  <i class="bi bi-arrow-clockwise text-danger"></i>
-                                                                </span>
-                                                                <button type="button" class="btn btn-dark align-self-end" style="font-size:70%;padding: 12px;" onclick="openMachineryModal('out_roller')">Select Machinery</button>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-3">
-                                                                <label for="out_roller_machinery_name_operator" class="form-label">Operator Name:</label>
-                                                                <input type="text" name="out_roller_machinery_name_operator" id="out_roller_machinery_name_operator" class="form-control">
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-4 mt-4">
-                                                                <label for="out_time_roller" class="form-label">Time of Rolling:</label>
-                                                                <div class="d-flex align-items-center justify-content-center">
-                                                                    <input type="time" id="out_time_roller" name="out_time_roller" class="form-control">
-                                                                    <button type="button" class="btn d-flex align-items-center justify-content-center p-0 time-reset" style="width: 38px;">
-                                                                        <svg xmlns="https://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
-                                                                            <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
-                                                                            <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
-                                                                        </svg>
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-4 mt-4">
-                                                                <label for="out_rolling_speed" class="form-label">Rolling Speed (km/hr):</label>
-                                                                <input type="number" id="out_rolling_speed" name="out_rolling_speed" class="form-control">
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-4 mt-4">
-                                                                <label for="out_passes_unit" class="form-label">Select Unit:</label>
-                                                                <select class="form-select" id="out_passes_unit" name="out_passes_unit">
-                                                                    <option selected>Select Unit</option>
-                                                                    <option value="passes">Passes</option>
-                                                                    <option value="time">Time</option>
-                                                                    <option value="hours">Hours</option>
-                                                                    <option value="minutes">Minutes</option>
-                                                                </select>
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-4 mt-4">
-                                                                <label for="out_no_of_passes" class="form-label">Number of Passes:</label>
-                                                                <input type="text" id="out_no_of_passes" name="out_no_of_passes" class="form-control">
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-4 mt-5">
-                                                                <button type="button" class="btn btn-primary" onclick="outaddRollingEntry()">Add Rolling Entry</button>
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-12 mt-4">
-                                                                <details>
-                                                                    <summary>Rolling Entries</summary>
-                                                                    <div class="table-responsive transparent-bg">
-                                                                    
-                                                                    <table class="table table-bordered" id="outrollingTable" style="font-size: 70%;">
-                                                                        <thead class="table-dark">
-                                                                            <tr>
-                                                                                <th>Machine Type</th>
-                                                                                <th>Machinery</th>
-                                                                                <th>Operator</th>
-                                                                                <th>Speed</th>
-                                                                                <th>Passes</th>
-                                                                                <th>Unit</th>
-                                                                                <th>Time</th>
-                                                                                <th>Action</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody></tbody>
-                                                                    </table>
-                                                                    <input type="hidden" name="out_rolling_entries_json" id="out_rolling_entries_json">
-                                                                    </div>
-                                                                </details>
-                                                            </div>
-                                                        </div>
-                                                    </fieldset>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-sm-12 col-lg-12">
-                                                    <fieldset class="form-group border mt-4 text-dark p-3 box-bg rounded">
-                                                        <legend class="w-auto px-2">Mower</legend>
-                                                        <div class="row">
-                                                            <div class="col-lg-3 col-sm-12">
-                                                                <label for="out_mover_machine_type" class="form-label">Select Machine Type</label>
-                                                                <select class="form-select" id="out_mover_machine_type" name="out_mover_machine_type" required>
-                                                                    <option selected>Select Type</option>
-                                                                    <option value="Manual">Manual</option>
-                                                                    <option value="Mechanized">Mechanized</option>
-                                                                </select>
-                                                            </div>
-                                                            <div class="col-lg-6 col-sm-12">
-                                                                <label for="out_mover_machinery_id" class="form-label">Select Machinery/Mower</label>
-                                                                <input type="hidden" name="out_mover_machinery_id" id="out_mover_machinery_id">
-                                                                 <div class="input-group">
-                                                                <input type="text" name="out_mover_machinery_name" id="out_mover_machinery_name" class="form-control" readonly placeholder="Click to select machinery">
-                                                                 <span class="input-group-text bg-light" onclick="realoadMachineryList(event)">
-                                                                  <i class="bi bi-arrow-clockwise text-danger"></i>
-                                                                </span>
-                                                                <button type="button" class="btn btn-dark align-self-end" style="font-size:70%;padding:12px ;" onclick="openMachineryModal('out_mover')">Select Machinery</button>
-                                                                </div>
+                                    <div class="col-sm-12 col-lg-3 mt-5">
 
-                                                            </div>
-                                                            <div class="col-lg-3 col-sm-12">
-                                                                <label for="out_mover_machinery_name_operator" class="form-label">Operator Name:</label>
-                                                                <input type="text" name="out_mover_machinery_name_operator" id="out_mover_machinery_name_operator" class="form-control">
-                                                            </div>
-                                                            <div class="col-lg-4 col-sm-12 mt-4">
-                                                                <label for="out_date_mowing_done_last" class="form-label">Last Mowing Date:</label>
-                                                                <input type="date" id="out_date_mowing_done_last" name="out_date_mowing_done_last" class="form-control">
-                                                            </div>
-                                                            <div class="col-lg-4 col-sm-12 mt-4">
-                                                                <label for="out_time_of_application_mover" class="form-label">Time of Application:</label>
-                                                                <div class="d-flex align-items-center justify-content-center">
-                                                                    <input type="time" id="out_time_of_application_mover" name="out_time_of_application_mover" class="form-control">
-                                                                    <button type="button" class="btn d-flex align-items-center justify-content-center p-0 time-reset" style="width: 38px;">
-                                                                        <svg xmlns="https://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
-                                                                            <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
-                                                                            <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
-                                                                        </svg>
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-lg-4 col-sm-12 mt-4">
-                                                                <label for="out_mowing_done_at_mm" class="form-label">Mowing Height (mm):</label>
-                                                                <input type="number" id="out_mowing_done_at_mm" name="out_mowing_done_at_mm" class="form-control">
-                                                            </div>
-                                                              <div class="col-lg-2 col-sm-12 mt-4">
-                            <label for="out_clipping" class="form-label">Clipping:</label>
-                            <input type="number" id="out_clipping" name="out_clipping" class="form-control">
+                                        <button type="button" class="btn btn-primary" onclick="addPracticeWateringEntry()">Add Watering Entry</button>
+
+                                                                        </div>
+                                                                        <div class="col-sm-12 col-lg-12">
+                                                                            <details>
+                                                                                <summary>Watering Entries</summary>
+                                                                                <div class="table-responsive transparent-bg">
+                                                                                <table class="table table-bordered mt-2"
+                                                                                    id="practicewateringTable">
+                                                                                    <thead class="table-dark">
+                                                                                        <tr>
+                                                                                            <th>Watering On</th>
+                                                                                            <th>Time of Watering</th>
+                                                                                            <th>Quantity of Water</th>
+                                                                                            <th>Action</th>
+                                                                                        </tr>
+                                                                                    </thead>
+                                                                                    <tbody></tbody>
+                                                                                </table>
+
+                                                                                <input type="hidden" name="practice_watering_entries_json"
+                                                                                    id="practice_watering_entries_json">
+                                                                                </div>
+                                                                            </details>
+
+
+                                                                        </div>
+
+                                </div>
+                            </fieldset>
+                            </details>
                         </div>
-                                                            <div class="col-lg-4 col-sm-12 mt-4">
-                                                                <label for="out_moving_passes_unit" class="form-label">Unit:</label>
-                                                                <select class="form-select" id="out_moving_passes_unit" name="out_moving_passes_unit">
-                                                                    <option selected>Select Unit</option>
-                                                                    <option value="time">Time</option>
-                                                                    <option value="hours">Hours</option>
-                                                                    <option value="minutes">Minutes</option>
-                                                                </select>
-                                                            </div>
-                                                            <div class="col-lg-4 col-sm-12 mt-4">
-                                                                <label for="out_mowing_duration" class="form-label">Duration</label>
-                                                                <input type="number" id="out_mowing_duration" name="out_mowing_duration" class="form-control">
-                                                            </div>
-                                                            <div class="col-lg-4 col-sm-12 mt-5">
-                                                                <button type="button" class="btn btn-primary" onclick="outaddMoverEntry()">Add Mower Entry</button>
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-12 mt-4">
-                                                                <details>
-                                                                    <summary>Mower Entries</summary>
-                                                                    <div class="table-responsive transparent-bg">
-                                                                    
-                                                                    <table class="table table-bordered" id="outmoverTable" style="font-size: 70%;">
-                                                                        <thead class="table-dark">
-                                                                            <tr>
-                                                                                <th>Machine Type</th>
-                                                                                <th>Machinery</th>
-                                                                                <th>Operator</th>
-                                                                                <th>Height (mm)</th>
-                                                                                <th>Duration</th>
-                                                                                <th>Unit</th>
-                                                                                <th>Time</th>
-                                                                                <th>Date</th>
-                                                                                <th>Clipping</th>
-                                                                                <th>Action</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody></tbody>
-                                                                    </table>
-                                                                    <input type="hidden" name="out_mover_entries_json" id="out_mover_entries_json">
-                                                                    </div>
-                                                                </details>
-                                                            </div>
-                                                        </div>
-                                                    </fieldset>
-                                                </div>
-                                            </div>
-                                            <div class="form-group gray-box border mt-4 text-dark p-3 rounded alert box-bg">
-                                                <fieldset>
-                                                    <legend class="w-auto px-2">Chemical Entries</legend>
-                                                    <hr>
-                                                    <div class="row">
-                                                        <div class="col-sm-12 col-lg-6">
-                                                            <div class="input-group mb-3 border rounded">
-                                                                <div class="input-group-text bg-light border-0">
-                                                                    <input class="form-check-input mt-0 border-left" type="checkbox" name="out_is_fertilizers_used" id="out_is_fertilizers_used">
-                                                                </div>
-                                                                <input type="text" class="form-control border-0" value="Is Fertilizers Used" style="background-color:white" readonly aria-label="Text input with checkbox">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-12 col-lg-6">
-                                                            <div class="row">
-                                                                <div class="col-sm-12 col-lg-6">
-                                                                    <label for="out_time_of_application_chemical" class="form-label">Time of Application Chemical:</label>
-                                                                </div>
-                                                                <div class="col-sm-12 col-lg-6">
-                                                                    <div class="d-flex align-items-center justify-content-center">
-                                                                        <input type="time" id="out_time_of_application_chemical" name="out_time_of_application_chemical" class="form-control">
-                                                                        <button type="button" class="btn d-flex align-items-center justify-content-center p-0 time-reset" style="width: 38px;">
-                                                                            <svg xmlns="https://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
-                                                                                <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
-                                                                                <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
-                                                                            </svg>
-                                                                        </button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col">
-                                                            <label for="out_fertilizers_details" class="form-label">Chemical Details:</label>
-                                                            <select id="out_fertilizers_details" name="out_fertilizers_details" class="form-control">
-                                                                <option value="">Select Any Chemical</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="col">
-                                                            <label for="out_chemical_weight" class="form-label">Weight:</label>
-                                                            <input type="text" id="out_chemical_weight" placeholder="Weight" name="out_chemical_weight" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col">
-                                                            <label for="out_fertilizers_unit" class="form-label">Unit:</label>
-                                                            <select id="out_fertilizers_unit" name="out_fertilizers_unit" class="form-control">
-                                                                <option value="">Select Any Unit</option>
-                                                                <option value="kg">KG</option>
-                                                                <option value="gm">GM</option>
-                                                                <option value="ltr">Liters</option>
-                                                                <option value="ml">Milli Liters</option>
-                                                                <option value="NA">NA</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="col">
-                                                            <label for="out_chemical_details_remark" class="form-label">Remarks:</label>
-                                                            <input type="text" id="out_chemical_details_remark" placeholder="Remarks" name="out_chemical_details_remark" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                    <div class="text-end">
-                                                        <button type="button" class="btn btn-sm btn-primary" id="outaddChemicalBtn">Add Chemical Entry</button>
-                                                    </div>
-                                                      <details>
-                                                                    <summary>Chemical Entries</summary>
-                                                                    <div class="table-responsive transparent-bg">
-                                                    <table class="table table-bordered mt-3" id="outchemicalTable">
-                                                        <thead class="table-dark">
-                                                            <tr>
-                                                                <th>Used</th>
-                                                                <th>Time</th>
-                                                                <th>Chemical</th>
-                                                                <th>Weight</th>
-                                                                <th>Unit</th>
-                                                                <th>Remark</th>
-                                                                <th>Action</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody></tbody>
-                                                    </table>
-                                                    <input type="hidden" name="out_chemical_entries" id="out_chemical_entries">
-                                                    </div>
-                                                    </details>
-                                                </fieldset>
-                                            </div>
-                                            <!-- <button type="button" class="btn btn-primary my-3" onclick="addOutEntryRow()">Add Outfield Entry</button>
+                    </div>
+                    <!-- Rolling Section -->
+            <div class="row">
+                        <div class="col-sm-12 col-lg-12">
+                            <details class="summary-shadow box-bg rounded">
+                                                                                <summary class="rounded-0">Rolling
 
-                                            <div id="outEntryContainer"></div> -->
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <label for="out_remark_by_groundsman" class="form-label">Remark by Groundsman:</label>
-                                                    <textarea id="out_remark_by_groundsman" placeholder="Pitch Curing Remarks" name="out_remark_by_groundsman" class="form-control">{{daily.38}}</textarea>
-                                                </div>
-                                            </div>
+                                                                                    <span class="badge text-bg-warning" id="practice-roll-add-count"></span>
+                                                                                </summary>
+
+                            <fieldset class="form-group border mt-4 text-dark p-3 box-bg rounded">
+                                <!-- <legend class="w-auto px-2">Rolling</legend> -->
+                                <div class="row">
+                                    <div class="col-sm-12 col-lg-2">
+                                        <label for="practice_roller_machine_type" class="form-label">Select Machine Type</label>
+                                        <select class="form-select" id="practice_roller_machine_type" name="practice_roller_machine_type" required>
+                                            <option selected>Select Type</option>
+                                            <option value="Manual">Manual</option>
+                                            <option value="Mechanized">Mechanized</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-12 col-lg-3 mt-4">
+                                        <input type="hidden" id="practice_machinery_id">
+                                        <div class="input-group">
+                                            <input type="text" id="practice_machinery_name" class="form-control" readonly placeholder="Click to select machinery">
+                                            <span class="input-group-text bg-light" onclick="realoadMachineryList(event)">
+                                                                                <i class="bi bi-arrow-clockwise text-danger"></i>
+                                                                                </span>
+                                         </div>
+                                        <button type="button" class="btn btn-dark mt-2 align-self-end" style="font-size:70%" onclick="openMachineryModal('practice_roller')">Select Machinery</button>
+                                    </div>
+                                    <div class="col-sm-12 col-lg-3">
+                                        <label for="practice_roller_machinery_name_operator" class="form-label">Operator Name:</label>
+                                        <input type="text" id="practice_roller_machinery_name_operator" class="form-control">
+                                    </div>
+                                    <div class="col-sm-12 col-lg-2">
+                                        <label for="practice_time_roller" class="form-label">Time of Rolling:</label>
+                                        <input type="time" id="practice_time_roller" class="form-control">
+                                    </div>
+                                    <div class="col-sm-12 col-lg-2">
+                                        <label for="practice_rolling_speed" class="form-label">Rolling Speed (km/hr):</label>
+                                        <input type="number" id="practice_rolling_speed" class="form-control">
+                                    </div>
+                                    <div class="col-sm-12 col-lg-3 mt-4">
+                                        <label for="practice_passes_unit" class="form-label">Select Unit:</label>
+                                        <select class="form-select" id="practice_passes_unit" name="practice_passes_unit">
+                                            <option selected>Select Unit</option>
+                                            <option value="passes">Passes</option>
+                                            <option value="time">Time</option>
+                                            <option value="hours">Hours</option>
+                                            <option value="minutes">Minutes</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-12 col-lg-4 mt-4">
+                                        <label for="practice_no_of_passes" class="form-label">Number of Passes:</label>
+                                        <input type="text" id="practice_no_of_passes" name="practice_no_of_passes" class="form-control">
+                                    </div>
+                                    <div class="col-sm-12 col-lg-3 mt-5">
+                                        <button type="button" class="btn btn-primary" onclick="practiceaddRollingEntry()">Add Rolling Entry</button>
+                                    </div>
+                                    <div class="col-sm-12 col-lg-12">
+                                        <details>
+                                            <summary>Rolling Entries</summary>
+                                             <div class="table-responsive transparent-bg">
+                                            
+                                                <table class="table table-bordered" id="practicerollingTable" style="font-size: 70%;">
+                                                    <thead class="table-dark">
+                                                        <tr>
+                                                            <th>Machine Type</th>
+                                                            <th>Machinery</th>
+                                                            <th>Operator</th>
+                                                            <th>Speed</th>
+                                                            <th>Passes</th>
+                                                            <th>Unit</th>
+                                                            <th>Time</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody></tbody>
+                                                </table>
+                                                <input type="hidden" name="practice_rolling_entries_json" id="practice_rolling_entries_json">
+                            </div>
+                                        </details>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            </details>
+                        </div>
+            </div>
+                    <!-- Mower Section -->
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-12">
+                            <details class="summary-shadow box-bg rounded">
+                                                                                <summary class="rounded-0">Mower
+
+                                                                                    <span class="badge text-bg-warning" id="practice-mower-add-count"></span>
+                                                                                </summary>
+
+                            <fieldset class="form-group border mt-4 text-dark p-3 box-bg rounded">
+                                <!-- <legend class="w-auto px-2">Mower</legend> -->
+                                <div class="row">
+                                    <div class="col-lg-3 col-sm-12">
+                                        <label for="practice_mover_machine_type" class="form-label">Select Machine Type</label>
+                                        <select class="form-select" id="practice_mover_machine_type" name="practice_mover_machine_type" required>
+                                            <option selected>Select Type</option>
+                                            <option value="Manual">Manual</option>
+                                            <option value="Mechanized">Mechanized</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-4 col-sm-12">
+                                        <label for="practice_mover_machinery_id" class="form-label">Select Machinery/Mower</label>
+                                        <input type="hidden" name="practice_mover_machinery_id" id="practice_mover_machinery_id">
+                                        <div class="input-group">
+                                        <input type="text" name="practice_mover_machinery_name" id="practice_mover_machinery_name" class="form-control" readonly placeholder="Click to select machinery">
+                                        <span class="input-group-text bg-light" onclick="realoadMachineryList(event)">
+                                                                            <i class="bi bi-arrow-clockwise text-danger"></i>
+                                                                            </span>
+                </div>
+                                        <button type="button" class="btn btn-dark mt-2 align-self-end" style="font-size:70%" onclick="openMachineryModal('practice_mover')">Select Machinery</button>
+                                    </div>
+                                    <div class="col-lg-3 col-sm-12">
+                                        <label for="practice_mover_machinery_name_operator" class="form-label">Operator Name:</label>
+                                        <input type="text" name="practice_mover_machinery_name_operator" id="practice_mover_machinery_name_operator" class="form-control">
+                                    </div>
+                                    <div class="col-lg-2 col-sm-12">
+                                        <label for="practice_date_mowing_done_last" class="form-label">Last Mowing Date:</label>
+                                        <input type="date" id="practice_date_mowing_done_last" name="practice_date_mowing_done_last" class="form-control">
+                                    </div>
+                                    <div class="col-lg-2 col-sm-12 mt-4">
+                                        <label for="practice_time_of_application_mover" class="form-label">Time of Application Mower:</label>
+                                        <input type="time" id="practice_time_of_application_mover" name="practice_time_of_application_mover" class="form-control">
+                                    </div>
+                                    <div class="col-lg-2 col-sm-12 mt-4">
+                                        <label for="practice_mowing_done_at_mm" class="form-label">Mowing Height (mm):</label>
+                                        <input type="number" id="practice_mowing_done_at_mm" name="practice_mowing_done_at_mm" class="form-control">
+                                    </div>
+                                    <div class="col-lg-2 col-sm-12 mt-4">
+                                        <label for="practice_moving_passes_unit" class="form-label">Unit:</label>
+                                        <select class="form-select" id="practice_moving_passes_unit" name="practice_moving_passes_unit">
+                                            <option selected>Select Unit</option>
+                                            <option value="time">Time</option>
+                                            <option value="hours">Hours</option>
+                                            <option value="minutes">Minutes</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-2 col-sm-12 mt-4">
+                                        <label for="practice_mowing_duration" class="form-label">Duration</label>
+                                        <input type="number" id="practice_mowing_duration" name="practice_mowing_duration" class="form-control">
+                                    </div>
+                                    <div class="col-lg-2 col-sm-12 mt-5">
+                                        <button type="button" class="btn btn-primary" onclick="practiceaddMoverEntry()">Add Mower Entry</button>
+                                    </div>
+                                    <div class="col-sm-12 col-lg-12">
+                                        <details>
+                                            <summary>Mower Entries</summary>
+                            <div class="table-responsive transparent-bg">
+                                            
+                                                <table class="table table-bordered" id="practicemoverTable" style="font-size: 70%;">
+                                                    <thead class="table-dark">
+                                                        <tr>
+                                                            <th>Machine Type</th>
+                                                            <th>Machinery</th>
+                                                            <th>Operator</th>
+                                                            <th>Height (mm)</th>
+                                                            <th>Duration</th>
+                                                            <th>Unit</th>
+                                                            <th>Time</th>
+                                                            <th>Date</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody></tbody>
+                                                </table>
+                                                <input type="hidden" name="practice_mover_entries_json" id="practice_mover_entries_json">
+                            </div>
+                                        </details>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            </details>
+                        </div>
+                    </div>
+                    <!-- Chemical Section -->
+                    <div class="form-group gray-box text-dark rounded">
+                    <details class="summary-shadow box-bg rounded">
+                                                                                    <summary class="rounded-0">Chemical
+
+                                                                                       
+                                                                                    </summary>
+
+                        <fieldset class="p-4">
+                            <!-- <legend class="w-auto px-2">Chemical Entries</legend> -->
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-12 col-lg-6">
+                                    <div class="input-group mb-3 rounded">
+                                        <div class="input-group-text bg-light border-0" style="background-color:white !important;">
+                                            <input class="form-check-input mt-0 border-left" type="checkbox" aria-label="Checkbox for following text input" name="practice_is_fertilizers_used" id="practice_is_fertilizers_used">
+                                        </div>
+                                        <input type="text" class="form-control border-0" value="Is Chemicals Used" style="background-color:white" readonly aria-label="Text input with checkbox">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-lg-6">
+                                    <div class="row">
+                                        <div class="col-sm-12 col-lg-6">
+                                            <label for="practice_time_of_application_chemical" class="form-label">Time of Application Chemical:</label>
+                                        </div>
+                                        <div class="col-sm-12 col-lg-6">
+                                            <input type="time" id="practice_time_of_application_chemical" name="practice_time_of_application_chemical" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <label for="practice_fertilizers_details" class="form-label">Chemical Details:</label>
+                                    <select id="practice_fertilizers_details" name="practice_fertilizers_details" class="form-control">
+                                        <option value="">Select Any Chemical</option>
+                                    </select>
+                                </div>
+                                <div class="col">
+                                    <label for="practice_chemical_weight" class="form-label">Weight:</label>
+                                    <input type="text" id="practice_chemical_weight" placeholder="Weight" name="practice_chemical_weight" class="form-control">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <label for="practice_fertilizers_unit" class="form-label">Unit:</label>
+                                    <select id="practice_fertilizers_unit" name="practice_fertilizers_unit" class="form-control">
+                                        <option value="">Select Any Unit</option>
+                                        <option value="kg">KG</option>
+                                        <option value="gm">GM</option>
+                                        <option value="ltr">Liters</option>
+                                        <option value="ml">Milli Liters</option>
+                                        <option value="NA">NA</option>
+                                    </select>
+                                </div>
+                                <div class="col">
+                                    <label for="practice_chemical_details_remark" class="form-label">Remarks:</label>
+                                    <input type="text" id="practice_chemical_details_remark" placeholder="Remarks" name="practice_chemical_details_remark" class="form-control">
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <button type="button" class="btn btn-sm btn-primary" id="practiceAddChemicalBtn">+ Add Chemical Entry</button>
+                            </div>
+                        <details>
+                                            <summary>Chemical Entries</summary>
+                            <div class="table-responsive transparent-bg">
+
+                            <table class="table table-bordered mt-3" id="practiceChemicalTable">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Used</th>
+                                        <th>Time</th>
+                                        <th>Chemical</th>
+                                        <th>Weight</th>
+                                        <th>Unit</th>
+                                        <th>Remark</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                            <input type="hidden" name="practice_chemical_entries" id="practice_chemical_entries">
+                            </div>
+                            </details>
+                        </fieldset>
+                        </details>
+                    </div>
+                            <div class="row form-group gray-box mt-4 text-dark p-3 rounded alert box-bg">
+
+            <div class="col-sm-12 col-lg-12">
+                <label for="practice_remark_by_groundsman" class="form-label">Remark by Groundsman:</label>
+                <textarea id="practice_remark_by_groundsman" placeholder="Pitch Curing Remarks" name="practice_remark_by_groundsman" class="form-control">{{daily.53}}</textarea>
+            </div>
                                            
                                         </div>
                                         <hr>
                                     </div>
 
-                                    <div class="tab-pane fade box-bg" id="practice-tab-pane" role="tabpanel"  aria-labelledby="practice-tab" tabindex="0">
-                                        <div class="form-group daily-form border mt-4 text-dark p-3">
-                                            <div id="practiceEntryContainer"></div>
-                                            <legend class="w-auto px-2">Practice Area Entries</legend>
-                                            <div class="row">
-                                                <div class="col-sm-12 col-lg-12">
-                                                    <fieldset class="form-group border mt-4 text-dark p-3 box-bg rounded">
-                                                        <legend class="w-auto px-2">Watering</legend>
-                                                        <div class="row">
-                                                            <div class="col-sm-12 col-lg-4">
-                                                                <label for="practice_last_watering_on" class="form-label">Watering On:</label>
-                                                                <input type="date" id="practice_last_watering_on" name="practice_last_watering_on" value="" class="form-control">
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-4">
-                                                                <label for="practice_time_of_application" class="form-label">Time of Watering:</label>
-                                                                <div class="d-flex align-items-center justify-content-center">
-                                                                    <input type="time" id="practice_time_of_application" name="practice_time_of_application" value="{{daily.44}}" class="form-control">
-                                                                    <button type="button" class="btn d-flex align-items-center justify-content-center p-0 time-reset" style="width: 38px;">
-                                                                        <svg xmlns="https://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
-                                                                            <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
-                                                                            <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
-                                                                        </svg>
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-4">
-                                                                <label for="practice_quantity_of_water" class="form-label">Quantity of Water:</label>
-                                                                <input type="text" id="practice_quantity_of_water" name="practice_quantity_of_water" value="" class="form-control">
-                                                            </div>
-                                                              <div class="col-sm-12 col-lg-3 mt-5">
-
-                            <button type="button" class="btn btn-primary" onclick="addPracticeWateringEntry()">Add Watering Entry</button>
-
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-12">
-                                                                <details>
-                                                                    <summary>Watering Entries</summary>
-                                                                      <div class="table-responsive transparent-bg">
-                                                                    <table class="table table-bordered mt-2"
-                                                                        id="practicewateringTable">
-                                                                        <thead class="table-dark">
-                                                                            <tr>
-                                                                                <th>Watering On</th>
-                                                                                <th>Time of Watering</th>
-                                                                                <th>Quantity of Water</th>
-                                                                                <th>Action</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody></tbody>
-                                                                    </table>
-
-                                                                    <input type="hidden" name="practice_watering_entries_json"
-                                                                        id="practice_watering_entries_json">
-                                                                      </div>
-                                                                </details>
-
-
-                                                            </div>
-
-                                                        </div>
-                                                    </fieldset>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-sm-12 col-lg-12">
-                                                    <fieldset class="form-group border mt-4 text-dark p-3 box-bg rounded">
-                                                        <legend class="w-auto px-2">Rolling</legend>
-                                                        <div class="row">
-                                                            <div class="col-sm-12 col-lg-2">
-                                                                <label for="practice_roller_machine_type" class="form-label">Select Machine Type</label>
-                                                                <select class="form-select" id="practice_roller_machine_type" name="practice_roller_machine_type" required>
-                                                                    <option selected>Select Type</option>
-                                                                    <option value="Manual">Manual</option>
-                                                                    <option value="Mechanized">Mechanized</option>
-                                                                </select>
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-3 mt-4">
-                                                                <input type="hidden" id="practice_machinery_id" name="practice_machinery_id">
-                                                                   <div class="input-group">
-                                                                <input type="text" id="practice_machinery_name" class="form-control" readonly placeholder="Click to select machinery">
-                                                                 <span class="input-group-text bg-light" onclick="realoadMachineryList(event)">
-                                                                  <i class="bi bi-arrow-clockwise text-danger"></i>
-                                                                </span>
-                                                                </div>
-                                                                <button type="button" class="btn btn-dark mt-2 align-self-end" style="font-size:70%" onclick="openMachineryModal('practice_roller')">Select Machinery</button>
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-3">
-                                                                <label for="practice_roller_machinery_name_operator" class="form-label">Operator Name:</label>
-                                                                <input type="text" name="practice_roller_machinery_name_operator" id="practice_roller_machinery_name_operator" class="form-control">
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-2">
-                                                                <label for="practice_time_roller" class="form-label">Time of Rolling:</label>
-                                                                <div class="d-flex align-items-center justify-content-center">
-                                                                    <input type="time" id="practice_time_roller" name="practice_time_roller" class="form-control">
-                                                                    <button type="button" class="btn d-flex align-items-center justify-content-center p-0 time-reset" style="width: 38px;">
-                                                                        <svg xmlns="https://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
-                                                                            <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
-                                                                            <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
-                                                                        </svg>
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-2">
-                                                                <label for="practice_rolling_speed" class="form-label">Rolling Speed (km/hr):</label>
-                                                                <input type="number" id="practice_rolling_speed" name="practice_rolling_speed" class="form-control">
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-3 mt-4">
-                                                                <label for="practice_passes_unit" class="form-label">Select Unit:</label>
-                                                                <select class="form-select" id="practice_passes_unit" name="practice_passes_unit">
-                                                                    <option selected>Select Unit</option>
-                                                                    <option value="passes">Passes</option>
-                                                                    <option value="time">Time</option>
-                                                                    <option value="hours">Hours</option>
-                                                                    <option value="minutes">Minutes</option>
-                                                                </select>
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-4 mt-4">
-                                                                <label for="practice_no_of_passes" class="form-label">Number of Passes:</label>
-                                                                <input type="text" id="practice_no_of_passes" name="practice_no_of_passes" class="form-control">
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-3 mt-5">
-                                                                <button type="button" class="btn btn-primary" onclick="practiceaddRollingEntry()">Add Rolling Entry</button>
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-12">
-                                                                <details>
-                                                                    <summary>Rolling Entries</summary>
-                                                                    <div class="table-responsive transparent-bg">
-                                                                    <table class="table table-bordered" id="practicerollingTable" style="font-size: 70%;">
-                                                                        <thead class="table-dark">
-                                                                            <tr>
-                                                                                <th>Machine Type</th>
-                                                                                <th>Machinery</th>
-                                                                                <th>Operator</th>
-                                                                                <th>Speed</th>
-                                                                                <th>Passes</th>
-                                                                                <th>Unit</th>
-                                                                                <th>Time</th>
-                                                                                <th>Action</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody></tbody>
-                                                                    </table>
-                                                                    <input type="hidden" name="practice_rolling_entries_json" id="practice_rolling_entries_json">
-                                                                    </div>
-                                                                </details>
-                                                            </div>
-                                                        </div>
-                                                    </fieldset>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-sm-12 col-lg-12">
-                                                    <fieldset class="form-group border mt-4 text-dark p-3 box-bg rounded">
-                                                        <legend class="w-auto px-2">Mower</legend>
-                                                        <div class="row">
-                                                            <div class="col-lg-3 col-sm-12">
-                                                                <label for="practice_mover_machine_type" class="form-label">Select Machine Type</label>
-                                                                <select class="form-select" id="practice_mover_machine_type" name="practice_mover_machine_type" required>
-                                                                    <option selected>Select Type</option>
-                                                                    <option value="Manual">Manual</option>
-                                                                    <option value="Mechanized">Mechanized</option>
-                                                                </select>
-                                                            </div>
-                                                            <div class="col-lg-4 col-sm-12">
-                                                                <label for="practice_mover_machinery_id" class="form-label">Select Machinery/Mower</label>
-                                                                <input type="hidden" name="practice_mover_machinery_id" id="practice_mover_machinery_id">
-                                                                <div class="input-group">
-                                                                <input type="text" name="practice_mover_machinery_name" id="practice_mover_machinery_name" class="form-control" readonly placeholder="Click to select machinery">
-                                                                  <span class="input-group-text bg-light" onclick="realoadMachineryList(event)">
-                                                                  <i class="bi bi-arrow-clockwise text-danger"></i>
-                                                                </span>
-                                                                </div>
-                                                                <button type="button" class="btn btn-dark mt-2 align-self-end" style="font-size:70%" onclick="openMachineryModal('practice_mover')">Select Machinery</button>
-                                                            </div>
-                                                            <div class="col-lg-3 col-sm-12">
-                                                                <label for="practice_mover_machinery_name_operator" class="form-label">Operator Name:</label>
-                                                                <input type="text" name="practice_mover_machinery_name_operator" id="practice_mover_machinery_name_operator" class="form-control">
-                                                            </div>
-                                                            <div class="col-lg-2 col-sm-12">
-                                                                <label for="practice_date_mowing_done_last" class="form-label">Last Mowing Date:</label>
-                                                                <input type="date" id="practice_date_mowing_done_last" name="practice_date_mowing_done_last" class="form-control">
-                                                            </div>
-                                                            <div class="col-lg-2 col-sm-12 mt-4">
-                                                                <label for="practice_time_of_application_mover" class="form-label">Time of Application Mower:</label>
-                                                                <div class="d-flex align-items-center justify-content-center">
-                                                                    <input type="time" id="practice_time_of_application_mover" name="practice_time_of_application_mover" class="form-control">
-                                                                    <button type="button" class="btn d-flex align-items-center justify-content-center p-0 time-reset" style="width: 38px;">
-                                                                        <svg xmlns="https://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
-                                                                            <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
-                                                                            <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
-                                                                        </svg>
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-lg-2 col-sm-12 mt-4">
-                                                                <label for="practice_mowing_done_at_mm" class="form-label">Mowing Height (mm):</label>
-                                                                <input type="number" id="practice_mowing_done_at_mm" name="practice_mowing_done_at_mm" class="form-control">
-                                                            </div>
-                                                            <div class="col-lg-2 col-sm-12 mt-4">
-                                                                <label for="practice_moving_passes_unit" class="form-label">Unit:</label>
-                                                                <select class="form-select" id="practice_moving_passes_unit" name="practice_moving_passes_unit">
-                                                                    <option selected>Select Unit</option>
-                                                                    <option value="time">Time</option>
-                                                                    <option value="hours">Hours</option>
-                                                                    <option value="minutes">Minutes</option>
-                                                                </select>
-                                                            </div>
-                                                            <div class="col-lg-2 col-sm-12 mt-4">
-                                                                <label for="practice_mowing_duration" class="form-label">Duration</label>
-                                                                <input type="number" id="practice_mowing_duration" name="practice_mowing_duration" class="form-control">
-                                                            </div>
-                                                            <div class="col-lg-2 col-sm-12 mt-5">
-                                                                <button type="button" class="btn btn-primary" onclick="practiceaddMoverEntry()">Add Mower Entry</button>
-                                                            </div>
-                                                            <div class="col-sm-12 col-lg-12">
-                                                                <details>
-                                                                    <summary>Mower Entries</summary>
-                                                                    <div class="table-responsive transparent-bg">
-                                                                    <table class="table table-bordered" id="practicemoverTable" style="font-size: 70%;">
-                                                                        <thead class="table-dark">
-                                                                            <tr>
-                                                                                <th>Machine Type</th>
-                                                                                <th>Machinery</th>
-                                                                                <th>Operator</th>
-                                                                                <th>Height (mm)</th>
-                                                                                <th>Duration</th>
-                                                                                <th>Unit</th>
-                                                                                <th>Time</th>
-                                                                                <th>Date</th>
-                                                                                <th>Action</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody></tbody>
-                                                                    </table>
-                                                                    <input type="hidden" name="practice_mover_entries_json" id="practice_mover_entries_json">
-                                                                    </div>
-                                                                </details>
-                                                            </div>
-                                                        </div>
-                                                    </fieldset>
-                                                </div>
-                                            </div>
-                                            <div class="form-group gray-box border mt-4 text-dark p-3 rounded alert box-bg">
-                                                <fieldset>
-                                                    <legend class="w-auto px-2">Chemical Entries</legend>
-                                                    <hr>
-                                                    <div class="row">
-                                                        <div class="col-sm-12 col-lg-6">
-                                                            <div class="input-group mb-3 rounded">
-                                                                <div class="input-group-text bg-light border-0">
-                                                                    <input class="form-check-input mt-0 border-left" type="checkbox" name="practice_is_fertilizers_used" id="practice_is_fertilizers_used">
-                                                                </div>
-                                                                <input type="text" class="form-control border-0" value="Is Fertilizers Used" style="background-color:white" readonly aria-label="Text input with checkbox">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-12 col-lg-6">
-                                                            <div class="row">
-                                                                <div class="col-sm-12 col-lg-6">
-                                                                    <label for="practice_time_of_application_chemical" class="form-label">Time of Application Chemical:</label>
-                                                                </div>
-                                                                <div class="col-sm-12 col-lg-6">
-                                                                    <div class="d-flex align-items-center justify-content-center">
-                                                                        <input type="time" id="practice_time_of_application_chemical" name="practice_time_of_application_chemical" class="form-control">
-                                                                        <button type="button" class="btn d-flex align-items-center justify-content-center p-0 time-reset" style="width: 38px;">
-                                                                            <svg xmlns="https://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
-                                                                                <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
-                                                                                <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
-                                                                            </svg>
-                                                                        </button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col">
-                                                            <label for="practice_fertilizers_details" class="form-label">Chemical Details:</label>
-                                                            <select id="practice_fertilizers_details" name="practice_fertilizers_details" class="form-control">
-                                                                <option value="">Select Any Chemical</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="col">
-                                                            <label for="practice_chemical_weight" class="form-label">Weight:</label>
-                                                            <input type="text" id="practice_chemical_weight" placeholder="Weight" name="practice_chemical_weight" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col">
-                                                            <label for="practice_fertilizers_unit" class="form-label">Unit:</label>
-                                                            <select id="practice_fertilizers_unit" name="practice_fertilizers_unit" class="form-control">
-                                                                <option value="">Select Any Unit</option>
-                                                                <option value="kg">KG</option>
-                                                                <option value="gm">GM</option>
-                                                                <option value="ltr">Liters</option>
-                                                                <option value="ml">Milli Liters</option>
-                                                                <option value="NA">NA</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="col">
-                                                            <label for="practice_chemical_details_remark" class="form-label">Remarks:</label>
-                                                            <input type="text" id="practice_chemical_details_remark" placeholder="Remarks" name="practice_chemical_details_remark" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                    <div class="text-end">
-                                                        <button type="button" class="btn btn-sm btn-primary" id="practiceAddChemicalBtn">+ Add Chemical Entry</button>
-                                                    </div>
-                                                     <details>
-                                                                    <summary>Chemical Entries</summary>
-                                                                    <div class="table-responsive transparent-bg">
-     <table class="table table-bordered mt-3" id="practiceChemicalTable">
-                                                        <thead class="table-dark">
-                                                            <tr>
-                                                                <th>Used</th>
-                                                                <th>Time</th>
-                                                                <th>Chemical</th>
-                                                                <th>Weight</th>
-                                                                <th>Unit</th>
-                                                                <th>Remark</th>
-                                                                <th>Action</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody></tbody>
-                                                    </table>
-                                                    <input type="hidden" name="practice_chemical_entries" id="practice_chemical_entries">
-                                                                    
-                                                                    </div>
-                                                                </details>
-                                                  
-                                                </fieldset>
-                                            </div>
-                                            <!-- <button type="button" class="btn btn-primary my-3" onclick="addPracticeEntryRow()">Add Practice Entry</button> -->
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <label for="practice_remark_by_groundsman" class="form-label">Remark by Groundsman:</label>
-                                                    <textarea id="practice_remark_by_groundsman" placeholder="Pitch Curing Remarks" name="practice_remark_by_groundsman" class="form-control">{{daily.53}}</textarea>
-                                                </div>
-                                            </div>
-                                           
-                                        </div>
-                                        <hr>
-                                    </div>
-
+                                
                                       <div class="row">
                 <div class="col-sm-12 col-lg-12 col-md-12 d-flex align-items-center mt-4 fs-6">
                     <div class="row">
@@ -2635,6 +2314,7 @@
                         <input type="hidden" name="rowIndxs" id="rowIndxs" />
                     </div>
                 </div>
+            </div>
             </div>
           
 
@@ -3578,6 +3258,7 @@ renderMoisturePP()
             $(`#${tabsButtonsObject[event.target.id][0]}`).removeClass("showTab")
             $(`#${tabsButtonsObject[event.target.id][1]}`).removeClass("showTab")
             $(`#${tabsButtonsObject[event.target.id][1]}`).removeClass("active")
+            $(`#${tabsButtonsObject[event.target.id][1]}`).removeClass("show");
             $(`#${tabsButtonsObject[checkBoxArray[0]][0]}`).addClass("active")
             //  $(`#${tabsButtonsObject[e][1]}`).removeClass("showTab")
             $(`#${tabsButtonsObject[checkBoxArray[0]][1]}`).addClass("active")
@@ -3770,21 +3451,6 @@ renderMoisturePP()
             console.error("Error fetching grounds:", error);
         });
 
-        // Load pitches based on pre-selected ground and pitch
-        if ("{{daily.58}}" && "{{daily.1}}") {
-             axios.get(`/usr_admin/get_pitches/{{daily.58}}`).then((result) => {
-                $("#pitch_id").html("<option value=''>Select Pitch</option>");
-                localStorage.setItem("city",result.data.grounds[0].city);
-                result.data.grounds.forEach(function (p) {
-                    $("#pitch_id").append(`<option value='${p.pitch[0]}'>${p.pitch[14]} ${p.pitch[5]}</option>`);
-                });
-                $("#pitch_id").val("{{daily.1}}").trigger('change'); // Trigger change to update pitch_location
-            }).catch((error) => {
-                console.error("Error fetching pitches:", error);
-            });
-        }
-
-
         // Set initial values for common fields
         $("#recording_type").val("{{daily.57}}");
         $("#min_temp").val("{{daily.4}}");
@@ -3858,6 +3524,7 @@ renderMoisturePP()
 
         // Pitch ID change logic (UNCHANGED)
         $("#pitch_id").change(function () {
+        
             const pitchId = $(this).val().trim();
             $("#pitch_id_text").val(pitchId);
             if (pitchId > 0) {
@@ -3872,6 +3539,27 @@ renderMoisturePP()
             }
         });
     });
+
+
+    
+        // Load pitches based on pre-selected ground and pitch
+        if ("{{daily.58}}" && "{{daily.1}}") {
+             axios.get(`/usr_admin/get_pitches/{{daily.58}}`).then((result) => {
+                $("#pitch_id").html("<option value=''>Select Pitch</option>");
+                localStorage.setItem("city",result.data.grounds[0].city);
+                result.data.grounds.forEach(function (p) {
+                    $("#pitch_id").append(`<option value='${p.pitch[0]}'>${p.pitch[14]} ${p.pitch[5]}</option>`);
+                });
+                
+            }).then(()=>{
+                $("#pitch_id").val("{{daily.1}}".trim()) // Trigger change to update pitch_location
+                
+            }).catch((error) => {
+                console.error("Error fetching pitches:", error);
+            });
+        }
+
+
 
     // Helper functions for dynamic row generation and data updates (MAIN PITCH)
     let rowIndex = 0; // For main pitch entries

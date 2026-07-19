@@ -293,12 +293,38 @@ def fetch_match_records(request):
             query = f"""SELECT * FROM {org_id}_match_main_clagghammer WHERE match_id = %s"""
             cursor.execute(query, [mrow[0]])
             claggRows=cursor.fetchall()
-            # print(claggRows)
+            
+            newClagg = []
+
+            for row in claggRows:
+                row = list(row)
+
+                readings = []
+
+                for val in row[4:14]:   # Reading1 to Reading10
+
+                    try:
+                        v = float(val)
+                        if v != 0:
+                            readings.append(v)
+                    except:
+                        pass
+
+                if readings:
+                    avg = round(sum(readings) / len(readings), 2)
+                else:
+                    avg = 0
+
+                row.append(avg)
+
+                newClagg.append(tuple(row))
+                
+                print(newClagg)
             data = [dict(zip(columns, row)) for row in rows]
             # claggdata = [dict(zip(columns, row)) for row in claggRows]
             # print(claggdata)
 
-        return render(request, "admin_user/reports/report1.html", {"records": data,"clagg":claggRows})
+        return render(request, "admin_user/reports/report1.html", {"records": data,"clagg":newClagg})
     except Exception as e:
         print(e)
 
@@ -686,7 +712,7 @@ def fertilizer_usage_report(request):
 
     query=""
     value=[]
-    if chemical=="" or chemical=="all":
+    if ground_id=="" or ground_id=="all":
         
     # 2. Fetch relevant fertilizer usage data from curator table
         query = f"""
@@ -3688,6 +3714,7 @@ def update_daily(request,daily_id):
             out_mowing_duration = ""
             out_roller_machine_type =""
             out_roller_machinery_name_operator = ""
+            out_clipping = ""
             
             
             #practice
@@ -3718,6 +3745,7 @@ def update_daily(request,daily_id):
             practice_area_chemical_unit=""
             
             pitch_practice_chemical_weight=""
+        
             pitch_practice_chemical_unit=""
             
             
@@ -5201,6 +5229,7 @@ def curator_daily_recording_list(request):
                     order by cdr.rolling_start_date desc limit 15;
                 '''
                 cursor.execute(sql)
+                
             else:
                 sql = f'''
                     SELECT 
@@ -5312,7 +5341,12 @@ def curator_daily_recording_list(request):
                     WHERE cdr.ground_id = %s order by cdr.rolling_start_date desc limit 15;
                 '''
                 cursor.execute(sql, [user.get("ground_id")])
-            recordings = cursor.fetchall()
+            # recordings = cursor.fetchall()
+            columns = [col[0] for col in cursor.description]
+            recordings = [
+                dict(zip(columns, row))
+                for row in cursor.fetchall()
+            ]
             
         except Exception as e:
             print(e)
@@ -7534,8 +7568,8 @@ def match_list(request):
 			m2.print_details as mch2,
 			m3.print_details as mch3,
 			m4.print_details as mch4,
-   `cdr`.`rolling_date`,
-   `cdr`.`out_rolling_date`
+            `cdr`.`rolling_date`,
+            `cdr`.`out_rolling_date`
 
 		FROM {org_id}_match_master cdr
 							INNER JOIN 
@@ -7557,7 +7591,12 @@ def match_list(request):
 						   
 							 where cdr.ground_id=%s order by `created_at` desc limit 15''',[user.get("ground_id")])
                 
-            matches = cursor.fetchall()
+            # matches = cursor.fetchall()
+            columns = [col[0] for col in cursor.description]
+            matches = [
+                dict(zip(columns, row))
+                for row in cursor.fetchall()
+            ]
 
 
         return render(request, 'admin_user/match_list.html', {'matches': matches})
