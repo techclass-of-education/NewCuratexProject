@@ -1,149 +1,529 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bootstrap Dashboard</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+{% include "admin_user/headertags.html" %}
+
+
 {% load static %}
-     <link rel="stylesheet" href="{% static 'admin_user/css/admin.css' %}">
-</head>
-<body>
-    <!-- Navigation Bar -->
-   <nav class="navbar navbar-expand-lg navbar-dark">
-        <p>User:{{ user.username }}</p>
+<link href="{% static 'admin_user/css/gradient.css' %}" rel="stylesheet">
+<div class="wrapper grass-bg">
+  <!-- Sidebar -->
+  {% include "admin_user/menu_side.html" %}
 
-        <a class="navbar-brand" href="#">
-            <img src="{{profilePath}}" alt="Logo">Groundman Dashboard
-        </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="#"><i class="fas fa-tachometer-alt"></i>Menu</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#"><i class="fas fa-file"></i>Menu</a>
-                </li>
-                <li class="nav-item">
-                    <a class="btn btn-danger" href="{% url 'logout' %}"><i class="fas fa-logout"></i>Logout</a>
-<!--                    <a class="nav-link" href="#">Menu</a>-->
-                </li>
-            </ul>
-        </div>
-    </nav>
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <ul class="nav flex-column">
-            <li class="nav-item">
-                <a class="nav-link active" href="#">
-                    <i class="fas fa-tachometer-alt"></i> Dashboard
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-rss"></i> Menu
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-tv"></i> Menu
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-edit"></i> Menu
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-table"></i> Menu
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-chart-bar"></i> Menu
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-file"></i> Menu
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-image"></i> Menu
-                </a>
-            </li>
-        </ul>
-    </div>
+  
+  <!-- Page Content -->
+  <div id="content" class="bg-form-page">
+  <!-- Navigation bar -->
+  {% include "admin_user/menu_top.html" %}
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-3 col-md-6">
-                    <div class="box">
-                        <h4>Match Scores</h4>
-                        <p class="enter-text">Entry..............</p>
-                        <p class="enter-text">Entry..............</p>
-                        <p class="enter-text">Entry..............</p>
-                    </div>
+    <!-- Dashboard Content -->
+    <div class="container-fluid py-4 px-3">
+
+      <div class="row">
+        <!-- Stats Cards -->
+          <div class="col-xl-1"></div>
+        <div class="col-xl-5 col-sm-12">
+          <div class="card text-white transparent-bg d-flex align-items-center">
+            <div class="card-body box-gradient w-75 corner-rounded">
+              <div class="d-flex justify-content-between align-items-center">
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="https://www.w3.org/2000/svg"
+                  width="50" height="50" fill="currentColor" viewBox="0 0 24 24">
+                  <path fill-rule="evenodd"
+                    d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z"
+                    clip-rule="evenodd" />
+                </svg>
+                <div>
+                  <h6 class="card-title">Indian Time (AM/PM)</h6>
+                  <h3 class="mb-0" id="indian-clock-ampm"></h3>
                 </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="box">
-                        <h4>Daily Ground Recordings</h4>
-                        <p class="enter-text">Entry..............</p>
-                        <p class="enter-text">Entry..............</p>
-                        <p class="enter-text">Entry..............</p>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="box">
-                        <h4>Pitch Recordings</h4>
-                        <p class="enter-text">Entry..............</p>
-                        <p class="enter-text">Entry..............</p>
-                        <p class="enter-text">Entry..............</p>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="notification-box">
-                        <h4>Notification Box</h4>
-                        <p class="enter-text">Notification content here...</p>
-                        <p class="enter-text">Notification content here...</p>
-                        <p class="enter-text">Notification content here...</p>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="box">
-                        <h4>Match Day Ground Recordings</h4>
-                        <p class="enter-text">Entry..............</p>
-                        <p class="enter-text">Entry..............</p>
-                        <p class="enter-text">Entry..............</p>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="box">
-                        <h4>Newly Machinery</h4>
-                        <p class="enter-text">Entry..............</p>
-                        <p class="enter-text">Entry..............</p>
-                        <p class="enter-text">Entry..............</p>
-                    </div>
-                </div>
+
+
+
+              </div>
+
             </div>
+          </div>
         </div>
+        
+        <!-- <div class="col-xl-4 col-sm-12">
+
+          <div class="card bg-success text-white box-gradient">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="card-title">Indian Time (24-Hour)</h6>
+                  <h3 class="mb-0" id="indian-clock-24hr"></h3>
+                </div>
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="https://www.w3.org/2000/svg"
+                  width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                  <path fill-rule="evenodd"
+                    d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z"
+                    clip-rule="evenodd" />
+                </svg>
+
+              </div>
+            </div>
+          </div>
+        </div> -->
+        <div class="col-xl-5 col-sm-12 mt-sm-3">
+          <div class="card transparent-bg d-flex align-items-center">
+            <div class="card-body box-gradient w-75 corner-rounded">
+              <div class="d-flex justify-content-between align-items-center">
+                <svg xmlns="https://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
+                  class="bi bi-people-fill" viewBox="0 0 16 16">
+                  <path
+                    d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
+                </svg>
+              
+
+                  <h3 class="mb-0 fs-6">{{user.name}}</h3>
+                
+
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+ <div class="col-xl-1"></div>
+
+
+      </div>
+
+      <!-- Charts Row -->
+      <div class="row mt-4 justify-content-center">
+<div class="col-xl-1"></div>
+        <!-- <div class="col-lg-4 col-sm-12 mb-4" style="display: flex;justify-content: center;align-items: center;">
+         <img src="https://pitchitrightcams.com/logo.jpg" height="400" style="display: block;border-radius: 100%;">
+       
+        </div> -->
+        <div class="col-lg-5 col-sm-12 mb-4">
+
+
+          <div class="container box-gradient corner-rounded w-75">
+            <div class="text-center py-5 text-white">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-lg-12 d-flex flex-column justify-content-end align-items-center">
+                    <svg xmlns="https://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
+                      class="bi bi-cloud-fog-fill" viewBox="0 0 16 16">
+                      <path
+                        d="M3 13.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m10.405-9.473a5.001 5.001 0 0 0-9.499-1.004A3.5 3.5 0 1 0 3.5 12H13a3 3 0 0 0 .405-5.973" />
+                    </svg>
+                    <div class="card-title current-date fs-5 mt-3"></div>
+                  </div>
+                  <div class="col d-flex flex-column align-items-center justify-content-center">
+                    <div class="card-title display-6 text-center"><span id="city_name"></span></div>
+                    <span class="card-text mt-3 fs-5" id="forecast">Partly Cloudy</span>
+
+                  </div>
+                  <hr>
+                  <!-- <div class="card-title display-6"><span id="city_name"></span>, <span id="country_name"></span></div> -->
+
+                  <!-- This div will now hold the vertically stacked elements -->
+                  <div class="d-flex flex-column align-items-center">
+                    <!-- Each of these divs will now represent a row in the vertical stack -->
+                    <div class="mb-2 d-flex justify-content-between align-items-center">
+                      <!-- Margin bottom for spacing -->
+
+                      <i class="bi bi-thermometer-half weather-icon d-block" style="color: rgb(138, 218, 138);"></i>
+                      <span class="temperature d-block" id="min_temp">22째C</span>
+                    </div>
+                    <div class="mb-2 d-flex justify-content-between align-items-center">
+                      <!-- Margin bottom for spacing -->
+                      <i class="bi bi-thermometer-half weather-icon" style="color: rgb(244, 148, 148);"></i>
+                      <span class="temperature" id="max_temp">22째C</span>
+                    </div>
+                    <div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+          </div>
+        </div>
+
+        <div class="col-lg-5 col-sm-12 d-flex flex-column align-items-center">
+          <div class="card change-role-box box-gradient corner-rounded w-75">
+            <div class="card-header box-bg text-white">
+
+              <i class="bi bi-person-check me-2 text-info"></i> CURATORS
+            </div>
+            <div class="card-body box-gradient rounded-bottom">
+
+
+
+
+              <ul class="list-group list-group-flush  box-gradient" id="curatorsList">
+
+              </ul>
+
+            </div>
+          </div>
+          <div class="card mt-3 change-role-box box-gradient w-75">
+            <div class="card-header box-bg text-white">
+              <i class="bi bi-person-check me-2  rounded text-info"></i>GROUNDMAN
+            </div>
+            <div class="card-body box-gradient rounded-bottom">
+
+
+
+
+
+              <ul class="list-group list-group-flush" id="groundmansList">
+
+              </ul>
+
+            </div>
+          </div>
+        </div>
+<div class="col-xl-1"></div>
+
+
+
+
+
+
+
+
+
+
+
+      </div>
+
     </div>
 
-    <!-- Scripts -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="{% static 'admin_user/js/script.js' %}"></script>
+  </div>
 
-    </body>
-    </html>
+  {% include "admin_user/footertags.html" %}
 
-    
+
+  <script>
+    // Example org_id
+    axios.get(`/usr_admin/get-admin-users/`)
+      .then(response => {
+        if (response.data.status === "success") {
+          // console.log("Admin Users:", response.data.data);
+          // Example: show in table
+          localStorage.setItem("admin_users_data", JSON.stringify(response.data.data));
+          // console.log(response.data.data[0].city)
+          localStorage.setItem("city", response.data.data[0].city);
+          const d = new Date()
+          getWeather(d.getFullYear(), d.getMonth() + 1, d.getDate(), "dash")
+
+        }
+      })
+      .catch(error => {
+        console.error("Axios Error:", error);
+      });
+
+    // setCurators()
+    // setGroundmans()
+
+    if ("{{userdirect}}") {
+      document.querySelector("#dashboard-menu span").innerHTML = "Admin Dashboard"
+    }
+
+    // const getWeather = (y, m, d) => {
+
+    //   // Define your API key, location, and the date you want to get the forecast for
+    //   const apiKey = 'f201a1e4b5cf4e87a66103535240211';
+    //   const loc = 'Nagpur';
+    //   const date = `${y}/${m}/${d}` // Replace with your desired date (YYYY-MM-DD)
+
+    //   // Construct the API URL for the forecast
+    //   const url = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${loc}&dt=${date}&aqi=no`;
+
+    //   // Fetch the weather data
+    //   fetch(url)
+    //     .then(response => response.json())
+    //     .then(data => {
+    //       // Extract the forecast data for the day
+    //       const forecast = data.forecast.forecastday[0].day;
+
+    //       // Get the min, max temperature and weather condition description
+    //       const minTemp = forecast.mintemp_c;
+    //       const maxTemp = forecast.maxtemp_c;
+    //       const condition = forecast.condition.text;
+    //       const cityName = data.location.name;
+    //       const countryName = data.location.country;
+
+    //       document.querySelector(".current-date").innerHTML = `${String(y).padStart(2, '0')}/${String(m).padStart(2, '0')}/${String(d).padStart(2, '0')}`
+    //       document.getElementById("min_temp").innerHTML = minTemp
+    //       document.getElementById("max_temp").innerHTML = maxTemp
+    //       document.getElementById("forecast").innerHTML = condition
+    //       document.getElementById("city_name").innerHTML = cityName
+    //       document.getElementById("country_name").innerHTML = countryName
+
+    //     })
+    //     .catch(error => console.error('Error fetching weather data:', error));
+    // }
+
+
+
+
+
+    // Function to update Indian Time (AM/PM format)
+    function updateIndianClockAMPM() {
+      const ampmClockElement = document.getElementById('indian-clock-ampm');
+
+      const now = new Date();
+      const utcOffsetInMilliseconds = 5.5 * 60 * 60 * 1000; // IST is UTC +5:30
+      const indianTime = new Date(now.getTime() + now.getTimezoneOffset() * 60000 + utcOffsetInMilliseconds);
+
+      let hours = indianTime.getHours();
+      const minutes = String(indianTime.getMinutes()).padStart(2, '0');
+      const seconds = String(indianTime.getSeconds()).padStart(2, '0');
+
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12 || 12; // Convert to 12-hour format
+
+      ampmClockElement.textContent = `${hours}:${minutes}:${seconds} ${ampm}`;
+    }
+
+    // Function to update Indian Time (24-hour format)
+    function updateIndianClock24Hr() {
+      const clock24hrElement = document.getElementById('indian-clock-24hr');
+
+      const now = new Date();
+      const utcOffsetInMilliseconds = 5.5 * 60 * 60 * 1000; // IST is UTC +5:30
+      const indianTime = new Date(now.getTime() + now.getTimezoneOffset() * 60000 + utcOffsetInMilliseconds);
+
+      const hours = String(indianTime.getHours()).padStart(2, '0');
+      const minutes = String(indianTime.getMinutes()).padStart(2, '0');
+      const seconds = String(indianTime.getSeconds()).padStart(2, '0');
+
+      clock24hrElement.textContent = `${hours}:${minutes}:${seconds}`;
+    }
+
+    // Update both clocks every second
+    setInterval(updateIndianClockAMPM, 1000);
+    setInterval(updateIndianClock24Hr, 1000);
+
+    // Initial calls to display immediately
+    updateIndianClockAMPM();
+    updateIndianClock24Hr();
+
+  </script>
+
+
+
+  <style>
+    .weather-card {
+      margin-top: 0px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .temperature {
+      font-size: 3.5rem;
+      font-weight: bold;
+    }
+
+    .weather-icon {
+      font-size: 2rem;
+    }
+  </style>
+
+
+  <style>
+    .admin-profile-card-vibrant {
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      /* Ensures the border-radius applies to the gradient */
+      margin-bottom: 20px;
+      background: linear-gradient(to right bottom, #FF6B6B, #FFB84C);
+      /* Sunset gradient */
+    }
+
+    .profile-header-vibrant {
+      padding: 10px;
+      background: linear-gradient(to right, #6EE7B7, #3B82F6);
+      /* Fresh gradient */
+      color: white;
+      position: relative;
+      /* For potential layering effects */
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+
+    .profile-pic-vibrant {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border: 5px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      /* Subtle shadow for depth */
+      position: absolute;
+      top: -60px;
+      /* Adjust to place the image over the gradient */
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .profile-name-vibrant {
+      font-weight: 700;
+      margin-top: 10px;
+      color: white;
+      font-size: 1.5em;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+      /* For better readability on gradient */
+    }
+
+    .profile-role-vibrant {
+      font-size: 1.1em;
+      opacity: 0.9;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 0;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Card body details - use a light background for readability on colorful background */
+    .admin-profile-card-vibrant .card-body {
+      background-color: rgba(255, 255, 255, 0.8);
+      /* Semi-transparent white background */
+      padding-top: 70px;
+      /* Adjust for image overlap */
+    }
+
+    .admin-profile-card-vibrant .list-group-item {
+      font-size: 1em;
+      color: #343a40;
+      /* Dark text for contrast */
+      background-color: transparent;
+      /* Remove list item background */
+      border-color: rgba(0, 0, 0, 0.1);
+      /* Subtle list item borders */
+    }
+
+    .profile-detail-vibrant {
+      font-weight: 600;
+      color: #495057;
+    }
+
+    .icon-color-vibrant {
+      color: #3B82F6;
+      /* Use a distinct color for icons */
+      font-size: 1.2em;
+    }
+
+    .card-footer .btn-colorful {
+      background: linear-gradient(to right, #FFB84C, #FF6B6B);
+      /* Colorful button */
+      color: white;
+      border: none;
+      border-radius: 25px;
+      padding: 8px 20px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .card-footer .btn-colorful:hover {
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .admin-profile-card-vibrant {
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+
+    .club-details {
+      font-size: 0.6em !important;
+
+    }
+
+    .club-details .row>div {
+      padding: 1.2em 1em;
+      text-transform: uppercase;
+    }
+  </style>
+
+
+
+
+  <!-- modal -->
+
+
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="staticBackdropProfileData" data-bs-backdrop="static" data-bs-keyboard="false"
+    tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content transparent-bg">
+       
+        <div class="modal-body">
+          <div class="col-sm-12">
+            <div class="card mb-3 shadow">
+              <div class="card-header  box-bg">
+                <button type="button" class="text-white rounded-3" data-bs-dismiss="modal" aria-label="Close">X</button>
+                <h3 class="card-title text-center p-3 rounded text-white"> <i class="bi bi-person-badge"></i> PROFILE
+                </h3>
+
+              </div>
+              <div class="card-body box-gradient rounded-bottom">
+
+                <ul class="list-group club-details" style="background: transparent !important;">
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col-lg-4 col-sm-12 text-center rounded profile-box-title">
+                        CLUB
+                      </div>
+                      <div class="col rounded ms-1 profile-box-details">
+                        {{user.name}}
+
+                      </div>
+                    </div>
+
+                  </li>
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col-lg-4 col-sm-12 text-center rounded profile-box-title">
+                        Email-id
+                      </div>
+                      <div class="col rounded ms-1 profile-box-details">
+                        {{user.email}}
+
+                      </div>
+                    </div>
+                  </li>
+
+                  <!--<li class="list-group-item">-->
+                  <!--  <div class="row">-->
+                  <!--    <div class="col-lg-4 col-sm-12 text-center rounded profile-box-title">-->
+                  <!--      Address-->
+                  <!--    </div>-->
+                  <!--    <div class="col rounded ms-1 profile-box-details">-->
+                  <!--      {{user.address}}-->
+
+                  <!--    </div>-->
+                  <!--  </div>-->
+                  <!--</li>-->
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col-lg-4 col-sm-12 text-center rounded profile-box-title">
+                        Mobile No.
+                      </div>
+                      <div class="col rounded ms-1 profile-box-details">
+                        {{user.mobile}}
+
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+            </div>
+
+
+
+
+          </div>
+        </div>
+       
+      </div>
+    </div>
+  </div>

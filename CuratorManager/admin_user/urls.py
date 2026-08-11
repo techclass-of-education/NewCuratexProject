@@ -84,11 +84,12 @@ urlpatterns = [
     path('update-icc-pitch-report/', views.update_icc_pitch_save, name='update_icc_pitch_report'),
     path('view-icc-pitch-report/', views.view_icc_pitch_report, name='view_icc_pitch_report'),
     path('check-icc-pitch-report/', views.check_icc_pitch_report_exists, name='check_icc_pitch_report_exists'),
-
+    path('delete-icc-report/<int:id>',views.delete_icc_report,name='delete_icc_report'),
 
     path('annualreportform/', views.annual_report_form, name='annual_report_form'),
     path('save-maintenance/', views.save_maintenance, name='save-maintenance'),
     path('annual-maintenance-report-page/', views.annual_maintenance_report_page, name='annual-maintenance-report-page'),
+     path('deleteAnuual/<int:id>',views.deleteAnuual,name='deleteAnuual'),
     # udpate form
     path("get-maintenance/<int:ground_id>/<str:mdate>/",views.get_maintenance,name="get_maintenance"),
     path("udpate-annualreportform/",views.udpate_annualreportform,name="udpate_annualreportform"),

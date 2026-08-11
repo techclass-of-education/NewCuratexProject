@@ -111,7 +111,7 @@
                                 <div class="row">
                                     <div class="col-sm-12 col-lg-6">
                                         <div class="form-check mb-2">
-                                            <input class="form-check-input" type="checkbox" id="is_availability_of_water" {% if ground.27 == 1 %}checked{% endif %} name="is_availability_of_water">
+                                            <input class="form-check-input" type="checkbox" id="is_availability_of_water" {% if ground.29 == 1 %}checked{% endif %} name="is_availability_of_water">
                                             <label class="form-check-label" for="is_availability_of_water">Water Source</label>
                                         </div>
                                     </div>
@@ -247,6 +247,7 @@
         const phoneValues = Array.from(phoneNumbers).map(input => input.value).filter(val => val.trim() !== '');
         document.getElementById('allPhoneNumbers').value = phoneValues.join(', ');
     }
+
     document.getElementById('addPhoneBtn').addEventListener('click', function () {
         const phoneNumbersDiv = document.getElementById('phoneNumbers');
         const newPhoneField = document.createElement('div');
@@ -285,10 +286,13 @@
     });
 
     $("#is_availability_of_water").change(function () {
+        
         if ($(this).prop("checked") === true) {
             $("#water_source").prop("required", true);
+            $("#water_source").prop("disabled", false);
         } else {
             $("#water_source").prop("required", false);
+            $("#water_source").prop("disabled", true);
         }
     });
 
@@ -296,7 +300,7 @@
         $("#state_name").val("{{ground.8}}");
         $("#broadcast_video_analysis").val("{{ground.47}}");
         $("#outfield_type").val("{{ground.48}}");
-        $("#water_source").val("{{ground.30}}");
+        $("#water_source").val("{{ground.30}}"=="None" || "{{ground.30}}"==""?"":"{{ground.30}}");
         const boundry = "{{ground.38}}".split("#");
 
         $("#boundary_size_mtrs-E").val(boundry[0]);

@@ -560,7 +560,7 @@
                                             </tr>
                                         </thead>
 
-                                        <tbody id="mainchemicalBody">
+                                        <tbody  id="mainchemicalBody{{forloop.counter}}">
                                         </tbody>
 
                                         <tr>
@@ -588,16 +588,16 @@
                                                                             <tr>
                                                                                 <th>Date</th>
                                                                                 <th>Time</th>
-                                                                                <th>Value 1</th>
-                                                                                <th>Value 2</th>
-                                                                                <th>Value 3</th>
-                                                                                <th>Value 4</th>
-                                                                                <th>Value 5</th>
-                                                                                <th>Value 6</th>
-                                                                                <th>Value 7</th>
-                                                                                <th>Value 8</th>
-                                                                                <th>Value 9</th>
-                                                                                <th>Value 10</th>
+                                                                                <th>1</th>
+                                                                                <th>2</th>
+                                                                                <th>3</th>
+                                                                                <th>4</th>
+                                                                                <th>5</th>
+                                                                                <th>6</th>
+                                                                                <th>7</th>
+                                                                                <th>8</th>
+                                                                                <th>9</th>
+                                                                                <th>10</th>
                                                                                 <th>Average</th>
                                                                                 </tr>
                                                                         </thead>
@@ -1010,7 +1010,7 @@
                                             </tr>
                                         </thead>
 
-                                        <tbody id="outchemicalBody">
+                                        <tbody  id="outchemicalBody{{forloop.counter}}">
                                         </tbody>
 
                                         <tr>
@@ -1472,9 +1472,9 @@ function loadChemicalTable(
     unitStr,
     timeStr,
     remarkStr,
-    tbodyId
+    tbody
 ){
-    const tbody=document.getElementById(tbodyId);
+    
 
     const chemicals = (chemicalStr || "").split("__####__");
     const weights   = (weightStr || "").split("__####__");
@@ -1514,7 +1514,7 @@ function loadChemicalTable(
         `);
     }
 
-    document.getElementById(tbodyId).innerHTML += html;
+  
 }
       
 
@@ -1526,7 +1526,7 @@ loadChemicalTable(
     `{{ recording.outfield_chemical_unit|default:''|escapejs }}`,
     `{{ recording.out_time_of_application_chemical|default:''|escapejs }}`,
     `{{ recording.out_chemical_details_remark|default:''|escapejs }}`,
-    "outchemicalBody"
+     document.getElementById("outchemicalBody{{forloop.counter}}")
 );
 
 
@@ -1536,7 +1536,7 @@ loadChemicalTable(
     `{{ recording.fertilizers_unit|default:''|escapejs }}`,
     `{{ recording.time_of_application_chemical|default:''|escapejs }}`,
     `{{ recording.chemical_details_remark|default:''|escapejs }}`,
-    "mainchemicalBody"
+     document.getElementById("mainchemicalBody{{forloop.counter}}")
 );
 
 {% endfor %}

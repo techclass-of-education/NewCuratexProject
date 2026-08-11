@@ -52,7 +52,9 @@
                     <!-- <button id="downloadPdf" type="button" class="btn btn-danger">Download PDF</button> -->
                     {% endif %}
                 </div>
-                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+
+                
+                <!-- <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
                     tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                     <div class="modal-dialog box-bg">
                         <div class="modal-content transparent-bg">
@@ -74,15 +76,32 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <!-- <button type="button" class="btn btn-primary">Understood</button> -->
-
-                        </div>
+                      
                     </div>
-                </div>
+                </div> -->
 
 
+                <div class="modal fade"  id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable box-bg">
+        <div class="modal-content transparent-bg">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Select Columns</h5>
+
+                <button class="btn-close"
+                        data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <!-- JS yaha pura UI banayega -->
+                <div id="columnContainer"></div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
                
             </div>
         </form>
@@ -99,7 +118,7 @@
                         
                         <tr>
                             {% for key in records.0.keys %}
-                            <th data-key="{{ key }}">{{ key|capfirst }}</th>
+                            <th class="fs-6" data-key="{{ key }}">{{ key|capfirst }}</th>
                             {% endfor %}
                         </tr>
                     </thead>
@@ -107,7 +126,7 @@
                         {% for row in records %}
                         <tr>
                             {% for value in row.values %}
-                            <td>{{ value }}</td>
+                            <td style="font-size: 13px;">{{ value }}</td>
                             {% endfor %}
                         </tr>
                         {% endfor %}
@@ -147,60 +166,594 @@ $(document).ready(function(){
 </script>
 
     <script>
-        window.addEventListener("DOMContentLoaded", () => {
-            
-            const table = document.getElementById('reportTable');
-            const checkboxes = document.querySelectorAll('.column-checkbox');
 
-            checkboxes.forEach(cb => {
-                const key = cb.value;
-                const ths = table.querySelectorAll(`th[data-key="${key}"]`);
-                if (ths.length === 0) return;
-                const colIndex = Array.from(ths[0].parentNode.children).indexOf(ths[0]);
 
-                // Initial hide/show based on checked state
-                table.querySelectorAll('tr').forEach(row => {
-                    if (row.children[colIndex])
-                        row.children[colIndex].style.display = cb.checked ? '' : 'none';
-                });
 
-                // On change
-                cb.addEventListener('change', () => {
-                    table.querySelectorAll('tr').forEach(row => {
-                        if (row.children[colIndex])
-                            row.children[colIndex].style.display = cb.checked ? '' : 'none';
-                    });
-                });
+
+const sections = {
+
+    "Main Pitch": {
+        Watering: [
+            "last_watering_on",
+            "quantity_of_water",
+            "time_of_application"
+        ],
+
+        Rolling: [
+            "machinery_id",
+            "no_of_passes",
+            "passes_unit",
+            "rolling_speed",
+            "roller_machine_type",
+            "roller_machinery_name_operator",
+            "time_roller"
+        ],
+
+        Mowing: [
+            "mover_machinery_id",
+            "mover_machine_type",
+            "mover_machinery_name_operator",
+            "moving_passes_unit",
+            "date_mowing_done_last",
+            "time_of_application_mover",
+            "mowing_done_at_mm",
+            "mowing_duration"
+        ],
+
+        Chemical: [
+            "is_fertilizers_used",
+            "fertilizers_details",
+            "chemical_details_remark",
+            "pitch_main_chemical_weight",
+            "pitch_main_chemical_unit",
+            "time_of_application_chemical",
+            "remark_by_groundsman"
+        ]
+    },
+
+
+
+    "Outfield": {
+
+        Watering: [
+            "out_last_watering_on",
+            "out_quantity_of_water",
+            "out_time_of_application"
+        ],
+
+        Rolling: [
+            "out_machinery_id",
+            "out_no_of_passes",
+            "out_passes_unit",
+            "out_rolling_speed",
+            "out_roller_machine_type",
+            "out_roller_machinery_name_operator",
+            "out_time_roller"
+        ],
+
+        Mowing: [
+            "out_mover_machinery_id",
+            "out_mover_machine_type",
+            "out_mover_machinery_name_operator",
+            "out_moving_passes_unit",
+            "out_date_mowing_done_last",
+            "time_of_application_out_mover",
+            "out_mowing_done_at_mm",
+            "out_mowing_duration"
+        ],
+
+        Chemical: [
+            "out_is_fertilizers_used",
+            "out_fertilizers_details",
+            "out_chemical_details_remark",
+            "outfield_chemical_weight",
+            "outfield_chemical_unit",
+            "out_time_of_application_chemical",
+            "out_remark_by_groundsman"
+        ]
+    },
+
+
+
+    "Practice Pitch": {
+
+        Watering: [
+            "pp_last_watering_on",
+            "pp_quantity_of_water",
+            "pp_time_of_application"
+        ],
+
+        Rolling: [
+            "pp_machinery_id",
+            "pp_no_of_passes",
+            "pp_passes_unit",
+            "pp_rolling_speed",
+            "pp_roller_machine_type",
+            "pp_roller_machinery_name_operator",
+            "pp_time_roller"
+        ],
+
+        Mowing: [
+            "pp_mover_machinery_id",
+            "pp_mover_machine_type",
+            "pp_mover_machinery_name_operator",
+            "pp_moving_passes_unit",
+            "pp_date_mowing_done_last",
+            "pp_time_of_application_mover",
+            "pp_mowing_done_at_mm",
+            "pp_mowing_duration"
+        ],
+
+        Chemical: [
+            "pp_is_fertilizers_used",
+            "pp_fertilizers_details",
+            "pp_chemical_details_remark",
+            "pitch_practice_chemical_weight",
+            "pitch_practice_chemical_unit",
+            "pp_time_of_application_chemical",
+            "pp_remark_by_groundsman"
+        ]
+    },
+
+
+
+    "Practice Area": {
+
+        Watering: [
+            "practice_last_watering_on",
+            "practice_quantity_of_water",
+            "practice_time_of_application"
+        ],
+
+        Rolling: [
+            "practice_machinery_id",
+            "practice_no_of_passes",
+            "practice_passes_unit",
+            "practice_rolling_speed",
+            "practice_roller_machine_type",
+            "practice_roller_machinery_name_operator",
+            "practice_time_roller"
+        ],
+
+        Mowing: [
+            "practice_mover_machinery_id",
+            "practice_mover_machine_type",
+            "practice_mover_machinery_name_operator",
+            "practice_moving_passes_unit",
+            "practice_date_mowing_done_last",
+            "time_of_application_practice_mover",
+            "practice_mowing_done_at_mm",
+            "practice_mowing_duration"
+        ],
+
+        Chemical: [
+            "practice_is_fertilizers_used",
+            "practice_fertilizers_details",
+            "practice_chemical_details_remark",
+            "practice_area_chemical_weight",
+            "practice_area_chemical_unit",
+            "practice_time_of_application_chemical",
+            "practice_remark_by_groundsman"
+        ]
+    }
+
+};
+
+function toggleColumn(field, show) {
+
+    const table = document.getElementById("reportTable");
+
+    if (!table) return;
+
+    const th = table.querySelector(`thead th[data-key="${field}"]`);
+
+    if (!th) return;
+
+    const index = th.cellIndex;
+
+    table.querySelectorAll("tr").forEach(row => {
+
+        if (row.cells[index]) {
+
+            row.cells[index].style.display = show ? "" : "none";
+
+        }
+
+    });
+
+}
+
+function initializeColumnEvents() {
+
+    document
+        .querySelectorAll(".column-checkbox")
+        .forEach(cb => {
+
+            const field = cb.value;
+
+            const visible =
+                defaultVisibleColumns.includes(field);
+
+            cb.checked = visible;
+
+            toggleColumn(field, visible);
+
+            cb.addEventListener("change", function () {
+
+                toggleColumn(field, this.checked);
+
             });
 
-
-
-            // CSV Export
-            document.getElementById('downloadCsv').addEventListener('click', () => {
-                const visibleIndexes = Array.from(checkboxes)
-                    .map((cb, idx) => cb.checked ? idx : null)
-                    .filter(idx => idx !== null);
-
-                const rows = Array.from(table.querySelectorAll('tr'));
-                let csvContent = "";
-
-                rows.forEach(row => {
-                    const cols = Array.from(row.children)
-                        .filter((td, idx) => visibleIndexes.includes(idx))
-                        .map(cell => `"${cell.innerText.trim()}"`);
-                    csvContent += cols.join(",") + "\n";
-                });
-
-                const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-                const link = document.createElement("a");
-                link.href = URL.createObjectURL(blob);
-                link.setAttribute("download", "match_report.csv");
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            });
         });
 
+}
+
+function renameHeaders() {
+
+    document
+        .querySelectorAll("#reportTable thead th")
+        .forEach(th => {
+
+            const key = th.dataset.key;
+
+            if (columnNames[key]) {
+
+                th.innerText = columnNames[key];
+
+            }
+
+        });
+
+}
+
+
+function buildColumnModal() {
+
+    const table = document.getElementById("reportTable");
+    const allColumns = [];
+
+    table.querySelectorAll("thead th").forEach(th => {
+        const key = th.dataset.key;
+        if (key) {
+            allColumns.push(key);
+        }
+    });
+
+    const container = document.getElementById("columnContainer");
+    container.innerHTML = "";
+
+    let html = "";
+
+     // ===========================
+    // General Columns
+    // ===========================
+
+    html += `
+        <tr>
+            <td class="fw-bold text-success">General</td>
+            
+    `;
+
+    allColumns.forEach(field => {
+
+        const exists = Object.values(sections).some(sec =>
+            Object.values(sec).flat().includes(field)
+        );
+
+        if (!exists) {
+            html += `<td colspan="4">${createCheckbox(field)}</td>`;
+        }
+    });
+
+    html += `
+           
+        </tr>
+    `;
+
+    html += `
+        <div class="table-responsive">
+        <table class="table table-bordered table-striped align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th width="180">Category</th>
+                    <th>Main Pitch</th>
+                    <th>Outfield</th>
+                    <th>Practice Pitch</th>
+                    <th>Practice Area</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    const categories = ["Watering", "Rolling", "Mowing", "Chemical"];
+
+    categories.forEach(category => {
+
+        html += `<tr>`;
+        html += `
+            <td class="fw-bold text-primary">
+                ${category}
+            </td>
+        `;
+
+        Object.keys(sections).forEach(section => {
+
+            html += `<td>`;
+
+            sections[section][category].forEach(field => {
+                html += createCheckbox(field);
+            });
+
+            html += `</td>`;
+
+        });
+
+        html += `</tr>`;
+    });
+
+   
+
+    // ===========================
+    // Close Table
+    // ===========================
+
+    html += `
+            </tbody>
+        </table>
+        </div>
+    `;
+
+    container.innerHTML = html;
+}
+
+
+document.addEventListener("DOMContentLoaded",function(){
+
+    buildColumnModal();
+    renameHeaders();
+
+    initializeColumnEvents();
+
+});
+
+
+function getLabel(field) {
+    return columnNames[field] || field;
+}
+
+function createCheckbox(field) {
+
+    return `
+        <div class="form-check mb-2">
+
+            <input
+                class="form-check-input column-checkbox"
+                type="checkbox"
+                id="${field}"
+                value="${field}">
+
+            <label
+                class="form-check-label" style="font-size:11px"
+                for="${field}">
+                ${getLabel(field)}
+            </label>
+
+        </div>
+    `;
+}
+
+
+
+    const columnNames = {
+
+        id: "Record ID",
+        pitch_id: "Pitch",
+        pitch_location: "Pitch Location",
+        rolling_start_date: "Rolling Start Date",
+        min_temp: "Minimum Temperature",
+        max_temp: "Maximum Temperature",
+        forecast: "Weather Forecast",
+        clagg_hammer: "Clagg Hammer",
+        moisture: "Moisture",
+
+
+        machinery_id: "Rolling Machine",
+        no_of_passes: "Rolling Passes",
+        passes_unit: "Rolling Pass Unit",
+        rolling_speed: "Rolling Speed",
+        time_roller: "Rolling Duration",
+
+        last_watering_on: "Last Watering Date",
+        quantity_of_water: "Water Quantity",
+        time_of_application: "Water Application Time",
+
+        mover_machinery_id: "Mower Machine",
+        mover_machine_type: "Mower Type",
+        mover_machinery_name_operator: "Mower Operator",
+        moving_passes_unit: "Mowing Pass Unit",
+        mowing_duration: "Mowing Duration",
+        date_mowing_done_last: "Last Mowing Date",
+        time_of_application_mover: "Mowing Time",
+        mowing_done_at_mm: "Mowing Height (mm)",
+
+
+        is_fertilizers_used: "Fertilizer Used",
+        fertilizers_details: "Fertilizer Details",
+        chemical_details_remark: "Chemical Details",
+        time_of_application_chemical: "Chemical Application Time",
+        pitch_main_chemical_weight: "Chemical Weight",
+        pitch_main_chemical_unit: "Chemical Unit",
+
+        remark_by_groundsman: "Groundsman Remarks",
+
+        roller_machine_type: "Roller Type",
+        roller_machinery_name_operator: "Roller Operator",
+
+        // Outfield
+        out_machinery_id: "Outfield Roller",
+        out_no_of_passes: "Outfield Passes",
+        out_passes_unit: "Outfield Pass Unit",
+        out_rolling_speed: "Outfield Rolling Speed",
+        out_last_watering_on: "Outfield Watering Date",
+        out_quantity_of_water: "Outfield Water Quantity",
+        out_time_of_application: "Outfield Water Time",
+        out_time_roller: "Outfield Rolling Time",
+
+        out_mover_machinery_id: "Outfield Mower",
+        out_mover_machine_type: "Outfield Mower Type",
+        out_mover_machinery_name_operator: "Outfield Mower Operator",
+        out_moving_passes_unit: "Outfield Mowing Pass Unit",
+        out_mowing_duration: "Outfield Mowing Duration",
+
+        out_date_mowing_done_last: "Outfield Last Mowing",
+        time_of_application_out_mover: "Outfield Mowing Time",
+        out_mowing_done_at_mm: "Outfield Mowing Height",
+        out_is_fertilizers_used: "Outfield Fertilizer Used",
+        out_fertilizers_details: "Outfield Fertilizer Details",
+        out_chemical_details_remark: "Outfield Chemical Details",
+        out_time_of_application_chemical: "Outfield Chemical Time",
+        outfield_chemical_weight: "Outfield Chemical Weight",
+        outfield_chemical_unit: "Outfield Chemical Unit",
+        out_remark_by_groundsman: "Outfield Remarks",
+        out_clipping: "Outfield Clipping",
+
+        out_roller_machine_type: "Outfield Roller Type",
+        out_roller_machinery_name_operator: "Outfield Roller Operator",
+
+        // Practice Pitch
+        pp_machinery_id: "Practice Pitch Roller",
+        pp_no_of_passes: "Practice Pitch Passes",
+        pp_passes_unit: "Practice Pitch Pass Unit",
+        pp_rolling_speed: "Practice Pitch Rolling Speed",
+        pp_last_watering_on: "Practice Pitch Watering Date",
+        pp_quantity_of_water: "Practice Pitch Water Quantity",
+        pp_time_of_application: "Practice Pitch Water Time",
+        pp_time_roller: "Practice Pitch Rolling Time",
+
+        pp_mover_machinery_id: "Practice Pitch Mower",
+        pp_mover_machine_type: "Practice Pitch Mower Type",
+        pp_mover_machinery_name_operator: "Practice Pitch Mower Operator",
+        pp_moving_passes_unit: "Practice Pitch Mowing Pass Unit",
+        pp_mowing_duration: "Practice Pitch Mowing Duration",
+
+        pp_date_mowing_done_last: "Practice Pitch Last Mowing",
+        pp_time_of_application_mover: "Practice Pitch Mowing Time",
+        pp_mowing_done_at_mm: "Practice Pitch Mowing Height",
+
+        pp_is_fertilizers_used: "Practice Pitch Fertilizer Used",
+        pp_fertilizers_details: "Practice Pitch Fertilizer Details",
+        pp_chemical_details_remark: "Practice Pitch Chemical Details",
+        pp_time_of_application_chemical: "Practice Pitch Chemical Time",
+        pitch_practice_chemical_weight: "Practice Pitch Chemical Weight",
+        pitch_practice_chemical_unit: "Practice Pitch Chemical Unit",
+        pp_remark_by_groundsman: "Practice Pitch Remarks",
+
+        pp_roller_machine_type: "Practice Pitch Roller Type",
+        pp_roller_machinery_name_operator: "Practice Pitch Roller Operator",
+
+        // Practice Area
+        practice_machinery_id: "Practice Area Roller",
+        practice_no_of_passes: "Practice Area Passes",
+        practice_passes_unit: "Practice Area Pass Unit",
+        practice_rolling_speed: "Practice Area Rolling Speed",
+        practice_last_watering_on: "Practice Area Watering Date",
+        practice_quantity_of_water: "Practice Area Water Quantity",
+        practice_time_of_application: "Practice Area Water Time",
+        practice_time_roller: "Practice Area Rolling Time",
+
+        practice_mover_machinery_id: "Practice Area Mower",
+        practice_mover_machine_type: "Practice Area Mower Type",
+        practice_mover_machinery_name_operator: "Practice Area Mower Operator",
+        practice_moving_passes_unit: "Practice Area Mowing Pass Unit",
+        practice_mowing_duration: "Practice Area Mowing Duration",
+
+        practice_date_mowing_done_last: "Practice Area Last Mowing",
+        time_of_application_practice_mover: "Practice Area Mowing Time",
+        practice_mowing_done_at_mm: "Practice Area Mowing Height",
+
+        practice_is_fertilizers_used: "Practice Area Fertilizer Used",
+        practice_fertilizers_details: "Practice Area Fertilizer Details",
+        practice_chemical_details_remark: "Practice Area Chemical Details",
+        practice_time_of_application_chemical: "Practice Area Chemical Time",
+        practice_area_chemical_weight: "Practice Area Chemical Weight",
+        practice_area_chemical_unit: "Practice Area Chemical Unit",
+        practice_remark_by_groundsman: "Practice Area Remarks",
+
+        practice_roller_machine_type: "Practice Area Roller Type",
+        practice_roller_machinery_name_operator: "Practice Area Roller Operator",
+
+        recording_type: "Recording Type",
+        ground_id: "Ground",
+        pitch_main: "Main Pitch",
+        pitch_practice: "Practice Pitch",
+        outfield: "Outfield",
+        practice_area: "Practice Area",
+        created_at: "Created On",
+        updated_at: "Updated On"
+    };
+
+const defaultVisibleColumns = [
+    "id",
+    "pitch_id",
+    "pitch_location",
+    "rolling_start_date",
+    "min_temp",
+    "max_temp",
+    "forecast",
+    "clagg_hammer"
+];
+   
+
+   document.addEventListener("DOMContentLoaded", function () {
+
+    const table = document.getElementById("reportTable");
+    const checkboxes = document.querySelectorAll(".column-checkbox");
+
+    checkboxes.forEach(cb => {
+
+        const key = cb.value;
+
+        const th = table.querySelector(`th[data-key="${key}"]`);
+        if (!th) return;
+
+        const colIndex = th.cellIndex;
+
+        // Rename Header
+        if (columnNames[key]) {
+            th.innerText = columnNames[key];
+        }
+
+        // Rename Checkbox Label
+        const lbl = document.querySelector(`label[for="${cb.id}"]`);
+        if (lbl && columnNames[key]) {
+            lbl.innerText = columnNames[key];
+        }
+
+        // Initial Visibility
+        const visible = defaultVisibleColumns.includes(key);
+
+        cb.checked = visible;
+
+        table.querySelectorAll("tr").forEach(row => {
+            if (row.cells[colIndex]) {
+                row.cells[colIndex].style.display = visible ? "" : "none";
+            }
+        });
+
+        // Toggle
+        cb.addEventListener("change", function () {
+
+            table.querySelectorAll("tr").forEach(row => {
+                if (row.cells[colIndex]) {
+                    row.cells[colIndex].style.display = this.checked ? "" : "none";
+                }
+            });
+
+        });
+
+    });
+
+});
 
     </script>
     <script>
@@ -225,7 +778,7 @@ $(document).ready(function(){
         
         tds.forEach(function (td) {
             let newTdStr=""
-            console.log(td.innerText)
+            // console.log(td.innerText)
             if (td.innerText.includes(splitStr)) {
                  let colIndex = td.cellIndex;
 
@@ -267,40 +820,6 @@ $(document).ready(function(){
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-
-    // const groundId = "{{ request.GET.id }}";
-    // if (!groundId) return;
-
-
-    // // 🔹 Step 1: find TH having data-key="ground_id"
-    // const th = document.querySelector('th[data-key="ground_id"]');
-    // if (!th) return;
-
-    // // 🔹 Step 2: get column index of that TH
-    // const colIndex = th.cellIndex;   // zero-based index
-    // // alert(colIndex)
-
-    // // 🔹 Step 3: fetch ground name using axios
-    // axios.get("/usr_admin/get_ground/"+groundId, {
-       
-    // })
-    // .then(response => {
-    //     const groundName = response.data.ground[6];
-    //     // alert(groundName)
-
-    //     // 🔹 Step 4: replace all TDs of that column
-    //     document.querySelectorAll("tbody tr").forEach(row => {
-    //         const td = row.cells[colIndex];
-    //         if (td) {
-    //             td.innerText = groundName;
-    //         }
-    //     });
-    // })
-    // .catch(err => console.error(err));
-
-});
-
 
 function replaceColumnValueByTH({
     thKey,
@@ -360,7 +879,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const pitchMap = {};
 
-            console.log(res.data)
+            // console.log(res.data)
 
             // 🔹 Step 3: response se mapping banao
             res.data.grounds.forEach(obj => {

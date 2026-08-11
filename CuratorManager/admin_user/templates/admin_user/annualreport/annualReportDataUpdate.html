@@ -1117,9 +1117,9 @@
                         <div class="card-input-group"><label>Remark/Reason</label><textarea></textarea></div>
                     </div>
                 </div>
-                <button class="update-btn">Update</button>
             </div>
-
+            
+            <button class="update-btn px-5 rounded">Update</button>
         </div>
 
 
@@ -1170,6 +1170,7 @@
                             <th>ID</th>
                             <th>Ground</th>
                             <th>Date</th>
+                            <th>Action</th>
                         </tr>
 
                     </thead>
@@ -1186,6 +1187,29 @@
     </div>
 </div>
 <script>
+
+    function delAnual(id) {
+
+    if (!confirm("Are you sure you want to delete this record?")) {
+        return;
+    }
+
+    axios.get("/usr_admin/deleteAnuual/" + id)
+        .then(res => {
+
+            if (res.data.status) {
+                alert(res.data.message);
+                location.reload();
+            } else {
+                alert(res.data.message);
+            }
+
+        })
+        .catch(err => {
+            console.log(err);
+            alert("Something went wrong.");
+        });
+}
 
     // Helper function to get CSRF token
     function getCookie(name) {
@@ -1226,6 +1250,9 @@
                 <td>${row.ground_name}</td>
 
                 <td>${row.mdate}</td>
+                <td>
+                    <button class="btn btn-danger" onclick="delAnual(${row.id})">Delete</button>
+                </td>
 
             </tr>
 
@@ -1474,13 +1501,14 @@
     });
 
 
-
+ $(".update-btn").hide()
 
 
     async function loadMaintenance() {
 
         const groundId = $("#groundSelect").val();
         const mDate = $("#mDate").val();
+        $(".update-btn").show()
 
         if (!groundId || !mDate) {
             return;

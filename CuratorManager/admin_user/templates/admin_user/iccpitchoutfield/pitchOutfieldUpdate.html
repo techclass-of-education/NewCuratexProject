@@ -730,6 +730,7 @@ input[type='checkbox']
                 <th>Referee</th>
                 <th>Pitch Rating</th>
                 <th>Outfield Rating</th>
+                <th>Action</th>
                 
               </tr>
             </thead>
@@ -819,6 +820,30 @@ $(document).ready(function () {
       });
     });
   
+
+    function delReport(id) {
+
+    if (!confirm("Are you sure you want to delete this record?")) {
+        return;
+    }
+
+    axios.get("/usr_admin/delete-icc-report/" + id)
+        .then(res => {
+
+            if (res.data.status) {
+                alert(res.data.message);
+                location.reload();
+            } else {
+                alert(res.data.message);
+            }
+
+        })
+        .catch(err => {
+            console.log(err);
+            alert("Something went wrong.");
+        });
+}
+
   
 function loadPitchReportsList() {
   $('#pitchReportsTableBody').html('<tr><td colspan="12" class="text-center">Loading...</td></tr>');
@@ -858,6 +883,9 @@ function loadPitchReportsList() {
             <td>${r.referee ?? ''}</td>
             <td>${r.pitch_rating ?? ''}</td>
             <td>${r.outfield_rating ?? ''}</td>
+             <td>
+                    <button class="btn btn-danger" onclick="delReport(${r.id})">Delete</button>
+                </td>
            
           </tr>`;
       });
