@@ -10,10 +10,11 @@
             data-bs-toggle="dropdown">
             <i class="bi bi-person-circle text-white"></i>
           </a>
-                   <ul class="dropdown-menu dropdown-menu-start" style="left: -150px !important;right:0!important;">
+          <ul class="dropdown-menu dropdown-menu-start" style="left: -150px !important;right:0!important;">
 
-            <li><a class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#staticBackdropProfileData">Profile</a></li>
-                  <li><a class="dropdown-item" href="#">Curators/Groundmen</a></li>
+            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#staticBackdropProfileData">Profile</a>
+            </li>
+            <li><a class="dropdown-item" href="#">Curators/Groundmen</a></li>
             <li>
               <hr class="dropdown-divider">
             </li>
@@ -29,32 +30,28 @@
 
 <script>
   function changeMenuTitle(title) {
-     try
-    {
-    document.querySelector("#menu-page-title").innerHTML = title
+    try {
+      document.querySelector("#menu-page-title").innerHTML = title
     }
-    catch(err)
-    {
+    catch (err) {
       console.error(err)
     }
   }
 
-  
-function getDateByTextThis(text)
-{
-  console.log(text)
-  if(text.value)
-  {
-    const dateData=text.value.trim().split("-")
-    return{"dd":dateData[2],"mm":dateData[1],"yyyy":dateData[0]}
+
+  function getDateByTextThis(text) {
+    console.log(text)
+    if (text.value) {
+      const dateData = text.value.trim().split("-")
+      return { "dd": dateData[2], "mm": dateData[1], "yyyy": dateData[0] }
+    }
   }
-}
-  
-const getWeather = (y, m, d,page) => {
-     
+
+  const getWeather = (y, m, d, page) => {
+
     // Define your API key, location, and the date you want to get the forecast for
     const apiKey = 'f201a1e4b5cf4e87a66103535240211';
-    const loc = page=="dash"?"{{request.session.user.city}}":JSON.parse(localStorage.getItem("location-{{request.session.user.org_id}}"));
+    const loc = page == "dash" ? "{{request.session.user.city}}" : JSON.parse(localStorage.getItem("location-{{request.session.user.org_id}}"));
     const date = `${y}/${m}/${d}` // Replace with your desired date (YYYY-MM-DD)
 
     // Construct the API URL for the forecast
@@ -74,28 +71,41 @@ const getWeather = (y, m, d,page) => {
         const cityName = data.location.name;
         // const countryName = data.location.country;
 
-        try
-        { 
-      document.getElementById("min_temp").value = minTemp
-        document.getElementById("max_temp").value = maxTemp
-        document.getElementById("forecast").value = condition
+        try {
+          if (document.getElementById("min_temp")) {
+            document.getElementById("min_temp").value = minTemp
+          }
+          if (document.getElementById("max_temp")) {
+            document.getElementById("max_temp").value = maxTemp
+          }
+          if (document.getElementById("forecast")) {
+            document.getElementById("forecast").value = condition
+          }
         }
-        catch(e)
-        {
+        catch (e) {
           console.error("Error setting weather data:", e);
         }
 
-        try
-        {
-          document.getElementById("min_temp").innerHTML = minTemp
-        document.getElementById("max_temp").innerHTML = maxTemp
-        document.getElementById("forecast").innerHTML = condition
+        try {
+          if (document.getElementById("min_temp")) {
+            document.getElementById("min_temp").innerHTML = minTemp
+          }
+          if (document.getElementById("max_temp")) {
+            document.getElementById("max_temp").innerHTML = maxTemp
+          }
+          if (document.getElementById("forecast")) {
+            document.getElementById("forecast").innerHTML = condition
+          }
+          if (document.getElementById("city_name")) {
             document.getElementById("city_name").innerHTML = cityName
-        // document.getElementById("country_name").innerHTML = countryName
-        document.querySelector(".current-date").innerHTML = `${String(y).padStart(2, '0')}/${String(m).padStart(2, '0')}/${String(d).padStart(2, '0')}`
+          }
+
+          // document.getElementById("country_name").innerHTML = countryName
+          if (document.querySelector(".current-date")) {
+            document.querySelector(".current-date").innerHTML = `${String(y).padStart(2, '0')}/${String(m).padStart(2, '0')}/${String(d).padStart(2, '0')}`
+          }
         }
-        catch(e)
-        {
+        catch (e) {
           console.error("Error setting current date:", e);
         }
 
@@ -104,11 +114,11 @@ const getWeather = (y, m, d,page) => {
   }
 
 
-  const getWeatherByThis = (text,page) => {
-     const dateThis=getDateByTextThis(text)
+  const getWeatherByThis = (text, page) => {
+    const dateThis = getDateByTextThis(text)
     // Define your API key, location, and the date you want to get the forecast for
     const apiKey = 'f201a1e4b5cf4e87a66103535240211';
-    const loc = page=="dash"?"{{request.session.user.city}}":JSON.parse(localStorage.getItem("location-{{request.session.user.org_id}}")).city;
+    const loc = page == "dash" ? "{{request.session.user.city}}" : JSON.parse(localStorage.getItem("location-{{request.session.user.org_id}}")).city;
     // alert(loc)
     const date = `${dateThis.yyyy}/${dateThis.mm}/${dateThis.dd}` // Replace with your desired date (YYYY-MM-DD)
 
@@ -129,28 +139,41 @@ const getWeather = (y, m, d,page) => {
         const cityName = data.location.name;
         // const countryName = data.location.country;
 
-        try
-        { 
-      document.getElementById("min_temp").value = minTemp
-        document.getElementById("max_temp").value = maxTemp
-        document.getElementById("forecast").value = condition
+         try {
+          if (document.getElementById("min_temp")) {
+            document.getElementById("min_temp").value = minTemp
+          }
+          if (document.getElementById("max_temp")) {
+            document.getElementById("max_temp").value = maxTemp
+          }
+          if (document.getElementById("forecast")) {
+            document.getElementById("forecast").value = condition
+          }
         }
-        catch(e)
-        {
+        catch (e) {
           console.error("Error setting weather data:", e);
         }
 
-        try
-        {
-          document.getElementById("min_temp").innerHTML = minTemp
-        document.getElementById("max_temp").innerHTML = maxTemp
-        document.getElementById("forecast").innerHTML = condition
+        try {
+          if (document.getElementById("min_temp")) {
+            document.getElementById("min_temp").innerHTML = minTemp
+          }
+          if (document.getElementById("max_temp")) {
+            document.getElementById("max_temp").innerHTML = maxTemp
+          }
+          if (document.getElementById("forecast")) {
+            document.getElementById("forecast").innerHTML = condition
+          }
+          if (document.getElementById("city_name")) {
             document.getElementById("city_name").innerHTML = cityName
-        // document.getElementById("country_name").innerHTML = countryName
-        document.querySelector(".current-date").innerHTML = `${String(y).padStart(2, '0')}/${String(m).padStart(2, '0')}/${String(d).padStart(2, '0')}`
+          }
+
+          // document.getElementById("country_name").innerHTML = countryName
+          if (document.querySelector(".current-date")) {
+            document.querySelector(".current-date").innerHTML = `${String(y).padStart(2, '0')}/${String(m).padStart(2, '0')}/${String(d).padStart(2, '0')}`
+          }
         }
-        catch(e)
-        {
+        catch (e) {
           console.error("Error setting current date:", e);
         }
 
@@ -159,21 +182,22 @@ const getWeather = (y, m, d,page) => {
   }
 
 
-function setCurators() {
-   axios.get("{% url 'getCurators' %}")
-   .then((result) => {
-    const curatorsListUL = document.getElementById('curatorsList');
-    curatorsListUL.innerHTML = ""; // Reset list
- console.log(result.data)
+  function setCurators() {
+    axios.get("{% url 'getCurators' %}")
+      .then((result) => {
+        if (document.getElementById('curatorsList')) {
+          const curatorsListUL = document.getElementById('curatorsList');
+          curatorsListUL.innerHTML = ""; // Reset list
+          console.log(result.data)
 
-    // Group by equipment_name, then by type, and model within each type
-    if( result.data.curators.length === 0) {
-      curatorsListUL.innerHTML = `<li class="list-group-item rounded">No Curators Available</li>`;
-      return;
-    }
-    
-    result.data.curators.forEach((curator) => {
-       curatorsListUL.innerHTML += `<li class="list-group-item mb-1 rounded">
+          // Group by equipment_name, then by type, and model within each type
+          if (result.data.curators.length === 0) {
+            curatorsListUL.innerHTML = `<li class="list-group-item rounded">No Curators Available</li>`;
+            return;
+          }
+
+          result.data.curators.forEach((curator) => {
+            curatorsListUL.innerHTML += `<li class="list-group-item mb-1 rounded">
                <a href="/usr_admin/login_auth_role_direct?id=${curator[0]}&role=Curator">
               <span class="fw-1"> ${curator[1]} <small>Click for Dashbaord</small></span>
                <br>
@@ -181,274 +205,275 @@ function setCurators() {
                </a>
              </li>`;
 
-   
-    });
-  }).catch((error) => {
-    console.log("Error fetching Curators data:", error);
-   });
-  
-}
+
+          });
+        }
+      }).catch((error) => {
+        console.log("Error fetching Curators data:", error);
+      });
+
+  }
 
 
-function setGroundmans() {
-   axios.get("{% url 'getGroundmans' %}")
-   .then((result) => {
-    const groundmansListUL = document.getElementById('groundmansList');
-    groundmansListUL.innerHTML = ""; // Reset list
- console.log(result.data)
+  function setGroundmans() {
+    axios.get("{% url 'getGroundmans' %}")
+      .then((result) => {
+        const groundmansListUL = document.getElementById('groundmansList');
+        groundmansListUL.innerHTML = ""; // Reset list
+        console.log(result.data)
 
-    // Group by equipment_name, then by type, and model within each type
-    if( result.data.groundmans.length === 0) {
-      groundmansListUL.innerHTML = `<li class="list-group-item mb-1 rounded">No Groundman Available</li>`;
-      return;
-    }
-    
-    result.data.groundmans.forEach((groundman) => {
-       curatorsListUL.innerHTML += `<li class="list-group-item rounded" onclick="loginGroundman('${groundman[0]}')">
+        // Group by equipment_name, then by type, and model within each type
+        if (result.data.groundmans.length === 0) {
+          groundmansListUL.innerHTML = `<li class="list-group-item mb-1 rounded">No Groundman Available</li>`;
+          return;
+        }
+
+        result.data.groundmans.forEach((groundman) => {
+          curatorsListUL.innerHTML += `<li class="list-group-item rounded" onclick="loginGroundman('${groundman[0]}')">
                ${groundman[1]}
              </li>`;
 
-   
-    });
-  }).catch((error) => {
-    console.log("Error fetching Curators data:", error);
-   });
-  
-}
 
-
-let selectedMachineType=""
- function openMachineryModal(modalType) {
-  axios.get("{% url 'machinery_data' %}")
-   .then((result) => {
-    const machineryList = document.getElementById('machineryList');
-    machineryList.innerHTML = ""; // Reset list
-    const groupedMachinery = {};
-
-    // Group by equipment_name, then by type, and model within each type
-    result.data.forEach((machine) => {
-     if (!groupedMachinery[machine.equipment_name]) {
-      groupedMachinery[machine.equipment_name] = {};
-     }
-     if (!groupedMachinery[machine.equipment_name][machine.type]) {
-      groupedMachinery[machine.equipment_name][machine.type] = [];
-     }
-     groupedMachinery[machine.equipment_name][machine.type].push(machine);
-    });
-
-    // Generate table rows
-    Object.keys(groupedMachinery).forEach((equipmentName) => {
-     // Equipment Name Row
-     const equipmentRow = document.createElement('tr');
-    
-     equipmentRow.className = `category`;
-     equipmentRow.innerHTML = `<td colspan="5" class="text-warning fs-5 fw-bold">${equipmentName}</td>`;
-     machineryList.appendChild(equipmentRow);
-  
-     const types = groupedMachinery[equipmentName];
-     Object.keys(types).forEach((type) => {
-      // Skip type if it's "NA"
-     let typeClass = ""
-     if (type == "Manual") {
-      typeClass = "Manual"
-     }
-     else if (type == "Mechanised") {
-      typeClass = "Mechanized"
-     }
-      // if (type === "NA") return;
-     equipmentRow.className = `category ${typeClass}`;
-      // Type Row
-      const typeRow = document.createElement('tr');
-      typeRow.className = `subcategory ${typeClass}`;
-      typeRow.innerHTML = `<td colspan="5" class="text-success fs-6 fw-bold ${typeClass}">${type}</td>`;
-      machineryList.appendChild(typeRow);
-
-      // Model Rows
-      types[type].forEach((machine) => {
-       // Skip rows where all fields are "NA"
-      //  if (
-      //   (machine.model === "NA" || !machine.model) &&
-
-      //   (machine.value === "NA" || !machine.value) &&
-      //   (machine.unit === "NA" || !machine.unit)
-      //  ) {
-      //   return; // Skip this entry
-      //  }
-
-       const modelRow = document.createElement('tr');
-       modelRow.className = `item-row ${typeClass}`;
-
-       // Dynamically populate columns, skipping "NA"
-       modelRow.innerHTML = `<td class="${typeClass}"></td><td class="${typeClass}">${machine.print_details}</td>`;
-       modelRow.style.cursor = "pointer";
-
-       // Click Event to set the selected machinery
-       modelRow.onclick = function () {
-        if (modalType == "out_dust") {
-         document.getElementById('out_dust_machinery_id').value = machine.id;
-         document.getElementById('out_dust_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
-        }
-        else if (modalType == "out_aeration") {
-         document.getElementById('out_aeration_machinery_id').value = machine.id;
-         document.getElementById('out_aeration_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
-        }
-        else if (modalType == "out_scarifying") {
-         document.getElementById('out_scarifying_machinery_id').value = machine.id;
-         document.getElementById('out_scarifying_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
-        }
-        else if (modalType == "out_verticut") {
-         document.getElementById('out_verticut_machinery_id').value = machine.id;
-         document.getElementById('out_verticut_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
-        }
-        else if (modalType == "pp_dust") {
-         document.getElementById('pp_dust_machinery_id').value = machine.id;
-         document.getElementById('pp_dust_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
-        }
-        else if (modalType == "pp_aeration") {
-         document.getElementById('pp_aeration_machinery_id').value = machine.id;
-         document.getElementById('pp_aeration_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
-        }
-        else if (modalType == "pp_scarifying") {
-         document.getElementById('pp_scarifying_machinery_id').value = machine.id;
-         document.getElementById('pp_scarifying_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
-        }
-        else if (modalType == "pp_verticut") {
-         document.getElementById('pp_verticut_machinery_id').value = machine.id;
-         document.getElementById('pp_verticut_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
-        }
-        else if (modalType == "po_dust") {
-         document.getElementById('po_dust_machinery_id').value = machine.id;
-         document.getElementById('po_dust_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
-        }
-        else if (modalType == "po_aeration") {
-         document.getElementById('po_aeration_machinery_id').value = machine.id;
-         document.getElementById('po_aeration_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
-        }
-        else if (modalType == "po_scarifying") {
-         document.getElementById('po_scarifying_machinery_id').value = machine.id;
-         document.getElementById('po_scarifying_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
-        }
-        else if (modalType == "po_verticut") {
-         document.getElementById('po_verticut_machinery_id').value = machine.id;
-         document.getElementById('po_verticut_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
-        }
-        else if (modalType == "main_dust") {
-         document.getElementById('main_dust_machinery_id').value = machine.id;
-         document.getElementById('main_dust_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
-        }
-        else if (modalType == "main_aeration") {
-         document.getElementById('main_aeration_machinery_id').value = machine.id;
-         document.getElementById('main_aeration_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
-        }
-        else if (modalType == "main_scarifying") {
-         document.getElementById('main_scarifying_machinery_id').value = machine.id;
-         document.getElementById('main_scarifying_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
-        }
-        else if (modalType == "main_verticut") {
-         document.getElementById('main_verticut_machinery_id').value = machine.id;
-         document.getElementById('main_verticut_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
-        }
-
-
-
-        else if (modalType == "out_roller") {
-         document.getElementById('out_machinery_id').value = machine.id;
-         document.getElementById('out_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
-        }
-        else if (modalType == "roller") {
-         document.getElementById('machinery_id').value = machine.id;
-         document.getElementById('machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
-        }
-        else if (modalType == "practice_roller") {
-         document.getElementById('practice_machinery_id').value = machine.id;
-         document.getElementById('practice_machinery_name').value =`${machine.equipment_name} - Type: ${machine.print_details}`;
-        }
-        else if (modalType == "out_mover") {
-         document.getElementById('out_mover_machinery_id').value = machine.id;
-         document.getElementById('out_mover_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
-        }
-        else if (modalType == "mover") {
-         document.getElementById('mover_machinery_id').value = machine.id;
-         document.getElementById('mover_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
-        }
-        else if (modalType == "practice_mover") {
-         document.getElementById('practice_mover_machinery_id').value = machine.id;
-         document.getElementById('practice_mover_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
-        }
-        else if (modalType == "pp_roller") {
-         document.getElementById('pp_machinery_id').value = machine.id;
-         document.getElementById('pp_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
-        }
-        else if (modalType == "pp_mover") {
-         document.getElementById('pp_mover_machinery_id').value = machine.id;
-         document.getElementById('pp_mover_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
-        }
-
-
-
-        $('#machineryModal').modal('hide');
-       };
-
-       machineryList.appendChild(modelRow);
+        });
+      }).catch((error) => {
+        console.log("Error fetching Curators data:", error);
       });
-     });
 
-    });
+  }
 
-    // Show the modal
-    $('#machineryModal').modal('show');
-   })
-     .then(() => {
-    // alert(selectedMachineType)
-      // Reset the selected machine type after fetching data
-      if (selectedMachineType === "Manual") {
-        console.log($("body").find(".Mechanized"))
-      $("body").find("tr.Mechanized").hide();
-       $("body").find("tr.Manual").show();
-    } else if (selectedMachineType === "Mechanized") {
-        console.log($("body").find(".Mechanized"))
 
-       $("body").find("tr.Manual").hide();
-       $("body").find("tr.Mechanized").show();
-    } else {
-      $("body").find("tr.Manual, tr.Mechanized").show(); // if needed
-    }
-    })
-   .catch((error) => {
-    console.log("Error fetching machinery data:", error);
-   });
- }
-    
-  
+  let selectedMachineType = ""
+  function openMachineryModal(modalType) {
+    axios.get("{% url 'machinery_data' %}")
+      .then((result) => {
+        const machineryList = document.getElementById('machineryList');
+        machineryList.innerHTML = ""; // Reset list
+        const groupedMachinery = {};
+
+        // Group by equipment_name, then by type, and model within each type
+        result.data.forEach((machine) => {
+          if (!groupedMachinery[machine.equipment_name]) {
+            groupedMachinery[machine.equipment_name] = {};
+          }
+          if (!groupedMachinery[machine.equipment_name][machine.type]) {
+            groupedMachinery[machine.equipment_name][machine.type] = [];
+          }
+          groupedMachinery[machine.equipment_name][machine.type].push(machine);
+        });
+
+        // Generate table rows
+        Object.keys(groupedMachinery).forEach((equipmentName) => {
+          // Equipment Name Row
+          const equipmentRow = document.createElement('tr');
+
+          equipmentRow.className = `category`;
+          equipmentRow.innerHTML = `<td colspan="5" class="text-warning fs-5 fw-bold">${equipmentName}</td>`;
+          machineryList.appendChild(equipmentRow);
+
+          const types = groupedMachinery[equipmentName];
+          Object.keys(types).forEach((type) => {
+            // Skip type if it's "NA"
+            let typeClass = ""
+            if (type == "Manual") {
+              typeClass = "Manual"
+            }
+            else if (type == "Mechanised") {
+              typeClass = "Mechanized"
+            }
+            // if (type === "NA") return;
+            equipmentRow.className = `category ${typeClass}`;
+            // Type Row
+            const typeRow = document.createElement('tr');
+            typeRow.className = `subcategory ${typeClass}`;
+            typeRow.innerHTML = `<td colspan="5" class="text-success fs-6 fw-bold ${typeClass}">${type}</td>`;
+            machineryList.appendChild(typeRow);
+
+            // Model Rows
+            types[type].forEach((machine) => {
+              // Skip rows where all fields are "NA"
+              //  if (
+              //   (machine.model === "NA" || !machine.model) &&
+
+              //   (machine.value === "NA" || !machine.value) &&
+              //   (machine.unit === "NA" || !machine.unit)
+              //  ) {
+              //   return; // Skip this entry
+              //  }
+
+              const modelRow = document.createElement('tr');
+              modelRow.className = `item-row ${typeClass}`;
+
+              // Dynamically populate columns, skipping "NA"
+              modelRow.innerHTML = `<td class="${typeClass}"></td><td class="${typeClass}">${machine.print_details}</td>`;
+              modelRow.style.cursor = "pointer";
+
+              // Click Event to set the selected machinery
+              modelRow.onclick = function () {
+                if (modalType == "out_dust") {
+                  document.getElementById('out_dust_machinery_id').value = machine.id;
+                  document.getElementById('out_dust_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+                }
+                else if (modalType == "out_aeration") {
+                  document.getElementById('out_aeration_machinery_id').value = machine.id;
+                  document.getElementById('out_aeration_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+                }
+                else if (modalType == "out_scarifying") {
+                  document.getElementById('out_scarifying_machinery_id').value = machine.id;
+                  document.getElementById('out_scarifying_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+                }
+                else if (modalType == "out_verticut") {
+                  document.getElementById('out_verticut_machinery_id').value = machine.id;
+                  document.getElementById('out_verticut_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+                }
+                else if (modalType == "pp_dust") {
+                  document.getElementById('pp_dust_machinery_id').value = machine.id;
+                  document.getElementById('pp_dust_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+                }
+                else if (modalType == "pp_aeration") {
+                  document.getElementById('pp_aeration_machinery_id').value = machine.id;
+                  document.getElementById('pp_aeration_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+                }
+                else if (modalType == "pp_scarifying") {
+                  document.getElementById('pp_scarifying_machinery_id').value = machine.id;
+                  document.getElementById('pp_scarifying_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+                }
+                else if (modalType == "pp_verticut") {
+                  document.getElementById('pp_verticut_machinery_id').value = machine.id;
+                  document.getElementById('pp_verticut_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+                }
+                else if (modalType == "po_dust") {
+                  document.getElementById('po_dust_machinery_id').value = machine.id;
+                  document.getElementById('po_dust_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+                }
+                else if (modalType == "po_aeration") {
+                  document.getElementById('po_aeration_machinery_id').value = machine.id;
+                  document.getElementById('po_aeration_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+                }
+                else if (modalType == "po_scarifying") {
+                  document.getElementById('po_scarifying_machinery_id').value = machine.id;
+                  document.getElementById('po_scarifying_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+                }
+                else if (modalType == "po_verticut") {
+                  document.getElementById('po_verticut_machinery_id').value = machine.id;
+                  document.getElementById('po_verticut_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+                }
+                else if (modalType == "main_dust") {
+                  document.getElementById('main_dust_machinery_id').value = machine.id;
+                  document.getElementById('main_dust_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+                }
+                else if (modalType == "main_aeration") {
+                  document.getElementById('main_aeration_machinery_id').value = machine.id;
+                  document.getElementById('main_aeration_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+                }
+                else if (modalType == "main_scarifying") {
+                  document.getElementById('main_scarifying_machinery_id').value = machine.id;
+                  document.getElementById('main_scarifying_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+                }
+                else if (modalType == "main_verticut") {
+                  document.getElementById('main_verticut_machinery_id').value = machine.id;
+                  document.getElementById('main_verticut_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+                }
+
+
+
+                else if (modalType == "out_roller") {
+                  document.getElementById('out_machinery_id').value = machine.id;
+                  document.getElementById('out_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+                }
+                else if (modalType == "roller") {
+                  document.getElementById('machinery_id').value = machine.id;
+                  document.getElementById('machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+                }
+                else if (modalType == "practice_roller") {
+                  document.getElementById('practice_machinery_id').value = machine.id;
+                  document.getElementById('practice_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+                }
+                else if (modalType == "out_mover") {
+                  document.getElementById('out_mover_machinery_id').value = machine.id;
+                  document.getElementById('out_mover_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+                }
+                else if (modalType == "mover") {
+                  document.getElementById('mover_machinery_id').value = machine.id;
+                  document.getElementById('mover_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+                }
+                else if (modalType == "practice_mover") {
+                  document.getElementById('practice_mover_machinery_id').value = machine.id;
+                  document.getElementById('practice_mover_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+                }
+                else if (modalType == "pp_roller") {
+                  document.getElementById('pp_machinery_id').value = machine.id;
+                  document.getElementById('pp_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+                }
+                else if (modalType == "pp_mover") {
+                  document.getElementById('pp_mover_machinery_id').value = machine.id;
+                  document.getElementById('pp_mover_machinery_name').value = `${machine.equipment_name} - Type: ${machine.print_details}`;
+                }
+
+
+
+                $('#machineryModal').modal('hide');
+              };
+
+              machineryList.appendChild(modelRow);
+            });
+          });
+
+        });
+
+        // Show the modal
+        $('#machineryModal').modal('show');
+      })
+      .then(() => {
+        // alert(selectedMachineType)
+        // Reset the selected machine type after fetching data
+        if (selectedMachineType === "Manual") {
+          console.log($("body").find(".Mechanized"))
+          $("body").find("tr.Mechanized").hide();
+          $("body").find("tr.Manual").show();
+        } else if (selectedMachineType === "Mechanized") {
+          console.log($("body").find(".Mechanized"))
+
+          $("body").find("tr.Manual").hide();
+          $("body").find("tr.Mechanized").show();
+        } else {
+          $("body").find("tr.Manual, tr.Mechanized").show(); // if needed
+        }
+      })
+      .catch((error) => {
+        console.log("Error fetching machinery data:", error);
+      });
+  }
+
+
 
   $(document).ready(function () {
-        $("#roller_machine_type, #mover_machine_type, #out_roller_machine_type, #out_mover_machine_type, #pp_roller_machine_type, #pp_mover_machine_type, #practice_roller_machine_type, #practice_mover_machine_type").change(function () {
+    $("#roller_machine_type, #mover_machine_type, #out_roller_machine_type, #out_mover_machine_type, #pp_roller_machine_type, #pp_mover_machine_type, #practice_roller_machine_type, #practice_mover_machine_type").change(function () {
       // alert($(this).val());
-        selectedMachineType=$(this).val().trim()
-  })
-        $("#out_verticut_machine_type,#out_scarifying_machine_type, #out_dust_machine_type, #out_aeration_machine_type").change(function () {
+      selectedMachineType = $(this).val().trim()
+    })
+    $("#out_verticut_machine_type,#out_scarifying_machine_type, #out_dust_machine_type, #out_aeration_machine_type").change(function () {
       // alert($(this).val());
-        selectedMachineType=$(this).val().trim()
-  })
-        $("#pp_verticut_machine_type,#pp_scarifying_machine_type, #pp_dust_machine_type, #pp_aeration_machine_type").change(function () {
+      selectedMachineType = $(this).val().trim()
+    })
+    $("#pp_verticut_machine_type,#pp_scarifying_machine_type, #pp_dust_machine_type, #pp_aeration_machine_type").change(function () {
       // alert($(this).val());
-        selectedMachineType=$(this).val().trim()
-  })
-        $("#po_verticut_machine_type,#po_scarifying_machine_type, #po_dust_machine_type, #po_aeration_machine_type").change(function () {
+      selectedMachineType = $(this).val().trim()
+    })
+    $("#po_verticut_machine_type,#po_scarifying_machine_type, #po_dust_machine_type, #po_aeration_machine_type").change(function () {
       // alert($(this).val());
-        selectedMachineType=$(this).val().trim()
-  })
-        $("#main_verticut_machine_type,#main_scarifying_machine_type, #main_dust_machine_type, #main_aeration_machine_type").change(function () {
+      selectedMachineType = $(this).val().trim()
+    })
+    $("#main_verticut_machine_type,#main_scarifying_machine_type, #main_dust_machine_type, #main_aeration_machine_type").change(function () {
       // alert($(this).val());
-        selectedMachineType=$(this).val().trim()
-  })
+      selectedMachineType = $(this).val().trim()
+    })
     //$("#home-tab").css("display","none")
     //$("#pp-tab").css("display","none")
     //$("#profile-tab").css("display","none")
     //$("#practice-tab").css("display","none")
     //$("#myTabContent").css("display","none")
     //$("#btnDailySubmit").css("display","none")
-  
+
     function changeTabs(checkboxes, disabled) {
 
       if (!disabled) {
@@ -483,21 +508,20 @@ let selectedMachineType=""
       //     changeTabs(checkboxes,true)
       // }
 
-   
-        
-    
-     
-   
+
+
+
+
+
     })
 
 
   })
 
-function realoadMachineryList(event) {
-  
-  $(event.target).parent().parent().find("input[type='text']")[0].value=""
- 
-}
+  function realoadMachineryList(event) {
+
+    $(event.target).parent().parent().find("input[type='text']")[0].value = ""
+
+  }
 
 </script>
-

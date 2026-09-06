@@ -5,7 +5,7 @@ class AdminRole(models.Model):
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
     username = models.CharField(max_length=255, unique=True)
-    profileImage = models.ImageField(upload_to='profiles/', null=False)
+    # profileImage = models.ImageField(upload_to='profiles/', null=False)
     org_id = models.CharField(max_length=255, null=False)
     ground_id = models.CharField(max_length=255, null=False)
     role = models.CharField(max_length=255, null=False)

@@ -56,11 +56,11 @@
                                             </select>
                                         </div>
                                          <div class="col-lg-4 col-sm-12">
-                                            <input type="hidden" id="pitch_location" value="{{daily.2}}" name="pitch_location" class="form-control">
+                                            <!-- <input type="hidden" id="pitch_location" value="{{daily.2}}" name="pitch_location" class="form-control"> -->
 
                                             <label for="pitch_location" class="form-label">Pitch Map Location:</label>
-                                            <input type="text" id="pitch_location" name="pitch_location"
-                                                class="form-control">
+                                            <input type="text" id="pitch_location"  value="{{daily.2}}" name="pitch_location"
+                                                class="form-control" >
                                         </div>
 
                                     </div>
@@ -193,12 +193,12 @@
                                                         <div class="row">
                                                             <div class="col-sm-12 col-lg-4">
                                                                 <label for="last_watering_on" class="form-label">Watering On:</label>
-                                                                <input type="date" id="last_watering_on" name="last_watering_on" value="{{daily.12}}" class="form-control">
+                                                                <input type="date" id="last_watering_on" name="last_watering_on" class="form-control">
                                                             </div>
                                                             <div class="col-sm-12 col-lg-4">
                                                                 <label for="time_of_application" class="form-label">Time of Watering:</label>
                                                                 <div class="d-flex align-items-center justify-content-center">
-                                                                    <input type="time" id="time_of_application" name="time_of_application" value="{{daily.14}}" class="form-control">
+                                                                    <input type="time" id="time_of_application" name="time_of_application" class="form-control">
                                                                     <button type="button" class="btn d-flex align-items-center justify-content-center p-0 time-reset" style="width: 38px;">
                                                                         <svg xmlns="https://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
                                                                             <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
@@ -290,8 +290,15 @@
                                                                 </div>
                                                             </div>
                                                             <div class="col-sm-12 col-lg-2">
-                                                                <label for="rolling_speed" class="form-label">Rolling Speed (km/hour):</label>
-                                                                <input type="text" id="rolling_speed" name="rolling_speed" class="form-control">
+                                                                <label for="rolling_speed" class="form-label">Rolling Type:</label>
+                                                                <select type="number" id="rolling_speed" class="form-select">
+                                                                        <option selected>Select Rolling Type</option>
+                                                                        <option>Slow/Straight</option>
+                                                                        <option>Cross/Diagonal/Straight</option>
+                                                                        <option>Straight/Slow</option>
+                                                                        <option>Cross/Straight</option>
+                                                                        <option>Straight/Normal</option>
+                                                                    </select>
                                                             </div>
                                                             <div class="col-sm-12 col-lg-3 mt-4">
                                                                 <label for="passes_unit" class="form-label">Select Unit:</label>
@@ -397,7 +404,7 @@
                                                             </div>
                                                           
                                                             <div class="col-lg-2 col-sm-12 mt-4">
-                                                                <label for="moving_passes_unit" class="form-label">Unit:</label>
+                                                                <label for="moving_passes_unit" class="form-label">Passes Unit:</label>
                                                                 <select class="form-select" id="moving_passes_unit" name="moving_passes_unit">
                                                                     <option selected>Select Unit</option>
                                                                     <option value="time">Time</option>
@@ -406,7 +413,7 @@
                                                                 </select>
                                                             </div>
                                                             <div class="col-lg-2 col-sm-12 mt-4">
-                                                                <label for="mowing_duration" class="form-label">Duration</label>
+                                                                <label for="mowing_duration" class="form-label">Passes Duration</label>
                                                                 <input type="number" id="mowing_duration" name="mowing_duration" class="form-control">
                                                             </div>
                                                             <div class="col-lg-2 col-sm-12 mt-5">
@@ -477,7 +484,7 @@
                                                         </div>
 
                                                         <div class="col-sm-12 col-lg-3">
-                                                            <label for="chemical_weight" class="form-label">Chemical Weight:</label>
+                                                            <label for="chemical_weight" class="form-label">Chemical Quantity:</label>
                                                             <input type="text" id="chemical_weight" placeholder="Weight" name="chemical_weight" class="form-control">
                                                         </div>
                                                     </div>
@@ -497,9 +504,11 @@
                                                             <label for="chemical_details_remark" class="form-label">Chemical Remarks:</label>
                                                             <input type="text" id="chemical_details_remark" placeholder="Remarks" name="chemical_details_remark"  class="form-control">
                                                         </div>
+                                                           {% if request.session.user.role != "Groundman" %}
                                                         <div class="col-sm-12 col-lg-4 mt-4">
                                                             <button type="button" class="btn btn-sm btn-primary" id="addChemicalBtn" >+ Add Chemical Entry</button>
                                                         </div>
+                                                         {% endif %}
                                                     </div>
 
                                                     <details>
@@ -550,12 +559,12 @@
                                                         <div class="row">
                                                             <div class="col-sm-12 col-lg-4">
                                                                 <label for="pp_last_watering_on" class="form-label">Watering On:</label>
-                                                                <input type="date" id="pp_last_watering_on" name="pp_last_watering_on" value="{{daily.68}}" class="form-control">
+                                                                <input type="date" id="pp_last_watering_on" name="pp_last_watering_on" class="form-control">
                                                             </div>
                                                             <div class="col-sm-12 col-lg-4">
                                                                 <label for="pp_time_of_application" class="form-label">Time of Watering:</label>
                                                                 <div class="d-flex align-items-center justify-content-center">
-                                                                    <input type="time" id="pp_time_of_application" name="pp_time_of_application" value="{{daily.70}}" class="form-control">
+                                                                    <input type="time" id="pp_time_of_application" name="pp_time_of_application" class="form-control">
                                                                     <button type="button" class="btn d-flex align-items-center justify-content-center p-0 time-reset" style="width: 38px;">
                                                                         <svg xmlns="https://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
                                                                             <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
@@ -566,7 +575,7 @@
                                                             </div>
                                                             <div class="col-sm-12 col-lg-4">
                                                                 <label for="pp_quantity_of_water" class="form-label">Quantity of Water:</label>
-                                                                <input type="text" id="pp_quantity_of_water" name="pp_quantity_of_water" value="{{daily.69}}" class="form-control">
+                                                                <input type="text" id="pp_quantity_of_water" name="pp_quantity_of_water" class="form-control">
                                                             </div>
 
                                                              <div class="col-sm-12 col-lg-3 mt-5">
@@ -646,8 +655,15 @@
                                                                 </div>
                                                             </div>
                                                             <div class="col-sm-12 col-lg-2 mt-4">
-                                                                <label for="pp_rolling_speed" class="form-label">Rolling Speed (km/hour):</label>
-                                                                <input type="text" id="pp_rolling_speed" name="pp_rolling_speed" class="form-control">
+                                                                <label for="pp_rolling_speed" class="form-label">Rolling Type:</label>
+                                                                   <select type="number" id="pp_rolling_speed" class="form-select">
+                                                                        <option selected>Select Rolling Type</option>
+                                                                        <option>Slow/Straight</option>
+                                                                        <option>Cross/Diagonal/Straight</option>
+                                                                        <option>Straight/Slow</option>
+                                                                        <option>Cross/Straight</option>
+                                                                        <option>Straight/Normal</option>
+                                                                    </select>
                                                             </div>
                                                             <div class="col-sm-12 col-lg-3 mt-4">
                                                                 <label for="pp_passes_unit" class="form-label">Select Unit:</label>
@@ -743,7 +759,7 @@
                                                                 <input type="number" id="pp_mowing_done_at_mm" name="pp_mowing_done_at_mm" value="" class="form-control">
                                                             </div>
                                                             <div class="col-lg-2 col-sm-12 mt-4">
-                                                                <label for="pp_moving_passes_unit" class="form-label">Unit:</label>
+                                                                <label for="pp_moving_passes_unit" class="form-label">Passes Unit:</label>
                                                                 <select class="form-select" id="pp_moving_passes_unit" name="pp_moving_passes_unit">
                                                                     <option selected>Select Unit</option>
                                                                     <option value="time">Time</option>
@@ -752,7 +768,7 @@
                                                                 </select>
                                                             </div>
                                                             <div class="col-lg-2 col-sm-12 mt-4">
-                                                                <label for="pp_mowing_duration" class="form-label">Duration</label>
+                                                                <label for="pp_mowing_duration" class="form-label">Passes Duration</label>
                                                                 <input type="number" id="pp_mowing_duration" name="pp_mowing_duration" class="form-control">
                                                             </div>
                                                             <div class="col-lg-2 col-sm-12 mt-5">
@@ -818,7 +834,7 @@
                                                             </select>
                                                         </div>
                                                         <div class="col-sm-12 col-lg-3">
-                                                            <label for="pp_chemical_weight" class="form-label">Chemical Weight:</label>
+                                                            <label for="pp_chemical_weight" class="form-label">Chemical Quantity:</label>
                                                             <input type="text" id="pp_chemical_weight" placeholder="Weight" name="pp_chemical_weight" class="form-control">
                                                         </div>
                                                     </div>
@@ -836,9 +852,11 @@
                                                         <div class="col-sm-12 col-lg-3">
                                                             <input type="text" id="pp_chemical_details_remark" placeholder="Remarks" name="pp_chemical_details_remark" class="form-control">
                                                         </div>
+                                                          {% if request.session.user.role != "Groundman" %}
                                                         <div class="col-sm-12 col-lg-3">
                                                             <button type="button" class="btn btn-sm btn-primary" id="ppaddChemicalBtn">+ Add Chemical Entry</button>
                                                         </div>
+                                                           {% endif %}
                                                     </div>
   <details>
                                 <summary>Rolling Entries</summary>
@@ -976,10 +994,11 @@
                                                                                                 </div>
                                                                                             
                                                                                             </div>
+                                                                                                {% if request.session.user.role != "Groundman" %}
                                                                                         <button type="button" class="btn btn-primary"
                                                                                         onclick="addClaggHammerEntry()">Add Clagg Hammer
                                                                                         Entry</button>
-                                                            
+                                                               {% endif %}        
                                                                                         <div class="col-sm-12 col-lg-12">
                                                                                     <details>
                                                                                         <summary>Clagg Hammer Entries</summary>
@@ -1080,6 +1099,7 @@
                                                                                                         <input type="time" class="form-control" id="time" placeholder="Value 1">
                                                                                                     </div>
                                                                                                 </div>
+                                                                                                    {% if request.session.user.role != "Groundman" %}
                                                                                                 <div class="col-lg-12">
                                                                                                     <div class="mb-3">
                                                                                                         <label for="fileInput" class="form-label">Browse CSV File</label>
@@ -1089,7 +1109,7 @@
                                                                                                     <button type="button" class="btn btn-primary" onclick="addMainMoistureData()">Add Moisture Entry</button>
 
                                                                                                 </div>
-
+                                                                                            {% endif %}
                                                                                                 
                                                                                 <div class="col-sm-12 col-lg-12">
                                                                                     <details>
@@ -1333,8 +1353,15 @@
                             <input type="time" id="out_time_roller" class="form-control">
                         </div>
                         <div class="col-sm-12 col-lg-2">
-                            <label for="out_rolling_speed" class="form-label">Rolling Speed (km/hr):</label>
-                            <input type="number" id="out_rolling_speed" class="form-control">
+                            <label for="out_rolling_speed" class="form-label">Rolling Type:</label>
+                           <select type="number" id="out_rolling_speed" class="form-select">
+                                <option selected>Select Rolling Type</option>
+                                <option>Slow/Straight</option>
+                                <option>Cross/Diagonal/Straight</option>
+                                <option>Straight/Slow</option>
+                                <option>Cross/Straight</option>
+                                <option>Straight/Normal</option>
+                            </select>
                         </div>
                         <div class="col-sm-12 col-lg-3 mt-4">
                             <label for="out_passes_unit" class="form-label">Select Unit:</label>
@@ -1433,7 +1460,7 @@
                             <input type="number" id="out_clipping" name="out_clipping" class="form-control">
                         </div>
                         <div class="col-lg-2 col-sm-12 mt-4">
-                            <label for="out_moving_passes_unit" class="form-label">Unit:</label>
+                            <label for="out_moving_passes_unit" class="form-label">Passes Unit:</label>
                             <select class="form-select" id="out_moving_passes_unit" name="out_moving_passes_unit">
                                 <option selected>Select Unit</option>
                                 <option value="time">Time</option>
@@ -1442,7 +1469,7 @@
                             </select>
                         </div>
                         <div class="col-lg-2 col-sm-12 mt-4">
-                            <label for="out_mowing_duration" class="form-label">Duration</label>
+                            <label for="out_mowing_duration" class="form-label">Passes Duration</label>
                             <input type="number" id="out_mowing_duration" name="out_mowing_duration" class="form-control">
                         </div>
                         <div class="col-lg-2 col-sm-12 mt-5">
@@ -1518,7 +1545,7 @@
                         </select>
                     </div>
                     <div class="col">
-                        <label for="out_chemical_weight" class="form-label">Weight:</label>
+                        <label for="out_chemical_weight" class="form-label">Chemical Quantity:</label>
                         <input type="text" id="out_chemical_weight" placeholder="Weight" name="out_chemical_weight" class="form-control">
                     </div>
                 </div>
@@ -1539,9 +1566,11 @@
                         <input type="text" id="out_chemical_details_remark" placeholder="Remarks" name="out_chemical_details_remark" class="form-control">
                     </div>
                 </div>
+                   {% if request.session.user.role != "Groundman" %}
                 <div class="text-end">
                     <button type="button" class="btn btn-sm btn-primary" id="outaddChemicalBtn">+ Add Chemical Entry</button>
                 </div>
+                 {% endif %}
                   <details>
                                 <summary>Chemical Entries
                                     
@@ -1673,9 +1702,10 @@
                                                                                                 </div>
                                                                                             
                                                                                             </div>
+                                                                                               {% if request.session.user.role != "Groundman" %}
                                                                                         <button type="button" class="btn btn-primary"
                                                                                         onclick="addClaggHammerEntryPP()">Add Clagg Hammer Entry</button>
-                                                            
+                                                              {% endif %}
                                                                                         <div class="col-sm-12 col-lg-12">
                                                                                     <details>
                                                                                         <summary>Clagg Hammer Entries</summary>
@@ -1763,7 +1793,7 @@
 
                                                                                         <summary class="rounded-0">Moisture [<small>Volumetric Water Content (VWC)</small>] <span id="main-moisture-no-data-span-pp" class="text-danger"></span></summary>
                                                                                         <fieldset class="form-group text-dark p-3 rounded">
-                                                                                            <div class="row">
+                                                                                            <div class="row">Add Moisture
                                                                                                 <div class="col-lg-6">
                                                                                                     <div class="mb-3">
                                                                                                         <label for="value1" class="form-label">Date</label>
@@ -1776,6 +1806,7 @@
                                                                                                         <input type="time" class="form-control" id="timepp" placeholder="Value 1">
                                                                                                     </div>
                                                                                                 </div>
+                                                                                                   {% if request.session.user.role != "Groundman" %}
                                                                                                 <div class="col-lg-12">
                                                                                                     <div class="mb-3">
                                                                                                         <label for="fileInputpp" class="form-label">Browse CSV File</label>
@@ -1785,6 +1816,7 @@
                                                                                                     <button type="button" class="btn btn-primary" onclick="addMainMoistureDataPP()">Add Moisture Entry</button>
 
                                                                                                 </div>
+                                                                                                  {% endif %}
 
                                                                                                 
                                                                                 <div class="col-sm-12 col-lg-12">
@@ -2029,8 +2061,15 @@
                                         <input type="time" id="practice_time_roller" class="form-control">
                                     </div>
                                     <div class="col-sm-12 col-lg-2">
-                                        <label for="practice_rolling_speed" class="form-label">Rolling Speed (km/hr):</label>
-                                        <input type="number" id="practice_rolling_speed" class="form-control">
+                                        <label for="practice_rolling_speed" class="form-label">Rolling Type:</label>
+                                        <select type="number" id="practice_rolling_speed" class="form-select">
+                                            <option selected>Select Rolling Type</option>
+                                            <option>Slow/Straight</option>
+                                            <option>Cross/Diagonal/Straight</option>
+                                            <option>Straight/Slow</option>
+                                            <option>Cross/Straight</option>
+                                            <option>Straight/Normal</option>
+                                        </select>
                                     </div>
                                     <div class="col-sm-12 col-lg-3 mt-4">
                                         <label for="practice_passes_unit" class="form-label">Select Unit:</label>
@@ -2126,7 +2165,7 @@
                                         <input type="number" id="practice_mowing_done_at_mm" name="practice_mowing_done_at_mm" class="form-control">
                                     </div>
                                     <div class="col-lg-2 col-sm-12 mt-4">
-                                        <label for="practice_moving_passes_unit" class="form-label">Unit:</label>
+                                        <label for="practice_moving_passes_unit" class="form-label">Passes Unit:</label>
                                         <select class="form-select" id="practice_moving_passes_unit" name="practice_moving_passes_unit">
                                             <option selected>Select Unit</option>
                                             <option value="time">Time</option>
@@ -2135,7 +2174,7 @@
                                         </select>
                                     </div>
                                     <div class="col-lg-2 col-sm-12 mt-4">
-                                        <label for="practice_mowing_duration" class="form-label">Duration</label>
+                                        <label for="practice_mowing_duration" class="form-label">Passes Duration</label>
                                         <input type="number" id="practice_mowing_duration" name="practice_mowing_duration" class="form-control">
                                     </div>
                                     <div class="col-lg-2 col-sm-12 mt-5">
@@ -2210,7 +2249,7 @@
                                     </select>
                                 </div>
                                 <div class="col">
-                                    <label for="practice_chemical_weight" class="form-label">Weight:</label>
+                                    <label for="practice_chemical_weight" class="form-label">Chemical Quantity:</label>
                                     <input type="text" id="practice_chemical_weight" placeholder="Weight" name="practice_chemical_weight" class="form-control">
                                 </div>
                             </div>
@@ -2231,9 +2270,11 @@
                                     <input type="text" id="practice_chemical_details_remark" placeholder="Remarks" name="practice_chemical_details_remark" class="form-control">
                                 </div>
                             </div>
+                                {% if request.session.user.role != "Groundman" %}
                             <div class="text-end">
                                 <button type="button" class="btn btn-sm btn-primary" id="practiceAddChemicalBtn">+ Add Chemical Entry</button>
                             </div>
+                              {% endif %}
                         <details>
                                             <summary>Chemical Entries</summary>
                             <div class="table-responsive transparent-bg">
@@ -2271,7 +2312,7 @@
 
                                 
                                       <div class="row">
-                <div class="col-sm-12 col-lg-12 col-md-12 d-flex align-items-center mt-4 fs-6">
+                <!-- <div class="col-sm-12 col-lg-12 col-md-12 d-flex align-items-center mt-4 fs-6">
                     <div class="row">
                     <div class="col-lg-6 col-sm-12 col-md-12">
 <div class="form-check checkbox-pitch">
@@ -2303,17 +2344,22 @@
 
                                            
                 </div>
-                                            
-                <div class="col-md-12">
-                    <input type="submit" id="btnDailySubmit" name="btnSubmit" value="Update" class="btn btn-primary mt-4 box-bg">
-                </div>
+                                             -->
+               
             </div>
                                 </div>
                             </div>
                         </div>
                         <input type="hidden" name="rowIndxs" id="rowIndxs" />
                     </div>
+               
+
                 </div>
+
+                  <div class="col-md-12">
+                    <input type="submit" id="btnDailySubmit" name="btnSubmit" value="Update" class="btn btn-primary mt-4 box-bg">
+                </div>
+
             </div>
             </div>
           
@@ -2822,7 +2868,7 @@ updateClaggHammerTablePP();
     function renderMoisture() {
     //event.preventDefault()
        
-        axios.get(`/usr_admin/get-moisture/{{daily.0}}/d/o/`)
+        axios.get(`/usr_admin/get-moisture/{{daily.0}}/d/o`)
                 .then(function (response) {
         const data = JSON.parse(response.data.data);
         const tbody= $("#moistureTableTbody");
@@ -2992,7 +3038,7 @@ renderMoisture()
     {
      //event.preventDefault()
        
-        axios.get(`/usr_admin/get-moisture/{{daily.0}}/d/pf/`)
+        axios.get(`/usr_admin/get-moisture/{{daily.0}}/d/pf`)
                 .then(function (response) {
         const data = JSON.parse(response.data.data);
         const tbody= $("#moistureTableTbodyPP");
@@ -3129,27 +3175,6 @@ renderMoisturePP()
 }
 
 
-
-
-    // General Utility Functions (UNCHANGED)
-    // const mainRollingArray = [];
-    // const mainMowerArray = [];
-    // const mainChemicalsArray = [];
-
-    // const outRollingArray = [];
-    // const outMowerArray = [];
-    // const outChemicalsArray = [];
-
-    // const ppRollingArray = [];
-    // const ppMowerArray = [];
-    // const ppChemicalsArray = [];
-
-    // const practiceRollingArray = [];
-    // const practiceMowerArray = [];
-    // const practiceChemicalsArray = [];
-
-     
-
     function getSplit(val) {
         return val.split("__####__").filter(e => e.trim() !== "");
     }
@@ -3172,7 +3197,10 @@ renderMoisturePP()
         }
     }
 
-        function getMachinery(id, label) {
+    function getMachinery(id, label) {
+     
+        if(id!="None")
+    {
                         axios.get("/usr_admin/machinery/" + id).then((result) => {
 
                             const m = result.data.machinery
@@ -3184,8 +3212,12 @@ renderMoisturePP()
 
                         })
                     }
+                    }
 
     async function getMachineryName(id) {
+         
+        if(id!="None")
+    {
         try {
             const response = await axios.get("/usr_admin/machinery/" + id);
             return response.data.machinery.print_details;
@@ -3194,18 +3226,22 @@ renderMoisturePP()
             return "Unknown";
         }
     }
-//////////////
+    }
+
+    //////////////
 
     const checkBoxArray = []
 
     
     const allTabs = ["pitch-main", "pitch-practice", "outfield", "practice-area"];
+
     const tabsButtonsObject = {
         "pitch-main": ["main-tab", "main-tab-pane"], // Changed from home-tab
         "pitch-practice": ["pp-tab", "pp-tab-pane"],
         "outfield": ["outfield-tab", "outfield-tab-pane"], // Changed from profile-tab
         "practice-area": ["practice-tab", "practice-tab-pane"]
     };
+   
     const checkBoxesSubmitObject = {
         "pitch-main": "checkPitchMain",
         "pitch-practice": "checkPitchPractice",
@@ -3234,9 +3270,10 @@ renderMoisturePP()
         const filteredTabs = allTabs.filter(function (tab) {
             return $(`#${tab}`).prop("checked")
         })
-        if (filteredTabs.length < 1) {
-            $("#btnDailySubmit").removeClass("showTab")
-        }
+
+        // if (filteredTabs.length < 1) {
+        //     $("#btnDailySubmit").removeClass("showTab")
+        // }
         for (let e of filteredTabs) {
             $(`#${tabsButtonsObject[e][0]}`).removeClass("active")
             //  $(`#${tabsButtonsObject[e][1]}`).removeClass("showTab")
@@ -3245,9 +3282,7 @@ renderMoisturePP()
         }
         if (event.target.checked) {
 
-
-
-            $("#btnDailySubmit").addClass("showTab")
+            // $("#btnDailySubmit").addClass("showTab")
             $(`#${tabsButtonsObject[event.target.id][0]}`).addClass("showTab")
             $(`#${tabsButtonsObject[event.target.id][0]}`).addClass("active")
             $(`#${tabsButtonsObject[event.target.id][1]}`).addClass("showTab")
@@ -3263,68 +3298,10 @@ renderMoisturePP()
             //  $(`#${tabsButtonsObject[e][1]}`).removeClass("showTab")
             $(`#${tabsButtonsObject[checkBoxArray[0]][1]}`).addClass("active")
             $(`#${tabsButtonsObject[checkBoxArray[0]][1]}`).addClass("show")
-
-
-
         }
     }
 
    
-
-////////////////
-    // Main Form General Logic (ADJUSTED FOR NEW DISPLAY)
-    // const checkBoxArray = [];
-    // const allTabs = ["pitch-main", "pitch-practice", "outfield", "practice-area"];
-    // const tabsButtonsObject = {
-    //     "pitch-main": ["main-tab", "main-tab-pane"], // Changed from home-tab
-    //     "pitch-practice": ["pp-tab", "pp-tab-pane"],
-    //     "outfield": ["outfield-tab", "outfield-tab-pane"], // Changed from profile-tab
-    //     "practice-area": ["practice-tab", "practice-tab-pane"]
-    // };
-    // const checkBoxesSubmitObject = {
-    //     "pitch-main": "checkPitchMain",
-    //     "pitch-practice": "checkPitchPractice",
-    //     "outfield": "checkPitchOutfield",
-    //     "practice-area": "checkPitchPracticeArea"
-    // };
-
-    // function addToArrayCheckbox(event) {
-    //     if (event.target.checked) {
-    //         checkBoxArray.push(event.target.id);
-    //     } else {
-    //         const index = checkBoxArray.indexOf(event.target.id);
-    //         if (index > -1) {
-    //             checkBoxArray.splice(index, 1);
-    //         }
-    //     }
-    //     console.log("checkBoxArray:", checkBoxArray);
-    // }
-
-    // function allAreaTabHideShow(event) {
-    //     // Hide all tab panes and deactivate all tab buttons initially
-    //     $(".tab-pane").removeClass("active show").hide();
-    //     $("[role='tabpanel']").removeClass("active").hide();
-    //     // $("[role='tabpanel']").css("display","none");
-
-    //     const currentlySelectedTabs = allTabs.filter(function (tabId) {
-    //         return $(`#${tabId}`).prop("checked");
-    //     });
-
-    //     if (currentlySelectedTabs.length < 1) {
-    //         $("#btnDailySubmit").hide();
-    //     } else {
-    //         $("#btnDailySubmit").show();
-    //         // Show selected tabs and activate the first one
-    //         currentlySelectedTabs.forEach((tabId, index) => {
-    //             $(`#${tabsButtonsObject[tabId][0]}`).show();
-    //             $(`#${tabsButtonsObject[tabId][1]}`).show();
-    //             if (index === 0) {
-    //                 $(`#${tabsButtonsObject[tabId][0]}`).addClass("active");
-    //                 $(`#${tabsButtonsObject[tabId][1]}`).addClass("active show");
-    //             }
-    //         });
-    //     }
-    // }
 
     $("#pitch-main").change(async function (event) {
         await addToArrayCheckbox(event);
@@ -3347,23 +3324,23 @@ renderMoisturePP()
     });
 
     function handleSubmit(form) {
-        if (checkBoxArray.length < 1) {
-            alert("Please select at least one area checkbox (Pitch Main, Pitch Practice, Outfield, or Practice Area).");
-            return false;
-        }
+        // if (checkBoxArray.length < 1) {
+        //     alert("Please select at least one area checkbox (Pitch Main, Pitch Practice, Outfield, or Practice Area).");
+        //     return false;
+        // }
 
-        let allConfirmed = true;
-        for (let e of checkBoxArray) {
-            if (!$(`#${checkBoxesSubmitObject[e]}`).prop("checked")) {
-                alert(`The "${e.replace('-', ' ')}" form is not confirmed as a filled form. Please check the completion checkbox.`);
-                allConfirmed = false;
-                break;
-            }
-        }
+        // let allConfirmed = true;
+        // for (let e of checkBoxArray) {
+        //     if (!$(`#${checkBoxesSubmitObject[e]}`).prop("checked")) {
+        //         alert(`The "${e.replace('-', ' ')}" form is not confirmed as a filled form. Please check the completion checkbox.`);
+        //         allConfirmed = false;
+        //         break;
+        //     }
+        // }
 
-        if (!allConfirmed) {
-            return false;
-        }
+        // if (!allConfirmed) {
+        //     return false;
+        // }
 
         // Add index values to a hidden field before submission
         $("#rowIndxs").val(`${rowIndex}-${outIndex}-${practiceIndex}-${ppIndex}`);
@@ -3376,26 +3353,26 @@ renderMoisturePP()
     $(document).ready(function () {
 
         
-    $("#ground_id").change(function () {
+    $("#ground_id").change( function () {
+      
         const groundId = $(this).val().trim()
         if (groundId == "all") {
             axios.get(`/usr_admin/get_all_pitches`).then((result) => {
-                // console.log(result.data.grounds)
+
                 $("#pitch_id").html("")
                 $("#pitch_id").append(`<option value=''>Select Pitch</option>`)
-                // $("#pitch_id").append(`<option value='all'>All</option>`)
-                // $("#pitch_id").append(`<option value='outfield'>Outfield Area</option>`)
-                // $("#pitch_id").append(`<option value='practice'>Practice Area</option>`)
+             
 
                 result.data.grounds.forEach(function (p) {
                     $("#pitch_id").append(`<option value='${p.pitches[0]}'>${p.pitches[14]}  ${p.pitches[5]}</option>`)
                 })
+                  $("#pitch_id").val("{{daily.1}}".trim()) // Trigger change to update pitch_location
             }).catch((error) => {
                 console.log(error)
             })
         } else {
             axios.get(`/usr_admin/get_pitches/${groundId}`).then((result) => {
-                console.log(result.data)
+                // console.log(result.data)
                 $("#pitch_id").html("")
                 $("#pitch_id").append(`<option value=''>Select Pitch</option>`)
                 // $("#pitch_id").append(`<option value='all'>All</option>`)
@@ -3410,6 +3387,7 @@ renderMoisturePP()
                 result.data.grounds.forEach(function (p) {
                     $("#pitch_id").append(`<option value='${p.pitch[0]}'>${p.pitch[14]}  ${p.pitch[5]}</option>`)
                 })
+                  $("#pitch_id").val("{{daily.1}}".trim()) // Trigger change to update pitch_location
             }).catch((error) => {
                 console.log(error)
 
@@ -3438,7 +3416,9 @@ renderMoisturePP()
         // $("#outfield-tab-pane").removeClass("showTab")
         // $("#outfield-tab-pane").addClass("hideTab")
 
-        $("#btnDailySubmit").addClass("hideTab")
+        // $("#btnDailySubmit").addClass("hideTab")
+
+        
         // Initial setup of ground and pitch dropdowns
         axios.get("/usr_admin/get_grounds").then((result) => {
             $("#ground_id").html("<option value=''>Select Ground</option>");
@@ -3473,15 +3453,7 @@ renderMoisturePP()
         }
 
 
-        // Load machinery details for labels (UNCHANGED)
-        // if ("{{daily.9}}") { getMachinery("{{daily.9}}", "machinery_id_label"); }
-        // if ("{{daily.16}}") { getMachinery("{{daily.16}}", "mover_machinery_id_label"); }
-        // if ("{{daily.24}}") { getMachinery("{{daily.24}}", "out_machinery_id_label"); }
-        // if ("{{daily.31}}") { getMachinery("{{daily.31}}", "out_mover_machinery_id_label"); }
-        // if ("{{daily.39}}") { getMachinery("{{daily.39}}", "practice_machinery_id_label"); }
-        // if ("{{daily.46}}") { getMachinery("{{daily.46}}", "practice_mover_machinery_id_label"); }
-        // if ("{{daily.65}}") { getMachinery("{{daily.65}}", "pp_machinery_id_label"); }
-        // if ("{{daily.72}}") { getMachinery("{{daily.72}}", "pp_mover_machinery_id_label"); }
+   
         
         // Auto-fill related dates on main date change
         $("#rolling_start_date").blur(function (event) {
@@ -3524,13 +3496,15 @@ renderMoisturePP()
 
         // Pitch ID change logic (UNCHANGED)
         $("#pitch_id").change(function () {
-        
+            alert("Pitch Location Changed")
             const pitchId = $(this).val().trim();
-            $("#pitch_id_text").val(pitchId);
+            
             if (pitchId > 0) {
+                $("#pitch_id_text").val(pitchId);
                 axios.get(`/usr_admin/get_pitch/${pitchId}`).then((result) => {
                     const pitch = result.data.grounds[0].pitch;
                     $("#pitch_location").prop("disabled", false).prop("readonly", true).val(`${pitch[14]} ${pitch[5]}`);
+                    $("#pitch_id_text").val(pitchId);
                 }).catch((error) => {
                     console.error("Error fetching pitch details:", error);
                 });
@@ -3542,24 +3516,7 @@ renderMoisturePP()
 
 
     
-        // Load pitches based on pre-selected ground and pitch
-        if ("{{daily.58}}" && "{{daily.1}}") {
-             axios.get(`/usr_admin/get_pitches/{{daily.58}}`).then((result) => {
-                $("#pitch_id").html("<option value=''>Select Pitch</option>");
-                localStorage.setItem("city",result.data.grounds[0].city);
-                result.data.grounds.forEach(function (p) {
-                    $("#pitch_id").append(`<option value='${p.pitch[0]}'>${p.pitch[14]} ${p.pitch[5]}</option>`);
-                });
-                
-            }).then(()=>{
-                $("#pitch_id").val("{{daily.1}}".trim()) // Trigger change to update pitch_location
-                
-            }).catch((error) => {
-                console.error("Error fetching pitches:", error);
-            });
-        }
-
-
+       
 
     // Helper functions for dynamic row generation and data updates (MAIN PITCH)
     let rowIndex = 0; // For main pitch entries
@@ -3621,6 +3578,7 @@ renderMoisturePP()
     }
    
         async function loadWatering() {
+            
         const last_watering_on = getSplit("{{ daily.12|default:'' }}");
         const time_of_application = getSplit("{{ daily.14|default:'' }}");
         const quantity_of_water = getSplit("{{ daily.13|default:'' }}");
@@ -3895,6 +3853,8 @@ renderMoisturePP()
         updateChemicalData();
     }
 
+    if( document.getElementById("addChemicalBtn"))
+    {
  
     document.getElementById("addChemicalBtn").addEventListener("click", function () {
         
@@ -3925,6 +3885,7 @@ renderMoisturePP()
 
       
     });
+}
 
 
 
@@ -4029,6 +3990,7 @@ renderMoisturePP()
     }
    
     async function pploadWatering() {
+        
         const last_watering_on = getSplit("{{ daily.68|default:'' }}");
         const time_of_application = getSplit("{{ daily.70|default:'' }}");
         const quantity_of_water = getSplit("{{ daily.69|default:'' }}");
@@ -4296,8 +4258,9 @@ const ppchemicalEntries = []; // For practice pitch chemical entries
         updateppChemicalData();
     }
 
+if(document.getElementById("ppaddChemicalBtn"))
 
-
+{
     document.getElementById("ppaddChemicalBtn").addEventListener("click", function () {
         
         const used = document.getElementById("pp_is_fertilizers_used").checked ? "Yes" : "No";
@@ -4334,7 +4297,7 @@ const ppchemicalEntries = []; // For practice pitch chemical entries
 
         // updateChemicalData();
     });
-
+}
     function updateppChemicalData() {
         const tableBody = document.querySelector("#ppchemicalTable tbody");
         tableBody.innerHTML = "";
@@ -4421,6 +4384,7 @@ const ppchemicalEntries = []; // For practice pitch chemical entries
     }
    
     async function outloadWatering() {
+        
         const last_watering_on = getSplit("{{ daily.27|default:'' }}");
         const time_of_application = getSplit("{{ daily.29|default:'' }}");
         const quantity_of_water = getSplit("{{ daily.28|default:'' }}");
@@ -4688,6 +4652,8 @@ function outDelRollingEntry(event) {
         updateOutChemicalData();
     }
 
+    if(document.getElementById("outaddChemicalBtn"))
+    {
     
     document.getElementById("outaddChemicalBtn").addEventListener("click", function () {
         const used = document.getElementById("out_is_fertilizers_used").checked ? "Yes" : "No";
@@ -4711,6 +4677,7 @@ function outDelRollingEntry(event) {
 
         updateOutChemicalData();
     });
+}
 
     function updateOutChemicalData() {
         const tableBody = document.querySelector("#outchemicalTable tbody");
@@ -4800,6 +4767,7 @@ function outDelRollingEntry(event) {
 
 
     async function practiceloadWatering() {
+        
         const last_watering_on = getSplit("{{ daily.42|default:'' }}");
         const time_of_application = getSplit("{{ daily.44|default:'' }}");
         const quantity_of_water = getSplit("{{ daily.43|default:'' }}");
@@ -5061,6 +5029,8 @@ function outDelRollingEntry(event) {
         practicUpdateChemicalData();
     }
 
+    if( document.getElementById("practiceAddChemicalBtn"))
+    {
 
     document.getElementById("practiceAddChemicalBtn").addEventListener("click", function () {
         const used = document.getElementById("practice_is_fertilizers_used").checked ? "Yes" : "No";
@@ -5084,6 +5054,7 @@ function outDelRollingEntry(event) {
 
         practicUpdateChemicalData();
     });
+}
 
     function practicUpdateChemicalData() {
         const tableBody = document.querySelector("#practiceChemicalTable tbody");

@@ -42,26 +42,7 @@
           </div>
         </div>
         
-        <!-- <div class="col-xl-4 col-sm-12">
-
-          <div class="card bg-success text-white box-gradient">
-            <div class="card-body">
-              <div class="d-flex justify-content-between align-items-center">
-                <div>
-                  <h6 class="card-title">Indian Time (24-Hour)</h6>
-                  <h3 class="mb-0" id="indian-clock-24hr"></h3>
-                </div>
-                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="https://www.w3.org/2000/svg"
-                  width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                  <path fill-rule="evenodd"
-                    d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z"
-                    clip-rule="evenodd" />
-                </svg>
-
-              </div>
-            </div>
-          </div>
-        </div> -->
+       
         <div class="col-xl-5 col-sm-12 mt-sm-3">
           <div class="card transparent-bg d-flex align-items-center">
             <div class="card-body box-gradient w-75 corner-rounded">
@@ -73,9 +54,10 @@
                 </svg>
               
 
-                  <h3 class="mb-0 fs-6">{{user.name}}</h3>
-                
-
+                <div>
+                <h3 class="mb-0 fs-6">{{admin.name}}</h3>
+                <h3 class="mb-0 mt-1 text-end" style="font-size: small;" id="admin-ground"></h3>
+</div>
 
 
               </div>
@@ -124,12 +106,12 @@
                       <!-- Margin bottom for spacing -->
 
                       <i class="bi bi-thermometer-half weather-icon d-block" style="color: rgb(138, 218, 138);"></i>
-                      <span class="temperature d-block" id="min_temp">22째C</span>
+                      <span class="temperature d-block" id="min_temp">22 C</span>
                     </div>
                     <div class="mb-2 d-flex justify-content-between align-items-center">
                       <!-- Margin bottom for spacing -->
                       <i class="bi bi-thermometer-half weather-icon" style="color: rgb(244, 148, 148);"></i>
-                      <span class="temperature" id="max_temp">22째C</span>
+                      <span class="temperature" id="max_temp">22 C</span>
                     </div>
                     <div>
                     </div>
@@ -151,11 +133,10 @@
             </div>
             <div class="card-body box-gradient rounded-bottom">
 
-
-
-
-              <ul class="list-group list-group-flush  box-gradient" id="curatorsList">
-
+              <ul class="list-group list-group-flush  box-gradient">
+                  {% for c in curators %}
+                      <li class="list-group-item">{{c.name}}</li>             
+                  {% endfor %}
               </ul>
 
             </div>
@@ -165,27 +146,18 @@
               <i class="bi bi-person-check me-2  rounded text-info"></i>GROUNDMAN
             </div>
             <div class="card-body box-gradient rounded-bottom">
-
-
-
-
-
-              <ul class="list-group list-group-flush" id="groundmansList">
-
-              </ul>
+             <ul class="list-group list-group-flush" id="groundmansList">
+    {% for g in groundman %}
+        <li class="list-group-item text-capitalize {% if g.id == user.id %} active {% endif %} text-light" style="background-color: #e9ecef; font-weight: bold;">
+            {{ g.name }} {% if g.id == user.id %} <strong>(You)</strong> {% endif %}
+        </li>             
+    {% endfor %}
+</ul>
 
             </div>
           </div>
         </div>
 <div class="col-xl-1"></div>
-
-
-
-
-
-
-
-
 
 
 
@@ -199,6 +171,38 @@
 
 
   <script>
+
+function fetchGroundData(groundId) {
+    // यहाँ अपनी urls.py के अनुसार सही URL डालें
+    const url = `/usr_admin/get_ground/${groundId}`; 
+
+    axios.get(url)
+        .then(function (response) {
+            // response.data के अंदर आपका JSON मिलेगा: {'ground': [...]}
+            const groundData = response.data.ground;
+
+            if (groundData) {
+                // IMPORTANT: Django raw SQL fetchone() एक Array देता है।
+                // आपको अपने डेटाबेस टेबल के हिसाब से सही इंडेक्स डालना होगा।
+                // मान लीजिये इंडेक्स 0 पर ID है और इंडेक्स 1 पर ग्राउंड का नाम (Name) है।
+                const groundName = groundData[6]; 
+                
+                // Div में नाम सेट करें
+                document.getElementById('admin-ground').innerText = groundName;
+            } else {
+                document.getElementById('admin-ground').innerText = "Ground not found!";
+            }
+        })
+        .catch(function (error) {
+            console.error("Error fetching ground details:", error);
+            document.getElementById('admin-ground').innerText = "Error loading data";
+        });
+}
+
+
+
+fetchGroundData('{{user.ground_id}}')
+
     // Example org_id
     axios.get(`/usr_admin/get-admin-users/`)
       .then(response => {

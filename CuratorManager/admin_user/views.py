@@ -24,12 +24,14 @@ import csv
 from django.template.loader import get_template
 from datetime import datetime
 
-#######################reports
 
+from .decorators import role_required
+#######################reports
+@role_required("admin","Curator")
 def reportMatch(request):
     return render(request,'admin_user/reports/report1.html',{"records":"none"})
 
-
+@role_required("admin","Curator")
 def fetch_tournaments(request):
     org_id = request.session.get('org_id')
     match_type = request.GET.get("match_type")
@@ -121,7 +123,7 @@ def fetch_matches(request):
 
     return JsonResponse({"matches": matches})
 
-
+@role_required("admin","Curator")
 def fetch_match_report(request):
     org_id = request.session.get('org_id')
     match_id = request.GET.get("match_id")
@@ -137,7 +139,7 @@ def fetch_match_report(request):
 
     return render(request, "admin_user/reports/match_report_result.html", {"record": record})
 
-
+@role_required("admin","Curator")
 def fetch_match_records(request):
     try:
         org_id = request.session.get('org_id')
@@ -196,6 +198,8 @@ def fetch_match_records(request):
                 `vmm`.`max_temp`,
                 `vmm`.`forecast`,
                 `vmm`.`moisture_upto`,
+                `vmm`.`pitch_id`,
+                `vmm`.`ground_id`,
                 `vmm`.`dew_factor`,
                 `vmm`.`access_bounce`,
                 `vmm`.`machinery_id`,
@@ -239,7 +243,6 @@ def fetch_match_records(request):
                 `vmm`.`fertilizers_unit`,
                 `vmm`.`out_chemical_weight`,
                 `vmm`.`out_fertilizers_unit`,
-                `vmm`.`nuteral_curator`,
                 `vmm`.`out_mover_machine_type`,
                 `vmm`.`out_mover_machinery_name_operator`,
                 `vmm`.`out_moving_passes_unit`,
@@ -579,11 +582,11 @@ def match_download_csv(request):
 
     return response
 
-
+@role_required("admin","Curator")
 def curator_recording_report_page(request):
     return render(request,"admin_user/reports/curator_records_report.html",{"records": "none"})
 
-
+@role_required("admin","Curator")
 def curator_recording_report(request):
     org_id = request.session.get('org_id')
     ground_id = request.GET.get("id")
@@ -625,11 +628,11 @@ def curator_recording_report(request):
         {"records": data, 'default_fields': default_fields}
     )
 
-
+@role_required("admin","Curator")
 def match_report_page(request):
     return render(request, 'admin_user/reports/match_report.html',{"records": "none"})
     
-
+@role_required("admin","Curator")
 def match_report(request):
     org_id = request.session.get('org_id')
     ground_id=request.GET.get("id")
@@ -685,11 +688,11 @@ def match_report(request):
         
     return render(request, 'admin_user/reports/match_report.html', {'records': data, 'default_fields': default_fields})
 
-
+@role_required("admin","Curator")
 def chemicalsReport(request):
       return render(request, "admin_user/reports/ChemicalsReport.html")
 
-
+@role_required("admin","Curator")
 def fertilizer_usage_report(request):
     org_id = request.session.get('org_id')
     ground_id = request.GET.get("ground_id")
@@ -832,7 +835,7 @@ def fertilizer_usage_report(request):
 
         rows_list = []
 
-        for date in sorted(datedata.keys(), key=lambda d: datetime.strptime(d, "%d-%m-%Y")):
+        for date in sorted(datedata.keys(), key=lambda d: datetime.datetime.strptime(d, "%d-%m-%Y")):
             for entry in datedata[date]:
                 rows_list.append({
                     "date": date,
@@ -998,7 +1001,7 @@ def fertilizer_usage_report(request):
 #     return (0, 0)
 
 
-
+@role_required("admin","Curator")
 def machinery_report(request):
       return render(request, "admin_user/reports/MachineriesReport.html")
 
@@ -1469,13 +1472,13 @@ WHERE
 #         "to_date": to_date
 #     }
 #     return render(request, "admin_user/reports/MachineriesReport.html", context)
-
+@role_required("admin","Curator")
 def icc_match_report(request):
     # if request.method == 'POST':
         
     return render(request,'admin_user/reports/icc_match_report.html')
 
-
+@role_required("admin","Curator")
 def get_icc_report(request, match_id):
     try:
         org_id = request.session["org_id"]
@@ -1530,7 +1533,7 @@ def get_icc_report(request, match_id):
         print(e)
 
 ######################end reports
-
+@role_required("admin")
 def groundform(request):
     return render(request,'admin_user/ground_form.html')
 
@@ -1578,7 +1581,7 @@ def get_unique_chemical_types(request):
     types = [row[0] for row in rows]
     return JsonResponse({"types": types})
 
-
+@role_required("admin")
 def fertilizer_list(request):
     try:
         org_id = request.session.get('org_id')
@@ -1590,7 +1593,7 @@ def fertilizer_list(request):
     except Exception as e:
         print(e)
 
-
+@role_required("admin")
 def fertilizer_add(request):
     try:
         org_id = request.session.get('org_id')
@@ -1604,7 +1607,7 @@ def fertilizer_add(request):
     except Exception as e:
         print(e)
 
-
+@role_required("admin")
 def fertilizer_edit(request, id):
     try:
         org_id = request.session.get('org_id')
@@ -1624,7 +1627,7 @@ def fertilizer_edit(request, id):
     except Exception as e:
         print(e)
 
-
+@role_required("admin")
 def fertilizer_delete(request, id):
     try:
         org_id = request.session.get('org_id')
@@ -1633,6 +1636,11 @@ def fertilizer_delete(request, id):
         return redirect('fertilizer_list')
     except Exception as e:
         print(e)
+
+
+
+
+
 
 
 def login_auth(request):
@@ -1669,6 +1677,10 @@ def login_auth(request):
         messages.error(request, 'Invalid username or password')
         return redirect("login")
 
+def access_denied(request):
+    return render(request, 'admin_user/access_denied.html',status=403)
+
+
 
 def login_auth_role(request):
 
@@ -1677,10 +1689,19 @@ def login_auth_role(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         role = request.POST.get('role')
+        user_groundmen=None
+        user_curator=None
         print(org_id,username,password,role)
         
         try:
             user = AdminRole.objects.get( org_id=org_id,username=username, password=password,role=role)
+            if role=="Groundman":
+                user_groundmen = AdminRole.objects.filter( org_id=org_id,ground_id=user.ground_id,role=role)
+                user_curator = AdminRole.objects.filter( org_id=org_id,ground_id=user.ground_id,role="Curator")
+                
+            if role=="Curator":
+                 user_curator= AdminRole.objects.filter( org_id=org_id,ground_id=user.ground_id,role=role)
+                 user_groundmen= AdminRole.objects.filter( org_id=org_id,ground_id=user.ground_id,role="Groundman")
             
             admin = AdminUserList.objects.get( org_id=org_id)
 
@@ -1688,7 +1709,6 @@ def login_auth_role(request):
                 with connection.cursor() as cursor:
                     cursor.execute(f"SELECT * FROM `{org_id}_ground_master` WHERE id='{user.ground_id}' and org_id='{org_id}'")
                     groundData = cursor.fetchone()
-                    # print("groundData",groundData)
                     request.session["org_id"]=user.org_id.lower()
                     
                     request.session["user"] = {
@@ -1702,13 +1722,13 @@ def login_auth_role(request):
                         "city":groundData[9]
                     }
                     # print("role login data=",request.session.get("user"))
-                    profilePath = user.profileImage.url
+                    # profilePath = user.profileImage.url
                     if(role=="Groundman"):
-                        return render(request,'groundman/dashboard.html',{'user':user,'profilePath':profilePath,"admin":admin})
+                        return render(request,'groundman/dashboard.html',{'user':user,"admin":admin,"groundman":user_groundmen,"curators":user_curator})
                     elif(role=="Curator"):
-                        return render(request,'curator/dashboard.html',{'user':user,'profilePath':profilePath,"admin":admin})
+                        return render(request,'curator/dashboard.html',{'user':user,"admin":admin,"groundman":user_groundmen,"curators":user_curator})
                     elif(role=="Scorer"):
-                        return render(request,'scorer/dashboard.html',{'user':user,'profilePath':profilePath,"admin":admin})
+                        return render(request,'scorer/dashboard.html',{'user':user,"admin":admin})
 
             else:
                 messages.error(request, 'User suspended')
@@ -1749,13 +1769,13 @@ def login_auth_role_direct(request):
                     "ground_id":user.ground_id,
                     "role": user.role
                 }
-                profilePath = user.profileImage.url
+                # profilePath = user.profileImage.url
                 if(role=="Groundman"):
-                    return render(request,'groundman/dashboard.html',{'user':user,'profilePath':profilePath})
+                    return render(request,'groundman/dashboard.html',{'user':user})
                 elif(role=="Curator"):
-                    return render(request,'curator/dashboard.html',{'user':user,'profilePath':profilePath})
+                    return render(request,'curator/dashboard.html',{'user':user})
                 elif(role=="Scorer"):
-                    return render(request,'scorer/dashboard.html',{'user':user,'profilePath':profilePath})
+                    return render(request,'scorer/dashboard.html',{'user':user})
 
             else:
                 messages.error(request, 'Invalid username or password')
@@ -1813,7 +1833,7 @@ def role_dashboard(request):
 def logout_view(request):
     return redirect('login')
 
-
+@role_required("admin")
 def add_state_city(request):
     org_id = request.session.get('org_id')
     if request.method == 'POST':
@@ -1857,7 +1877,7 @@ def add_state_city(request):
         return render(request, 'admin_user/masters/add_state_city.html')
         # form = StateCityForm(request)
 
-
+@role_required("admin")
 def list_state_city(request):
     org_id = request.session.get('org_id')
     with connection.cursor() as cursor:
@@ -1870,7 +1890,7 @@ def list_state_city(request):
 
     return render(request, 'admin_user/masters/list_state_city.html', {'state_city_data': state_city_data})
 
-
+@role_required("admin")
 def create_admin_user_role(request):
 
     try:
@@ -1893,27 +1913,28 @@ def create_admin_user_role(request):
         messages.error(request, e)
         print(e)
 
-
+@role_required("admin")
 def admin_user_roles_list(request):
     org_id = request.session["org_id"]
     admin_roles = AdminRole.objects.filter(org_id=org_id)
     # print(admin_roles)
     return render(request, 'admin_user/admin_users_roles_list.html', {'admin_roles': admin_roles})
 
-
+@role_required("admin")
 def admin_user_role_details(request, admin_id):
     admin = AdminRole.objects.get(id=admin_id)
-    profilePath=admin.profileImage.url
+    # profilePath=admin.profileImage.url
     # print(profilePath)
-    return render(request, 'admin_user/admin_user_role_details.html', {'admin': admin,'profilePath':profilePath})
+    return render(request, 'admin_user/admin_user_role_details.html', {'admin': admin})
 
+@role_required("admin")
 def admin_user_role_edit_form(request, id):
     admin = AdminRole.objects.get(id=id)
     form = AdminUserRoleForm(instance=admin)
     # print(form)
     return render(request,"admin_user/admin_role_edit.html", {"admin":admin, "form": form,"id":id})
 
-
+@role_required("admin")
 def admin_user_edit(request, id):
     try:
         admin = AdminRole.objects.get(id=id)
@@ -1944,7 +1965,7 @@ def admin_user_edit(request, id):
     except Exception as e:
         print(e)
 
-
+@role_required("admin")
 def create_ground_master(request):
    
     try:
@@ -2070,8 +2091,11 @@ def create_ground_master(request):
         return render(request, 'admin_user/create_ground_master.html',{'org_id':request.session["org_id"],'state_data':state_data})
     except Exception as e:
         print(e)
+
 import re
 from django.urls import reverse
+
+@role_required("admin")
 def update_ground_master(request, ground_id):
     try:
         org_id = request.session.get("org_id")
@@ -2278,7 +2302,7 @@ def update_ground_master(request, ground_id):
     except Exception as e:
         print(e)
     
-
+@role_required("admin")
 @csrf_exempt
 def delete_ground_master(request, ground_id):
     try:
@@ -2296,7 +2320,7 @@ def delete_ground_master(request, ground_id):
         print(e)
         return JsonResponse({'status':False,'msg': f'failed error:{e}'})
 
-
+@role_required("admin")
 @csrf_exempt
 def addNewPItch(request):
     try:
@@ -2338,7 +2362,7 @@ def addNewPItch(request):
         print(e)
         return JsonResponse({'status':False,'msg': f'failed error:{e}'})
 
-
+@role_required("admin")
 @csrf_exempt
 def update_pitches(request, ground_id):
     org_id = request.session.get("org_id")
@@ -2419,7 +2443,7 @@ def update_pitches(request, ground_id):
 
     })
 
-
+@role_required("admin")
 def ground_list(request):
     org_id = request.session["org_id"]
     with connection.cursor() as cursor:
@@ -2428,7 +2452,7 @@ def ground_list(request):
 
     return render(request, 'admin_user/ground_list.html', {'grounds': grounds})
 
-
+@role_required("admin")
 def ground_pitches(request,ground_id):
     try:
         org_id = request.session["org_id"]
@@ -2443,7 +2467,7 @@ def ground_pitches(request,ground_id):
     except Exception as e:
         print(e)
 
-
+@role_required("admin")
 def save_edit_pitch(request):
     org_id = request.session["org_id"]
     if request.method == "POST":
@@ -2492,7 +2516,7 @@ def save_edit_pitch(request):
 
         return redirect(f'/usr_admin/ground_pitches/{ground_id}')
 
-
+@role_required("admin")
 def edit_pitch(request,pitch_id,ground_id):
     try:
         org_id = request.session["org_id"]
@@ -2536,12 +2560,13 @@ def get_grounds(request):
                 
                 
             else:
-                print("no all")
+                print("not all")
                 cursor.execute(f'''SELECT * FROM {org_id}_ground_master WHERE org_id = %s and id=%s''', [org_id,user_data.get("ground_id")])
                 grounds = cursor.fetchall()
             return JsonResponse({'grounds': [{'ground': ground} for ground in grounds]})
     except Exception as e:
         print(e)
+
 
 def get_ground(request,ground_id):
     org_id = request.session["org_id"]
@@ -2628,6 +2653,7 @@ def get_all_pitches(request):
         pitches = cursor.fetchall()
     return JsonResponse({'grounds': [{'pitches': pitch} for pitch in pitches]})
 
+@role_required("admin","Curator","Groundman")
 def curator_daily_recording_form(request):
     try:
         org_id = request.session["org_id"]
@@ -2776,6 +2802,7 @@ def curator_daily_recording_form(request):
                     pitch_main_chemical_unit=""
                     chemical_entries=(request.POST.get("chemical_entries"+str(index)) or '').strip() or None
                     chemical_entries = json.loads(chemical_entries) if chemical_entries else []
+                    
                     if(len(chemical_entries)>0):
                         is_fertilizers_used=1
                         for chem in chemical_entries:
@@ -3544,7 +3571,7 @@ def curator_daily_recording_form(request):
         print(e)
 
 
-
+@role_required("admin","Curator","Groundman")
 def update_daily(request,daily_id):
     try:
         org_id = request.session["org_id"]
@@ -3673,6 +3700,8 @@ def update_daily(request,daily_id):
 
         if not dailyRecord:
             raise Exception("dailyRecord not found")
+        
+        
         if request.method == "POST":
             remark_by_groundsman=request.POST.get("remark_by_groundsman")
             out_remark_by_groundsman=request.POST.get("out_remark_by_groundsman")
@@ -3706,9 +3735,9 @@ def update_daily(request,daily_id):
             machinery_id = ""
             no_of_passes = ""
             rolling_speed = ""
-            last_watering_on = request.POST.get('last_watering_on')
-            quantity_of_water = request.POST.get('quantity_of_water')
-            time_of_application = request.POST.get('time_of_application')
+            last_watering_on = ""
+            quantity_of_water = ""
+            time_of_application = ""
             time_roller = ""
             # is_daily_watering = request.POST.get('is_daily_watering', 'off') == 'on'
             # is_daily_watering = "1" if request.POST.get('is_daily_watering', 'off') == 'on' else "0"
@@ -3742,7 +3771,7 @@ def update_daily(request,daily_id):
             out_mowing_duration = ""
             out_roller_machine_type =""
             out_roller_machinery_name_operator = ""
-            out_clipping = ""
+            out_clipping = (request.POST.get('out_clipping') or '').strip()
             
             
             #practice
@@ -3776,19 +3805,31 @@ def update_daily(request,daily_id):
         
             pitch_practice_chemical_unit=""
             
+             # total_records = int(request.POST.get("rolling_entries_json", "0"))
+            watering_entries_json = (request.POST.get("watering_entries_json") or '').strip() or None
+            watering_entries = json.loads(watering_entries_json) if watering_entries_json else []
             
+            if(len(watering_entries)>0):
+                for water in watering_entries:
+                    last_watering_on += str(water.get("last_watering_on", "")) + "__####__"
+                    time_of_application += str(water.get("time_of_application", "")) + "__####__"
+                    quantity_of_water += str(water.get("quantity_of_water", "")) + "__####__"                
+                    # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
+                    
+            else:
+                print("No Watering")
             
             rolling_entries_json = (request.POST.get("rolling_entries_json") or '').strip() or None
             rolling_entries = json.loads(rolling_entries_json) if rolling_entries_json else []
             if(len(rolling_entries)>0):
                 for roll in rolling_entries:
-                    machinery_id+=str(roll.get("machineryId"))+"__####__"
-                    passes_unit+=str(roll.get("unit"))+"__####__"
-                    no_of_passes+=str(roll.get("passes"))+"__####__"
-                    rolling_speed+=str(roll.get("speed"))+"__####__"
-                    time_roller+=str(roll.get("time"))+"__####__"
-                    roller_machine_type+=str(roll.get("machineType"))+"__####__"
-                    roller_machinery_name_operator+=str(roll.get("operator"))+"__####__"
+                    machinery_id+=str(roll.get("machineryId", ""))+"__####__"
+                    passes_unit+=str(roll.get("unit", ""))+"__####__"
+                    no_of_passes+=str(roll.get("passes", ""))+"__####__"
+                    rolling_speed+=str(roll.get("speed", ""))+"__####__"
+                    time_roller+=str(roll.get("time", ""))+"__####__"
+                    roller_machine_type+=str(roll.get("machineType", ""))+"__####__"
+                    roller_machinery_name_operator+=str(roll.get("operator", ""))+"__####__"
                     # print("main",machinery_id+" "+passes_unit)
                     # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
             else:
@@ -3798,14 +3839,14 @@ def update_daily(request,daily_id):
             mover_entries = json.loads(mover_entries_json) if mover_entries_json else []
             if(len(mover_entries)>0):
                 for mov in mover_entries:
-                    mover_machinery_id+=str(mov.get("machineryId"))+"__####__"
-                    moving_passes_unit+=str(mov.get("unit"))+"__####__"
-                    mowing_duration+=str(mov.get("duration"))+"__####__"
-                    date_mowing_done_last+=str(mov.get("date"))+"__####__"
-                    time_of_application_mover+=str(mov.get("time"))+"__####__"
-                    mover_machine_type+=str(mov.get("type"))+"__####__"
-                    mover_machinery_name_operator+=str(mov.get("operator"))+"__####__"
-                    mowing_done_at_mm+=str(mov.get("mowHeight"))+"__####__"
+                    mover_machinery_id+=str(mov.get("machineryId", ""))+"__####__"
+                    moving_passes_unit+=str(mov.get("unit", ""))+"__####__"
+                    mowing_duration+=str(mov.get("duration", ""))+"__####__"
+                    date_mowing_done_last+=str(mov.get("date", ""))+"__####__"
+                    time_of_application_mover+=str(mov.get("time", ""))+"__####__"
+                    mover_machine_type+=str(mov.get("type", ""))+"__####__"
+                    mover_machinery_name_operator+=str(mov.get("operator", ""))+"__####__"
+                    mowing_done_at_mm+=str(mov.get("mowHeight", ""))+"__####__"
                     # print(mover_machinery_id+" "+moving_passes_unit)
                     # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
             else:
@@ -3816,11 +3857,11 @@ def update_daily(request,daily_id):
             if(len(chemical_entries)>0):
                 is_fertilizers_used=1
                 for chem in chemical_entries:
-                    time_of_application_chemical+=str(chem.get("time"))+"__####__"
-                    pitch_main_chemical_weight+=str(chem.get("weight"))+"__####__"
-                    pitch_main_chemical_unit+=str(chem.get("unit"))+"__####__"
-                    chemical_details_remark+=str(chem.get("remark"))+"__####__"
-                    fertilizers_details+=str(chem.get("chem"))+"__####__"
+                    time_of_application_chemical+=str(chem.get("time", ""))+"__####__"
+                    pitch_main_chemical_weight+=str(chem.get("weight", ""))+"__####__"
+                    pitch_main_chemical_unit+=str(chem.get("unit", ""))+"__####__"
+                    chemical_details_remark+=str(chem.get("remark", ""))+"__####__"
+                    fertilizers_details+=str(chem.get("chem", ""))+"__####__"
                     # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
             else:
                 is_fertilizers_used=0
@@ -3829,9 +3870,9 @@ def update_daily(request,daily_id):
             pp_machinery_id = ""
             pp_no_of_passes = ""
             pp_rolling_speed = ""
-            pp_last_watering_on = request.POST.get('pp_last_watering_on')
-            pp_quantity_of_water = request.POST.get('pp_quantity_of_water')
-            pp_time_of_application = request.POST.get('pp_time_of_application')
+            pp_last_watering_on = ""
+            pp_quantity_of_water = ""
+            pp_time_of_application = ""
             pp_time_roller = ""
             pp_mover_machinery_id = ""
             pp_date_mowing_done_last = ""
@@ -3842,17 +3883,32 @@ def update_daily(request,daily_id):
             pp_chemical_details_remark = ""
             # pp_remark_by_groundsman = ""
             pp_time_of_application_chemical = ""
+            
+            pp_watering_entries_json = (request.POST.get("pp_watering_entries_json") or '').strip() or None
+            pp_watering_entries = json.loads(pp_watering_entries_json) if pp_watering_entries_json else []
+            if(len(pp_watering_entries)>0):
+                for water in pp_watering_entries:
+                    pp_last_watering_on+=str(water.get("last_watering_on", ""))+"__####__"
+                    pp_time_of_application+=str(water.get("time_of_application", ""))+"__####__"
+                    pp_quantity_of_water+=str(water.get("quantity_of_water", ""))+"__####__"
+                                       
+                                       
+                        # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
+            else:
+                print("No Watering")
+            
+            
             print("time")
             pp_chemical_entries=(request.POST.get("pp_chemical_entries") or '').strip() or None
             pp_chemical_entries = json.loads(pp_chemical_entries) if pp_chemical_entries else []
             if(len(pp_chemical_entries)>0):
                 pp_is_fertilizers_used=1
                 for chem in pp_chemical_entries:
-                    pp_time_of_application_chemical+=str(chem.get("time"))+"__####__"
-                    pitch_practice_chemical_weight+=str(chem.get("weight"))+"__####__"
-                    pitch_practice_chemical_unit+=str(chem.get("unit"))+"__####__"
-                    pp_chemical_details_remark+=str(chem.get("remark"))+"__####__"
-                    pp_fertilizers_details+=str(chem.get("chem"))+"__####__"
+                    pp_time_of_application_chemical+=str(chem.get("time", ""))+"__####__"
+                    pitch_practice_chemical_weight+=str(chem.get("weight", ""))+"__####__"
+                    pitch_practice_chemical_unit+=str(chem.get("unit", ""))+"__####__"
+                    pp_chemical_details_remark+=str(chem.get("remark", ""))+"__####__"
+                    pp_fertilizers_details+=str(chem.get("chem", ""))+"__####__"
                     # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
             else:
                 pp_is_fertilizers_used=0
@@ -3864,13 +3920,13 @@ def update_daily(request,daily_id):
             pp_rolling_entries = json.loads(pp_rolling_entries_json) if pp_rolling_entries_json else []
             if(len(pp_rolling_entries)>0):
                 for roll in pp_rolling_entries:
-                    pp_machinery_id+=str(roll.get("machineryId"))+"__####__"
-                    pp_passes_unit+=str(roll.get("unit"))+"__####__"
-                    pp_no_of_passes+=str(roll.get("passes"))+"__####__"
-                    pp_rolling_speed+=str(roll.get("speed"))+"__####__"
-                    pp_time_roller+=str(roll.get("time"))+"__####__"
-                    pp_roller_machine_type+=str(roll.get("machineType"))+"__####__"
-                    pp_roller_machinery_name_operator+=str(roll.get("operator"))+"__####__"
+                    pp_machinery_id+=str(roll.get("machineryId", ""))+"__####__"
+                    pp_passes_unit+=str(roll.get("unit", ""))+"__####__"
+                    pp_no_of_passes+=str(roll.get("passes", ""))+"__####__"
+                    pp_rolling_speed+=str(roll.get("speed", ""))+"__####__"
+                    pp_time_roller+=str(roll.get("time", ""))+"__####__"
+                    pp_roller_machine_type+=str(roll.get("machineType", ""))+"__####__"
+                    pp_roller_machinery_name_operator+=str(roll.get("operator", ""))+"__####__"
                     # print(pp_machinery_id+" "+pp_passes_unit)
                     # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
             else:
@@ -3880,14 +3936,14 @@ def update_daily(request,daily_id):
             pp_mover_entries = json.loads(pp_mover_entries_json) if pp_mover_entries_json else []
             if(len(pp_mover_entries)>0):
                 for mov in pp_mover_entries:         
-                    pp_mover_machinery_id+=str(mov.get("machineryId"))+"__####__"
-                    pp_moving_passes_unit+=str(mov.get("unit"))+"__####__"
-                    pp_mowing_duration+=str(mov.get("duration"))+"__####__"
-                    pp_date_mowing_done_last+=str(mov.get("date"))+"__####__"
-                    pp_time_of_application_mover+=str(mov.get("time"))+"__####__"
-                    pp_mover_machine_type+=str(mov.get("type"))+"__####__"
-                    pp_mover_machinery_name_operator+=str(mov.get("operator"))+"__####__"
-                    pp_mowing_done_at_mm+=str(mov.get("mowHeight"))+"__####__"
+                    pp_mover_machinery_id+=str(mov.get("machineryId", ""))+"__####__"
+                    pp_moving_passes_unit+=str(mov.get("unit", ""))+"__####__"
+                    pp_mowing_duration+=str(mov.get("duration", ""))+"__####__"
+                    pp_date_mowing_done_last+=str(mov.get("date", ""))+"__####__"
+                    pp_time_of_application_mover+=str(mov.get("time", ""))+"__####__"
+                    pp_mover_machine_type+=str(mov.get("type", ""))+"__####__"
+                    pp_mover_machinery_name_operator+=str(mov.get("operator", ""))+"__####__"
+                    pp_mowing_done_at_mm+=str(mov.get("mowHeight", ""))+"__####__"
                     # print("pp ",pp_mover_machinery_id+" "+pp_moving_passes_unit)
                     # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
             else:
@@ -3897,9 +3953,9 @@ def update_daily(request,daily_id):
             out_machinery_id = ""
             out_no_of_passes = ""
             out_rolling_speed = ""
-            out_last_watering_on = request.POST.get('out_last_watering_on')
-            out_quantity_of_water = request.POST.get('out_quantity_of_water')
-            out_time_of_application = request.POST.get('out_time_of_application')
+            out_last_watering_on = ""
+            out_quantity_of_water = ""
+            out_time_of_application =""
            
             out_time_roller = ""
             # out_is_daily_watering = request.POST.get('out_is_daily_watering', 'off') == 'on'
@@ -3913,19 +3969,31 @@ def update_daily(request,daily_id):
             out_fertilizers_details = ""
             out_chemical_details_remark = ""
             # out_remark_by_groundsman = ""
-            out_clipping = ""
+          
+            out_watering_entries_json = (request.POST.get("out_watering_entries_json") or '').strip() or None
+            out_watering_entries = json.loads(out_watering_entries_json) if out_watering_entries_json else []
+            if(len(out_watering_entries)>0):
+                for water in out_watering_entries:
+                    out_last_watering_on+=str(water.get("last_watering_on", ""))+"__####__"
+                    out_time_of_application+=str(water.get("time_of_application", ""))+"__####__"
+                    out_quantity_of_water+=str(water.get("quantity_of_water", ""))+"__####__"
+                                     
+                                     
+                    # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
+            else:
+                print("No Watering")
             
             out_rolling_entries_json = (request.POST.get("out_rolling_entries_json") or '').strip() or None
             out_rolling_entries = json.loads(out_rolling_entries_json) if out_rolling_entries_json else []
             if(len(out_rolling_entries)>0):
                 for roll in out_rolling_entries:
-                    out_machinery_id+=str(roll.get("machineryId"))+"__####__"
-                    out_passes_unit+=str(roll.get("unit"))+"__####__"
-                    out_no_of_passes+=str(roll.get("passes"))+"__####__"
-                    out_rolling_speed+=str(roll.get("speed"))+"__####__"
-                    out_time_roller+=str(roll.get("time"))+"__####__"
-                    out_roller_machine_type+=str(roll.get("machineType"))+"__####__"
-                    out_roller_machinery_name_operator+=str(roll.get("operator"))+"__####__"
+                    out_machinery_id+=str(roll.get("machineryId", ""))+"__####__"
+                    out_passes_unit+=str(roll.get("unit", ""))+"__####__"
+                    out_no_of_passes+=str(roll.get("passes", ""))+"__####__"
+                    out_rolling_speed+=str(roll.get("speed", ""))+"__####__"
+                    out_time_roller+=str(roll.get("time", ""))+"__####__"
+                    out_roller_machine_type+=str(roll.get("machineType", ""))+"__####__"
+                    out_roller_machinery_name_operator+=str(roll.get("operator", ""))+"__####__"
                     # print("out 1",out_machinery_id+" "+out_passes_unit)
                     # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
             else:
@@ -3936,15 +4004,15 @@ def update_daily(request,daily_id):
             # print("out_mover_entries ",out_mover_entries)
             if(len(out_mover_entries)>0):
                 for mov in out_mover_entries:
-                    out_mover_machinery_id+=str(mov.get("machineryId"))+"__####__"
-                    out_moving_passes_unit+=str(mov.get("unit"))+"__####__"
-                    out_mowing_duration+=str(mov.get("duration"))+"__####__"
-                    out_date_mowing_done_last+=str(mov.get("date"))+"__####__"
-                    out_time_of_application_mover+=str(mov.get("time"))+"__####__"
-                    out_mover_machine_type+=str(mov.get("type"))+"__####__"
-                    out_mover_machinery_name_operator+=str(mov.get("operator"))+"__####__"
-                    out_mowing_done_at_mm+=str(mov.get("mowHeight"))+"__####__"
-                    out_clipping+=str(mov.get("out_clipping"))+"__####__"
+                    out_mover_machinery_id+=str(mov.get("machineryId", ""))+"__####__"
+                    out_moving_passes_unit+=str(mov.get("unit", ""))+"__####__"
+                    out_mowing_duration+=str(mov.get("duration", ""))+"__####__"
+                    out_date_mowing_done_last+=str(mov.get("date", ""))+"__####__"
+                    out_time_of_application_mover+=str(mov.get("time", ""))+"__####__"
+                    out_mover_machine_type+=str(mov.get("type", ""))+"__####__"
+                    out_mover_machinery_name_operator+=str(mov.get("operator", ""))+"__####__"
+                    out_mowing_done_at_mm+=str(mov.get("mowHeight", ""))+"__####__"
+                    out_clipping+=str(mov.get("out_clipping", ""))+"__####__"
                     # print("out 2",out_mover_machinery_id+" "+out_moving_passes_unit)
                     # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
             else:
@@ -3957,11 +4025,11 @@ def update_daily(request,daily_id):
             if(len(out_chemical_entries)>0):
                 out_is_fertilizers_used=1
                 for chem in out_chemical_entries:
-                    out_time_of_application_chemical+=str(chem.get("time"))+"__####__"
-                    outfield_chemical_weight+=str(chem.get("weight"))+"__####__"
-                    outfield_chemical_unit+=str(chem.get("unit"))+"__####__"
-                    out_chemical_details_remark+=str(chem.get("remark"))+"__####__"
-                    out_fertilizers_details+=str(chem.get("chemical"))+"__####__"
+                    out_time_of_application_chemical+=str(chem.get("time", ""))+"__####__"
+                    outfield_chemical_weight+=str(chem.get("weight", ""))+"__####__"
+                    outfield_chemical_unit+=str(chem.get("unit", ""))+"__####__"
+                    out_chemical_details_remark+=str(chem.get("remark", ""))+"__####__"
+                    out_fertilizers_details+=str(chem.get("chemical", ""))+"__####__"
                     # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
             else:
                 out_is_fertilizers_used=0
@@ -3972,10 +4040,10 @@ def update_daily(request,daily_id):
             practice_machinery_id= ""
             practice_no_of_passes = ""
             practice_rolling_speed = ""
-            practice_last_watering_on =  request.POST.get('practice_last_watering_on')
+            practice_last_watering_on =  ""
             # print("practice_last_watering_on",practice_last_watering_on)
-            practice_quantity_of_water = request.POST.get('practice_quantity_of_water')
-            practice_time_of_application = request.POST.get('practice_time_of_application')
+            practice_quantity_of_water = ""
+            practice_time_of_application = ""
             practice_time_roller = ""
 
             practice_mover_machinery_id = ""
@@ -3987,7 +4055,18 @@ def update_daily(request,daily_id):
             practice_chemical_details_remark= ""
             # practice_remark_by_groundsman = ""
             
-            
+            practice_watering_entries_json = (request.POST.get("practice_watering_entries_json") or '').strip() or None
+            practice_watering_entries = json.loads(practice_watering_entries_json) if practice_watering_entries_json else []
+            if(len(practice_watering_entries)>0):
+                for water in practice_watering_entries:
+                    practice_last_watering_on+=str(water.get("last_watering_on", ""))+"__####__"
+                    practice_time_of_application+=str(water.get("time_of_application", ""))+"__####__"
+                    practice_quantity_of_water+=str(water.get("quantity_of_water", ""))+"__####__"
+                                       
+                                       
+                    # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
+            else:
+                print("No Watering")
             
             print("practice")
             practice_chemical_entries=(request.POST.get("practice_chemical_entries") or '').strip() or None
@@ -3995,11 +4074,11 @@ def update_daily(request,daily_id):
             if(len(practice_chemical_entries)>0):
                 practice_is_fertilizers_used=1
                 for chem in practice_chemical_entries:
-                    practice_time_of_application_chemical+=str(chem.get("time"))+"__####__"
-                    practice_area_chemical_weight+=str(chem.get("weight"))+"__####__"
-                    practice_area_chemical_unit+=str(chem.get("unit"))+"__####__"
-                    practice_chemical_details_remark+=str(chem.get("remark"))+"__####__"
-                    practice_fertilizers_details+=str(chem.get("chemical"))+"__####__"
+                    practice_time_of_application_chemical+=str(chem.get("time", ""))+"__####__"
+                    practice_area_chemical_weight+=str(chem.get("weight", ""))+"__####__"
+                    practice_area_chemical_unit+=str(chem.get("unit", ""))+"__####__"
+                    practice_chemical_details_remark+=str(chem.get("remark", ""))+"__####__"
+                    practice_fertilizers_details+=str(chem.get("chemical", ""))+"__####__"
                     # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
             else:
                 practice_is_fertilizers_used=0
@@ -4009,13 +4088,13 @@ def update_daily(request,daily_id):
             practice_rolling_entries = json.loads(practice_rolling_entries_json) if practice_rolling_entries_json else []
             if(len(practice_rolling_entries)>0):
                 for roll in practice_rolling_entries:
-                    practice_machinery_id+=str(roll.get("machineryId"))+"__####__"
-                    practice_passes_unit+=str(roll.get("unit"))+"__####__"
-                    practice_no_of_passes+=str(roll.get("passes"))+"__####__"
-                    practice_rolling_speed+=str(roll.get("speed"))+"__####__"
-                    practice_time_roller+=str(roll.get("time"))+"__####__"
-                    practice_roller_machine_type+=str(roll.get("machineType"))+"__####__"
-                    practice_roller_machinery_name_operator+=str(roll.get("operator"))+"__####__"
+                    practice_machinery_id+=str(roll.get("machineryId", ""))+"__####__"
+                    practice_passes_unit+=str(roll.get("unit", ""))+"__####__"
+                    practice_no_of_passes+=str(roll.get("passes", ""))+"__####__"
+                    practice_rolling_speed+=str(roll.get("speed", ""))+"__####__"
+                    practice_time_roller+=str(roll.get("time", ""))+"__####__"
+                    practice_roller_machine_type+=str(roll.get("machineType", ""))+"__####__"
+                    practice_roller_machinery_name_operator+=str(roll.get("operator", ""))+"__####__"
                     # print(practice_machinery_id+" "+practice_passes_unit)
                         # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
             else:
@@ -4026,14 +4105,14 @@ def update_daily(request,daily_id):
             if(len(practice_mover_entries)>0):
                 practice_is_fertilizers_used=1
                 for mov in practice_mover_entries:
-                    practice_mover_machinery_id+=str(mov.get("machineryId"))+"__####__"
-                    practice_moving_passes_unit+=str(mov.get("unit"))+"__####__"
-                    practice_mowing_duration+=str(mov.get("duration"))+"__####__"
-                    practice_date_mowing_done_last+=str(mov.get("date"))+"__####__"
-                    time_of_application_practice_mover+=str(mov.get("time"))+"__####__"
-                    practice_mover_machine_type+=str(mov.get("type"))+"__####__"
-                    practice_mover_machinery_name_operator+=str(mov.get("operator"))+"__####__"
-                    practice_mowing_done_at_mm+=str(mov.get("mowHeight"))+"__####__"
+                    practice_mover_machinery_id+=str(mov.get("machineryId", ""))+"__####__"
+                    practice_moving_passes_unit+=str(mov.get("unit", ""))+"__####__"
+                    practice_mowing_duration+=str(mov.get("duration", ""))+"__####__"
+                    practice_date_mowing_done_last+=str(mov.get("date", ""))+"__####__"
+                    time_of_application_practice_mover+=str(mov.get("time", ""))+"__####__"
+                    practice_mover_machine_type+=str(mov.get("type", ""))+"__####__"
+                    practice_mover_machinery_name_operator+=str(mov.get("operator", ""))+"__####__"
+                    practice_mowing_done_at_mm+=str(mov.get("mowHeight", ""))+"__####__"
                     # print(practice_mover_machinery_id+" "+practice_moving_passes_unit)
                     # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
             else:
@@ -4621,7 +4700,7 @@ def update_daily(request,daily_id):
                             cursor.execute(sql, list(delClaggIds))     
                                                         
                         
-                        print(claggHammer_entries)
+                        # print(claggHammer_entries)
                         if(len(claggHammer_entries)>0):
                             for clagg in claggHammer_entries:
                                 row_id = clagg.get("id")
@@ -4794,9 +4873,10 @@ def update_daily(request,daily_id):
                                                                                 })
     except Exception as e:
         print(e)
+        return HttpResponse(f"Something went wrong: {str(e)}", status=500)
 
 
-
+@role_required("admin","Curator")
 @csrf_exempt
 def delete_daily(request,daily_id):
     org_id = request.session["org_id"]
@@ -4807,7 +4887,7 @@ def delete_daily(request,daily_id):
 
         return JsonResponse({'status': 'success'})
 
-    
+@role_required("admin","Curator","Groundman")    
 def curator_daily_recording_list_filter(request):
     org_id = request.session["org_id"]
     ground_id = request.GET.get("ground_id")
@@ -4948,7 +5028,7 @@ def curator_daily_recording_list_filter(request):
             messages.error(request, e)
         return render(request, 'admin_user/curator_daily_recording_list.html', {'recordings': recordings, "flag": True})
 
-
+@role_required("admin","Curator","Groundman") 
 def curator_daily_recording_list_filter_by_date(request):
     try:
         formData=request.GET
@@ -5128,7 +5208,7 @@ def curator_daily_recording_list_filter_by_date(request):
     except Exception as e:
         print(e)
 
-
+@role_required("admin","Curator","Groundman") 
 def curator_daily_recording_list(request):
     org_id = request.session["org_id"]
     with connection.cursor() as cursor:
@@ -5386,7 +5466,7 @@ def curator_daily_recording_list(request):
             messages.error(request, e)
         return render(request, 'admin_user/curator_daily_recording_list.html', {'recordings': recordings, "flag": True})
 
-
+@role_required("admin")
 # Fetch All Machinery
 def machinery_list(request):
     org_id = request.session["org_id"]
@@ -5395,7 +5475,7 @@ def machinery_list(request):
         machinery = cursor.fetchall()
     return render(request, 'admin_user/machinery_list.html', {'machinery': machinery})
 
-
+@role_required("admin")
 # Insert Machinery
 def insert_machinery(request):
     try:
@@ -5421,7 +5501,7 @@ def insert_machinery(request):
     except Exception as e:
         print(e)
 
-
+@role_required("admin")
 @csrf_exempt
 def delete_machinery(request,machinery_id):
     org_id = request.session["org_id"]
@@ -5450,7 +5530,7 @@ def get_machinery_data(request):
 
     return JsonResponse(machinery_data, safe=False)
 
-
+@role_required("admin")
 # Update Machinery
 def update_machinery(request, machinery_id):
 
@@ -5507,6 +5587,8 @@ def get_machinery_details(request, machinery_id):
     else:
         return JsonResponse({'error': 'Machinery not found'}, status=404)
 
+
+@role_required("admin","Curator")
 def add_score(request, match_id):
     try:
         org_id = request.session["org_id"]
@@ -5549,6 +5631,7 @@ def add_score(request, match_id):
     except Exception as e:
         print(e)
 
+@role_required("admin","Curator")
 @csrf_exempt
 def save_scores(request):
     try:
@@ -5595,6 +5678,7 @@ def save_scores(request):
     except Exception as e:
         print(e)
 
+@role_required("admin","Curator")
 @csrf_exempt
 def get_match_scores(request, match_id):
     try:
@@ -5645,10 +5729,11 @@ def get_match_scores(request, match_id):
     except Exception as e:
         print(e)
 
+@role_required("admin","Curator")
 def match_scores_list(request,match_id):
     return render(request, "admin_user/match_scores_list.html", {"match_id": match_id})
 
-
+@role_required("admin","Curator")
 @csrf_exempt
 def delete_score(request, score_id):
     org_id = request.session["org_id"]
@@ -5662,6 +5747,7 @@ def delete_score(request, score_id):
 
         return JsonResponse({'status': 'success'})
 
+@role_required("admin","Curator")
 @csrf_exempt
 def update_score(request, score_id):
     org_id = request.session["org_id"]
@@ -5691,6 +5777,7 @@ def update_score(request, score_id):
     except Exception as e:
         print(e)
 
+@role_required("admin","Curator","Groundman")
 def insert_match(request):
     try:
         org_id = request.session["org_id"]
@@ -6285,6 +6372,7 @@ def insert_match(request):
         print(e)
         return HttpResponse(e)
 
+@role_required("admin","Curator","Groundman")
 def update_match(request, match_id):
     try:
         org_id = request.session["org_id"]
@@ -7102,6 +7190,7 @@ def update_match(request, match_id):
         print("Error:", e)
         return render(request, 'admin_user/error.html', {'error': str(e)})
 
+@role_required("admin","Curator")
 @csrf_exempt
 def delete_match(request,match_id):
     org_id = request.session["org_id"]
@@ -7111,6 +7200,7 @@ def delete_match(request,match_id):
             cursor.execute(f"""DELETE FROM {org_id}_match_master  WHERE id = %s""", [match_id])
 
     return JsonResponse({'status': 'success'})
+
 
 def match_list_filter(request):
     try:
@@ -7396,7 +7486,7 @@ def match_list_filter_by_date(request):
     except Exception as e:
         print(e)
 
-
+@role_required("admin","Curator","Groundman")
 def match_list(request):
     try:
         org_id = request.session["org_id"]
@@ -7674,14 +7764,19 @@ def get_clagghammer(request,id,t,f):
                                 `value9`,
                                 `value10`
                                 FROM {table} where {mdId}_id= %s"""
-            print(sql)
+            # print(sql)
             cursor.execute(sql, [id])
 
             rows = cursor.fetchall()
-            print(rows)
-            return JsonResponse({"data":rows})
+            # print(rows)
+            if rows:
+                return JsonResponse({"data":rows})
+            else:
+                return JsonResponse({"message": "No moisture data found"}, status=404)
+                
     except Exception as e:
         print(e)
+        return JsonResponse({"data": None, "error": str(e)}, status=500)
 
 
 def get_moisture(request,id,t,f):
@@ -7714,18 +7809,26 @@ def get_moisture(request,id,t,f):
             row = cursor.fetchone()
             # print(row)
 
-            return JsonResponse({
-                "id": row[0],
-                "_id": row[1],
-                "date": row[2],
-                "time": row[3],
-                "match_details": row[4],
-                "data": row[5],
-            })
+            if row:
+                return JsonResponse({
+                    "id": row[0],
+                    "_id": row[1],
+                    "date": row[2],
+                    "time": row[3],
+                    "match_details": row[4],
+                    "data": row[5],
+                })
+            else:
+                # अगर डेटा नहीं मिला, तो 404 Status के साथ खाली रिस्पांस भेजें
+                # इससे आपकी JS का .catch() ब्लॉक अपने आप ट्रिगर हो जाएगा और "Data not found" दिखाएगा।
+                return JsonResponse({"message": "No moisture data found"}, status=404)
+
+            # ... नीचे except ब्लॉक में जाएँ ...
     except Exception as e:
-        print(e)
+        # 2. Exception (e) को string में बदलें (str(e)) ताकि JSON serializable एरर न आए
+        return JsonResponse({"data": None, "error": str(e)}, status=500)
 
-
+@role_required("admin","Curator")
 def save_icc_pitch_form(request,id):
     try:
         org_id = request.session["org_id"]
@@ -7761,6 +7864,7 @@ import json
 from django.http import JsonResponse
 from django.db import connection
 
+@role_required("admin","Curator")
 def save_icc_pitch_save(request):
     org_id = request.session["org_id"]
     try:
@@ -7864,10 +7968,11 @@ def save_icc_pitch_save(request):
     except Exception as e:
         print(e)
 
-
+@role_required("admin","Curator")
 def icc_match_report_update(request):
     return render(request, 'admin_user/iccpitchoutfield/pitchOutfieldUpdate.html')
 
+@role_required("admin","Curator")
 def update_icc_pitch_save(request):
     org_id = request.session["org_id"]
     try:
@@ -7992,9 +8097,10 @@ def update_icc_pitch_save(request):
         print(e)
         return JsonResponse({"status": "error", "message": str(e)}, status=500)
 
-
+@role_required("admin","Curator")
 def view_icc_pitch_report(request):
     return render(request, 'admin_user/iccpitchoutfield/pitchOutfieldView.html')
+
 
 def check_icc_pitch_report_exists(request):
     org_id = request.session["org_id"]
@@ -8038,7 +8144,7 @@ def get_pitch_reports_list(request):
     return JsonResponse({"reports": rows}, encoder=DjangoJSONEncoder, safe=False)
 
 
-
+@role_required("admin","Curator")
 def annual_report_form(request):
     return render(request, 'admin_user/annualreport/annualReportForm.html')
 
@@ -8048,6 +8154,7 @@ from django.db import connection, transaction
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
+@role_required("admin","Curator")
 @csrf_exempt # Agar CSRF handle kar rahe ho toh iski zaroorat nahi
 def save_maintenance(request):
     org_id = request.session["org_id"]
@@ -8114,7 +8221,7 @@ import json
 from django.http import JsonResponse
 from django.db import connection
 
-
+@role_required("admin","Curator")
 def get_maintenance(request,ground_id,mdate):
 
     org_id = request.session["org_id"]
@@ -8260,7 +8367,7 @@ def get_maintenance(request,ground_id,mdate):
 
         })
 
-
+@role_required("admin","Curator")
 def maintenance_list(request):
 
     org_id=request.session["org_id"]
@@ -8308,9 +8415,11 @@ from django.http import JsonResponse
 from django.db import connection, transaction
 import json
 
+@role_required("admin","Curator")
 def udpate_annualreportform(request):
     return render(request,"admin_user/annualreport/annualReportDataUpdate.html")
 
+@role_required("admin","Curator")
 @csrf_exempt
 def update_maintenance(request):
 
@@ -8599,6 +8708,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.http import JsonResponse
 from django.db import connection
 
+@role_required("admin","Curator")
 def annual_maintenance_report_page(request):
     return render(request,"admin_user/annualreport/annualReport.html")
 
@@ -8701,7 +8811,7 @@ def annual_maintenance_report_api(request):
         "selectedArea":area
     })
 
-
+@role_required("admin")
 def deleteAnuual(request, id):
     try:
         org_id = request.session.get("org_id")
@@ -8738,7 +8848,7 @@ def deleteAnuual(request, id):
         }, status=500)
         
         
-
+@role_required("admin")
 def delete_icc_report(request, id):
     try:
         org_id = request.session.get("org_id")
@@ -8821,32 +8931,35 @@ from django.db import connection
 #     return JsonResponse(pitch_list, safe=False)
 
 ##################### Backup data #####################
-
-import pandas as pd
-from django.db import connection
-from django.http import HttpResponse
-from io import BytesIO
+import json
 import zipfile
+import datetime
+import pandas as pd
+from io import BytesIO
+from django.db import connection
+from django.http import JsonResponse, HttpResponse
 
+@role_required("admin") 
 def export_multiple_tables_to_excel(request):
     try:
         org_id = request.session["org_id"]
         data = json.loads(request.body)
         filter_date = data.get("date", None)
+        
         if not filter_date:
-                return JsonResponse({"error": "Date is required"}, status=400)
+            return JsonResponse({"error": "Date is required"}, status=400)
+            
+        # FIX 1: पूरी टेबल का नाम Key में दें
         queries = {
-            'Table1': f"SELECT * FROM {org_id}_curator_daily_recording_master WHERE created_at <= '{filter_date}'",
-            'Table2': f"SELECT * FROM {org_id}_fertilizer_master",
-            'Table3': f"SELECT * FROM {org_id}_match_master WHERE created_at <= '{filter_date}'",
-            'Table4': f"SELECT * FROM {org_id}_match_scores_master WHERE created_at <= '{filter_date}'",
-            'Table5': f"SELECT * FROM {org_id}_pitch_master",
-            'Table6': f"SELECT * FROM {org_id}_ground_master",
-            'Table7': f"SELECT * FROM {org_id}_machinery_master",
+            f'{org_id}_curator_daily_recording_master': f"SELECT * FROM {org_id}_curator_daily_recording_master WHERE created_at <= '{filter_date}'",
+            f'{org_id}_fertilizer_master': f"SELECT * FROM {org_id}_fertilizer_master",
+            f'{org_id}_match_master': f"SELECT * FROM {org_id}_match_master WHERE created_at <= '{filter_date}'",
+            f'{org_id}_match_scores_master': f"SELECT * FROM {org_id}_match_scores_master WHERE created_at <= '{filter_date}'",
+            f'{org_id}_pitch_master': f"SELECT * FROM {org_id}_pitch_master",
+            f'{org_id}_ground_master': f"SELECT * FROM {org_id}_ground_master",
+            f'{org_id}_machinery_master': f"SELECT * FROM {org_id}_machinery_master",
         }
 
-        # print("Queries to be executed:", queries)
-        # In-memory zip buffer
         zip_buffer = BytesIO()
         
         with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED) as zip_file:
@@ -8854,33 +8967,43 @@ def export_multiple_tables_to_excel(request):
                 with connection.cursor() as cursor:
                     cursor.execute(query)
                     columns = [col[0] for col in cursor.description]
-                    data = cursor.fetchall()
+                    db_data = cursor.fetchall()
 
                 # Excel file for each table
-                df = pd.DataFrame(data, columns=columns)
+                df = pd.DataFrame(db_data, columns=columns)
                 excel_buffer = BytesIO()
                 with pd.ExcelWriter(excel_buffer, engine='openpyxl') as writer:
-                    df.to_excel(writer, index=False, sheet_name=table_name)
+                    # FIX 2: Excel sheet name limit is 31 characters
+                    sheet_title = table_name[:31] 
+                    df.to_excel(writer, index=False, sheet_name=sheet_title)
+                
                 excel_buffer.seek(0)
                 zip_file.writestr(f"{table_name}.xlsx", excel_buffer.read())
 
                 # SQL insert statements for each table
                 sql_content = ""
-                for row in data:
+                for row in db_data:
                     values = []
                     for val in row:
                         if val is None:
                             values.append('NULL')
                         elif isinstance(val, str):
                             values.append("'" + val.replace("'", "''") + "'")
+                        # FIX 3: Dates/Datetimes को भी quotes में डालें
+                        elif isinstance(val, (datetime.date, datetime.datetime)):
+                            values.append("'" + str(val) + "'")
                         else:
                             values.append(str(val))
                     insert_stmt = f"INSERT INTO {table_name} ({', '.join(columns)}) VALUES ({', '.join(values)});\n"
                     sql_content += insert_stmt
+                
                 zip_file.writestr(f"{table_name}.sql", sql_content)
         
         zip_buffer.seek(0)
-        insert_export_log(filter_date, "SQL-Excel Export",org_id)
+        
+        # Helper function कॉल
+        insert_export_log(filter_date, "SQL-Excel Export", org_id)
+        
         response = HttpResponse(zip_buffer, content_type='application/zip')
         response['Content-Disposition'] = 'attachment; filename=multiple_tables_export.zip'
         return response
@@ -8888,30 +9011,34 @@ def export_multiple_tables_to_excel(request):
         print("Error during export:", e)
         return JsonResponse({"error": str(e)}, status=500)
 
-
-
-
-
-from django.db import connection
-from django.http import HttpResponse
-from io import BytesIO
+import json
 import zipfile
+import datetime
+from io import BytesIO
+from django.db import connection
+from django.http import JsonResponse, HttpResponse
+from django.shortcuts import render
+from django.core.serializers.json import DjangoJSONEncoder # JSON एरर फिक्स करने के लिए
 
+@role_required("admin") 
 def export_multiple_sql_files_in_zip(request):
     try:
         org_id = request.session["org_id"]
         data = json.loads(request.body)
         filter_date = data.get("date", None)
+        
         if not filter_date:
-                return JsonResponse({"error": "Date is required"}, status=400)
+            return JsonResponse({"error": "Date is required"}, status=400)
+            
+        # FIX 1: 'Table1' की जगह असली टेबल का नाम Key में इस्तेमाल करें
         queries = {
-            'Table1': f"SELECT * FROM {org_id}_curator_daily_recording_master WHERE created_at <= '{filter_date}'",
-            'Table2': f"SELECT * FROM {org_id}_fertilizer_master",
-            'Table3': f"SELECT * FROM {org_id}_match_master WHERE created_at <= '{filter_date}'",
-            'Table4': f"SELECT * FROM {org_id}_match_scores_master WHERE created_at <= '{filter_date}'",
-            'Table5': f"SELECT * FROM {org_id}_pitch_master",
-            'Table6': f"SELECT * FROM {org_id}_ground_master",
-            'Table7': f"SELECT * FROM {org_id}_machinery_master",
+            f'{org_id}_curator_daily_recording_master': f"SELECT * FROM {org_id}_curator_daily_recording_master WHERE created_at <= '{filter_date}'",
+            f'{org_id}_fertilizer_master': f"SELECT * FROM {org_id}_fertilizer_master",
+            f'{org_id}_match_master': f"SELECT * FROM {org_id}_match_master WHERE created_at <= '{filter_date}'",
+            f'{org_id}_match_scores_master': f"SELECT * FROM {org_id}_match_scores_master WHERE created_at <= '{filter_date}'",
+            f'{org_id}_pitch_master': f"SELECT * FROM {org_id}_pitch_master",
+            f'{org_id}_ground_master': f"SELECT * FROM {org_id}_ground_master",
+            f'{org_id}_machinery_master': f"SELECT * FROM {org_id}_machinery_master",
         }
 
         zip_buffer = BytesIO()
@@ -8932,6 +9059,9 @@ def export_multiple_sql_files_in_zip(request):
                         elif isinstance(val, str):
                             # Escape single quotes for SQL strings
                             values.append("'" + val.replace("'", "''") + "'")
+                        # FIX 2: Date/Datetime ऑब्जेक्ट्स को भी Quotes में रखें
+                        elif isinstance(val, (datetime.date, datetime.datetime)):
+                            values.append("'" + str(val) + "'")
                         else:
                             values.append(str(val))
                     insert_stmt = f"INSERT INTO {table_name} ({', '.join(columns)}) VALUES ({', '.join(values)});\n"
@@ -8940,7 +9070,10 @@ def export_multiple_sql_files_in_zip(request):
                 zip_file.writestr(f"{table_name}.sql", sql_content)
 
         zip_buffer.seek(0)
-        insert_export_log(filter_date, "SQL Export",org_id)
+        
+        # लॉग इंसर्ट करना
+        insert_export_log(filter_date, "SQL Export", org_id)
+        
         response = HttpResponse(zip_buffer, content_type='application/zip')
         response['Content-Disposition'] = 'attachment; filename=multiple_sql_export.zip'
 
@@ -8950,13 +9083,14 @@ def export_multiple_sql_files_in_zip(request):
         return JsonResponse({"error": str(e)}, status=500)
 
 
+@role_required("admin") 
 def export_form(request):
     # Render the export form template
     return render(request, 'admin_user/backup/backup_form.html')
 
-from django.db import connection
 
-def insert_export_log(export_date, export_type,org_id):
+
+def insert_export_log(export_date, export_type, org_id):
     try:
         with connection.cursor() as cursor:
             query = f"""
@@ -8968,9 +9102,9 @@ def insert_export_log(export_date, export_type,org_id):
         print("Error inserting export log:", e) 
 
 
+
 def get_export_logs(request):
     try:
-        # SQL: DESCENDING order by created_at
         org_id = request.session["org_id"]
         query = f"""
             SELECT id, export_date, export_type, created_at, updated_at
@@ -8984,12 +9118,13 @@ def get_export_logs(request):
 
         # JSON: list of dicts
         logs = [dict(zip(columns, row)) for row in rows]
-        return JsonResponse({'logs': logs})
+        
+        # FIX 3: DjangoJSONEncoder का इस्तेमाल करें ताकि Datetime आराम से JSON में बदल जाए
+        return JsonResponse({'logs': logs}, encoder=DjangoJSONEncoder)
+        
     except Exception as e:
         print("Error fetching export logs:", e)
-        return JsonResponse({"error": str(e)}, status=500)
-
-##################### Backup data #####################
+        return JsonResponse({"error": str(e)}, status=500)##################### Backup data #####################
 
 
 ##################### 48 auto backup data #####################

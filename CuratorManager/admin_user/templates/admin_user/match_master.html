@@ -356,9 +356,12 @@
                                                                             </div>
                                                                          
                                                                         </div>
-                                                                    <button type="button" class="btn btn-primary"
+                                                                         {% if request.session.user.role != "Groundman" %}
+           
+                                                                         <button type="button" class="btn btn-primary"
                                                                     onclick="addClaggHammerEntry()">Add Clagg Hammer
                                                                     Entry</button>
+                                                                    {% endif %}
   <div class="col-sm-12 col-lg-12">
                                                                 <details>
                                                                     <summary>Clagg Hammer Entries</summary>
@@ -424,15 +427,19 @@
                                                                                     <input type="time" class="form-control" id="time" placeholder="Value 1">
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="col-lg-12">
+
+                                                                             {% if request.session.user.role != "Groundman" %}
+         
+                                                                             <div class="col-lg-12">
                                                                                  <div class="mb-3">
-                                                                                    <label for="fileInput" class="form-label">Browse CSV File</label>
-                                                                                    <input type="file" class="form-control" id="fileInput" />
+                                                                                     <label for="fileInput" class="form-label">Browse CSV File</label>
+                                                                                     <input type="file" class="form-control" id="fileInput" />
+                                                                                     
+                                                                                    </div>
+                                                                                    <button type="button" class="btn btn-primary" onclick="addMainMoistureData()">Add Moisture Entry</button>
                                                                                     
                                                                                 </div>
-                                                                                 <button type="button" class="btn btn-primary" onclick="addMainMoistureData()">Add Moisture Entry</button>
-
-                                                                            </div>
+                                                                                {% endif %}
 
                                                                               
                                                             <div class="col-sm-12 col-lg-12">
@@ -985,12 +992,14 @@
                                                     name="chemical_details_remark" class="form-control"></textarea>
                                             </div>
 
-
-                                            <div class="text-end col-lg-3 col-sm-12">
-                                                <button type="button" style="font-size: 70%;"
-                                                    class="btn mt-5 btn-sm btn-primary" id="addChemicalBtn">Add Chemical
+                                        {% if request.session.user.role != "Groundman" %}
+            
+                                                <div class="text-end col-lg-3 col-sm-12">
+                                                    <button type="button" style="font-size: 70%;"
+                                                    class="btn mt-5 btn-sm btn-primary" id="addChemicalBtn">+ Add Chemical
                                                     Entry</button>
-                                            </div>
+                                                </div>
+                                        {% endif %}
 
                                         </div>
                                     </fieldset>
@@ -1038,8 +1047,8 @@
                                     </div>
                                 </div>
                                 <div class="form-group gray-box border mt-4 text-dark p-3 rounded alert box-bg">
-                                    <button type="button" class="btn btn-success my-3" id="add-pitch-entry"
-                                        onclick="addPitchEntryRow()" style="font-size: 70%;">Add Pitch Entry</button>
+                                    <button type="button" class="btn btn-danger my-3 fs-5" id="add-pitch-entry"
+                                        style="font-size: 70%;" onclick="addPitchEntryRow()">Add Pitch Entry</button>
                                     <details>
                                         
                                         <summary>Pitch All Entries</summary>
@@ -1639,10 +1648,12 @@
                 <label for="out_chemical_details_remark" class="form-label">Remarks:</label>
                 <textarea id="out_chemical_details_remark" placeholder="Remarks" name="out_chemical_details_remark" class="form-control"></textarea>
             </div>
-
-            <div class="text-end col-lg-3 col-sm-12">
-                <button type="button" style="font-size: 70%;" class="btn mt-5 btn-sm btn-primary" id="outaddChemicalBtn">Add Chemical Entry</button>
-            </div>
+ {% if request.session.user.role != "Groundman" %}
+           
+ <div class="text-end col-lg-3 col-sm-12">
+     <button type="button" style="font-size: 70%;" class="btn mt-5 btn-sm btn-primary" id="outaddChemicalBtn">+ Add Chemical Entry</button>
+    </div>
+    {% endif %}
         </div>
     
     <div class="col-lg-12 col-sm-12 mt-4">
@@ -1688,7 +1699,7 @@
     </div>
 </div>
 <div class="form-group gray-box border mt-4 text-dark p-3 rounded alert box-bg">
-     <button type="button" class="btn btn-success my-3" id="add-outfield-entry" onclick="addOutfieldEntryRow()">Add Outfield Entry</button>
+     <button type="button" class="btn btn-danger my-3 fs-5" id="add-outfield-entry" onclick="addOutfieldEntryRow()">Add Outfield Entry</button>
   <details>
                                                         <summary>Outfield All Entries</summary>
                                                 <div id="outPitchEntryContainer" style="font-size: 70%;"></div>

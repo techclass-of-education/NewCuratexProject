@@ -1,0 +1,36 @@
+{% include "admin_user/headertags.html" %}
+{% load static %}
+<link href="{% static 'admin_user/css/gradient.css' %}" rel="stylesheet">
+
+<div class="wrapper grass-bg d-flex align-items-center justify-content-center min-vh-100">
+    <div id="content" class="bg-form-page w-100">
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-6 col-lg-5 text-center">
+                    
+                    <!-- Bootstrap Card for the Error -->
+                    <div class="card shadow-lg border-danger mb-3">
+                        <div class="card-header bg-danger text-white">
+                            <h4 class="mb-0">403 - Access Denied</h4>
+                        </div>
+                        <div class="card-body py-5">
+                            <h5 class="card-title text-danger mb-3">Restricted Area</h5>
+                            <p class="card-text text-muted mb-4">
+                                You don't have permission to access this page. If you believe this is an error, please contact the administrator.
+                            </p>
+                            
+                            <!-- JavaScript Back Button -->
+                            <button class="btn btn-outline-danger px-4 rounded-pill" onclick="window.history.back();">
+                                &larr; Go Back
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

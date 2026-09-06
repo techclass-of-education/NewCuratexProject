@@ -10,6 +10,7 @@ urlpatterns = [
     path('groundman/login', views.groundmanLogin, name='login_groundman'),  # Root URL
     path('scorer/login', views.scorerLogin, name='login_scorer'),  # Root URL
     path('login_auth', views.login_auth, name='login_auth'),  # Root URL
+    path('access_denied', views.access_denied, name='access_denied'),  # Root URL
     path('login_auth_role', views.login_auth_role, name='login_auth_role'),  # Root URL
     path('login_auth_role_direct', views.login_auth_role_direct, name='login_auth_role_direct'),  # Root URL
     path('create_admin_user_role', views.create_admin_user_role, name='create_admin_user_role'),

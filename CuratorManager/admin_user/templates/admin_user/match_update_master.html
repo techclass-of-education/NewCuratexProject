@@ -597,9 +597,11 @@
                                                                             </div>
                                                                          
                                                                         </div>
+                                                                           {% if request.session.user.role != "Groundman" %}
                                                                     <button type="button" class="btn btn-primary"
                                                                     onclick="addClaggHammerEntry()">Add Clagg Hammer
                                                                     Entry</button>
+                                                                      {% endif %}
   <div class="col-sm-12 col-lg-12">
                                                                 <details>
                                                                     <summary>Clagg Hammer Entries</summary>
@@ -700,6 +702,7 @@
                                                                                     <input type="time" class="form-control" id="time" placeholder="Value 1">
                                                                                 </div>
                                                                             </div>
+                                                                             {% if request.session.user.role != "Groundman" %}
                                                                             <div class="col-lg-12">
                                                                                  <div class="mb-3">
                                                                                     <label for="fileInput" class="form-label">Browse CSV File</label>
@@ -709,7 +712,7 @@
                                                                                  <button type="button" class="btn btn-primary" onclick="addMainMoistureData()">Add Moisture Entry</button>
 
                                                                             </div>
-
+                                                                               {% endif %}
                                                                               
                                                             <div class="col-sm-12 col-lg-12">
                                                                 <details>
@@ -1166,9 +1169,11 @@
                                                             <label for="chemical_details_remark" class="form-label">Chemical Remarks:</label>
                                                             <input type="text" id="chemical_details_remark" placeholder="Remarks" name="chemical_details_remark"  class="form-control">
                                                         </div>
+                                                           {% if request.session.user.role != "Groundman" %}
                                                         <div class="col-sm-12 col-lg-4 mt-4">
                                                             <button type="button" class="btn btn-sm btn-primary" id="addChemicalBtn" >+ Add Chemical Entry</button>
                                                         </div>
+                                                         {% endif %}
                                                     </div>
 
                                                     <details class="transparent-bg">
@@ -1764,9 +1769,11 @@
                                                             <input type="text" id="out_chemical_details_remark" placeholder="Remarks" name="out_chemical_details_remark" class="form-control">
                                                         </div>
                                                     </div>
+                                                     {% if request.session.user.role != "Groundman" %}
                                                     <div class="text-end">
                                                         <button type="button" class="btn btn-sm btn-primary" id="outaddChemicalBtn">+ Add Chemical Entry</button>
                                                     </div>
+                                                      {% endif %}
                                                      <details>
                                                                     <summary>Chemical Entries</summary>
                                                                     <div class="table-responsive transparent-bg">
@@ -2613,7 +2620,9 @@ renderMoisture()
         updateChemicalData();
     }
 
- 
+
+ if(document.getElementById("addChemicalBtn"))
+ {
     document.getElementById("addChemicalBtn").addEventListener("click", function () {
         
         const used = document.getElementById("is_fertilizers_used").checked ? "Yes" : "No";
@@ -2643,6 +2652,8 @@ renderMoisture()
 
       
     });
+
+}
 
 
 
@@ -3005,7 +3016,8 @@ renderMoisture()
         updateOutChemicalData();
     }
 
-    
+    if( document.getElementById("outaddChemicalBtn"))
+    {
     document.getElementById("outaddChemicalBtn").addEventListener("click", function () {
         const used = document.getElementById("out_is_fertilizers_used").checked ? "Yes" : "No";
         const time = document.getElementById("out_time_of_application_chemical").value;
@@ -3028,6 +3040,7 @@ renderMoisture()
 
         updateOutChemicalData();
     });
+}
 
     function updateOutChemicalData() {
         const tableBody = document.querySelector("#outchemicalTable tbody");

@@ -69,7 +69,7 @@
                     data-bs-target="#collapse-{{ recording.id }}" aria-expanded="true"
                     aria-controls="collapse-{{ recording.id }}">
                     <span class="fs-5 fw-bolder me-2 text-dark record-type"  style="text-transform: uppercase;">
-                                    {% if recording.pitch_location == "all area" %}
+                                    {% if recording.pitch_location == "all area" or recording.pitch_location == "all area area" %}
                                         All Area
                                 
                                      {% else %}
@@ -144,7 +144,7 @@
                                     <td>
                                          
                                         <table>
-                                             {% for item in recording.rolling_speed|split_by_delimiter %}
+                                             {% for item in recording.last_watering_on|split_by_delimiter %}
                                               {% if item.strip %}
                                             <tr>
                                                 <td>
@@ -464,7 +464,7 @@
 
                                         <tr>
                                             <th>Remark by Groundsman</th>
-                                            <td colspan="4">{{ recording.23 }}</td>
+                                            <td colspan="4">{{ recording.remark_by_groundsman }}</td>
                                         </tr>
 
                                     </table>                   

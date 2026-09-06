@@ -60,14 +60,14 @@
                                 <th>Broadcasting</th>
                                 <td>{{ ground.15|yesno:"Yes,No" }}</td>
                             </tr>
-                            <tr>
+                            <!-- <tr>
                                 <th>Hydrants</th>
                                 <td>{{ ground.16 }}</td>
                             </tr>
                             <tr>
                                 <th>Pumps</th>
                                 <td>{{ ground.17 }}</td>
-                            </tr>
+                            </tr> -->
                             <tr>
                                 <th>Lawn Nursery</th>
                                 <td>{{ ground.19|yesno:"Yes,No" }}</td>
@@ -80,10 +80,10 @@
                                 <th>Outfield Profile</th>
                                 <td>{{ ground.24 }}</td>
                             </tr>
-                            <tr>
+                            <!-- <tr>
                                 <th>Lawn Species</th>
                                 <td>{{ ground.25 }}</td>
-                            </tr>
+                            </tr> -->
                             <tr>
                                 <th>Drainage System</th>
                                 <td>{{ ground.26|yesno:"Yes,No" }}</td>
@@ -98,7 +98,7 @@
                             </tr>
                             <tr>
                                 <th>Boundary Size</th>
-                                <td>{{ ground.38 }}</td>
+                               <td class="boundary-size">{{ ground.38 }}</td>
                             </tr>
                             <tr>
                                 <th>Google Location</th>
@@ -134,6 +134,37 @@
 
     <script>
         changeMenuTitle("Ground List")
+
+        $(document).ready(function () {
+
+    // Boundary Size को # से हटाकर Span में बदलने का कोड
+    $('.boundary-size').each(function () {
+        let rawData = $(this).text().trim(); // "70#70#70#70" लें
+        
+        if (rawData && rawData.includes('#')) {
+            let sizes = rawData.split('#'); // # से तोड़ें
+            let spanHtml = '';
+
+            // हर एक साइज के लिए एक स्पैन (badge) बनाएं
+            sizes.forEach(function (size) {
+                if (size.trim() !== "") {
+                    // Bootstrap 5 badge क्लास का इस्तेमाल किया है ताकि यह अच्छा दिखे
+                    spanHtml += `<span class="badge bg-primary me-1 px-2 py-1 fs-6">${size.trim()}</span> `;
+                }
+            });
+
+            // पुराने टेक्स्ट को नए Span HTML से बदल दें
+            $(this).html(spanHtml);
+        }
+    });
+
+    // आपका पुराना डिलीट वाला कोड...
+    $(".del-btn").on('click', function (event) {
+        event.preventDefault();
+        deleteGP($(this).attr('dataid').trim());
+    });
+
+});
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -176,361 +207,3 @@
 
 
 
-
-   <!--        <h1 class="text-center mb-4">Ground List</h1>-->
-        <!-- <table class="table table-bordered table-striped table-hover">
-            <thead class="table-dark">
-                <tr>
-                    <th>Field Number</th>
-                    {% for ground in grounds %}
-                    <th>Ground {{ forloop.counter }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td style="color:blue"><b>Ground Pitches</b></td>
-                    {% for ground in grounds %}
-                    <td>
-                        <div class="d-flex justify-content-around"> <a
-                                href="/usr_admin/ground_pitches/{{ground.0}}">Click for <b>Pitches</b></a>
-
-                            <a class="btn btn-success mx-2" href="{% url 'update_ground_master' ground.0 %}">UPDATE
-                                GROUND</a>
-                            <button class="btn btn-danger del-btn" dataid="{{ground.0}}">DELETE GROUND</button>
-                        </div>
-                    </td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>1 Ground Name</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.6 }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>2 Location</td>
-                    {% for ground in grounds %}
-                    <td>State {{ ground.8 }}, State Code {{ ground.7 }} City Name {{ ground.9 }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>3 Main Pitches</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.10 }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>4 Practice Pitches</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.11 }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>5 Is Side Screens</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.12 | yesno:"Yes,No" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>6 Is Broadcasting Facility</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.15 | yesno:"Yes,No" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>7 Is Irrigation Pitches</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.15 | yesno:"Yes,No" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>8 Hydrants</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.16 }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>9 Pumps</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.17 }}</td>
-                    {% endfor %}
-                </tr>
-               
-                <tr>
-                    <td>11 Is Lawn Nursery</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.19 | yesno:"Yes,No" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>12 Centre Square</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.20 }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>13 Is Curator Room</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.21 | yesno:"Yes,No" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>14 Is Separate Practice Area</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.22 | yesno:"Yes,No" }}</td>
-                    {% endfor %}
-                </tr>
-                 
-                <tr>
-                    <td>16 Outfield Profile</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.24 }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>17 Lawn Species</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.25 }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>18 Is Drainage System</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.26 | yesno:"Yes,No" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>19 Is Water Drainage</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.27 | yesno:"Yes,No" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>20 Is Irrigation System</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.28 | yesno:"Yes,No" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>21 Is Water Availability</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.29 | yesno:"Yes,No" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>22 Is Water Source</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.30 | yesno:"Yes,No" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>23 Storage Capacity</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.31 }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>24 Pop Ups</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.32 }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>25 Pump Size</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.33 }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>26 Is Automation</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.34 | yesno:"Yes,No" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>27 Is Ground Equipment</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.35 | yesno:"Yes,No" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>28 Is Maintenance Contract</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.36 | yesno:"Yes,No" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>29 Is Maintenance Agency</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.37 | yesno:"Yes,No" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>30 Boundary Size</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.38 }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>31 Is MOT Availability</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.39 | yesno:"Yes,No" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>32 Is Machine Shed</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.40 | yesno:"Yes,No" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>33 Is Soil Shed</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.41 | yesno:"Yes,No" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>34 Is Pitch/Run Up Covers</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.42 | yesno:"Yes,No" }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>35 Cover Size</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.43 }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>Google Location</td>
-                    {% for ground in grounds %}
-                    <td><a href="{{ ground.2 }}" target="_blank">{{ ground.2 }}</a></td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>Year of Construction</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.3 }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>Phone Numbers</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.4 }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>Slop Ratio</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.5 }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>Screen Size</td>
-                    {% for ground in grounds %}
-                    <td>{{ ground.46 }}</td>
-                    {% endfor %}
-                </tr>
-            </tbody>
-        </table> -->
-    
-
-<!-- <div class="table-responsive" style="overflow-x:auto; white-space: nowrap;">
-<table class="table table-bordered table-striped table-hover">
-    <thead class="table-dark">
-        <tr>
-            <th>#</th>
-            <th>Ground Name</th>
-            <th>Location</th>
-            <th>Main Pitches</th>
-            <th>Practice Pitches</th>
-            <th>Side Screens</th>
-            <th>Broadcasting</th>
-            <th>Irrigation Pitches</th>
-            <th>Hydrants</th>
-            <th>Pumps</th>
-            <th>Lawn Nursery</th>
-            <th>Centre Square</th>
-            <th>Curator Room</th>
-            <th>Separate Practice Area</th>
-            <th>Outfield Profile</th>
-            <th>Lawn Species</th>
-            <th>Drainage System</th>
-            <th>Water Drainage</th>
-            <th>Irrigation System</th>
-            <th>Water Availability</th>
-            <th>Water Source</th>
-            <th>Storage Capacity</th>
-            <th>Pop Ups</th>
-            <th>Pump Size</th>
-            <th>Automation</th>
-            <th>Ground Equipment</th>
-            <th>Maintenance Contract</th>
-            <th>Maintenance Agency</th>
-            <th>Boundary Size</th>
-            <th>MOT Availability</th>
-            <th>Machine Shed</th>
-            <th>Soil Shed</th>
-            <th>Pitch/Run Up Covers</th>
-            <th>Cover Size</th>
-            <th>Google Location</th>
-            <th>Year</th>
-            <th>Phone Numbers</th>
-            <th>Slop Ratio</th>
-            <th>Screen Size</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for ground in grounds %}
-        <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ ground.6 }}</td>
-            <td>State {{ ground.8 }}, Code {{ ground.7 }}, City {{ ground.9 }}</td>
-            <td>{{ ground.10 }}</td>
-            <td>{{ ground.11 }}</td>
-            <td>{{ ground.12|yesno:"Yes,No" }}</td>
-            <td>{{ ground.15|yesno:"Yes,No" }}</td>
-            <td>{{ ground.15|yesno:"Yes,No" }}</td>
-            <td>{{ ground.16 }}</td>
-            <td>{{ ground.17 }}</td>
-            <td>{{ ground.19|yesno:"Yes,No" }}</td>
-            <td>{{ ground.20 }}</td>
-            <td>{{ ground.21|yesno:"Yes,No" }}</td>
-            <td>{{ ground.22|yesno:"Yes,No" }}</td>
-            <td>{{ ground.24 }}</td>
-            <td>{{ ground.25 }}</td>
-            <td>{{ ground.26|yesno:"Yes,No" }}</td>
-            <td>{{ ground.27|yesno:"Yes,No" }}</td>
-            <td>{{ ground.28|yesno:"Yes,No" }}</td>
-            <td>{{ ground.29|yesno:"Yes,No" }}</td>
-            <td>{{ ground.30|yesno:"Yes,No" }}</td>
-            <td>{{ ground.31 }}</td>
-            <td>{{ ground.32 }}</td>
-            <td>{{ ground.33 }}</td>
-            <td>{{ ground.34|yesno:"Yes,No" }}</td>
-            <td>{{ ground.35|yesno:"Yes,No" }}</td>
-            <td>{{ ground.36|yesno:"Yes,No" }}</td>
-            <td>{{ ground.37|yesno:"Yes,No" }}</td>
-            <td>{{ ground.38 }}</td>
-            <td>{{ ground.39|yesno:"Yes,No" }}</td>
-            <td>{{ ground.40|yesno:"Yes,No" }}</td>
-            <td>{{ ground.41|yesno:"Yes,No" }}</td>
-            <td>{{ ground.42|yesno:"Yes,No" }}</td>
-            <td>{{ ground.43 }}</td>
-            <td><a href="{{ ground.2 }}" target="_blank">View Map</a></td>
-            <td>{{ ground.3 }}</td>
-            <td>{{ ground.4 }}</td>
-            <td>{{ ground.5 }}</td>
-            <td>{{ ground.46 }}</td>
-            <td>
-                <a class="btn btn-success btn-sm" href="{% url 'update_ground_master' ground.0 %}">Update</a>
-                <button class="btn btn-danger btn-sm del-btn" dataid="{{ ground.0 }}">Delete</button>
-                <a class="btn btn-info btn-sm" href="/usr_admin/ground_pitches/{{ground.0}}">Pitches</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-</div> -->
