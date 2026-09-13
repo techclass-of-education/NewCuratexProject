@@ -113,7 +113,7 @@ def fetch_matches(request):
         if(m[6]=="Multidays"):
             formatted_date = m[4]+" to "+m[5]
         else:
-            formatted_date = m[3].strftime("%d-%m-%Y") if isinstance(m[3], datetime) else m[3]
+            formatted_date = m[3].strftime("%d-%m-%Y") if isinstance(m[3], datetime.datetime) else m[3]
             
             
         matches.append({

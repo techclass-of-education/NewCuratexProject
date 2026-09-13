@@ -4,6 +4,43 @@
 
 {% load static %}
 <link href="{% static 'admin_user/css/gradient.css' %}" rel="stylesheet">
+<style>
+    .a4-sheet-inner-div {
+  padding: 0 !important;
+  margin: 0 !important;
+  font-size: 10px !important;
+
+
+  }
+
+  @media print {
+    body {
+      margin: 0;
+    }
+  
+    #sidebar,nav,#form-div
+    {
+      display: none !important;
+    }
+
+    body
+    {
+       margin: 0 !important;
+     background: white !important;
+      padding: 0 !important;
+    }
+    #a4-sheet
+    {
+      margin-top: 0px !important;
+    }
+    .a4-sheet,#a4-inner-div,.a4-inner-div,#content {
+      margin: 0 !important;
+     width: 100%;
+      padding: 0 !important;
+    }
+  }
+</style>
+
 <div class="wrapper grass-bg">
     <!-- Sidebar -->
     {% include "admin_user/menu_side.html" %}
@@ -19,7 +56,7 @@
             <div class="card w-75 mx-auto transparent-bg">
                 <div class="card-header box-bg text-white">
 
-                    <i class="bi bi-person-check me-2 text-info"></i>Total Match Report
+                    <i class="bi bi-person-check me-2 text-info"></i>Total Match Report 
                 </div>
               <div class="card-body box-gradient rounded-bottom">
                     <!-- Filters and Field Selection -->
@@ -984,17 +1021,17 @@ const defaultVisibleColumns = [
 
     </script>
     <script>
-        document.getElementById('downloadPdf').addEventListener('click', () => {
-            const element = document.querySelector('.a4-sheet');
-            const opt = {
-                margin: 0,
-                filename: 'match_report.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, scrollY: 0 },  // scrollY avoids offset
-                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-            };
-            html2pdf().set(opt).from(element).save();
-        });
+        // document.getElementById('downloadPdf').addEventListener('click', () => {
+        //     const element = document.querySelector('.a4-sheet');
+        //     const opt = {
+        //         margin: 0,
+        //         filename: 'match_report.pdf',
+        //         image: { type: 'jpeg', quality: 0.98 },
+        //         html2canvas: { scale: 2, scrollY: 0 },  // scrollY avoids offset
+        //         jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+        //     };
+        //     html2pdf().set(opt).from(element).save();
+        // });
     </script>
 
        <script>
@@ -1193,6 +1230,30 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .catch(err => console.error("Pitch fetch error:", err));
     });
+
+      // CSV Download
+  document.getElementById("downloadCsv")?.addEventListener("click", () => {
+    let csvContent = "";
+    const tables = [document.getElementById("reportTable")];
+
+    tables.forEach(table => {
+      const rows = table.querySelectorAll("tr");
+      rows.forEach(row => {
+        const cols = Array.from(row.children).map(td => `"${td.innerText.trim()}"`);
+        csvContent += cols.join(",") + "\n";
+      });
+      csvContent += "\n"; // add a line gap between tables
+    });
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute("download", "total_match_report.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  });
+
 </script>
 
 
