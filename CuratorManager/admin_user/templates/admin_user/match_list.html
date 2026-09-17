@@ -106,7 +106,7 @@
                         <a class="btn btn-success mb-2 edit-btn" data-match-date="{{ match.match_date }}"
                             data-from-date="{{ match.7 }}" data-start-time="{{ match.start_time }}" data-match-type="{{match.match_type}}" href="{% url 'update_match' match.id %}">Edit</a>
                         <a class="btn btn-warning  mb-2" href="{% url 'add_score' match.id %}">Add Scores</a>
-                        <a class="btn btn-danger  mb-2" href="{% url 'match_scores_list' match.id %}">List Scores</a>
+                        <a class="btn btn-primary  mb-2" href="{% url 'match_scores_list' match.id %}">List Scores</a>
 
 
                        <!-- Unified Delete Buttons: -->
@@ -121,7 +121,7 @@
 {% endif %}
                       
                         {% if request.session.user.role == "admin" %}
-                        <button onclick="outfieldPitchReport(event,'{{match.id}}')" class="btn btn-danger mb-2">Pitch Report</button>
+                        <button onclick="outfieldPitchReport(event,'{{match.id}}')" class="btn btn-dark mb-2">Pitch Report</button>
                         {% endif %}
                         <div class="row">
                             <div class="col">

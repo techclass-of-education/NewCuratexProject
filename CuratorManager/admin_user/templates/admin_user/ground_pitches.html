@@ -12,6 +12,15 @@
         <!-- Navbar -->
         {% include "admin_user/menu_top.html" %}
 
+        {% if messages %}
+  <div class="messages">
+    {% for message in messages %}
+      <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
   {% for ground in grounds %}
   <div class="row">
     <div class="col-lg-12 col-sm-12">
@@ -70,7 +79,10 @@
       <td class="text-capitalize"> {{ pitch.5 }}</td>
       <td>{{ pitch.4 }}</td>
       <td> {{ pitch.2 }}</td>
-      <td> <a href="/usr_admin/edit_pitch/{{ pitch.0 }}/{{pitch.2}}">Edit</a></td>
+      <td> 
+        <a href="/usr_admin/edit_pitch/{{ pitch.0 }}/{{pitch.2}}">Edit</a>
+        <button class="btn btn-link text-danger ms-3" onclick="deletePitch('{{ pitch.0 }}/{{pitch.2}}')">Delete</button>
+      </td>
     </tr>
     {% endif %}
     {% endfor %}
@@ -97,7 +109,16 @@
       <td class="text-capitalize"> {{ pitch.5 }}</td>
       <td>{{ pitch.4 }}</td>
       <td> {{ pitch.2 }}</td>
-      <td> <a href="/usr_admin/edit_pitch/{{ pitch.0 }}/{{pitch.2}}">Edit</a></td>
+      <td> 
+        
+        <a href="/usr_admin/edit_pitch/{{ pitch.0 }}/{{pitch.2}}">Edit</a>
+        <button class="btn btn-link text-danger ms-3" onclick="deletePitch('{{ pitch.0 }}/{{pitch.2}}')">Delete</button>
+
+        <!-- <a class="text-danger ms-3" href="/usr_admin/delete_pitch/{{ pitch.0 }}/{{pitch.2}}">Delete</a> -->
+      
+      
+      </td>
+      
     </tr>
     {% endif %}
     {% endfor %}
@@ -129,5 +150,14 @@
     })
 
   })
+
+
+  function deletePitch(url)
+  {
+    if(confirm("Do you want to delete pitch?"))
+  {
+    location.href=`/usr_admin/delete_pitch/${url}`
+  }
+  }
 </script>
 

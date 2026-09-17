@@ -322,7 +322,7 @@ def fetch_match_records(request):
 
                 newClagg.append(tuple(row))
                 
-                print(newClagg)
+                # print(newClagg)
             data = [dict(zip(columns, row)) for row in rows]
             # claggdata = [dict(zip(columns, row)) for row in claggRows]
             # print(claggdata)
@@ -676,7 +676,7 @@ def match_report(request):
         cursor.execute(query, params)
         columns = [col[0] for col in cursor.description]
         data = [dict(zip(columns, row)) for row in cursor.fetchall()]
-        print(data)
+        # print(data)
 
     default_fields = []
     if(match_type=="Multidays"):
@@ -687,6 +687,8 @@ def match_report(request):
         default_fields = ['id', 'match_type', 'name_tournament', 'team1', 'team2', 'preparation_date', 'match_date', 'from_date','to_date']
         
     return render(request, 'admin_user/reports/match_report.html', {'records': data, 'default_fields': default_fields})
+
+
 
 @role_required("admin","Curator")
 def chemicalsReport(request):
@@ -1513,7 +1515,7 @@ def get_icc_report(request, match_id):
                     "match_type":row[9],
                     "days_count":row[10]
                 }
-            print(matchData)
+            # print(matchData)
                 # return render(request, 'admin_user/iccpitchoutfield/iccpitchoutfieldform.html',)
             if not row1:
                 return JsonResponse({"error": "No data found"}, status=404)
@@ -1691,7 +1693,7 @@ def login_auth_role(request):
         role = request.POST.get('role')
         user_groundmen=None
         user_curator=None
-        print(org_id,username,password,role)
+        # print(org_id,username,password,role)
         
         try:
             user = AdminRole.objects.get( org_id=org_id,username=username, password=password,role=role)
@@ -2104,7 +2106,7 @@ def update_ground_master(request, ground_id):
             ground = cursor.fetchone()
 
         if request.method == "POST":
-                print(request)
+                # print(request)
                 org_id = request.POST.get('org_id').lower()
                 google_location = request.POST.get('google_location')
                 year_of_construction = request.POST.get('year_of_construction')
@@ -2116,7 +2118,7 @@ def update_ground_master(request, ground_id):
                 # if(phone_numbers!=old_phone_numbers):
                 #     phone_numbers=old_phone_numbers.strip()+", "+phone_numbers.strip()
                 
-                print(old_phone_numbers)
+                # print(old_phone_numbers)
                 
                 phone_numbers = ", ".join([
                                     p.strip()
@@ -2131,7 +2133,7 @@ def update_ground_master(request, ground_id):
                                         
                         new_phone_numbers = ", ".join([p.strip() for p in splitNumbers])
                     else:
-                        print(new_phone_numbers)
+                        # print(new_phone_numbers)
                                         
                         new_phone_numbers=", "+new_phone_numbers
 
@@ -2532,7 +2534,64 @@ def edit_pitch(request,pitch_id,ground_id):
         return render(request, 'admin_user/edit_pitch.html', {'pitch': pitch[0],'ground':ground[0]})
     except Exception as e:
         print(e)
+        
+import re
+from django.db import connection, transaction
+from django.shortcuts import redirect
+from django.contrib import messages
 
+
+def get_safe_table(org_id, suffix):
+    if not org_id or not re.fullmatch(r'[A-Za-z0-9_]+', str(org_id)):
+        raise ValueError("Invalid org_id")
+    return f"{org_id}_{suffix}"
+
+
+@role_required("admin")
+def delete_pitch(request, pitch_id, ground_id):
+    try:
+        org_id = request.session["org_id"]
+
+        pitch_table = get_safe_table(org_id, "pitch_master")
+        ground_table = get_safe_table(org_id, "ground_master")
+
+        with transaction.atomic():
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    f'SELECT * FROM {pitch_table} WHERE id=%s AND ground_id=%s',
+                    [pitch_id, ground_id]
+                )
+                columns = [col[0] for col in cursor.description]
+                row = cursor.fetchone()
+
+                if not row:
+                    messages.error(request, "Pitch not found ya already delete ho chuki hai.")
+                    return redirect('ground_pitches', ground_id=ground_id)
+
+                pitch_data = dict(zip(columns, row))
+
+                pitch_type = (pitch_data.get('pitch_type') or '').strip().lower()
+                count_column = 'count_practice_pitches' if pitch_type == 'practice' else 'count_main_pitches'
+
+                cursor.execute(
+                    f'DELETE FROM {pitch_table} WHERE id=%s AND ground_id=%s',
+                    [pitch_id, ground_id]
+                )
+
+                cursor.execute(
+                    f'''UPDATE {ground_table}
+                        SET {count_column} = GREATEST(COALESCE({count_column}, 0) - 1, 0)
+                        WHERE id=%s''',
+                    [ground_id]
+                )
+
+        messages.success(request, "Pitch successfully deleted.")
+        return redirect('ground_pitches', ground_id=ground_id)
+
+    except Exception as e:
+        print(e)
+        messages.error(request, "Error in pitch delete")
+        return redirect('ground_pitches', ground_id=ground_id)
 
 def get_cities(request):
     org_id = request.session["org_id"]
@@ -4518,7 +4577,7 @@ def update_daily(request,daily_id):
                             cursor.execute(sql, list(delClaggIds))     
                                                         
                         
-                        print(claggHammer_entries)
+                        # print(claggHammer_entries)
                         if(len(claggHammer_entries)>0):
                             for clagg in claggHammer_entries:
                                 row_id = clagg.get("id")
@@ -6837,7 +6896,7 @@ def update_match(request, match_id):
                             cursor.execute(sql, list(delClaggIds))     
                                                         
                         
-                        print(claggHammer_entries)
+                        # print(claggHammer_entries)
                         if(len(claggHammer_entries)>0):
                             for clagg in claggHammer_entries:
                                 row_id = clagg.get("id")
@@ -7480,7 +7539,7 @@ def match_list_filter_by_date(request):
                 dict(zip(columns, row))
                 for row in cursor.fetchall()
             ]
-            print(matches)
+            # print(matches)
 
         return render(request, 'admin_user/match_list.html', {'matches': matches})
     except Exception as e:

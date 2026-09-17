@@ -16,9 +16,10 @@
   @media print {
     body {
       margin: 0;
+    
     }
   
-    #sidebar,nav,#form-div
+    #sidebar,nav,#form-div,.container
     {
       display: none !important;
     }
@@ -148,6 +149,7 @@
         </div>
         <!-- A4 Layout Report -->
         <div class="a4-sheet mt-5 mx-auto border-white"  style="width: 70vw !important;">
+              <h4 id="reportGroundName" class="text-center fw-bold mb-3" style="display:none;"></h4>
             {% if records %}
             <div class="table-responsive mx-auto" style="width: 70vw;overflow-y: auto;">
                 <table id="reportTable" class="table align-middle mb-0 border-white mx-auto rounded">
@@ -1125,64 +1127,126 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 
 <script>
-    $(document).ready(function () {
+  $(document).ready(function () {
 
-        axios.get("/usr_admin/get_grounds").then((result) => {
-            $("#id_ground_id").html("")
-            $("#id_ground_id").append(`<option value=''>Select Ground</option>`)
+    // 🔹 Grounds load + selected ground restore + heading update
+    axios.get("/usr_admin/get_grounds").then((result) => {
+      const groundSelect = $("#id_ground_id");
+      groundSelect.html("");
+      groundSelect.append(`<option value=''>Select Ground</option>`);
+      groundSelect.append(`<option value='all'>All Grounds</option>`);
 
+      result.data.grounds.forEach(function (g) {
+        groundSelect.append(`<option value='${g.ground[0]}'>${g.ground[6]}</option>`);
+      });
 
-            result.data.grounds.forEach(function (g) {
-                $("#id_ground_id").append(`<option value='${g.ground[0]}'>${g.ground[6]}</option>`)
-            })
+      const savedGroundId = "{{ request.GET.id }}".trim();
+      if (savedGroundId) {
+        groundSelect.val(savedGroundId);
+        updateGroundHeading();
+        groundSelect.trigger("change");   // pitches bhi load ho jayenge saved ground ke liye
+      }
+    }).catch((error) => {
+      console.log(error);
+    });
 
-        }).catch((error) => {
-            console.log(error)
+    // 🔹 Match type restore
+    $("#match_type").val("{{ request.GET.match_type }}");
 
-        })
+    // 🔹 Ground change → Pitch dropdown + heading update
+    $("#id_ground_id").change(function () {
+      const groundId = $(this).val().trim();
+      const pitchSelect = $("#pitch_id");
 
+      updateGroundHeading();
 
-        $("#pitch_id").val("{{ request.GET.pitch_id }}")
-        $("#match_type").val("{{ request.GET.match_type }}")
-        $("#id_ground_id").change(function () {
-            const groundId = $(this).val().trim()
-            if (groundId == "all") {
-                axios.get(`/usr_admin/get_all_pitches`).then((result) => {
-                    // console.log(result.data.grounds)
-                    $("#pitch_id").html("")
-                    $("#pitch_id").append(`<option value=''>Select Pitch</option>`)
-                    //                    $("#pitch_id").append(`<option value='all'>All Pitches</option>`)
+      if (groundId === "") {
+        pitchSelect.html(`<option value=''>Select Pitch</option>`);
+        return;
+      }
 
-                    result.data.grounds.forEach(function (p) {
-                        $("#pitch_id").append(`<option value='${p.pitches[0]}'>${p.pitches[14]}  ${p.pitches[5]}</option>`)
-                    })
-                }).catch((error) => {
-                    console.log(error)
+      if (groundId === "all") {
+        axios.get(`/usr_admin/get_all_pitches`).then((result) => {
+          pitchSelect.html("");
+          pitchSelect.append(`<option value=''>Select Pitch</option>`);
+          (result.data.grounds || []).forEach(function (p) {
+            pitchSelect.append(`<option value='${p.pitches[0]}'>${p.pitches[14]} ${p.pitches[5]}</option>`);
+          });
+        }).catch((error) => console.log(error));
 
-                })
-            } else {
-                axios.get(`/usr_admin/get_pitches/${groundId}`).then((result) => {
-                    // console.log(result.data.grounds)
-                    $("#pitch_id").html("")
-                    $("#pitch_id").append(`<option value=''>Select Pitch</option>`)
-                    //$("#pitch_id").append(`<option value='all'>All Pitches</option>`)
+      } else {
+        axios.get(`/usr_admin/get_pitches/${groundId}`).then((result) => {
+          pitchSelect.html("");
+          pitchSelect.append(`<option value=''>Select Pitch</option>`);
 
-                    localStorage.setItem("city", result.data.grounds[0].city);
+          const grounds = result.data.grounds || [];
+          if (grounds.length > 0) {
+            localStorage.setItem("city", grounds[0].city);
+          }
 
-                    result.data.grounds.forEach(function (p) {
-                        $("#pitch_id").append(`<option value='${p.pitch[0]}'>${p.pitch[14]}  ${p.pitch[5]}</option>`)
-                    })
-                }).catch((error) => {
-                    console.log(error)
+          grounds.forEach(function (p) {
+            pitchSelect.append(`<option value='${p.pitch[0]}'>${p.pitch[14]} ${p.pitch[5]}</option>`);
+          });
 
-                })
-            }
+          const savedPitchId = "{{ request.GET.pitch_id }}".trim();
+          if (savedPitchId) {
+            pitchSelect.val(savedPitchId);
+          }
+        }).catch((error) => console.log(error));
+      }
+    });
 
-        })
+  });
 
+  // 🔹 Ground heading update helper (table ke upar + print + CSV ke liye use hoga)
+  function updateGroundHeading() {
+    const groundSelect = $("#id_ground_id");
+    const groundName = groundSelect.find("option:selected").text().trim();
+    const heading = $("#reportGroundName");
 
-    })
+    if (groundName && groundName !== "Select Ground") {
+      heading.html("<big>Total Match Report</big><hr>" + groundName).show();
+    } else {
+      heading.hide().text("");
+    }
+  }
 </script>
+
+<script>
+  // 🔹 CSV Download — sirf visible columns + ground name
+  document.getElementById("downloadCsv")?.addEventListener("click", () => {
+    let csvContent = "";
+
+    const groundName = $("#id_ground_id option:selected").text().trim();
+    if (groundName && groundName !== "Select Ground") {
+      csvContent += `"Ground: ${groundName}"\n\n`;
+    }
+
+    const table = document.getElementById("reportTable");
+    if (table) {
+      const rows = table.querySelectorAll("tr");
+      rows.forEach(row => {
+        const cols = Array.from(row.children)
+          .filter(td => td.style.display !== "none")   // 🔥 sirf visible columns
+          .map(td => `"${td.innerText.replace(/"/g, '""').trim()}"`);
+        if (cols.length > 0) {
+          csvContent += cols.join(",") + "\n";
+        }
+      });
+    }
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute("download", "total_match_report.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  });
+</script>
+
+
+
 
 
 <script>
@@ -1231,28 +1295,6 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(err => console.error("Pitch fetch error:", err));
     });
 
-      // CSV Download
-  document.getElementById("downloadCsv")?.addEventListener("click", () => {
-    let csvContent = "";
-    const tables = [document.getElementById("reportTable")];
-
-    tables.forEach(table => {
-      const rows = table.querySelectorAll("tr");
-      rows.forEach(row => {
-        const cols = Array.from(row.children).map(td => `"${td.innerText.trim()}"`);
-        csvContent += cols.join(",") + "\n";
-      });
-      csvContent += "\n"; // add a line gap between tables
-    });
-
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.setAttribute("download", "total_match_report.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  });
 
 </script>
 

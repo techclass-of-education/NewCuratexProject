@@ -181,17 +181,27 @@
 
 <script>
   $(document).ready(function () {
-    $("#id_ground_id").val("{{ground_id}}".trim())
+    // Ground dropdown load + "All Grounds" option + previous selection restore
     axios.get("/usr_admin/get_grounds").then(result => {
       const dropdown = $("#id_ground_id");
-      dropdown.empty().append(`<option value="">Select Ground</option>`);
+      dropdown.empty();
+      dropdown.append(`<option value="all">All Grounds</option>`); // 🔥 default "All" option
+
       result.data.grounds.forEach(g => {
         dropdown.append(`<option value="${g.ground[0]}">${g.ground[6]}</option>`);
       });
+
+      // Ab options load ho chuke hain, tabhi value set karo
+      const savedGroundId = "{{ground_id}}".trim();
+      if (savedGroundId) {
+        dropdown.val(savedGroundId);
+      } else {
+        dropdown.val("all"); // agar kuch selected nahi tha, "All" hi default rahe
+      }
+    }).catch(error => {
+      console.error("Error fetching grounds:", error);
     });
   });
-
-
 
   document.addEventListener("DOMContentLoaded", function () {
     axios.get("/usr_admin/get-chemical-types/")
@@ -199,6 +209,7 @@
         const types = response.data.types;
         const select = document.getElementById("chemical_type_select");
 
+        select.innerHTML = `<option value="">Select Chemical Type</option>`;
         types.forEach(type => {
           const option = document.createElement("option");
           option.value = type;
@@ -210,46 +221,6 @@
         console.error("Error fetching chemical types:", error);
       });
   });
-
-
-
-  // // CSV Download Logic
-  // document.getElementById("downloadCsv")?.addEventListener("click", () => {
-  //   let csvContent = "";
-  //   const tables = [document.getElementById("kgTable"), document.getElementById("ltrTable")];
-
-  //   tables.forEach(table => {
-  //     const rows = table.querySelectorAll("tr");
-  //     rows.forEach(row => {
-  //       const cols = Array.from(row.children).map(td => `"${td.innerText.trim()}"`);
-  //       csvContent += cols.join(",") + "\n";
-  //     });
-  //     csvContent += "\n";
-  //   });
-
-  //   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-  //   const link = document.createElement("a");
-  //   link.href = URL.createObjectURL(blob);
-  //   link.setAttribute("download", "chemicals_report.csv");
-  //   document.body.appendChild(link);
-  //   link.click();
-  //   document.body.removeChild(link);
-  // });
-
-  // // PDF Download Logic
-  document.getElementById("downloadPdf")?.addEventListener("click", () => {
-    const element = document.querySelector(".a4-sheet");
-    const opt = {
-      margin: 0.5,
-      filename: "chemicals_report.pdf",
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: "in", format: "a4", orientation: "portrait" }
-    };
-    html2pdf().set(opt).from(element).save();
-  });
-
-
 
   function addChemicalsToSelect(fertilizers, select) {
     fertilizers.forEach(function (fert) {
@@ -263,29 +234,21 @@
   axios.get('/usr_admin/get-fertilizers-json/')
     .then(function (response) {
       const chemicals = response.data.fertilizers;
-      // console.log(fertilizers)
       const select = document.getElementById("chemical");
-
-      addChemicalsToSelect(chemicals, select)
-
-
+      addChemicalsToSelect(chemicals, select);
     })
     .catch(function (error) {
       console.error("Error fetching fertilizers:", error);
     });
-
 </script>
 
 <script>
   document.getElementById("downloadCsv")?.addEventListener("click", () => {
-
     let csvContent = "";
     const tables = document.querySelectorAll(".chem-table");
 
-    tables.forEach((table, index) => {
-
-      // Table Caption (Chemical Name)
-      const caption = table.querySelector("caption h4");
+    tables.forEach((table) => {
+      const caption = table.querySelector("caption h3"); // 🔧 h3 use ho raha hai template me, h4 nahi
       if (caption) {
         csvContent += `"${caption.innerText.trim()}"\n`;
       }
