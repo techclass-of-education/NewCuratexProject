@@ -859,7 +859,7 @@
                                                            {% endif %}
                                                     </div>
   <details>
-                                <summary>Rolling Entries</summary>
+                                <summary>Chemical Entries</summary>
                                 <div class="table-responsive transparent-bg">
                                                     <table class="table table-bordered mt-3" style="font-size: 70%;" id="ppchemicalTable">
                                                         <thead class="table-dark">
@@ -3262,46 +3262,73 @@ renderMoisturePP()
         console.log(checkBoxArray)
     }
 
-    function allAreaTabHideShow(event) {
-        $(".tab-pane").removeClass("active")
-        $(".tab-pane").removeClass("show")
-        $(".tab-pane").removeClass("showTab")
+    // function allAreaTabHideShow(event) {
+    //     $(".tab-pane").removeClass("active")
+    //     $(".tab-pane").removeClass("show")
+    //     $(".tab-pane").removeClass("showTab")
 
-        const filteredTabs = allTabs.filter(function (tab) {
-            return $(`#${tab}`).prop("checked")
-        })
+    //     const filteredTabs = allTabs.filter(function (tab) {
+    //         return $(`#${tab}`).prop("checked")
+    //     })
 
-        // if (filteredTabs.length < 1) {
-        //     $("#btnDailySubmit").removeClass("showTab")
-        // }
-        for (let e of filteredTabs) {
-            $(`#${tabsButtonsObject[e][0]}`).removeClass("active")
-            //  $(`#${tabsButtonsObject[e][1]}`).removeClass("showTab")
-            $(`#${tabsButtonsObject[e][1]}`).removeClass("active")
-            //   $(`#${tabsButtonsObject[event.target.id][1]}`).removeClass("show")
-        }
-        if (event.target.checked) {
+    //     // if (filteredTabs.length < 1) {
+    //     //     $("#btnDailySubmit").removeClass("showTab")
+    //     // }
+    //     for (let e of filteredTabs) {
+    //         $(`#${tabsButtonsObject[e][0]}`).removeClass("active")
+    //         //  $(`#${tabsButtonsObject[e][1]}`).removeClass("showTab")
+    //         $(`#${tabsButtonsObject[e][1]}`).removeClass("active")
+    //         //   $(`#${tabsButtonsObject[event.target.id][1]}`).removeClass("show")
+    //     }
+    //     if (event.target.checked) {
 
-            // $("#btnDailySubmit").addClass("showTab")
-            $(`#${tabsButtonsObject[event.target.id][0]}`).addClass("showTab")
-            $(`#${tabsButtonsObject[event.target.id][0]}`).addClass("active")
-            $(`#${tabsButtonsObject[event.target.id][1]}`).addClass("showTab")
-            $(`#${tabsButtonsObject[event.target.id][1]}`).addClass("active")
-            $(`#${tabsButtonsObject[event.target.id][1]}`).addClass("show")
-        }
-        else {
-            $(`#${tabsButtonsObject[event.target.id][0]}`).removeClass("showTab")
-            $(`#${tabsButtonsObject[event.target.id][1]}`).removeClass("showTab")
-            $(`#${tabsButtonsObject[event.target.id][1]}`).removeClass("active")
-            $(`#${tabsButtonsObject[event.target.id][1]}`).removeClass("show");
-            $(`#${tabsButtonsObject[checkBoxArray[0]][0]}`).addClass("active")
-            //  $(`#${tabsButtonsObject[e][1]}`).removeClass("showTab")
-            $(`#${tabsButtonsObject[checkBoxArray[0]][1]}`).addClass("active")
-            $(`#${tabsButtonsObject[checkBoxArray[0]][1]}`).addClass("show")
+    //         // $("#btnDailySubmit").addClass("showTab")
+    //         $(`#${tabsButtonsObject[event.target.id][0]}`).addClass("showTab")
+    //         $(`#${tabsButtonsObject[event.target.id][0]}`).addClass("active")
+    //         $(`#${tabsButtonsObject[event.target.id][1]}`).addClass("showTab")
+    //         $(`#${tabsButtonsObject[event.target.id][1]}`).addClass("active")
+    //         $(`#${tabsButtonsObject[event.target.id][1]}`).addClass("show")
+    //     }
+    //     else {
+    //         $(`#${tabsButtonsObject[event.target.id][0]}`).removeClass("showTab")
+    //         $(`#${tabsButtonsObject[event.target.id][1]}`).removeClass("showTab")
+    //         $(`#${tabsButtonsObject[event.target.id][1]}`).removeClass("active")
+    //         $(`#${tabsButtonsObject[event.target.id][1]}`).removeClass("show");
+    //         $(`#${tabsButtonsObject[checkBoxArray[0]][0]}`).addClass("active")
+    //         //  $(`#${tabsButtonsObject[e][1]}`).removeClass("showTab")
+    //         $(`#${tabsButtonsObject[checkBoxArray[0]][1]}`).addClass("active")
+    //         $(`#${tabsButtonsObject[checkBoxArray[0]][1]}`).addClass("show")
+    //     }
+    // }
+
+   function allAreaTabHideShow(event) {
+    const tabKey = event.target.id; // e.g. "pitch-main", "outfield" etc.
+    const btnId = tabsButtonsObject[tabKey][0];
+    const paneId = tabsButtonsObject[tabKey][1];
+    const btnEl = document.getElementById(btnId);
+
+    if (event.target.checked) {
+        // Show this tab's button
+        $(`#${btnId}`).closest('li').removeClass('hideTab').show();
+
+        // Switch to it using Bootstrap's own Tab API (keeps internal state in sync)
+        const tabInstance = bootstrap.Tab.getOrCreateInstance(btnEl);
+        tabInstance.show();
+    } else {
+        // Hide this tab's button
+        $(`#${btnId}`).closest('li').addClass('hideTab').hide();
+
+        // If the hidden tab was the active one, switch to another checked tab (if any)
+        if ($(btnEl).hasClass('active')) {
+            const stillChecked = allTabs.filter(t => $(`#${t}`).prop('checked'));
+            if (stillChecked.length > 0) {
+                const nextBtnId = tabsButtonsObject[stillChecked[0]][0];
+                const nextBtnEl = document.getElementById(nextBtnId);
+                bootstrap.Tab.getOrCreateInstance(nextBtnEl).show();
+            }
         }
     }
-
-   
+}
 
     $("#pitch-main").change(async function (event) {
         await addToArrayCheckbox(event);

@@ -162,7 +162,7 @@
 
                                 <ul class="nav nav-pills" id="myTab" role="tablist">
                                     <li class="nav-item fs-4" role="presentation">
-                                        <button class="nav-link custom2 active" id="home-tab" data-bs-toggle="pill"
+                                        <button class="nav-link custom2 " id="home-tab" data-bs-toggle="pill"
                                             data-bs-target="#home-tab-pane" type="button" role="tab"
                                             aria-controls="home-tab-pane" aria-selected="true">
                                             <u><b>Main Pitch Entry</b></u>
@@ -194,11 +194,11 @@
 
                                 <div class="tab-content" id="myTabContent">
 
-                                    <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel"
+                                    <div class="tab-pane fade" id="home-tab-pane" role="tabpanel"
                                         aria-labelledby="home-tab" tabindex="0">
-
-                                        <div class="form-group daily-form summary-shadow rounded mt-4 text-dark p-3">
-                                            <!-- <legend class="w-auto px-2">Pitch Entries</legend> -->
+ <div class="form-group daily-form border mt-4 text-dark p-3">
+                                        <!-- <div class="form-group daily-form summary-shadow rounded mt-4 text-dark p-3"> -->
+                                            <legend class="w-auto px-2">Pitch Entries</legend>
 
                                             <div class="row">
                                                 <div class="col-sm-12 col-lg-12">
@@ -2618,13 +2618,8 @@
     
 
 
-    .hideTab {
-        visibility: hidden !important;
-    }
-
-    .showTab {
-        visibility: visible !important;
-    }
+.hideTab { display: none !important; }
+.showTab { display: inline-block !important; }
 </style>
 
 <script>
@@ -2699,23 +2694,23 @@
             $("#practice_date_mowing_done_last").val(d)
         })
 
+   // Sabhi panes se active/show hatao
+    $(".tab-pane").removeClass("active show");
 
-        $("#home-tab").addClass("hideTab")
-        //   $("#home-tab-pane").removeClass("active")
-        $("#home-tab-pane").removeClass("showTab")
-        //  $("#home-tab").removeClass("showTab")
-        //  $("#home-tab").removeClass("hide")
-        $("#home-tab-pane").addClass("hideTab")
+    // Sabhi nav-link buttons se bhi active hatao (yehi missing tha)
+    $(".nav-link").removeClass("active");
+    $(".nav-link").attr("aria-selected", "false");
 
-        $("#pp-tab").addClass("hideTab")
-        $("#pp-tab").removeClass("showTab")
+    $("#home-tab").addClass("hideTab")
+    $("#pp-tab").addClass("hideTab")
+    $("#pp-tab").removeClass("showTab")
 
-        $("#practice-tab").addClass("hideTab")
-        $("#practice-tab").removeClass("showTab")
+    $("#practice-tab").addClass("hideTab")
+    $("#practice-tab").removeClass("showTab")
 
-        $("#profile-tab").addClass("hideTab")
-        $("#profile-tab").removeClass("showTab")
-        $("#btnDailySubmit").addClass("hideTab")
+    $("#profile-tab").addClass("hideTab")
+    $("#profile-tab").removeClass("showTab")
+    $("#btnDailySubmit").addClass("hideTab")
 
     })
 
@@ -2759,47 +2754,75 @@
         console.log(checkBoxArray)
     }
 
+    // function allAreaTabHideShow(event) {
+    //     $(".tab-pane").removeClass("active")
+    //     $(".tab-pane").removeClass("show")
+
+    //     const filteredTabs = allTabs.filter(function (tab) {
+    //         return $(`#${tab}`).prop("checked")
+    //     })
+    //     if (filteredTabs.length < 1) {
+    //         $("#btnDailySubmit").removeClass("showTab")
+    //     }
+    //     for (let e of filteredTabs) {
+    //         $(`#${tabsButtonsObject[e][0]}`).removeClass("active")
+    //         //  $(`#${tabsButtonsObject[e][1]}`).removeClass("showTab")
+    //         $(`#${tabsButtonsObject[e][1]}`).removeClass("active")
+    //         //   $(`#${tabsButtonsObject[event.target.id][1]}`).removeClass("show")
+    //     }
+    //     if (event.target.checked) {
+
+
+
+    //         $("#btnDailySubmit").addClass("showTab")
+    //         $(`#${tabsButtonsObject[event.target.id][0]}`).addClass("showTab")
+    //         $(`#${tabsButtonsObject[event.target.id][0]}`).addClass("active")
+    //         $(`#${tabsButtonsObject[event.target.id][1]}`).addClass("showTab")
+    //         $(`#${tabsButtonsObject[event.target.id][1]}`).addClass("active")
+    //         $(`#${tabsButtonsObject[event.target.id][1]}`).addClass("show")
+    //     }
+    //     else {
+    //         $(`#${tabsButtonsObject[event.target.id][0]}`).removeClass("showTab")
+    //         $(`#${tabsButtonsObject[event.target.id][1]}`).removeClass("showTab")
+    //         $(`#${tabsButtonsObject[event.target.id][1]}`).removeClass("active")
+    //         $(`#${tabsButtonsObject[checkBoxArray[0]][0]}`).addClass("active")
+    //         //  $(`#${tabsButtonsObject[e][1]}`).removeClass("showTab")
+    //         $(`#${tabsButtonsObject[checkBoxArray[0]][1]}`).addClass("active")
+    //         $(`#${tabsButtonsObject[checkBoxArray[0]][1]}`).addClass("show")
+
+
+
+    //     }
+    // }
+
+
     function allAreaTabHideShow(event) {
-        $(".tab-pane").removeClass("active")
-        $(".tab-pane").removeClass("show")
+    const tabKey = event.target.id;
+    const btnId = tabsButtonsObject[tabKey][0];
+    const paneId = tabsButtonsObject[tabKey][1];
+    const btnEl = document.getElementById(btnId);
 
-        const filteredTabs = allTabs.filter(function (tab) {
-            return $(`#${tab}`).prop("checked")
-        })
-        if (filteredTabs.length < 1) {
-            $("#btnDailySubmit").removeClass("showTab")
+    if (event.target.checked) {
+        $(`#${btnId}`).removeClass("hideTab").addClass("showTab");
+        bootstrap.Tab.getOrCreateInstance(btnEl).show();
+        $("#btnDailySubmit").removeClass("hideTab");
+    } else {
+        $(`#${btnId}`).removeClass("showTab").addClass("hideTab");
+
+        const stillChecked = allTabs.filter(t => $(`#${t}`).prop("checked"));
+
+        if ($(btnEl).hasClass("active") || $(btnEl).attr("aria-selected") === "true") {
+            if (stillChecked.length > 0) {
+                const nextBtnEl = document.getElementById(tabsButtonsObject[stillChecked[0]][0]);
+                bootstrap.Tab.getOrCreateInstance(nextBtnEl).show();
+            }
         }
-        for (let e of filteredTabs) {
-            $(`#${tabsButtonsObject[e][0]}`).removeClass("active")
-            //  $(`#${tabsButtonsObject[e][1]}`).removeClass("showTab")
-            $(`#${tabsButtonsObject[e][1]}`).removeClass("active")
-            //   $(`#${tabsButtonsObject[event.target.id][1]}`).removeClass("show")
-        }
-        if (event.target.checked) {
 
-
-
-            $("#btnDailySubmit").addClass("showTab")
-            $(`#${tabsButtonsObject[event.target.id][0]}`).addClass("showTab")
-            $(`#${tabsButtonsObject[event.target.id][0]}`).addClass("active")
-            $(`#${tabsButtonsObject[event.target.id][1]}`).addClass("showTab")
-            $(`#${tabsButtonsObject[event.target.id][1]}`).addClass("active")
-            $(`#${tabsButtonsObject[event.target.id][1]}`).addClass("show")
-        }
-        else {
-            $(`#${tabsButtonsObject[event.target.id][0]}`).removeClass("showTab")
-            $(`#${tabsButtonsObject[event.target.id][1]}`).removeClass("showTab")
-            $(`#${tabsButtonsObject[event.target.id][1]}`).removeClass("active")
-            $(`#${tabsButtonsObject[checkBoxArray[0]][0]}`).addClass("active")
-            //  $(`#${tabsButtonsObject[e][1]}`).removeClass("showTab")
-            $(`#${tabsButtonsObject[checkBoxArray[0]][1]}`).addClass("active")
-            $(`#${tabsButtonsObject[checkBoxArray[0]][1]}`).addClass("show")
-
-
-
+        if (stillChecked.length < 1) {
+            $("#btnDailySubmit").addClass("hideTab");
         }
     }
-
+}
    
    function setBottomChecks()
    {

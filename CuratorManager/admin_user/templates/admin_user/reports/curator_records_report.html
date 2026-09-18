@@ -792,19 +792,7 @@ const defaultVisibleColumns = [
 });
 
     </script>
-    <script>
-        // document.getElementById('downloadPdf').addEventListener('click', () => {
-        //     const element = document.querySelector('.a4-sheet');
-        //     const opt = {
-        //         margin: 0,
-        //         filename: 'match_report.pdf',
-        //         image: { type: 'jpeg', quality: 0.98 },
-        //         html2canvas: { scale: 2, scrollY: 0 },  // scrollY avoids offset
-        //         jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-        //     };
-        //     html2pdf().set(opt).from(element).save();
-        // });
-    </script>
+  
 
        <script>
     $(document).ready(function () {
@@ -945,32 +933,101 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-      // CSV Download
+//       // CSV Download
+//   document.getElementById("downloadCsv")?.addEventListener("click", () => {
+//     let csvContent = "";
+//     const tables = [document.getElementById("reportTable")];
+
+//     tables.forEach(table => {
+//       const rows = table.querySelectorAll("tr");
+//       rows.forEach(row => {
+//         const cols = Array.from(row.children).map(td => `"${td.innerText.trim()}"`);
+//         csvContent += cols.join(",") + "\n";
+//       });
+//       csvContent += "\n"; // add a line gap between tables
+//     });
+
+//     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+//     const link = document.createElement("a");
+//     link.href = URL.createObjectURL(blob);
+//     link.setAttribute("download", "total_match_report.csv");
+//     document.body.appendChild(link);
+//     link.click();
+//     document.body.removeChild(link);
+//   });
+
+
+
+
+
+</script>
+
+<!-- <script>
   document.getElementById("downloadCsv")?.addEventListener("click", () => {
     let csvContent = "";
-    const tables = [document.getElementById("reportTable")];
+    const table = document.getElementById("reportTable");
+    if (!table) return;
 
-    tables.forEach(table => {
-      const rows = table.querySelectorAll("tr");
-      rows.forEach(row => {
-        const cols = Array.from(row.children).map(td => `"${td.innerText.trim()}"`);
+    const rows = table.querySelectorAll("tr");
+    rows.forEach(row => {
+      const cols = Array.from(row.children)
+        .filter(td => td.style.display !== "none")   // 🔥 sirf visible columns
+        .map(td => `"${td.innerText.replace(/"/g, '""').trim()}"`);
+      if (cols.length > 0) {
         csvContent += cols.join(",") + "\n";
-      });
-      csvContent += "\n"; // add a line gap between tables
+      }
     });
 
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.setAttribute("download", "total_match_report.csv");
+    link.setAttribute("download", "daily_report.csv");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   });
+</script> -->
 
+
+
+<script>
+  document.getElementById("downloadCsv")?.addEventListener("click", () => {
+    const table = document.getElementById("reportTable");
+    if (!table) return;
+
+    // Multi-value cells (jo <li> items me convert ho chuke hain) ko
+    // "; " se joda gaya single-line text me convert karta hai —
+    // isse embedded newlines ki wajah se CSV parser confuse nahi hota.
+    function getCellText(td) {
+      const items = td.querySelectorAll("li");
+      if (items.length > 0) {
+        return Array.from(items).map(li => li.innerText.trim()).join("; ");
+      }
+      return td.innerText.trim();
+    }
+
+    let csvContent = "";
+    const rows = table.querySelectorAll("tr");
+
+    rows.forEach(row => {
+      const cols = Array.from(row.children)
+        .filter(td => td.style.display !== "none")            // sirf visible columns
+        .map(td => `"${getCellText(td).replace(/"/g, '""')}"`); // 🔥 quotes properly escaped
+      if (cols.length > 0) {
+        csvContent += cols.join(",") + "\r\n";   // CRLF row terminator — Excel-safe
+      }
+    });
+
+    // BOM prefix taaki Excel UTF-8 encoding sahi detect kare (special characters safe)
+    const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute("download", "daily_report.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  });
 </script>
-
-
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->

@@ -1510,50 +1510,55 @@
 {% include "admin_user/footertags.html" %}
 
 
+
 <script>
   $(document).ready(function () {
-    // Fetch tournaments
-    function fetchMatch() {
+
+    const savedValues = {
+      match_type: "{{ request.GET.match_type }}",
+      season_year: "{{ request.GET.season_year }}",
+      name_tournament: "{{ request.GET.name_tournament }}",
+      city_name: "{{ request.GET.city_name }}",
+      ground_name: "{{ request.GET.ground_name }}",
+      match_id: "{{ request.GET.match_id }}"
+    };
+
+    // Step 1: Match Type + Season Year set (static options already in HTML)
+    $('#match_type').val(savedValues.match_type);
+    $('#season_year').val(savedValues.season_year);
+
+    // Step 2: Tournament list load, then restore + trigger city load
+    function fetchTournaments(callback) {
       const match_type = $('#match_type').val();
       const season_year = $('#season_year').val();
       if (match_type && season_year) {
         $.get('/usr_admin/fetch-tournaments/', { match_type, season_year }, function (data) {
-          // console.log(data.tournaments)
           $('#name_tournament').html('<option value="">Select Tournament</option>');
           data.tournaments.forEach(t => {
             $('#name_tournament').append(`<option value="${t}">${t}</option>`);
           });
-        });
+          if (callback) callback();
+        }).fail(function (err) { console.log(err); });
       }
     }
-    $('#match_type, #season_year').on('change', function () {
-      fetchMatch()
-    });
-    //       $('#match_type, #season_year',"#name_tournament").on({
-    //   change: fetchMatch(),
 
-    //   click: fetchMatch()
-    // });
-
-    // Fetch cities
-    function fetchCities() {
-
-    }
-    $('#name_tournament').on('change', function () {
-      const name_tournament = $(this).val();
+    // Step 3: City list load, then restore + trigger ground load
+    function fetchCities(callback) {
+      const name_tournament = $('#name_tournament').val();
       if (name_tournament) {
         $.get('/usr_admin/fetch-cities/', { name_tournament }, function (data) {
           $('#city_name').html('<option value="">Select City</option>');
           data.cities.forEach(c => {
             $('#city_name').append(`<option value="${c}">${c}</option>`);
           });
-        });
+          if (callback) callback();
+        }).fail(function (err) { console.log(err); });
       }
-    });
+    }
 
-    // Fetch grounds
-    $('#city_name').on('change', function () {
-      const city_name = $(this).val();
+    // Step 4: Ground list load, then restore + trigger match load
+    function fetchGrounds(callback) {
+      const city_name = $('#city_name').val();
       const name_tournament = $('#name_tournament').val();
       if (city_name && name_tournament) {
         $.get('/usr_admin/fetch-grounds/', { name_tournament, city_name }, function (data) {
@@ -1561,28 +1566,328 @@
           data.grounds.forEach(g => {
             $('#ground_name').append(`<option value="${g.id}">${g.name}</option>`);
           });
-        });
+          if (callback) callback();
+        }).fail(function (err) { console.log(err); });
       }
-    });
+    }
 
-    // Fetch matches
-    $('#ground_name').on('change', function () {
-      const ground_id = $(this).val();
+    // Step 5: Match list load, then restore final value
+    function fetchMatches(callback) {
+      const ground_id = $('#ground_name').val();
       const name_tournament = $('#name_tournament').val();
-      if (ground_name && name_tournament) {
+      if (ground_id && name_tournament) {
         $.get('/usr_admin/fetch-matches/', { name_tournament, ground_id }, function (data) {
           $('#match_id').html('<option value="">Select Match</option>');
           data.matches.forEach(m => {
             $('#match_id').append(`<option value="${m.id}">${m.label}</option>`);
           });
-        });
+          if (callback) callback();
+        }).fail(function (err) { console.log(err); });
       }
+    }
+
+    // 🔥 Restore chain on page load — sirf tab chalega jab pichli search se values aayi hon
+    if (savedValues.match_type && savedValues.season_year) {
+      fetchTournaments(function () {
+        $('#name_tournament').val(savedValues.name_tournament);
+
+        if (savedValues.name_tournament) {
+          fetchCities(function () {
+            $('#city_name').val(savedValues.city_name);
+
+            if (savedValues.city_name) {
+              fetchGrounds(function () {
+                $('#ground_name').val(savedValues.ground_name);
+
+                if (savedValues.ground_name) {
+                  fetchMatches(function () {
+                    $('#match_id').val(savedValues.match_id);
+                  });
+                }
+              });
+            }
+          });
+        }
+      });
+    }
+
+    // Normal change handlers (bug fixed: ground_name → ground_id)
+    $('#match_type, #season_year').on('change', function () {
+      fetchTournaments();
     });
+
+    $('#name_tournament').on('change', function () {
+      fetchCities();
+    });
+
+    $('#city_name').on('change', function () {
+      fetchGrounds();
+    });
+
+    $('#ground_name').on('change', function () {
+      fetchMatches();   // 🔥 fixed: pehle yaha undefined `ground_name` variable check tha
+    });
+
   });
 </script>
 
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
 
+  // ===== Server-rendered data (safe-escaped for JS) =====
+  const serverData = {
+    matchId: "{{ records.0.match_id|escapejs }}",
+    tournament: "{{ records.0.name_tournament|escapejs }}",
+    matchType: "{{ records.0.match_type|escapejs }}",
+    {% if records.0.match_type == "Multidays" %}
+    matchDate: "{{ records.0.from_date|to_ddmmyyyy|escapejs }} to {{ records.0.to_date|to_ddmmyyyy|escapejs }}",
+    {% else %}
+    matchDate: "{{ records.0.match_date|escapejs }}",
+    {% endif %}
+    team1: "{{ records.0.team1|escapejs }}",
+    team2: "{{ records.0.team2|escapejs }}",
+    neutralCurator: "{{ records.0.nuteral_curator|escapejs }}",
+
+    ground: "{{ records.0.ground_name|escapejs }}",
+    state: "{{ records.0.state_name|escapejs }}",
+    city: "{{ records.0.city_name|escapejs }}",
+    mainPitches: "{{ records.0.count_main_pitches|escapejs }}",
+    practicePitches: "{{ records.0.count_practice_pitches|escapejs }}",
+
+    pitch: "{{ records.0.pitch_placement|escapejs }}",
+    soilType: "{{ records.0.soil_type|escapejs }}",
+    pitchLevel: "{% if records.0.is_pitch_level == "1" %}Yes{% else %}No{% endif %}",
+    lawnHeight: "{{ records.0.lawn_height|escapejs }}",
+    claggHammer: "{{ records.0.clagg_hammer|default:"-"|escapejs }}",
+    moisture: "{{ records.0.moisture|default:"-"|escapejs }}",
+
+    wateringOn: "{{ records.0.last_watering_on|escapejs }}",
+    wateringTime: "{{ records.0.time_of_application|escapejs }}",
+    wateringQty: "{{ records.0.quantity_of_water|escapejs }}",
+
+    rollMachinery: "{{ records.0.machinery_id|escapejs }}",
+    rollDate: "{{ records.0.rolling_date|escapejs }}",
+    rollTime: "{{ records.0.time_roller|escapejs }}",
+    rollPasses: "{{ records.0.no_of_passes|escapejs }}",
+    rollSpeed: "{{ records.0.rolling_speed|escapejs }}",
+
+    mowerMachinery: "{{ records.0.mover_machinery_id|escapejs }}",
+    mowerDate: "{{ records.0.date_mowing_done_last|escapejs }}",
+    mowerTime: "{{ records.0.time_of_application_mover|escapejs }}",
+    mowerHeight: "{{ records.0.mowing_done_at_mm|escapejs }}",
+
+    chemDetails: "{{ records.0.fertilizers_details|escapejs }}",
+    chemWeight: "{{ records.0.chemical_weight|escapejs }}",
+    chemUnit: "{{ records.0.fertilizers_unit|escapejs }}",
+    chemTime: "{{ records.0.time_of_application_chemical|escapejs }}",
+    chemRemark: "{{ records.0.chemical_details_remark|escapejs }}",
+
+    groundsmanRemark: "{{ records.0.remark_by_groundsman|escapejs }}",
+    assessment: "{{ records.0.brief_match_pitch_assessment|escapejs }}",
+
+    claggRows: [
+      {% for row in clagg %}
+      ["{{ row.0|escapejs }}", "{{ row.2|escapejs }}", "{{ row.3|escapejs }}",
+       "{{ row.4|escapejs }}", "{{ row.5|escapejs }}", "{{ row.6|escapejs }}",
+       "{{ row.7|escapejs }}", "{{ row.8|escapejs }}", "{{ row.9|escapejs }}",
+       "{{ row.10|escapejs }}", "{{ row.11|escapejs }}", "{{ row.12|escapejs }}",
+       "{{ row.13|escapejs }}", "{{ row.16|escapejs }}"],
+      {% endfor %}
+    ]
+  };
+
+  const downloadBtn = document.createElement("button");
+  downloadBtn.textContent = "Download CSV";
+  downloadBtn.className = "btn btn-success";
+  downloadBtn.id = "downloadCsv";
+  document.querySelector(".btn-primary").after(downloadBtn);
+
+  downloadBtn.addEventListener("click", function () {
+    generateCsv(serverData);
+  });
+});
+
+// ---------- helpers ----------
+function csvRow(...cells) {
+  return cells.map(c => `"${String(c ?? "").replace(/"/g, '""')}"`).join(",") + "\n";
+}
+
+// Mirrors Django's split_by_delimiter filter: split on "__####__",
+// then strip leading/trailing "_" and "#" characters, then trim whitespace.
+function splitDelim(str) {
+  if (!str) return [];
+  return str.split("__####__")
+    .map(s => s.replace(/^[_#]+|[_#]+$/g, "").trim())
+    .filter(s => s !== "");
+}
+
+// Mirrors Django's to_ddmmyyyy filter
+function toDDMMYYYY(str) {
+  if (!str) return "";
+  const m = str.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return m ? `${m[3]}-${m[2]}-${m[1]}` : str;
+}
+
+function alignedRows(...columns) {
+  const max = Math.max(0, ...columns.map(c => c.length));
+  const rows = [];
+  for (let i = 0; i < max; i++) {
+    rows.push(columns.map(c => c[i] ?? ""));
+  }
+  return rows;
+}
+
+// ---------- main builder ----------
+function generateCsv(d) {
+  let csv = "";
+
+  csv += csvRow("PITCH PREPARATION REPORT");
+  csv += "\n";
+
+  csv += csvRow("TOURNAMENT INFORMATION");
+  csv += csvRow("Match ID", "Tournament", "Match Type", "Match Date", "Teams", "Neutral Curator");
+  csv += csvRow(d.matchId, d.tournament, d.matchType, d.matchDate, `${d.team1} VS ${d.team2}`, d.neutralCurator);
+  csv += "\n";
+
+  csv += csvRow("GROUND INFORMATION");
+  csv += csvRow("Ground", "State", "City", "Main Pitches", "Practice Pitches");
+  csv += csvRow(d.ground, d.state, d.city, d.mainPitches, d.practicePitches);
+  csv += "\n";
+
+  csv += csvRow("PITCH INFORMATION");
+  csv += csvRow("Pitch", "Soil Type", "Is Pitch Level", "Grass Height", "Clagg Hammer", "Moisture");
+  csv += csvRow(d.pitch, d.soilType, d.pitchLevel, `${d.lawnHeight} mm`, d.claggHammer, d.moisture);
+  csv += "\n";
+
+  if (d.claggRows.length) {
+    csv += csvRow("CLAGG HAMMER");
+    csv += csvRow("ID", "Date", "Time", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Average");
+    d.claggRows.forEach(row => { csv += csvRow(...row); });
+    csv += "\n";
+  }
+
+  const wRows = alignedRows(splitDelim(d.wateringOn).map(toDDMMYYYY), splitDelim(d.wateringTime), splitDelim(d.wateringQty));
+  if (wRows.length) {
+    csv += csvRow("WATERING");
+    csv += csvRow("Watering On", "Time", "Quantity (Liters)");
+    wRows.forEach(row => { csv += csvRow(...row); });
+    csv += "\n";
+  }
+
+  const rRows = alignedRows(splitDelim(d.rollMachinery), splitDelim(d.rollDate).map(toDDMMYYYY),
+    splitDelim(d.rollTime), splitDelim(d.rollPasses), splitDelim(d.rollSpeed));
+  if (rRows.length) {
+    csv += csvRow("ROLLING");
+    csv += csvRow("Machinery", "Date", "Time", "No. of Passes", "Type / Speed");
+    rRows.forEach(row => { csv += csvRow(...row); });
+    csv += "\n";
+  }
+
+  const mRows = alignedRows(splitDelim(d.mowerMachinery), splitDelim(d.mowerDate).map(toDDMMYYYY),
+    splitDelim(d.mowerTime), splitDelim(d.mowerHeight));
+  if (mRows.length) {
+    csv += csvRow("MOWER");
+    csv += csvRow("Machinery", "Date", "Time of Application", "Mowing Done at MM");
+    mRows.forEach(row => { csv += csvRow(...row); });
+    csv += "\n";
+  }
+
+  const cRows = alignedRows(splitDelim(d.chemDetails), splitDelim(d.chemWeight), splitDelim(d.chemUnit),
+    splitDelim(d.chemTime), splitDelim(d.chemRemark));
+  if (cRows.length) {
+    csv += csvRow("CHEMICAL DETAILS");
+    csv += csvRow("Chemical", "Weight", "Unit", "Time", "Remark");
+    cRows.forEach(row => { csv += csvRow(...row); });
+    csv += "\n";
+  }
+
+  if (d.groundsmanRemark) {
+    csv += csvRow("REMARK BY GROUNDSMAN");
+    csv += csvRow(d.groundsmanRemark);
+    csv += "\n";
+  }
+  if (d.assessment) {
+    csv += csvRow("BRIEF MATCH PITCH ASSESSMENT");
+    csv += csvRow(d.assessment);
+    csv += "\n";
+  }
+
+  const scoreRows = document.querySelectorAll("#score-table-body tr");
+  if (scoreRows.length) {
+    csv += csvRow("MATCH SCORES");
+    csv += csvRow("#", "Day", "Inning", "Team", "Session", "Runs", "Wickets", "Overs", "Winner");
+    scoreRows.forEach(tr => {
+      const cells = Array.from(tr.children).slice(0, 9).map(td => td.innerText.trim());
+      csv += csvRow(...cells);
+    });
+    csv += "\n";
+    const toss = document.getElementById("wonby-span")?.innerText.trim() || "";
+    const elected = document.getElementById("elected-span")?.innerText.trim() || "";
+    csv += csvRow("Toss", toss, "Elected", elected);
+    csv += "\n";
+  }
+
+  const resultRows = document.querySelectorAll("#result-table-body tr");
+  if (resultRows.length) {
+    csv += csvRow("MATCH RESULT SUMMARY");
+    resultRows.forEach(tr => {
+      const cells = Array.from(tr.children).map(td => td.innerText.replace(/\s+/g, " ").trim());
+      csv += csvRow(...cells);
+    });
+    const finalSummary = document.getElementById("finalSummery")?.innerText.replace(/\s+/g, " ").trim();
+    if (finalSummary) csv += csvRow(finalSummary);
+    csv += "\n";
+  }
+
+  const iccSection = document.getElementById("icc-report");
+  if (iccSection && iccSection.style.display !== "none") {
+    csv += csvRow("ICC PITCH & OUTFIELD ASSESSMENT");
+    csv += csvRow("Referee", document.querySelector("[name='referee']")?.value || "");
+    csv += csvRow("Grass Uniform", document.querySelector("input[name='grass_uniform']:checked")?.value || "");
+    csv += csvRow("Grass Cover", document.querySelector("[name='grass_cover']")?.value || "");
+    csv += csvRow("Grass Details", document.querySelector("[name='grass_details']")?.value || "");
+    csv += csvRow("Pitch Dry", document.querySelector("input[name='pitch_dry']:checked")?.value || "");
+    csv += csvRow("Pitch Dry Details", document.querySelector("[name='pitch_dry_details']")?.value || "");
+    csv += csvRow("Comment", document.querySelector("[name='pitch_comment']")?.value || "");
+    csv += "\n";
+
+    const checkboxGroups = [
+      { title: "Use of the Heavy Roller", rows: [["A. Used?", "roller_day"], ["B. Pace Affected?", "roller_effect_day"]] },
+      { title: "Bounce of the Pitch", rows: [["Low", "bounce_low_"], ["Medium / Low", "bounce_ml_"], ["Medium", "bounce_med_"], ["Medium / High", "bounce_mh_"], ["High", "bounce_high_"]] },
+      { title: "Consistency of the Bounce", rows: [["Consistent", "consist_1_"], ["Variable", "consist_2_"], ["Highly Variable", "consist_3_"], ["Excessive Unevenness", "consist_4_"]] },
+      { title: "Seam Movement", rows: [["Little or No", "seam"], ["Occasional", "seam_occ"], ["More than Occasional", "seam_1_"], ["Excessive", "seam_2_"]] },
+      { title: "Turn", rows: [["Little Turn", "turn"], ["Moderate", "turn_mod"], ["Considerable Turn", "trun_consistency_"], ["Excessive Turn", "trun_excessive_"]] },
+    ];
+
+    checkboxGroups.forEach(group => {
+      csv += csvRow(group.title);
+      csv += csvRow("", "Day1", "Day2", "Day3", "Day4", "Day5");
+      group.rows.forEach(([label, prefix]) => {
+        const days = [1, 2, 3, 4, 5].map(n => {
+          const el = document.querySelector(`[name="${prefix}${n}"]`);
+          return el && el.checked ? "Yes" : "";
+        });
+        csv += csvRow(label, ...days);
+      });
+      csv += "\n";
+    });
+
+    csv += csvRow("Pitch Rating", document.querySelector("[name='pitch_rating']")?.value || "");
+    csv += csvRow("Outfield Rating", document.querySelector("[name='outfield_rating']")?.value || "");
+    csv += csvRow("Final Comment", document.querySelector("[name='final_comment']")?.value || "");
+    csv += "\n";
+  }
+
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.setAttribute("download", "match_report.csv");
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+</script>
 
 <script>
   document.getElementById('downloadPdf').addEventListener('click', () => {
@@ -1601,102 +1906,8 @@
     window.print()
   });
 </script>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("match_type").value = "{{request.GET.match_type}}"
-    document.getElementById("season_year").value = "{{request.GET.season_year}}"
-    // document.getElementById("name_tournament").value="{{request.GET.name_tournament}}"
-    // document.getElementById("city_name").value="{{request.GET.city_name}}"
-    // document.getElementById("ground_name").value="{{request.GET.ground_name}}"
-    // document.getElementById("match_id").value="{{request.GET.match_id}}"
-    const downloadBtn = document.createElement("button");
-    downloadBtn.textContent = "Download CSV";
-    downloadBtn.className = "btn btn-success";
-    downloadBtn.id = "downloadCsv";
-    document.querySelector(".btn-primary").after(downloadBtn);
-
-    downloadBtn.addEventListener("click", function () {
-      let csvContent = "";
-
-      // Extract Admin/Ground/Pitch Information
-      document.querySelectorAll(".a4-sheet ul.list-group").forEach(section => {
-        section.querySelectorAll("li").forEach(item => {
-          const label = item.querySelector("strong")?.innerText || "";
-          const value = item.innerText.replace(label, "").trim();
-          csvContent += `"${label}","${value}"\n`;
-        });
-        csvContent += "\n";
-      });
-
-      // Extract All Tables (like Main Rollers, Outfield Mover etc.)
-      document.querySelectorAll(".a4-sheet table").forEach(table => {
-        // Title Above Table
-        const heading = table.previousElementSibling?.tagName === "H1" ? table.previousElementSibling.innerText : "Table";
-
-        csvContent += `"${heading}"\n`;
-
-        const rows = table.querySelectorAll("tr");
-        rows.forEach(row => {
-          const cols = Array.from(row.children).map(cell => `"${cell.innerText.trim()}"`);
-          csvContent += cols.join(",") + "\n";
-        });
-        csvContent += "\n";
-      });
-
-      // Create and trigger download
-      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.setAttribute("download", "match_report.csv");
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    });
-  });
 
 
-  function getChemical(div) {
-    const chemicalli = $(div).find(".chemical-id td")
-
-    Array.from(chemicalli).forEach(li => {
-      let id = $(li).text().trim()
-
-      axios.get(`/usr_admin/get_chemical/${id}`).then((result) => {
-        const chem = result.data
-
-        $(li).html(chem.name)
-
-      }).catch((error) => {
-        console.log(error)
-
-      })
-    });
-
-  }
-
-  function getMachine() {
-
-    const liMach = $(document).find(".machinery-id td")
-
-    Array.from(liMach).forEach(li => {
-      let id = $(li).text().trim()
-
-      axios.get(`/usr_admin/machinery/${id}`).then((result) => {
-        const m = result.data.machinery
-
-        $(li).html(m.print_details)
-
-      }).catch((error) => {
-        console.log(error)
-
-      })
-    });
-    getChemical(document)
-
-  }
-
-  getMachine()
-</script>
 <script>
 
 
