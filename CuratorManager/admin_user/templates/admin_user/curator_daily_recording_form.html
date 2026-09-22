@@ -2893,112 +2893,134 @@ else
 
 
     $("#pitch_id").change(function (event) {
+    const pitchId = $(this).val().trim()
+    const groundId = $("#ground_id").val().trim()
 
-        const optionVal = $(event.target).val()
+    if (pitchId > 0) {
+        axios.get(`/usr_admin/get_pitch/${pitchId}`).then((result) => {
+            const pitch = result.data.grounds[0].pitch
+            $("#pitch_location").prop("disabled", false)
+            $("#pitch_location").prop("readonly", true)
+            $("#pitch_location").val(`${pitch[14]} ${pitch[5]}`)
+        }).catch((error) => {
+            console.log(error)
+        })
+    } else if (pitchId === "all") {
+        $("#pitch_location").prop("disabled", false)
+        $("#pitch_location").prop("readonly", true)
+        $("#pitch_location").val("All Area")
+    } else {
+        $("#pitch_location").val("")
+    }
+})
 
-        const optionText = $("#pitch_id option:selected").text()
+    // $("#pitch_id").change(function (event) {
 
-        if (optionText.indexOf("all") > -1) {
-            $(".tab-pane").removeClass("active")
-            $(".tab-pane").removeClass("show")
-            $("#home-tab").addClass("hideTab")
-            //   $("#home-tab-pane").addClass("active")
-            $("#home-tab-pane").removeClass("showTab")
-            $("#home-tab").removeClass("showTab")
-            //  $("#home-tab").removeClass("hide")
-            //  $("#home-tab-pane").removeClass("hide")
+    //     const optionVal = $(event.target).val()
 
-            $("#pp-tab").addClass("hideTab")
-            $("#pp-tab").removeClass("showTab")
+    //     const optionText = $("#pitch_id option:selected").text()
 
-            $("#practice-tab").addClass("hideTab")
-            $("#practice-tab").removeClass("showTab")
+    //     if (optionText.indexOf("all") > -1) {
+    //         $(".tab-pane").removeClass("active")
+    //         $(".tab-pane").removeClass("show")
+    //         $("#home-tab").addClass("hideTab")
+    //         //   $("#home-tab-pane").addClass("active")
+    //         $("#home-tab-pane").removeClass("showTab")
+    //         $("#home-tab").removeClass("showTab")
+    //         //  $("#home-tab").removeClass("hide")
+    //         //  $("#home-tab-pane").removeClass("hide")
 
-            $("#profile-tab").addClass("hideTab")
-            $("#profile-tab").removeClass("showTab")
+    //         $("#pp-tab").addClass("hideTab")
+    //         $("#pp-tab").removeClass("showTab")
 
+    //         $("#practice-tab").addClass("hideTab")
+    //         $("#practice-tab").removeClass("showTab")
 
-            $(".tab-pane").removeClass("showTab")
-            $(".tab-pane").addClass("hideTab")
-            //   $("#btnDailySubmit").addClass("showTab")
-
-        }
-        else if (!(optionText.indexOf("all") > -1 || optionText.indexOf("Select") > -1)) {
-            $(".tab-pane").removeClass("active")
-            $("#btnDailySubmit").removeClass("hideTab")
-            //  $("#btnDailySubmit").addClass("showTab")
-            if (optionText.indexOf("main") > -1) {
-                $("#pitch-main").prop("checked", true)
-                $("#pitch-practice").prop("checked", false)
-                $("#pitch-main").prop("disabled", false)
-                $("#home-tab").addClass("showTab")
-                $("#home-tab-pane").addClass("active")
-                $("#home-tab-pane").addClass("show")
-                $("#home-tab-pane").addClass("showTab")
-                $("#home-tab").removeClass("hideTab")
-                //  $("#home-tab").removeClass("hide")
-                //  $("#home-tab-pane").removeClass("hide")
-
-                $("#pp-tab").addClass("hideTab")
-                $("#pp-tab").removeClass("showTab")
-                // $("#pp-tab-pane").addClass("active")
-
-                $("#practice-tab").addClass("hideTab")
-                $("#practice-tab").removeClass("showTab")
-
-                $("#profile-tab").addClass("hideTab")
-                $("#profile-tab").removeClass("showTab")
-                $("#btnDailySubmit").addClass("showTab")
-
-                checkBoxArray.splice(0, checkBoxArray.length)
+    //         $("#profile-tab").addClass("hideTab")
+    //         $("#profile-tab").removeClass("showTab")
 
 
-                checkBoxArray.push("pitch-main")
+    //         $(".tab-pane").removeClass("showTab")
+    //         $(".tab-pane").addClass("hideTab")
+    //         //   $("#btnDailySubmit").addClass("showTab")
+
+    //     }
+    //     else if (!(optionText.indexOf("all") > -1 || optionText.indexOf("Select") > -1)) {
+    //         $(".tab-pane").removeClass("active")
+    //         $("#btnDailySubmit").removeClass("hideTab")
+    //         //  $("#btnDailySubmit").addClass("showTab")
+    //         if (optionText.indexOf("main") > -1) {
+    //             $("#pitch-main").prop("checked", true)
+    //             $("#pitch-practice").prop("checked", false)
+    //             $("#pitch-main").prop("disabled", false)
+    //             $("#home-tab").addClass("showTab")
+    //             $("#home-tab-pane").addClass("active")
+    //             $("#home-tab-pane").addClass("show")
+    //             $("#home-tab-pane").addClass("showTab")
+    //             $("#home-tab").removeClass("hideTab")
+    //             //  $("#home-tab").removeClass("hide")
+    //             //  $("#home-tab-pane").removeClass("hide")
+
+    //             $("#pp-tab").addClass("hideTab")
+    //             $("#pp-tab").removeClass("showTab")
+    //             // $("#pp-tab-pane").addClass("active")
+
+    //             $("#practice-tab").addClass("hideTab")
+    //             $("#practice-tab").removeClass("showTab")
+
+    //             $("#profile-tab").addClass("hideTab")
+    //             $("#profile-tab").removeClass("showTab")
+    //             $("#btnDailySubmit").addClass("showTab")
+
+    //             checkBoxArray.splice(0, checkBoxArray.length)
 
 
-                console.log(checkBoxArray)
-            }
-
-            else if (optionText.indexOf("practice") > -1) {
-                $("#pitch-practice").prop("checked", true)
-                $("#pitch-main").prop("checked", false,)
-                document.querySelector("#pitch-practice").disabled = false
-                // $("#pitch-practice").prop("disabled",false)
-                $("#home-tab").addClass("hideTab")
-                $("#home-tab").removeClass("showTab")
-                //  $("#home-tab").removeClass("hide")
-                //  $("#home-tab-pane").removeClass("hide")
-
-                $("#pp-tab").addClass("showTab")
-                $("#pp-tab-pane").addClass("active")
-                $("#pp-tab-pane").addClass("show")
-                $("#pp-tab-pane").addClass("showTab")
-                $("#pp-tab").removeClass("hideTab")
-
-                $("#practice-tab").addClass("hideTab")
-                $("#practice-tab").removeClass("showTab")
-
-                $("#profile-tab").addClass("hideTab")
-                $("#profile-tab").removeClass("showTab")
-                $("#btnDailySubmit").addClass("showTab")
-
-                checkBoxArray.splice(0, checkBoxArray.length)
+    //             checkBoxArray.push("pitch-main")
 
 
-                checkBoxArray.push("pitch-practice")
+    //             console.log(checkBoxArray)
+    //         }
+
+    //         else if (optionText.indexOf("practice") > -1) {
+    //             $("#pitch-practice").prop("checked", true)
+    //             $("#pitch-main").prop("checked", false,)
+    //             document.querySelector("#pitch-practice").disabled = false
+    //             // $("#pitch-practice").prop("disabled",false)
+    //             $("#home-tab").addClass("hideTab")
+    //             $("#home-tab").removeClass("showTab")
+    //             //  $("#home-tab").removeClass("hide")
+    //             //  $("#home-tab-pane").removeClass("hide")
+
+    //             $("#pp-tab").addClass("showTab")
+    //             $("#pp-tab-pane").addClass("active")
+    //             $("#pp-tab-pane").addClass("show")
+    //             $("#pp-tab-pane").addClass("showTab")
+    //             $("#pp-tab").removeClass("hideTab")
+
+    //             $("#practice-tab").addClass("hideTab")
+    //             $("#practice-tab").removeClass("showTab")
+
+    //             $("#profile-tab").addClass("hideTab")
+    //             $("#profile-tab").removeClass("showTab")
+    //             $("#btnDailySubmit").addClass("showTab")
+
+    //             checkBoxArray.splice(0, checkBoxArray.length)
 
 
-                console.log(checkBoxArray)
-            }
-            // console.log("main/practice")
+    //             checkBoxArray.push("pitch-practice")
 
 
-        }
+    //             console.log(checkBoxArray)
+    //         }
+    //         // console.log("main/practice")
 
-        //   $("#btnDailySubmit").addClass("hideTab")
-        //   $("#btnDailySubmit").removeClass("showTab")
 
-    })
+    //     }
+
+    //     //   $("#btnDailySubmit").addClass("hideTab")
+    //     //   $("#btnDailySubmit").removeClass("showTab")
+
+    // })
 
 
     function handleSubmit(form) {
