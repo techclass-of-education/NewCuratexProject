@@ -343,59 +343,106 @@
 
       
 
-
         if ("{{pitch.5}}".trim() == "practice") {
-            $("#pitch_in_out").prop("disabled", false)
-            $("#pitch_placement").html("")
-            $("#pitch_placement").html(`<option selected value>Select Pitch Placement</option>
-                                            <option value="ne">North-East</option>
-                                            <option value="nw">North-West</option>
-                                            <option value="se">South-East</option>
-                                            <option value="sw">South-West</option>`)
+    $("#pitch_in_out").prop("disabled", false)
+    $("#pitch_placement").html("")
 
+    if ("{{pitch.15}}".trim() == "out") {
+        // Outside → E1, E2, E3... list (same as pitch_in_out change handler)
+        const practicePitchesCount = parseInt("{{ground.11}}".trim())
+        $("#pitch_placement").append("<option selected value>Select Pitch Placement</option>")
+        for (let i = 1; i <= practicePitchesCount; i++) {
+            $("#pitch_placement").append(`<option value='E${i}'>E${i}</option>`)
         }
-        else if ("{{pitch.5}}".trim() == "main") {
-            $("#pitch_placement").html("")
-            const mainPitchesCount = parseInt("{{ground.10}}".trim())
-            $("#pitch_placement").append("<option selected value>Select Pitch Placement</option>")
-            for (let i = 1; i <= mainPitchesCount; i++) {
-                $("#pitch_placement").append(`<option value='E${i}'>E${i}</option>`)
+    } else {
+        // Inside (or unset) → NE/NW/SE/SW list
+        $("#pitch_placement").html(`<option selected value>Select Pitch Placement</option>
+                                        <option value="ne">North-East</option>
+                                        <option value="nw">North-West</option>
+                                        <option value="se">South-East</option>
+                                        <option value="sw">South-West</option>`)
+    }
 
-            }
-            $("#pitch_in_out").prop("disabled", true)
-            $("#pitch_placement").val("{{pitch.14}}".trim() || "")
-            $("#pitch_in_out").val("")
-            $("#pitch_placement").prop("disabled", false)
-        }
+    $("#pitch_placement").val("{{pitch.14}}".trim() || "")   // 👈 saved value restore
+}
 
 
+    //    if ("{{pitch.5}}".trim() == "practice") {
+    //             $("#pitch_in_out").prop("disabled", false)
+    //             $("#pitch_placement").html("")
+    //             $("#pitch_placement").html(`<option selected value>Select Pitch Placement</option>
+    //                                             <option value="ne">North-East</option>
+    //                                             <option value="nw">North-West</option>
+    //                                             <option value="se">South-East</option>
+    //                                             <option value="sw">South-West</option>`)
+    //             $("#pitch_placement").val("{{pitch.14}}".trim() || "")   // 👈 add this
+    //     }else if ("{{pitch.5}}".trim() == "main") {
+    //         $("#pitch_placement").html("")
+    //         const mainPitchesCount = parseInt("{{ground.10}}".trim())
+    //         $("#pitch_placement").append("<option selected value>Select Pitch Placement</option>")
+    //         for (let i = 1; i <= mainPitchesCount; i++) {
+    //             $("#pitch_placement").append(`<option value='E${i}'>E${i}</option>`)
+
+    //         }
+    //         $("#pitch_in_out").prop("disabled", true)
+    //         $("#pitch_placement").val("{{pitch.14}}".trim() || "")
+    //         $("#pitch_in_out").val("")
+    //         $("#pitch_placement").prop("disabled", false)
+    //     }
+
+
+        // $("#pitch_in_out").change(function () {
+        //     if ($(this).val().trim() == "in") {
+        //         $("#pitch_placement").prop("disabled", false)
+        //         $("#pitch_placement").html("")
+        //         $("#pitch_placement").html(`<option selected value>Select Pitch Placement</option>
+        //                                     <option value="ne">North-East</option>
+        //                                     <option value="nw">North-West</option>
+        //                                     <option value="se">South-East</option>
+        //                                     <option value="sw">South-West</option>`)
+        //         //            pitch_placement
+        //     }
+        //     else if ($(this).val().trim() == "out") {
+        //         const practicePitchesCount = parseInt("{{ground.11}}".trim())
+        //         $("#pitch_placement").prop("disabled", false)
+        //         $("#pitch_placement").html("")
+        //         $("#pitch_placement").append("<option selected value>Select Pitch Placement</option>")
+        //         for (let i = 1; i <= practicePitchesCount; i++) {
+        //             $("#pitch_placement").append(`<option value='E${i}'>E${i}</option>`)
+
+        //         }
+        //         // $("#pitch_in_out").prop("disabled", true)
+        //         $("#pitch_placement").val("")
+        //         $("#pitch_in_out").val("")
+        //         $("#pitch_placement").prop("disabled", false)
+        //     }
+        // })
+
+     
         $("#pitch_in_out").change(function () {
-            if ($(this).val().trim() == "in") {
-                $("#pitch_placement").prop("disabled", false)
-                $("#pitch_placement").html("")
-                $("#pitch_placement").html(`<option selected value>Select Pitch Placement</option>
-                                            <option value="ne">North-East</option>
-                                            <option value="nw">North-West</option>
-                                            <option value="se">South-East</option>
-                                            <option value="sw">South-West</option>`)
-                //            pitch_placement
-            }
-            else if ($(this).val().trim() == "out") {
-                const practicePitchesCount = parseInt("{{ground.11}}".trim())
-                $("#pitch_placement").prop("disabled", false)
-                $("#pitch_placement").html("")
-                $("#pitch_placement").append("<option selected value>Select Pitch Placement</option>")
-                for (let i = 1; i <= practicePitchesCount; i++) {
-                    $("#pitch_placement").append(`<option value='E${i}'>E${i}</option>`)
-
-                }
-                // $("#pitch_in_out").prop("disabled", true)
-                $("#pitch_placement").val("")
-                $("#pitch_in_out").val("")
-                $("#pitch_placement").prop("disabled", false)
-            }
-        })
-
+    if ($(this).val().trim() == "in") {
+        $("#pitch_placement").prop("disabled", false)
+        $("#pitch_placement").html("")
+        $("#pitch_placement").html(`<option selected value>Select Pitch Placement</option>
+                                    <option value="ne">North-East</option>
+                                    <option value="nw">North-West</option>
+                                    <option value="se">South-East</option>
+                                    <option value="sw">South-West</option>`)
+    }
+    else if ($(this).val().trim() == "out") {
+        const practicePitchesCount = parseInt("{{ground.11}}".trim())
+        $("#pitch_placement").prop("disabled", false)
+        $("#pitch_placement").html("")
+        $("#pitch_placement").append("<option selected value>Select Pitch Placement</option>")
+        for (let i = 1; i <= practicePitchesCount; i++) {
+            $("#pitch_placement").append(`<option value='E${i}'>E${i}</option>`)
+        }
+        $("#pitch_placement").val("")
+        // $("#pitch_in_out").val("")  ← REMOVE this line
+        $("#pitch_placement").prop("disabled", false)
+    }
+})
+     
         $("#soil_type").change(function () {
             if ($(this).val() === "mixed") {
 

@@ -19,6 +19,16 @@ urlpatterns = [
     # path('admin_user_role_details/edit/<int:id>', views.admin_user_role_edit_form, name='admin_user_role_edit_form'),
     # path('admin_user_edit/update/<int:id>', views.admin_user_edit, name='admin_user_edit'),
     path("admin_user_role/edit/<int:id>", views.admin_user_edit, name='admin_user_edit'),
+    
+    #tournament master
+    
+    path('masters/add_tournament/', views.getTournamentAdd, name='get-tournament-add'),
+    path('masters/list_tournament/', views.getTournamentList, name='get-tournament-list'),
+    path('tournaments/', views.tournament_list_create, name='tournament-list-create'),
+    path('tournaments/<int:id>/', views.tournament_detail, name='tournament-detail'),
+    
+    #tournament master
+    
 
     path('orgdashboard', views.org_dashboard, name='org_dashboard'),  # Root URL
     path('roledashboard', views.role_dashboard, name='role_dashboard'),  # Root URL

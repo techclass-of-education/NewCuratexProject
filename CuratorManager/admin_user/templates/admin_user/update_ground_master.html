@@ -52,7 +52,7 @@
                                     </div>
                                     <button type="button" id="addPhoneBtn" class="btn btn-sm btn-primary">Add Another Number</button>
                                 </div>
-                                <input type="hidden" id="allPhoneNumbers" name="phone_numbers" value="{{ground.4}}">
+                                <input type="hidden" id="allPhoneNumbers" name="phone_numbers" value="">
                                 <input type="hidden" id="state_code" value="{{ground.7}}" name="state_code">
                                 <div class="mb-2">
                                     <label for="state_name" class="form-label">State Name:</label>
@@ -64,10 +64,10 @@
                                     </select>
                                 </div>
                                 <div class="mb-2">
-                                    <label for="city_name" class="form-label">City Name: <label class="ms-2" style="font-weight: 700; font-size: 110% !important;">{{ground.9}}</label></label>
+                                    <label for="city_name" class="form-label">City Name:</label>
                                     <input type="hidden" name="city_text" id="city_text" value="{{ground.9}}" />
                                     <select class="form-select form-select-sm" name="city_name" id="city_name">
-                                        <option value="">Select City</option>
+                                        <option value="{{ground.9}}" selected>{{ground.9}}</option>
                                     </select>
                                 </div>
                                 <input type="hidden" class="form-control form-control-sm" id="count_main_pitches" name="count_main_pitches" value="{{ground.10}}">
@@ -85,6 +85,18 @@
                                         <option value="Runout">Runout</option>
                                     </select>
                                 </div>
+                                <div class="mb-2">
+                                    <label for="screen_size" class="form-label">Screen Size:</label>
+                                    <input type="text" class="form-control form-control-sm" id="screen_size" name="screen_size" value="{{ground.46}}">
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="is_side_screen" {% if ground.12 == 1 %}checked{% endif %} name="is_side_screen">
+                                    <label class="form-check-label" for="is_side_screen">Side Screen</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="is_broadcasting_facility" {% if ground.14 == 1 %}checked{% endif %} name="is_broadcasting_facility">
+                                    <label class="form-check-label" for="is_broadcasting_facility">Broadcasting Facility</label>
+                                </div>
                             </div>
 
                             <div class="col-md-6 box-bg p-3 rounded">
@@ -101,12 +113,20 @@
                                     <input type="text" class="form-control form-control-sm" required id="lawn_species_out" name="lawn_species_out" value="{{ground.49}}">
                                 </div>
                                 <div class="mb-2">
+                                    <label for="lawn_species" class="form-label">Lawn Species (Main Pitch/Square):</label>
+                                    <input type="text" class="form-control form-control-sm" id="lawn_species" name="lawn_species" value="{{ground.25}}">
+                                </div>
+                                <div class="mb-2">
                                     <label for="profile_of_outfield" class="form-label">Profile of the Outfield:</label>
                                     <textarea type="text" class="form-control form-control-sm" id="profile_of_outfield" name="profile_of_outfield">{{ground.24}}</textarea>
                                 </div>
                                 <div class="form-check mb-2">
                                     <input class="form-check-input" type="checkbox" id="is_drainage_system_available" {% if ground.26 == 1 %}checked{% endif %} name="is_drainage_system_available">
                                     <label class="form-check-label" for="is_drainage_system_available">Drainage System</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="is_irrigation_pitches" {% if ground.15 == 1 %}checked{% endif %} name="is_irrigation_pitches">
+                                    <label class="form-check-label" for="is_irrigation_pitches">Irrigation on Pitches</label>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-12 col-lg-6">
@@ -137,6 +157,14 @@
                                 <div class="mb-2">
                                     <label for="size_of_pumps" class="form-label">Size of Pumps:</label>
                                     <input type="text" class="form-control form-control-sm" id="size_of_pumps" value="{{ground.33}}" name="size_of_pumps">
+                                </div>
+                                <div class="mb-2">
+                                    <label for="count_pumps" class="form-label">Number of Pumps:</label>
+                                    <input type="number" class="form-control form-control-sm" id="count_pumps" value="{{ground.17}}" name="count_pumps">
+                                </div>
+                                <div class="mb-2">
+                                    <label for="count_hydrants" class="form-label">Number of Hydrants:</label>
+                                    <input type="number" class="form-control form-control-sm" id="count_hydrants" value="{{ground.16}}" name="count_hydrants">
                                 </div>
                                 <div class="form-check mb-2">
                                     <input class="form-check-input" type="checkbox" id="is_automation_if_any" {% if ground.34 == 1 %}checked{% endif %} name="is_automation_if_any">
@@ -195,6 +223,18 @@
                                     <label for="size_of_covers_in_mtrs" class="form-label">Size of Covers (Meters):</label>
                                     <input type="text" class="form-control form-control-sm" value="{{ground.43}}" id="size_of_covers_in_mtrs" name="size_of_covers_in_mtrs">
                                 </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="is_lawn_nursary" {% if ground.19 == 1 %}checked{% endif %} name="is_lawn_nursary">
+                                    <label class="form-check-label" for="is_lawn_nursary">Lawn Nursery</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="is_curator_room" {% if ground.21 == 1 %}checked{% endif %} name="is_curator_room">
+                                    <label class="form-check-label" for="is_curator_room">Curator Room</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="is_seperate_practice_area" {% if ground.22 == 1 %}checked{% endif %} name="is_seperate_practice_area">
+                                    <label class="form-check-label" for="is_seperate_practice_area">Separate Practice Area</label>
+                                </div>
                                 <div class="d-grid mt-4">
                                     <button type="submit" class="btn btn-primary">Update</button>
                                 </div>
@@ -216,8 +256,17 @@
             $(this).val($(this).prop("checked") ? 1 : 0);
         });
 
+        // NOTE: option value = "<state_id>-<state_code>", so we split it to get the real id
+        // before sending it to the backend, and the code part to fill state_code.
         $('#state_name').change(function () {
-            var stateId = $(this).val();
+            var selectedVal = $(this).val();
+            if (!selectedVal) {
+                return;
+            }
+            var parts = selectedVal.split("-");
+            var stateId = parts[0];
+            $('#state_code').val(parts[1]);
+
             $.ajax({
                 url: '{% url "get_cities" %}',
                 data: {
@@ -225,12 +274,21 @@
                 },
                 success: function (data) {
                     var citySelect = $('#city_name');
+                    var savedCity = $('#city_text').val();
                     citySelect.empty();
                     citySelect.append('<option value="">Select City</option>');
                     $.each(data.cities, function (index, city) {
                         citySelect.append('<option value="' + city.name + '">' + city.name + '</option>');
                     });
-                    $('#state_code').val($('#state_name').val().split("-")[1]);
+                    // Re-select the city that was already saved for this ground, if it exists in the list
+                    if (savedCity) {
+                        citySelect.val(savedCity);
+                        if (!citySelect.val()) {
+                            // saved city wasn't in the fetched list (edge case) - add it so it's not lost
+                            citySelect.append('<option value="' + savedCity + '" selected>' + savedCity + '</option>');
+                        }
+                    }
+                    $('#city_text').val(citySelect.val());
                 }
             });
         });
@@ -286,7 +344,6 @@
     });
 
     $("#is_availability_of_water").change(function () {
-        
         if ($(this).prop("checked") === true) {
             $("#water_source").prop("required", true);
             $("#water_source").prop("disabled", false);
@@ -296,13 +353,43 @@
         }
     });
 
-    $(document).ready(function () {
-        $("#state_name").val("{{ground.8}}");
-        $("#broadcast_video_analysis").val("{{ground.47}}");
-        $("#outfield_type").val("{{ground.48}}");
-        $("#water_source").val("{{ground.30}}"=="None" || "{{ground.30}}"==""?"":"{{ground.30}}");
-        const boundry = "{{ground.38}}".split("#");
+    // Helper: select an <option> whose value matches (case-insensitively), since
+    // stored DB values might differ in casing from the option values.
+    function selectOptionCaseInsensitive(selector, value) {
+        if (!value) {
+            return;
+        }
+        $(selector + " option").each(function () {
+            if ($(this).val().toLowerCase() === String(value).toLowerCase()) {
+                $(this).prop("selected", true);
+            }
+        });
+    }
 
+    $(document).ready(function () {
+        var savedStateCode = "{{ground.7}}";
+
+        // Select the correct state option by matching the state_code portion of its value,
+        // instead of setting .val() to the plain state name (which never matched the
+        // "id-code" option values and is why the dropdown looked unselected).
+        $("#state_name option").each(function () {
+            var parts = $(this).val().split("-");
+            if (parts.length > 1 && parts[1] === savedStateCode) {
+                $(this).prop("selected", true);
+                return false;
+            }
+        });
+
+        // Trigger the change handler above so the city list actually loads on page load
+        // (previously it only loaded when the user manually changed the state).
+        $("#state_name").trigger("change");
+
+        selectOptionCaseInsensitive("#broadcast_video_analysis", "{{ground.47}}");
+        selectOptionCaseInsensitive("#outfield_type", "{{ground.48}}");
+        selectOptionCaseInsensitive("#water_source", "{{ground.30}}" === "None" ? "" : "{{ground.30}}");
+        $("#is_availability_of_water").trigger("change");
+
+        const boundry = "{{ground.38}}".split("#");
         $("#boundary_size_mtrs-E").val(boundry[0]);
         $("#boundary_size_mtrs-W").val(boundry[1]);
         $("#boundary_size_mtrs-N").val(boundry[2]);

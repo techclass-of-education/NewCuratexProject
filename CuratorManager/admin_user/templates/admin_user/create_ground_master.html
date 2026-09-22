@@ -169,10 +169,10 @@
                                         <select class="form-control" id="broadcast_video_analysis"
                                             name="broadcast_video_analysis">
                                             <option value="">Select Any</option>
-                                            <option value="sand based">Permanent Structure</option>
-                                            <option value="sand based">Temporary Structure</option>
-                                            <option value="sand based">Not Available</option>
-                                            <option value="sand based">Not Applicable</option>
+                                            <option value="Permanent Structure">Permanent Structure</option>
+                                            <option value="Temporary Structure">Temporary Structure</option>
+                                            <option value="Not Available">Not Available</option>
+                                            <option value="Not Applicable">Not Applicable</option>
                                         </select>
 
                                     </div>
@@ -535,8 +535,18 @@
             $(this).val($(this).prop("checked") ? 1 : 0)
         });
 
+        // NOTE: option value = "<state_id>-<state_code>", so we split it to send
+        // just the real numeric id to the backend (sending the combined
+        // "id-code" string as state_id previously would break the city lookup).
         $('#state_name').change(function () {
-            var stateId = $(this).val();
+            var selectedVal = $(this).val();
+            if (!selectedVal) {
+                return;
+            }
+            var parts = selectedVal.split("-");
+            var stateId = parts[0];
+            $('#state_code').val(parts[1]);
+
             $.ajax({
                 url: '{% url "get_cities" %}',
                 data: {
@@ -549,7 +559,6 @@
                     $.each(data.cities, function (index, city) {
                         citySelect.append('<option value="' + city.name + '">' + city.name + '</option>');
                     });
-                    $('#state_code').val($('#state_name').val().split("-")[1]);
                 }
             });
         });
@@ -574,10 +583,6 @@
         const newPhoneField = document.createElement('div');
         newPhoneField.classList.add('phone-field');
 
-        //    const label = document.createElement('label');
-        //    label.textContent = 'Phone Number:';
-        //    label.setAttribute('for', 'phone' + phoneCounter);
-
         const input = document.createElement('input');
         input.type = 'tel';
         input.id = 'phone' + phoneCounter;
@@ -596,7 +601,6 @@
             removePhoneField(removeBtn);
         });
 
-        //    newPhoneField.appendChild(label);
         newPhoneField.appendChild(input);
         newPhoneField.appendChild(removeBtn);
 
@@ -614,10 +618,6 @@
     // Form submit event (optional - just to see data)
     document.getElementById('contactForm').addEventListener('submit', function (e) {
         updateHiddenField();
-        //    e.preventDefault();
-        //    const formData = new FormData(this);
-        //    const phoneNumbers = formData.getAll('phone[]');
-        //    alert('Phone Numbers Submitted: ' + phoneNumbers.join(', '));
     });
 
     $("#is_availability_of_water").change(function () {

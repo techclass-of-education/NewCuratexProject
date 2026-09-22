@@ -3262,73 +3262,86 @@ renderMoisturePP()
         console.log(checkBoxArray)
     }
 
-    // function allAreaTabHideShow(event) {
-    //     $(".tab-pane").removeClass("active")
-    //     $(".tab-pane").removeClass("show")
-    //     $(".tab-pane").removeClass("showTab")
+//    function allAreaTabHideShow(event) {
+//     const tabKey = event.target.id; // e.g. "pitch-main", "outfield" etc.
+//     const btnId = tabsButtonsObject[tabKey][0];
+//     const paneId = tabsButtonsObject[tabKey][1];
+//     const btnEl = document.getElementById(btnId);
 
-    //     const filteredTabs = allTabs.filter(function (tab) {
-    //         return $(`#${tab}`).prop("checked")
-    //     })
+//     if (event.target.checked) {
+//         // Show this tab's button
+//         $(`#${btnId}`).closest('li').removeClass('hideTab').show();
 
-    //     // if (filteredTabs.length < 1) {
-    //     //     $("#btnDailySubmit").removeClass("showTab")
-    //     // }
-    //     for (let e of filteredTabs) {
-    //         $(`#${tabsButtonsObject[e][0]}`).removeClass("active")
-    //         //  $(`#${tabsButtonsObject[e][1]}`).removeClass("showTab")
-    //         $(`#${tabsButtonsObject[e][1]}`).removeClass("active")
-    //         //   $(`#${tabsButtonsObject[event.target.id][1]}`).removeClass("show")
-    //     }
-    //     if (event.target.checked) {
+//         // Switch to it using Bootstrap's own Tab API (keeps internal state in sync)
+//         const tabInstance = bootstrap.Tab.getOrCreateInstance(btnEl);
+//         tabInstance.show();
+//     } else {
+//         // Hide this tab's button
+//         $(`#${btnId}`).closest('li').addClass('hideTab').hide();
 
-    //         // $("#btnDailySubmit").addClass("showTab")
-    //         $(`#${tabsButtonsObject[event.target.id][0]}`).addClass("showTab")
-    //         $(`#${tabsButtonsObject[event.target.id][0]}`).addClass("active")
-    //         $(`#${tabsButtonsObject[event.target.id][1]}`).addClass("showTab")
-    //         $(`#${tabsButtonsObject[event.target.id][1]}`).addClass("active")
-    //         $(`#${tabsButtonsObject[event.target.id][1]}`).addClass("show")
-    //     }
-    //     else {
-    //         $(`#${tabsButtonsObject[event.target.id][0]}`).removeClass("showTab")
-    //         $(`#${tabsButtonsObject[event.target.id][1]}`).removeClass("showTab")
-    //         $(`#${tabsButtonsObject[event.target.id][1]}`).removeClass("active")
-    //         $(`#${tabsButtonsObject[event.target.id][1]}`).removeClass("show");
-    //         $(`#${tabsButtonsObject[checkBoxArray[0]][0]}`).addClass("active")
-    //         //  $(`#${tabsButtonsObject[e][1]}`).removeClass("showTab")
-    //         $(`#${tabsButtonsObject[checkBoxArray[0]][1]}`).addClass("active")
-    //         $(`#${tabsButtonsObject[checkBoxArray[0]][1]}`).addClass("show")
-    //     }
-    // }
+//         // If the hidden tab was the active one, switch to another checked tab (if any)
+//         if ($(btnEl).hasClass('active')) {
+//             const stillChecked = allTabs.filter(t => $(`#${t}`).prop('checked'));
+//             if (stillChecked.length > 0) {
+//                 const nextBtnId = tabsButtonsObject[stillChecked[0]][0];
+//                 const nextBtnEl = document.getElementById(nextBtnId);
+//                 bootstrap.Tab.getOrCreateInstance(nextBtnEl).show();
+//             }
+//         }
+//     }
+// }
 
-   function allAreaTabHideShow(event) {
+
+function allAreaTabHideShow(event) {
     const tabKey = event.target.id; // e.g. "pitch-main", "outfield" etc.
     const btnId = tabsButtonsObject[tabKey][0];
-    const paneId = tabsButtonsObject[tabKey][1];
-    const btnEl = document.getElementById(btnId);
 
     if (event.target.checked) {
-        // Show this tab's button
+        // Show this tab's button (li)
         $(`#${btnId}`).closest('li').removeClass('hideTab').show();
-
-        // Switch to it using Bootstrap's own Tab API (keeps internal state in sync)
-        const tabInstance = bootstrap.Tab.getOrCreateInstance(btnEl);
-        tabInstance.show();
     } else {
-        // Hide this tab's button
+        // Hide this tab's button (li)
         $(`#${btnId}`).closest('li').addClass('hideTab').hide();
+    }
 
-        // If the hidden tab was the active one, switch to another checked tab (if any)
-        if ($(btnEl).hasClass('active')) {
-            const stillChecked = allTabs.filter(t => $(`#${t}`).prop('checked'));
-            if (stillChecked.length > 0) {
-                const nextBtnId = tabsButtonsObject[stillChecked[0]][0];
-                const nextBtnEl = document.getElementById(nextBtnId);
-                bootstrap.Tab.getOrCreateInstance(nextBtnEl).show();
-            }
+    // 🔥 Har checkbox-change ke baad poora active-state clean se recalculate karo —
+    // Bootstrap ke .show() pe depend nahi karna, taaki koi bhi 2 tabs kabhi
+    // ek sath "active" na reh jayein.
+    refreshActiveTab();
+}
+
+function refreshActiveTab() {
+    // 1) Saare 4 tabs se active/show class hata do
+    allTabs.forEach(t => {
+        const [btnId, paneId] = tabsButtonsObject[t];
+        const btnEl = document.getElementById(btnId);
+        const paneEl = document.getElementById(paneId);
+        if (btnEl) {
+            btnEl.classList.remove('active');
+            btnEl.setAttribute('aria-selected', 'false');
+        }
+        if (paneEl) {
+            paneEl.classList.remove('active', 'show');
+        }
+    });
+
+    // 2) Sirf pehla checked (aur visible) tab activate karo — deterministic order
+    const firstChecked = allTabs.find(t => $(`#${t}`).prop('checked'));
+
+    if (firstChecked) {
+        const [btnId, paneId] = tabsButtonsObject[firstChecked];
+        const btnEl = document.getElementById(btnId);
+        const paneEl = document.getElementById(paneId);
+        if (btnEl) {
+            btnEl.classList.add('active');
+            btnEl.setAttribute('aria-selected', 'true');
+        }
+        if (paneEl) {
+            paneEl.classList.add('active', 'show');
         }
     }
 }
+
 
     $("#pitch-main").change(async function (event) {
         await addToArrayCheckbox(event);
@@ -3468,10 +3481,16 @@ renderMoisturePP()
         $("#rolling_start_date").val("{{daily.3}}").trigger('change'); // Trigger to update other dates
 
         // Pre-check area checkboxes and trigger tab display
-        if ("{{daily.61}}" === "1") { $("#pitch-main").prop("checked", true).trigger('change'); }
+     /*   if ("{{daily.61}}" === "1") { $("#pitch-main").prop("checked", true).trigger('change'); }
         if ("{{daily.62}}" === "1") { $("#pitch-practice").prop("checked", true).trigger('change'); }
         if ("{{daily.63}}" === "1") { $("#outfield").prop("checked", true).trigger('change'); }
-        if ("{{daily.64}}" === "1") { $("#practice-area").prop("checked", true).trigger('change'); }
+        if ("{{daily.64}}" === "1") { $("#practice-area").prop("checked", true).trigger('change'); } */addChemicalsToSelect
+
+        // Pre-check area checkboxes and trigger tab display (dono checked/unchecked cases handle honge)
+$("#pitch-main").prop("checked", "{{daily.61}}" === "1").trigger('change');
+$("#pitch-practice").prop("checked", "{{daily.62}}" === "1").trigger('change');
+$("#outfield").prop("checked", "{{daily.63}}" === "1").trigger('change');
+$("#practice-area").prop("checked", "{{daily.64}}" === "1").trigger('change');
         
         // Ensure at least one tab is active if any checkbox is checked
         if (checkBoxArray.length > 0) {

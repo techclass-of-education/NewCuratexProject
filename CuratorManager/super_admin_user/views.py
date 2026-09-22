@@ -451,32 +451,47 @@ SET FOREIGN_KEY_CHECKS=1;
         
         elif (t=="icc_pitch_report"):
             sql=f'''SET FOREIGN_KEY_CHECKS=0;
-          CREATE TABLE IF NOT EXISTS {tableName} (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `match_id` int NOT NULL,
-  `ground_id` int NOT NULL,
-  `referee` varchar(150) DEFAULT NULL,
-  `grass_uniform` varchar(5) DEFAULT NULL,
-  `grass_cover` varchar(20) DEFAULT NULL,
-  `grass_details` text,
-  `pitch_dry` varchar(5) DEFAULT NULL,
-  `pitch_dry_details` text,
-  `pitch_comment` text,
-  `heavy_roller_days` varchar(50) DEFAULT NULL,
-  `heavy_roller_effect` json DEFAULT NULL,
-  `bounce` json DEFAULT NULL,
-  `bounce_consistency` json DEFAULT NULL,
-  `seam_movement` json DEFAULT NULL,
-  `turn` json DEFAULT NULL,
-  `pitch_rating` varchar(20) DEFAULT NULL,
-  `outfield_rating` varchar(20) DEFAULT NULL,
-  `final_comment` text,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-);SET FOREIGN_KEY_CHECKS=1;
+                            CREATE TABLE IF NOT EXISTS {tableName} (
+                    `id` int NOT NULL AUTO_INCREMENT,
+                    `match_id` int NOT NULL,
+                    `ground_id` int NOT NULL,
+                    `referee` varchar(150) DEFAULT NULL,
+                    `grass_uniform` varchar(5) DEFAULT NULL,
+                    `grass_cover` varchar(20) DEFAULT NULL,
+                    `grass_details` text,
+                    `pitch_dry` varchar(5) DEFAULT NULL,
+                    `pitch_dry_details` text,
+                    `pitch_comment` text,
+                    `heavy_roller_days` varchar(50) DEFAULT NULL,
+                    `heavy_roller_effect` json DEFAULT NULL,
+                    `bounce` json DEFAULT NULL,
+                    `bounce_consistency` json DEFAULT NULL,
+                    `seam_movement` json DEFAULT NULL,
+                    `turn` json DEFAULT NULL,
+                    `pitch_rating` varchar(20) DEFAULT NULL,
+                    `outfield_rating` varchar(20) DEFAULT NULL,
+                    `final_comment` text,
+                    `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+                    `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                    PRIMARY KEY (`id`)
+                    );SET FOREIGN_KEY_CHECKS=1;
 
-            '''
+                                '''
+            cursor.execute(sql)
+   
+        
+        elif (t=="tournament"):
+            sql=f'''SET FOREIGN_KEY_CHECKS=0;
+                    CREATE TABLE IF NOT EXISTS {tableName} (
+                   
+                            id INT AUTO_INCREMENT PRIMARY KEY,
+                            name VARCHAR(255) NOT NULL,
+                            created_at DATETIME NOT NULL,
+                            updated_at DATETIME NOT NULL
+                    
+                    );SET FOREIGN_KEY_CHECKS=1;
+
+                                '''
             cursor.execute(sql)
    
     except Exception as e:
@@ -626,7 +641,7 @@ def addChemicals(org):
 
 
 def createAllMastersName(instance):
-    tables = ["machinery","state","city", "ground", "pitch","match","match_scores","curator_daily_recording","fertilizer","export_log","icc_pitch_report"]
+    tables = ["machinery","state","city", "ground", "pitch","match","match_scores","curator_daily_recording","fertilizer","export_log","icc_pitch_report","tournament"]
     for t in tables:
         tableName=instance.org_id+"_"+t+"_master"
         masterList=MastersList()

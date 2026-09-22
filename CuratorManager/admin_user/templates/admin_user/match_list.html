@@ -111,7 +111,7 @@
 
                        <!-- Unified Delete Buttons: -->
 {% if flag %}
-    {% if request.session.user.role == "admin" %}
+    {% if request.session.user.role == "admin" and request.session.user.role == "Curator" %}
     <a href="{% url 'delete_match' match.id %}" class="btn btn-danger mb-2"
         dataid="{{match.id}}">Delete Match Recording</a>
     {% endif %}
@@ -1377,31 +1377,33 @@ else
     // getMachine()
 </script>
 
+//edit button disabled for Curator and Groundman
+
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        setTimeout(() => {
-            const today = new Date().toISOString().split("T")[0];  // Get current date in yyyy-mm-dd format
+    // document.addEventListener("DOMContentLoaded", function () {
+    //     setTimeout(() => {
+    //         const today = new Date().toISOString().split("T")[0];  // Get current date in yyyy-mm-dd format
 
-            document.querySelectorAll(".edit-btn").forEach(btn => {
-                const type=btn.getAttribute("data-match-type");
-                const startTime=btn.getAttribute("data-start-time");
-                const matchDate = btn.getAttribute("data-match-date");
-                const fromDate = btn.getAttribute("data-from-date");
-                const mDateStr= type==="Multidays"?fromDate:matchDate;
+    //         document.querySelectorAll(".edit-btn").forEach(btn => {
+    //             const type=btn.getAttribute("data-match-type");
+    //             const startTime=btn.getAttribute("data-start-time");
+    //             const matchDate = btn.getAttribute("data-match-date");
+    //             const fromDate = btn.getAttribute("data-from-date");
+    //             const mDateStr= type==="Multidays"?fromDate:matchDate;
 
-                const matchDateTime=new Date(`${mDateStr}T${startTime}`)
-                // alert(matchDateTime)
-                if (matchDateTime.getTime()< new Date().getTime() && "{{request.session.user.role }}"!="admin" ) {
-                    btn.classList.add("disabled");
-                    btn.classList.remove("btn-success");
-                    btn.classList.add("btn-secondary");
-                    btn.setAttribute("title", "Cannot edit match with today’s date.");
-                    btn.href = "javascript:void(0)";
-                }
-            });
-        }, 3000)
+    //             const matchDateTime=new Date(`${mDateStr}T${startTime}`)
+    //             // alert(matchDateTime)
+    //             if (matchDateTime.getTime()< new Date().getTime() && "{{request.session.user.role }}"!="admin" ) {
+    //                 btn.classList.add("disabled");
+    //                 btn.classList.remove("btn-success");
+    //                 btn.classList.add("btn-secondary");
+    //                 btn.setAttribute("title", "Cannot edit match with today’s date.");
+    //                 btn.href = "javascript:void(0)";
+    //             }
+    //         });
+    //     }, 3000)
 
-    });
+    // });
 
     $(document).ready(function () {
         axios.get("/usr_admin/get_grounds").then((result) => {

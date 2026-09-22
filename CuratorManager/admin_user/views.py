@@ -2096,6 +2096,11 @@ def create_ground_master(request):
 
 import re
 from django.urls import reverse
+from django.views.decorators.http import require_http_methods
+
+# NOTE: keep your existing imports (re, connection, reverse, redirect, role_required,
+# HttpResponse / render, etc.) at the top of your views.py - only the function body
+# below has changed.
 
 @role_required("admin")
 def update_ground_master(request, ground_id):
@@ -2105,205 +2110,160 @@ def update_ground_master(request, ground_id):
             cursor.execute(f'SELECT * FROM {org_id}_ground_master WHERE id = %s', [ground_id])
             ground = cursor.fetchone()
 
+        if not ground:
+            return HttpResponse("Ground not found", status=404)
+
         if request.method == "POST":
-                # print(request)
-                org_id = request.POST.get('org_id').lower()
-                google_location = request.POST.get('google_location')
-                year_of_construction = request.POST.get('year_of_construction')
-                
-                        
-                    
-                
-                old_phone_numbers = request.POST.get('oldPhoneNumbers')
-                # if(phone_numbers!=old_phone_numbers):
-                #     phone_numbers=old_phone_numbers.strip()+", "+phone_numbers.strip()
-                
-                # print(old_phone_numbers)
-                
-                phone_numbers = ", ".join([
-                                    p.strip()
-                                    for p in old_phone_numbers.split(",")
-                                    if p.strip()
-                                ])
-                new_phone_numbers = request.POST.get("phone_numbers", "")
-                if re.search(r"\d+", new_phone_numbers):
-                                    
-                    splitNumbers=new_phone_numbers.split(",")
-                    if len(splitNumbers)>1:
-                                        
-                        new_phone_numbers = ", ".join([p.strip() for p in splitNumbers])
-                    else:
-                        # print(new_phone_numbers)
-                                        
-                        new_phone_numbers=", "+new_phone_numbers
+            org_id = request.POST.get('org_id', org_id).lower()
+            google_location = request.POST.get('google_location')
+            year_of_construction = request.POST.get('year_of_construction')
 
-                    phone_numbers+=new_phone_numbers
-                
-                slop_ratio = request.POST.get('slop_ratio')
-                lawn_species_out = request.POST.get('lawn_species_out')
-                broadcast_video_analysis = request.POST.get('broadcast_video_analysis')
-                outfield_type = request.POST.get('outfield_type')
-                ground_name = request.POST.get('ground_name')
-                state_code = request.POST.get('state_code')
-                state_name = request.POST.get('state_name')
-                city_name = request.POST.get('city_text')
-                count_main_pitches = request.POST.get('count_main_pitches')
-                count_practice_pitches = request.POST.get('count_practice_pitches')
-                
-                is_side_screen = 1 if request.POST.get('is_side_screen', False) else 0
-                # print(is_side_screen)
-                # print("is_side_screen",is_side_screen)
-                count_placement_side_screen = 0 
-                is_broadcasting_facility =1 if  request.POST.get('is_broadcasting_facility', False) else 0
-                is_irrigation_pitches = 1 if  request.POST.get('is_irrigation_pitches', False) else 0
-                count_hydrants = request.POST.get('count_hydrants')
-                count_pumps = request.POST.get('count_pumps')
-                # count_showers = request.POST.get('count_showers')
-                is_lawn_nursary =1 if  request.POST.get('is_lawn_nursary', False) else 0
-                name_centre_square = ""
-                is_curator_room = 1 if request.POST.get('is_curator_room', False) else 0
-                is_seperate_practice_area =1 if  request.POST.get('is_seperate_practice_area', False) else 0
-                # outfield = request.POST.get('outfield')
-                profile_of_outfield = request.POST.get('profile_of_outfield')
-                lawn_species = request.POST.get('lawn_species')
-                is_drainage_system_available = 1 if request.POST.get('is_drainage_system_available', False) else 0
-                # print("is_drainage_system_available",is_drainage_system_available)
-                is_water_drainage_system = ""
-                is_irrigation_system_available =1 if  request.POST.get('is_irrigation_system_available', False) else 0
-                is_availability_of_water =1 if request.POST.get('is_availability_of_water', False) else 0
-                water_source = request.POST.get('water_source')
-                storage_capacity_in_litres = request.POST.get('storage_capacity_in_litres')
-                count_pop_ups = request.POST.get('count_pop_ups')
-                size_of_pumps = request.POST.get('size_of_pumps')
-                is_automation_if_any = 1 if request.POST.get('is_automation_if_any', False) else 0
-                is_ground_equipments =1 if request.POST.get('is_ground_equipments', False)  else 0
-                is_maintenance_contract =  1 if request.POST.get('is_maintenance_contract', False) else 0
-                is_maintenance_agency =  1 if request.POST.get('is_maintenance_agency', False) else 0
-                boundary_size_mtrs = f'''{request.POST.get('boundary_size_mtrs-E')}#{request.POST.get('boundary_size_mtrs-W')}#{request.POST.get('boundary_size_mtrs-N')}#{request.POST.get('boundary_size_mtrs-S')}'''
-                is_availability_of_mot = 1 if request.POST.get('is_availability_of_mot', False) else 0
-                is_machine_shed = 1 if request.POST.get('is_machine_shed', False) else 0
-                is_soil_shed =1 if request.POST.get('is_soil_shed', False) else 0
-                is_pitch_or_run_up_covers =1 if request.POST.get('is_pitch_or_run_up_covers', False) else 0
-                size_of_covers_in_mtrs = request.POST.get('size_of_covers_in_mtrs')
-                screen_size = request.POST.get('screen_size')
-                broadcast_video_analysis = request.POST.get('broadcast_video_analysis')
-                outfield_type = request.POST.get('outfield_type')
+            # ---------------------------------------------------------------
+            # Phone numbers: merge existing numbers with any newly typed ones,
+            # always separated by ", " and without duplicates.
+            # (Old code sometimes concatenated numbers without a separator
+            # when 2+ new numbers were added, e.g. "...old2new1, new2...")
+            # ---------------------------------------------------------------
+            old_phone_numbers = request.POST.get('oldPhoneNumbers', '') or ''
+            new_phone_numbers_raw = request.POST.get('phone_numbers', '') or ''
 
-                with connection.cursor() as cursor:
-                    # Insert into Ground Master table
-                    cursor.execute(f'''
-                                SELECT state, state_code
-                                FROM {org_id}_state_master''')
-                    state_data = cursor.fetchall()
-                    values= [org_id, 
-                                             google_location,
-                                             year_of_construction,
-                                             phone_numbers,
-                                             slop_ratio,
-                                             ground_name, 
-                                             state_code, 
-                                             state_name, 
-                                             city_name, 
-                                             count_main_pitches, 
-                                             count_practice_pitches,
-                                            is_side_screen, 
-                                            count_placement_side_screen, 
-                                            is_broadcasting_facility, 
-                                            is_irrigation_pitches,
-                                            count_hydrants,
-                                            count_pumps,
-                                            is_lawn_nursary, 
-                                            name_centre_square, 
-                                            is_curator_room,
-                                            is_seperate_practice_area,
-                                            profile_of_outfield, 
-                                            lawn_species, 
-                                            is_drainage_system_available,
-                                            #  is_water_drainage_system,
-                                            is_irrigation_system_available, 
-                                            is_availability_of_water, 
-                                            water_source,
-                                            storage_capacity_in_litres,
-                                            count_pop_ups, 
-                                            size_of_pumps, 
-                                            is_automation_if_any, 
-                                            is_ground_equipments, 
-                                            is_maintenance_contract,
-                                            is_maintenance_agency, 
-                                            boundary_size_mtrs, 
-                                            is_availability_of_mot, 
-                                            is_machine_shed, 
-                                            is_soil_shed,
-                                            is_pitch_or_run_up_covers, 
-                                            size_of_covers_in_mtrs,
-                                            screen_size,
-                                            broadcast_video_analysis,
-                                            lawn_species_out,
-                                            outfield_type,
-                                            ground_id]
-                    # print(values)
-                    cursor.execute(
-                        f"""update {org_id}_ground_master set
-                            org_id=%s, 
-                            google_location=%s,
-                            year_of_construction=%s ,
-                            phone_numbers=%s ,
-                            slop_ratio=%s, 
-                            ground_name=%s, 
-                            state_code=%s, 
-                            state_name=%s, 
-                            city_name=%s, 
-                            count_main_pitches=%s, 
-                            count_practice_pitches=%s, 
-                            is_side_screen=%s, 
-                            count_placement_side_screen=%s, 
-                            is_broadcasting_facility=%s, 
-                            is_irrigation_pitches=%s, 
-                            count_hydrants=%s, 
-                            count_pumps=%s, 
-                            is_lawn_nursary=%s, 
-                            name_centre_square=%s, 
-                            is_curator_room=%s, 
-                            is_seperate_practice_area=%s, 
-                            profile_of_outfield=%s, 
-                            lawn_species=%s, 
-                            is_drainage_system_available=%s,
-                            is_irrigation_system_available=%s, 
-                            is_availability_of_water=%s, 
-                            water_source=%s, 
-                            storage_capacity_in_litres=%s, 
-                            count_pop_ups=%s, 
-                            size_of_pumps=%s, 
-                            is_automation_if_any=%s, 
-                            is_ground_equipments=%s, 
-                            is_maintenance_contract=%s, 
-                            is_maintenance_agency=%s, 
-                            boundary_size_mtrs=%s, 
-                            is_availability_of_mot=%s, 
-                            is_machine_shed=%s, 
-                            is_soil_shed=%s, 
-                            is_pitch_or_run_up_covers=%s, 
-                            size_of_covers_in_mtrs=%s,
-                            screen_size = %s,
-                            broadcast_video_analysis=%s, 
-                            lawn_species_out=%s,
-                            outfield_type=%s
-                            where id=%s""",values
-                       
-                    )
-                  
-                    return redirect(reverse('update_ground_master', args=[ground_id]))
+            old_list = [p.strip() for p in old_phone_numbers.split(",") if p.strip()]
+            new_list = [p.strip() for p in new_phone_numbers_raw.split(",") if p.strip()]
+
+            merged_numbers = old_list + [n for n in new_list if n not in old_list]
+            phone_numbers = ", ".join(merged_numbers)
+
+            slop_ratio = request.POST.get('slop_ratio')
+            ground_name = request.POST.get('ground_name')
+            state_code = request.POST.get('state_code')
+            state_name = request.POST.get('state_name')
+            city_name = request.POST.get('city_text')
+            count_main_pitches = request.POST.get('count_main_pitches')
+            count_practice_pitches = request.POST.get('count_practice_pitches')
+
+            is_side_screen = 1 if request.POST.get('is_side_screen', False) else 0
+            is_broadcasting_facility = 1 if request.POST.get('is_broadcasting_facility', False) else 0
+            is_irrigation_pitches = 1 if request.POST.get('is_irrigation_pitches', False) else 0
+            count_hydrants = request.POST.get('count_hydrants') or None
+            count_pumps = request.POST.get('count_pumps') or None
+            is_lawn_nursary = 1 if request.POST.get('is_lawn_nursary', False) else 0
+            is_curator_room = 1 if request.POST.get('is_curator_room', False) else 0
+            is_seperate_practice_area = 1 if request.POST.get('is_seperate_practice_area', False) else 0
+
+            outfield_type = request.POST.get('outfield_type')
+            # legacy "outfield" column - kept in sync with outfield_type since the form
+            # doesn't have a separate control for it (table has both columns)
+            outfield = outfield_type
+
+            profile_of_outfield = request.POST.get('profile_of_outfield')
+            lawn_species = request.POST.get('lawn_species', '')
+            lawn_species_out = request.POST.get('lawn_species_out')
+
+            is_drainage_system_available = 1 if request.POST.get('is_drainage_system_available', False) else 0
+            is_availability_of_water = 1 if request.POST.get('is_availability_of_water', False) else 0
+            water_source = request.POST.get('water_source')
+            storage_capacity_in_litres = request.POST.get('storage_capacity_in_litres')
+            count_pop_ups = request.POST.get('count_pop_ups')
+            size_of_pumps = request.POST.get('size_of_pumps')
+            is_automation_if_any = 1 if request.POST.get('is_automation_if_any', False) else 0
+            is_ground_equipments = 1 if request.POST.get('is_ground_equipments', False) else 0
+            is_maintenance_contract = 1 if request.POST.get('is_maintenance_contract', False) else 0
+            is_maintenance_agency = 1 if request.POST.get('is_maintenance_agency', False) else 0
+            boundary_size_mtrs = f'''{request.POST.get('boundary_size_mtrs-E')}#{request.POST.get('boundary_size_mtrs-W')}#{request.POST.get('boundary_size_mtrs-N')}#{request.POST.get('boundary_size_mtrs-S')}'''
+            is_availability_of_mot = 1 if request.POST.get('is_availability_of_mot', False) else 0
+            is_machine_shed = 1 if request.POST.get('is_machine_shed', False) else 0
+            is_soil_shed = 1 if request.POST.get('is_soil_shed', False) else 0
+            is_pitch_or_run_up_covers = 1 if request.POST.get('is_pitch_or_run_up_covers', False) else 0
+            size_of_covers_in_mtrs = request.POST.get('size_of_covers_in_mtrs')
+            screen_size = request.POST.get('screen_size', '')
+            broadcast_video_analysis = request.POST.get('broadcast_video_analysis')
+
+            with connection.cursor() as cursor:
+                # values list order matches the SET clause column order 1:1 below
+                # (same order as the CREATE TABLE, minus id/created_at/updated_at)
+                values = [
+                    org_id, google_location, year_of_construction, phone_numbers, slop_ratio,
+                    ground_name, state_code, state_name, city_name,
+                    count_main_pitches, count_practice_pitches,
+                    is_side_screen, is_broadcasting_facility,
+                    is_irrigation_pitches, count_hydrants, count_pumps,
+                    is_lawn_nursary, is_curator_room, is_seperate_practice_area,
+                    outfield, profile_of_outfield, lawn_species,
+                    is_drainage_system_available,
+                    is_availability_of_water, water_source,
+                    storage_capacity_in_litres, count_pop_ups, size_of_pumps,
+                    is_automation_if_any, is_ground_equipments, is_maintenance_contract, is_maintenance_agency,
+                    boundary_size_mtrs, is_availability_of_mot, is_machine_shed, is_soil_shed,
+                    is_pitch_or_run_up_covers, size_of_covers_in_mtrs,
+                    screen_size, broadcast_video_analysis, outfield_type, lawn_species_out,
+                    ground_id,
+                ]
+
+                cursor.execute(
+                    f"""update {org_id}_ground_master set
+                        org_id=%s,
+                        google_location=%s,
+                        year_of_construction=%s,
+                        phone_numbers=%s,
+                        slop_ratio=%s,
+                        ground_name=%s,
+                        state_code=%s,
+                        state_name=%s,
+                        city_name=%s,
+                        count_main_pitches=%s,
+                        count_practice_pitches=%s,
+                        is_side_screen=%s,
+                        is_broadcasting_facility=%s,
+                        is_irrigation_pitches=%s,
+                        count_hydrants=%s,
+                        count_pumps=%s,
+                        is_lawn_nursary=%s,
+                        is_curator_room=%s,
+                        is_seperate_practice_area=%s,
+                        outfield=%s,
+                        profile_of_outfield=%s,
+                        lawn_species=%s,
+                        is_drainage_system_available=%s,
+                        is_availability_of_water=%s,
+                        water_source=%s,
+                        storage_capacity_in_litres=%s,
+                        count_pop_ups=%s,
+                        size_of_pumps=%s,
+                        is_automation_if_any=%s,
+                        is_ground_equipments=%s,
+                        is_maintenance_contract=%s,
+                        is_maintenance_agency=%s,
+                        boundary_size_mtrs=%s,
+                        is_availability_of_mot=%s,
+                        is_machine_shed=%s,
+                        is_soil_shed=%s,
+                        is_pitch_or_run_up_covers=%s,
+                        size_of_covers_in_mtrs=%s,
+                        screen_size=%s,
+                        broadcast_video_analysis=%s,
+                        outfield_type=%s,
+                        lawn_species_out=%s
+                        where id=%s""",
+                    values
+                )
+
+            return redirect(reverse('update_ground_master', args=[ground_id]))
+
+        # GET request: fetch states as (id, state, state_code) so the template's
+        # {{state.0}}-{{state.2}} option value and {{state.1}} label work correctly.
         with connection.cursor() as cursor:
-                                # Insert into Ground Master table
-            cursor.execute(f'''SELECT id,state, state_code FROM {org_id}_state_master''')
+            cursor.execute(f'''SELECT id, state, state_code FROM {org_id}_state_master''')
             state_data = cursor.fetchall()
-                                # print(state_data)
-        # print(ground)
+
         return render(request, 'admin_user/update_ground_master.html',
-                                {'org_id':request.session["org_id"],'state_data':state_data,"ground":ground})
+                      {'org_id': request.session["org_id"], 'state_data': state_data, "ground": ground})
+
     except Exception as e:
         print(e)
+        return HttpResponse(f"Something went wrong while updating the ground: {e}", status=500)
     
+
+
 @role_required("admin")
 @csrf_exempt
 def delete_ground_master(request, ground_id):
@@ -2535,6 +2495,136 @@ def edit_pitch(request,pitch_id,ground_id):
     except Exception as e:
         print(e)
         
+#tournaments
+
+
+# No model - raw SQL directly on this table
+
+
+def dict_fetch_all(cursor):
+    columns = [col[0] for col in cursor.description]
+    return [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+def getTournamentList(request):
+    return render(request, 'admin_user/masters/tournament/list.html')
+
+def getTournamentAdd(request):
+    return render(request, 'admin_user/masters/tournament/add.html')
+
+
+@role_required("admin","Curator")
+@csrf_exempt
+@require_http_methods(["GET", "POST"])
+def tournament_list_create(request):
+    TABLE = f"{request.session['org_id']}_tournament"
+    # ---------- LIST (with filter by name + sort by name) ----------
+    if request.method == "GET":
+        name = request.GET.get("name")            # filter: ?name=abc
+        ordering = request.GET.get("ordering")     # sort: ?ordering=name / -name
+
+        query = f"SELECT id, name, created_at, updated_at FROM {TABLE}"
+        params = []
+
+        if name:
+            query += " WHERE name LIKE %s"
+            params.append(f"%{name}%")
+
+        if ordering == "name":
+            query += " ORDER BY name ASC"
+        elif ordering == "-name":
+            query += " ORDER BY name DESC"
+        else:
+            query += " ORDER BY id DESC"
+
+        with connection.cursor() as cursor:
+            cursor.execute(query, params)
+            data = dict_fetch_all(cursor)
+
+        return JsonResponse(data, safe=False)
+
+    # ---------- CREATE ----------
+    elif request.method == "POST":
+        body = json.loads(request.body or "{}")
+        name = (body.get("name") or "").strip()
+
+        if not name:
+            return JsonResponse({"error": "name is required"}, status=400)
+
+        
+
+        with connection.cursor() as cursor:
+            if connection.vendor == "postgresql":
+                cursor.execute(
+                    f"INSERT INTO {TABLE} (name) "
+                    f"VALUES (%s) RETURNING id",
+                    [name],
+                )
+                new_id = cursor.fetchone()[0]
+            else:
+                cursor.execute(
+                    f"INSERT INTO {TABLE} (name) "
+                    f"VALUES (%s)",
+                    [name],
+                )
+                new_id = cursor.lastrowid
+
+        return JsonResponse(
+            {"id": new_id, "name": name,"message": "Saved successfully"},
+            status=201,
+        )
+
+@role_required("admin","Curator")
+@csrf_exempt
+@require_http_methods(["GET", "PUT", "DELETE"])
+def tournament_detail(request, id):
+    try:
+        TABLE = f"{request.session['org_id']}_tournament"
+        with connection.cursor() as cursor:
+            cursor.execute(
+                f"SELECT id, name, created_at, updated_at FROM {TABLE} WHERE id = %s",
+                [id],
+            )
+            rows = dict_fetch_all(cursor)
+
+        if not rows:
+            return JsonResponse({"error": "Tournament not found"}, status=404)
+
+        # ---------- RETRIEVE ----------
+        if request.method == "GET":
+            return JsonResponse(rows[0])
+
+        # ---------- UPDATE ----------
+        elif request.method == "PUT":
+            body = json.loads(request.body or "{}")
+            name = (body.get("name") or "").strip()
+
+            if not name:
+                return JsonResponse({"error": "name is required"}, status=400)
+
+            
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    f"UPDATE {TABLE} SET name = %s WHERE id = %s",
+                    [name, id],
+                )
+
+            return JsonResponse({"id": id, "name": name,"message": "Updated successfully"})
+
+        # ---------- DELETE ----------
+        elif request.method == "DELETE":
+            with connection.cursor() as cursor:
+                cursor.execute(f"DELETE FROM {TABLE} WHERE id = %s", [id])
+
+            return JsonResponse({"message": "Deleted successfully"})
+    except Exception as e:
+        print(e)
+        return JsonResponse({"message": str(e)}, status=500)
+
+
+
+#tournaments stop
+
+
 import re
 from django.db import connection, transaction
 from django.shortcuts import redirect

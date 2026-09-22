@@ -1,0 +1,138 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tournament Master</title>
+
+    {% include "admin_user/headertags.html" %}
+    <link href="{% static 'admin_user/css/gradient.css' %}" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js"></script>
+
+    <style>
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 40px);
+            padding: 30px 15px;
+        }
+
+        .content-card {
+            width: 100%;
+            max-width: 480px;
+            /* background: #fff; */
+            border-radius: 10px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            padding: 30px 35px;
+        }
+
+        .content-card h2 {
+            margin: 0 0 25px 0;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 6px;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        form input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #fff;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .btn-save {
+            background: #2563eb;
+        }
+
+        .btn-cancel {
+            background: #6b7280;
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper grass-bg">
+    <!-- Sidebar -->
+    {% include "admin_user/menu_side.html" %}
+
+    <div class="main-content">
+        <div class="content-card box-gradient">
+            <h2 id="formTitle">Add Tournament</h2>
+<hr>
+            <form id="tournamentForm">
+                <label for="name">Tournament Name</label>
+                <input type="text" id="name" required>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-save box-bg text-white">Save</button>
+                    <a href="/usr_admin/masters/tournament/" class="btn btn-danger">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_URL = "/usr_admin/tournaments/";
+    const LIST_PAGE_URL = "/usr_admin/masters/list_tournament/";
+
+    const params = new URLSearchParams(window.location.search);
+    const tournamentId = params.get("id");
+    const nameInput = document.getElementById("name");
+    const form = document.getElementById("tournamentForm");
+
+    // Edit mode: prefill existing data
+    if (tournamentId) {
+        document.getElementById("formTitle").innerText = "Edit Tournament";
+        axios.get(API_URL + tournamentId + "/")
+            .then(res => { nameInput.value = res.data.name; })
+            .catch(err => console.error("Error loading tournament:", err));
+    }
+
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const payload = { name: nameInput.value.trim() };
+
+        const request = tournamentId
+            ? axios.put(API_URL + tournamentId + "/", payload)   // update
+            : axios.post(API_URL, payload);                      // create
+
+        request
+            .then((res) => { 
+              alert(res.data.message)
+              window.location.href = LIST_PAGE_URL; })
+            .catch(err => console.error("Error saving tournament:", err));
+    });
+</script>
+
+</body>
+</html>
