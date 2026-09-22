@@ -7607,7 +7607,8 @@ def match_list_filter_by_date(request):
 
         if from_date != "no" and to_date != "no":
                     # Sahi BETWEEN syntax aur dono dates filter ke liye
-                    conditions.append("(cdr.match_date BETWEEN %s AND %s) or (cdr.from_date >= %s AND cdr.to_date <= %s)")
+                    conditions.append("((cdr.match_date BETWEEN %s AND %s) or (cdr.from_date >= %s AND cdr.to_date <= %s))")
+                    # conditions.append("(cdr.match_date BETWEEN %s AND %s) or (cdr.from_date >= %s AND cdr.to_date <= %s)")
                     params.extend([from_date, to_date,from_date, to_date])
 
                 # 4. Agar koi condition hai toh WHERE clause jodein
@@ -7615,7 +7616,7 @@ def match_list_filter_by_date(request):
                     query_base += " WHERE " + " AND ".join(conditions)
 
                 # 5. Order by aur Limit jodein
-        query_base += " ORDER BY cdr.created_at DESC"
+        query_base += " ORDER BY g.ground_name ASC, cdr.created_at DESC"
 
         print(query_base)
                 # 6. Query Execute karein
@@ -7634,6 +7635,7 @@ def match_list_filter_by_date(request):
         return render(request, 'admin_user/match_list.html', {'matches': matches})
     except Exception as e:
         print(e)
+
 
 @role_required("admin","Curator","Groundman")
 def match_list(request):
