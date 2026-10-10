@@ -6521,6 +6521,8 @@ def insert_match(request):
         print(e)
         return HttpResponse(e)
 
+
+
 @role_required("admin","Curator","Groundman")
 def update_match(request, match_id):
     try:
@@ -6915,7 +6917,8 @@ def update_match(request, match_id):
                             WHERE id=%s
                     '''
                     values = [
-                    match_type, name_tournament, team1, team2,dew_factor, access_bounce,preparation_date, match_date,nuteral_curator, from_date, to_date,
+                    match_type, name_tournament, team1, team2,dew_factor, access_bounce,preparation_date, match_date,
+                    nuteral_curator, from_date, to_date,
                         days_count, start_time, pitch_id_text, ground_id_text, is_pitch_level, lawn_height, grass_cover,
                         min_temp, max_temp, forecast, moisture_upto,  machinery_id, no_of_passes, rolling_speed, 
                         last_watering_on, quantity_of_water, time_of_application,time_roller,out_time_roller,
@@ -6959,6 +6962,7 @@ def update_match(request, match_id):
                         match_id
                     ]
                     cursor.execute(sql, values)
+        
                     try:
                         claggHammer_entries_json = (request.POST.get("claggHammer_entries_json") or '').strip() or None
                         claggHammer_entries = json.loads(claggHammer_entries_json) if claggHammer_entries_json else []
@@ -7136,6 +7140,12 @@ def update_match(request, match_id):
 
                
                             # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
+                        
+                        # icc_pitch_report ka ground_id bhi sync karo agar record exist karta hai
+                        cursor.execute(
+                            f"UPDATE {org_id}_icc_pitch_report SET ground_id=%s WHERE match_id=%s",
+                            [ground_id_text, match_id]
+                        )
                         
                     except Exception as e:
                         print(e)
@@ -7338,6 +7348,8 @@ def update_match(request, match_id):
     except Exception as e:
         print("Error:", e)
         return render(request, 'admin_user/error.html', {'error': str(e)})
+
+
 
 @role_required("admin","Curator")
 @csrf_exempt

@@ -3278,6 +3278,7 @@ renderMoisture()
 
     $("#ground_id").change(function () {
         const groundId = $(this).val().trim()
+        $("#ground_id_text").val(groundId)
         if (groundId == "all") {
             axios.get(`/usr_admin/get_all_pitches`).then((result) => {
                 // console.log(result.data.grounds)
