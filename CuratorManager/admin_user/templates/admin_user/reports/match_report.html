@@ -1086,6 +1086,53 @@ const defaultVisibleColumns = [
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const machineryKeys = [
+        "machinery_id",
+        "mover_machinery_id",
+        "out_machinery_id",
+        "out_mover_machinery_id"
+    ];
+
+    axios.get("/usr_admin/get_machinery_map")
+        .then(res => {
+
+            const map = res.data.machinery || {};
+
+            machineryKeys.forEach(key => {
+
+                const th = document.querySelector(`#reportTable th[data-key="${key}"]`);
+                if (!th) return;
+
+                const colIndex = th.cellIndex;
+
+                document.querySelectorAll("#reportTable tbody tr").forEach(row => {
+
+                    const td = row.cells[colIndex];
+                    if (!td) return;
+
+                    // Case 1: multiple values (<li> list ban chuki hai)
+                    const items = td.querySelectorAll("li");
+                    if (items.length > 0) {
+                        items.forEach(li => {
+                            const id = li.innerText.trim();
+                            if (map[id]) li.innerText = map[id];
+                        });
+                        return;
+                    }
+
+                    // Case 2: single value
+                    const id = td.innerText.trim();
+                    if (map[id]) td.innerText = map[id];
+                });
+            });
+        })
+        .catch(err => console.error("Machinery fetch error:", err));
+});
+</script>
+
+<script>
 
 function replaceColumnValueByTH({
     thKey,

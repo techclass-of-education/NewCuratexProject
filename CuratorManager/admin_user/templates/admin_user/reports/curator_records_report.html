@@ -844,6 +844,79 @@ const defaultVisibleColumns = [
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const splitStr = "__####__";
+
+    // Sabhi 4 sections ke rolling + mower machinery ID columns
+    const machineryKeys = [
+        // Main Pitch
+        "machinery_id",
+        "mover_machinery_id",
+
+        // Outfield
+        "out_machinery_id",
+        "out_mover_machinery_id",
+
+        // Practice Pitch
+        "pp_machinery_id",
+        "pp_mover_machinery_id",
+
+        // Practice Area
+        "practice_machinery_id",
+        "practice_mover_machinery_id"
+    ];
+
+    axios.get("/usr_admin/get_machinery_map")
+        .then(res => {
+
+            const map = res.data.machinery || {};
+
+            machineryKeys.forEach(key => {
+
+                const th = document.querySelector(`#reportTable th[data-key="${key}"]`);
+                if (!th) return;
+
+                const colIndex = th.cellIndex;
+
+                document.querySelectorAll("#reportTable tbody tr").forEach(row => {
+
+                    const td = row.cells[colIndex];
+                    if (!td) return;
+
+                    // Case 1: multiple values already <li> list me convert ho chuki hain
+                    const items = td.querySelectorAll("li");
+                    if (items.length > 0) {
+                        items.forEach(li => {
+                            const id = li.innerText.trim();
+                            if (map[id]) li.innerText = map[id];
+                        });
+                        return;
+                    }
+
+                    const text = td.innerText.trim();
+
+                    // Case 2: abhi <li> conversion nahi hua, raw "1__####__4" format hai
+                    if (text.includes(splitStr)) {
+                        td.innerText = text
+                            .split(splitStr)
+                            .map(v => v.trim())
+                            .filter(v => v !== "")
+                            .map(v => map[v] || v)
+                            .join(splitStr);
+                        return;
+                    }
+
+                    // Case 3: single value
+                    if (map[text]) td.innerText = map[text];
+                });
+            });
+        })
+        .catch(err => console.error("Machinery fetch error:", err));
+});
+</script>
+
+<script>
 
 function replaceColumnValueByTH({
     thKey,

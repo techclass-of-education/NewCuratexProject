@@ -690,6 +690,20 @@ def match_report(request):
 
 
 
+def get_machinery_map(request):
+    org_id = request.session.get('org_id')
+    with connection.cursor() as cursor:
+        cursor.execute(f"""
+            SELECT id,
+                   COALESCE(NULLIF(TRIM(print_details), ''), equipment_name) AS label
+            FROM {org_id}_machinery_master
+        """)
+        rows = cursor.fetchall()
+
+    data = {str(r[0]): r[1] for r in rows}
+    return JsonResponse({"machinery": data})
+
+
 @role_required("admin","Curator")
 def chemicalsReport(request):
       return render(request, "admin_user/reports/ChemicalsReport.html")

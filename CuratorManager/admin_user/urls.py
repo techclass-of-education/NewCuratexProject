@@ -115,7 +115,7 @@ urlpatterns = [
     
     #####################reports
     
-   
+   path('get_machinery_map', views.get_machinery_map, name='get_machinery_map'),
     path('report-match/',views.reportMatch, name='report_match'),
     path('chemicalsReport/',views.chemicalsReport, name='chemicalsReport'),
     path('fetchChemicalsReport/',views.fertilizer_usage_report, name='fertilizer_usage_report'),
