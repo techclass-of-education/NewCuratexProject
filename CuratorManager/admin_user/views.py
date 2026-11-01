@@ -5940,6 +5940,63 @@ def update_score(request, score_id):
     except Exception as e:
         print(e)
 
+
+
+
+import json
+from datetime import datetime as _moist_dt     # alias, taaki baaki code ke `datetime` se na takraye
+ 
+ 
+# ---------------------------------------------------------------------
+# STEP 2: insert_match ke upar (module level) ye helpers paste karo
+# ---------------------------------------------------------------------
+MOISTURE_SIZES = ("1.5", "3", "4.8")
+ 
+ 
+def _clean_moisture(raw_json):
+    """
+    Form se aayi moisture JSON ko saaf karta hai.
+    Return:
+      None  -> kuch post hi nahi hua / JSON galat hai (is case me DB ko chhedna nahi hai)
+      dict  -> {"1.5":[{"date":..,"values":[..]}], "3":[..], "4.8":[..]}
+               sirf bhari hui values, null/empty kabhi nahi
+    """
+    raw = (raw_json or "").strip()
+    if not raw:
+        return None
+    try:
+        parsed = json.loads(raw)
+    except ValueError:
+        return None
+    if not isinstance(parsed, dict):
+        return None
+ 
+    cleaned = {}
+    for size in MOISTURE_SIZES:
+        cleaned[size] = []
+        rows = parsed.get(size)
+        if not isinstance(rows, list):
+            continue
+        for r in rows:
+            if not isinstance(r, dict) or not r.get("date"):
+                continue
+            vals_in = r.get("values")
+            if not isinstance(vals_in, list):
+                continue
+            vals = [v for v in vals_in if v is not None and str(v).strip() != ""]
+            if vals:
+                cleaned[size].append({"date": r["date"], "values": vals})
+    return cleaned
+ 
+ 
+def _moisture_match_details(name_tournament, team1, team2):
+    # match_details column (varchar 500). Chaho to yahan apna text rakh sakte ho.
+    return f"{name_tournament or ''} - {team1 or ''} vs {team2 or ''}".strip()[:500]
+ 
+
+
+
+
 @role_required("admin","Curator","Groundman")
 def insert_match(request):
     try:
@@ -6175,8 +6232,7 @@ def insert_match(request):
                 # Extract outfield entries
                 if(outfieldIndex>0):
                     
-                    print("Outfiled1")
-                    print("Outfiled2")
+                 
                     # out_machinery_id = (request.POST.get('out_machinery_id'+str(index)) or '').strip() or None
                     out_machinery_id = ""
                     out_passes_unit =""
@@ -6470,26 +6526,58 @@ def insert_match(request):
                     # print(values)
                     cursor.execute(sql,values)
                     last_id = cursor.lastrowid
+                 
+                 
                     print("Inserted ID:", last_id)
                     
+                    # try:
+                    #     moisture_entries_json = (request.POST.get("moisture_entries_json"+str(index)) or '').strip() or None
+                    #     moisture_entries = json.loads(moisture_entries_json) if moisture_entries_json else []
+                    #     if(moisture_entries["date"]):
+                    #         date=moisture_entries["date"]
+                    #         time=moisture_entries["time"]
+                    #         match_details=moisture_entries["match_details"]
+                    #         data=moisture_entries["data"]
+                    #         sqlNew=f'''INSERT INTO `{org_id}_match_main_moisture` (`match_id`,`date`,`time`,`match_details`,`data`) VALUES (%s,%s,%s,%s,%s)'''
+                    #         v=[last_id,date,time,match_details,json.dumps(data)]
+                    #         cursor.execute(sqlNew, v)
+                            
+                            
+                    #         # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
+                    #     else:
+                    #         print("No Moisture Data")
+                    # except Exception as e:
+                    #     print(e)
+                    
+                    
+                         # ---- Moisture ----
                     try:
-                        moisture_entries_json = (request.POST.get("moisture_entries_json"+str(index)) or '').strip() or None
-                        moisture_entries = json.loads(moisture_entries_json) if moisture_entries_json else []
-                        if(moisture_entries["date"]):
-                            date=moisture_entries["date"]
-                            time=moisture_entries["time"]
-                            match_details=moisture_entries["match_details"]
-                            data=moisture_entries["data"]
-                            sqlNew=f'''INSERT INTO `{org_id}_match_main_moisture` (`match_id`,`date`,`time`,`match_details`,`data`) VALUES (%s,%s,%s,%s,%s)'''
-                            v=[last_id,date,time,match_details,json.dumps(data)]
-                            cursor.execute(sqlNew, v)
-                            
-                            
-                            # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
+                        moisture_data = _clean_moisture(
+                            request.POST.get("moisture_entries_json")
+                            or request.POST.get("moisture_entries_json" + str(index))
+                        )
+                        if moisture_data and any(moisture_data.values()):
+                            now = _moist_dt.now()
+                            cursor.execute(
+                                f'''INSERT INTO `{org_id}_match_main_moisture`
+                                    (`match_id`,`date`,`time`,`match_details`,`data`,`created_at`,`updated_at`)
+                                    VALUES (%s,%s,%s,%s,%s,NOW(),NOW())''',
+                                [
+                                    last_id,
+                                    now.strftime("%Y-%m-%d"),
+                                    now.strftime("%H:%M"),
+                                    _moisture_match_details(name_tournament, team1, team2),
+                                    json.dumps(moisture_data),
+                                ]
+                            )
                         else:
                             print("No Moisture Data")
                     except Exception as e:
-                        print(e)
+                        print("Moisture insert error:", e)
+ 
+ 
+                    
+                    
                     
                     try:
                         claggHammer_entries_json = (request.POST.get("claggHammer_entries_json"+str(index)) or '').strip() or None
@@ -7083,74 +7171,116 @@ def update_match(request, match_id):
                         else:
                             print("No clagg hammer data")
                             
-                        moisture_entries_json = (request.POST.get("moisture_entries_json") or "").strip()
-                        moisture_entries = json.loads(moisture_entries_json) if moisture_entries_json else {}
+                        # moisture_entries_json = (request.POST.get("moisture_entries_json") or "").strip()
+                        # moisture_entries = json.loads(moisture_entries_json) if moisture_entries_json else {}
 
-                        if moisture_entries.get("data"):
+                        # if moisture_entries.get("data"):
 
-                            row_id = moisture_entries.get("id")
+                        #     row_id = moisture_entries.get("id")
 
-                            date = moisture_entries.get("date")
-                            time = moisture_entries.get("time")
-                            match_details = moisture_entries.get("match_details")
-                            data = moisture_entries.get("data")
+                        #     date = moisture_entries.get("date")
+                        #     time = moisture_entries.get("time")
+                        #     match_details = moisture_entries.get("match_details")
+                        #     data = moisture_entries.get("data")
 
-                            if row_id:   # UPDATE
+                        #     if row_id:   # UPDATE
 
-                                sql = f"""
-                                UPDATE `{org_id}_match_main_moisture`
-                                SET
-                                    match_id=%s,
-                                    date=%s,
-                                    time=%s,
-                                    match_details=%s,
-                                    data=%s
-                                WHERE id=%s
-                                """
+                        #         sql = f"""
+                        #         UPDATE `{org_id}_match_main_moisture`
+                        #         SET
+                        #             match_id=%s,
+                        #             date=%s,
+                        #             time=%s,
+                        #             match_details=%s,
+                        #             data=%s
+                        #         WHERE id=%s
+                        #         """
 
-                                values = [
-                                    match_id,
-                                    date,
-                                    time,
-                                    match_details,
-                                    json.dumps(data),
-                                    row_id
-                                ]
+                        #         values = [
+                        #             match_id,
+                        #             date,
+                        #             time,
+                        #             match_details,
+                        #             json.dumps(data),
+                        #             row_id
+                        #         ]
 
-                                cursor.execute(sql, values)
+                        #         cursor.execute(sql, values)
 
-                            else:       # INSERT
+                        #     else:       # INSERT
 
-                                sql = f"""
-                                            INSERT INTO {org_id}_match_main_moisture
-                                            (
-                                                match_id,
-                                                date,
-                                                time,
-                                                match_details,
-                                                data
-                                            )
-                                            VALUES(%s,%s,%s,%s,%s)
-                                            """
+                        #         sql = f"""
+                        #                     INSERT INTO {org_id}_match_main_moisture
+                        #                     (
+                        #                         match_id,
+                        #                         date,
+                        #                         time,
+                        #                         match_details,
+                        #                         data
+                        #                     )
+                        #                     VALUES(%s,%s,%s,%s,%s)
+                        #                     """
 
-                            cursor.execute(sql, [
-                                match_id,
-                                date,
-                                time,
-                                match_details,
-                                json.dumps(data)
-                            ])
+                        #     cursor.execute(sql, [
+                        #         match_id,
+                        #         date,
+                        #         time,
+                        #         match_details,
+                        #         json.dumps(data)
+                        #     ])
 
-                        else:
-                            print("No Moisture Data")
-                            sql = f"""delete from `{org_id}_match_main_moisture` where match_id=%s"""
+                        # else:
+                        #     print("No Moisture Data")
+                        #     sql = f"""delete from `{org_id}_match_main_moisture` where match_id=%s"""
 
-                            values = [
-                                    match_id
+                        #     values = [
+                        #             match_id
                                    
-                                ]
+                        #         ]
 
-                            cursor.execute(sql, values)
+                        #     cursor.execute(sql, values)
+                        
+                        
+                            # ---- Moisture ----
+                        try:
+                            moisture_data = _clean_moisture(request.POST.get("moisture_entries_json"))
+                            if moisture_data is None:
+                                # form se kuch aaya hi nahi (jaise page load fail hua) -> DB ko mat chhedo
+                                print("Moisture not posted - existing data left as it is")
+                            else:
+                                cursor.execute(
+                                    f"SELECT id FROM `{org_id}_match_main_moisture` WHERE match_id=%s ORDER BY id LIMIT 1",
+                                    [match_id]
+                                )
+                                existing = cursor.fetchone()
+ 
+                                if any(moisture_data.values()):
+                                    details = _moisture_match_details(name_tournament, team1, team2)
+                                    if existing:      # UPDATE
+                                        cursor.execute(
+                                            f"""UPDATE `{org_id}_match_main_moisture`
+                                                SET match_details=%s, data=%s, updated_at=NOW()
+                                                WHERE id=%s""",
+                                            [details, json.dumps(moisture_data), existing[0]]
+                                        )
+                                    else:             # INSERT
+                                        now = _moist_dt.now()
+                                        cursor.execute(
+                                            f"""INSERT INTO `{org_id}_match_main_moisture`
+                                                (`match_id`,`date`,`time`,`match_details`,`data`,`created_at`,`updated_at`)
+                                                VALUES (%s,%s,%s,%s,%s,NOW(),NOW())""",
+                                            [match_id, now.strftime("%Y-%m-%d"), now.strftime("%H:%M"),
+                                             details, json.dumps(moisture_data)]
+                                        )
+                                else:
+                                    # user ne saari rows delete kar di -> saved record bhi hata do
+                                    cursor.execute(
+                                        f"DELETE FROM `{org_id}_match_main_moisture` WHERE match_id=%s",
+                                        [match_id]
+                                    )
+                        except Exception as e:
+                            print("Moisture save error:", e)
+ 
 
                
                             # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)

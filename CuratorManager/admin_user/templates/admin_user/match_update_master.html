@@ -689,174 +689,80 @@
                                    <div class="row">
 
                                         <div class="col-lg-12 col-sm-12">
+                                            <div class="mw">
+                                                <details class="summary-shadow box-bg rounded">
 
-                                             <details class="summary-shadow box-bg rounded">
-
-                                                                    <summary class="rounded-0">Moisture [<small>Volumetric Water Content (VWC)</small>] <span id="main-moisture-no-data-span" class="text-danger"></span></summary>
-                                                                     <fieldset class="form-group text-dark p-3 rounded">
-                                                                        <div class="row">
-                                                                            <div class="col-lg-6">
-                                                                                <div class="mb-3">
-                                                                                    <label for="value1" class="form-label">Date</label>
-                                                                                    <input type="date" class="form-control" id="date" placeholder="Value 1">
-                                                                                </div> 
-                                                                            </div>
-                                                                            <div class="col-lg-6">
-                                                                                 <div class="mb-3">
-                                                                                    <label for="value1" class="form-label">Time</label>
-                                                                                    <input type="time" class="form-control" id="time" placeholder="Value 1">
+                                                                        <summary class="rounded-0">Moisture [<small>Volumetric Water Content (VWC)</small>] <span id="main-moisture-no-data-span" class="text-danger"></span></summary>
+                                                                    
+                                                                        <fieldset class="form-group text-dark p-3 rounded">
+                                                                            <div class="row">
+                                                                                <!-- <div class="col-lg-6">
+                                                                                    <div class="mb-3">
+                                                                                        <label for="value1" class="form-label">Date</label>
+                                                                                        <input type="date" class="form-control" id="date" placeholder="Value 1">
+                                                                                    </div> 
                                                                                 </div>
-                                                                            </div>
-                                                                             {% if request.session.user.role != "Groundman" %}
-                                                                            <div class="col-lg-12">
-                                                                                 <div class="mb-3">
-                                                                                    <label for="fileInput" class="form-label">Browse CSV File</label>
-                                                                                    <input type="file" class="form-control" id="fileInput" />
-                                                                                    
-                                                                                </div>
-                                                                                 <button type="button" class="btn btn-primary" onclick="addMainMoistureData()">Add Moisture Entry</button>
-
-                                                                            </div>
-                                                                               {% endif %}
-                                                                              
-                                                            <div class="col-sm-12 col-lg-12">
-                                                                <details>
-                                                                    <summary>Moisture Entries</summary>
-                                                                      <div class="table-responsive transparent-bg">
-                                                                    <table class="table table-bordered mt-2"
-                                                                        id="moistureTable">
-                                                                        <thead class="table-dark">
-                                                                            <tr>
-                                                                          <!--      <th colspan="11">
-                                                             <button class="me-2" onclick="renderMoisture(event,)">Fetch Moisture</button>
-
-                                                                                </th>-->
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <th colspan="3">Date</th>
-                                                                                <th colspan="3">Time</th>
-                                                                                <th colspan="8">
-                                                                                    <button class="btn btn-danger" onclick="deleteMainMoisture(event)">X</button>
-                                                                                </th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody id="moistureTableTbody"></tbody>
-                                                                    </table>
-
-                                                                    <input type="hidden" name="moisture_entries_json"
-                                                                        id="moisture_entries_json">
-                                                                      </div>
-                                                                </details>
+                                                                                <div class="col-lg-6">
+                                                                                    <div class="mb-3">
+                                                                                        <label for="value1" class="form-label">Time</label>
+                                                                                        <input type="time" class="form-control" id="time" placeholder="Value 1">
+                                                                                    </div>
+                                                                                </div> -->
+                                                                                <!-- <details class="card">
+                                                                                    <summary>Incoming JSON (test / reload)</summary>
+                                                                                    <textarea id="incoming" spellcheck="false"></textarea>
+                                                                                    <div class="err" id="inErr"></div>
+                                                                                    <button type="button" class="add" id="loadBtn">Load JSON</button>
+                                                                                    </details> -->
+                                                                                    <div id="forms"></div>
+                                                                                
 
 
-                                                            </div>
+
+
+                                                                                
+                                                                                
+                                                                                {% if request.session.user.role != "Groundman" %}
+                                                                                <!-- <div class="col-lg-12">
+                                                                                    <div class="mb-3">
+                                                                                        <label for="fileInput" class="form-label">Browse CSV File</label>
+                                                                                        <input type="file" class="form-control" id="fileInput" />
+                                                                                        
+                                                                                    </div>
+                                                                                    <button type="button" class="btn btn-primary" onclick="addMainMoistureData()">Add Moisture Entry</button>
+
+                                                                                </div> -->
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                {% endif %}
+                                                                                
+                                                                <div class="col-sm-12 col-lg-12">
+                                                                    <details>
+                                                                        <summary>Moisture Entries</summary>
+                                                                        <div class="table-responsive transparent-bg">
+                                                                            
+                                                                    
+                                                                        </table> 
+                                                                        <div id="tables"></div>
+                                                                        <input type="hidden" name="moisture_entries_json"
+                                                                            id="moisture_entries_json">
                                                                         </div>
-
-                                                                        <!-- <div class="row">
-                                                                            <div class="col-lg-2">
-                                                                                <div class="mb-3">
-                                                                                    <label for="value1" class="form-label">Value 1</label>
-                                                                                    <input type="number" class="form-control" id="value1" placeholder="Value 1">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-lg-2">
-                                                                                <div class="mb-3">
-                                                                                    <label for="value2" class="form-label">Value 2</label>
-                                                                                    <input type="number" class="form-control" id="value2" placeholder="Value 2">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-lg-2">
-                                                                                <div class="mb-3">
-                                                                                    <label for="value3" class="form-label">Value 3</label>
-                                                                                    <input type="number" class="form-control" id="value3" placeholder="Value 3">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-lg-2">
-                                                                                <div class="mb-3">
-                                                                                    <label for="value4" class="form-label">Value 4</label>
-                                                                                    <input type="number" class="form-control" id="value4" placeholder="Value 4">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-lg-2">
-                                                                                <div class="mb-3">
-                                                                                    <label for="value5" class="form-label">Value 5</label>
-                                                                                    <input type="number" class="form-control" id="value5" placeholder="Value 5">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-lg-2">
-                                                                                <div class="mb-3">
-                                                                                    <label for="value6" class="form-label">Value 6</label>
-                                                                                    <input type="number" class="form-control" id="value6" placeholder="Value 6">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-lg-2">
-                                                                                <div class="mb-3">
-                                                                                    <label for="value7" class="form-label">Value 7</label>
-                                                                                    <input type="number" class="form-control" id="value7" placeholder="Value 7">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-lg-2">
-                                                                                <div class="mb-3">
-                                                                                    <label for="value8" class="form-label">Value 8</label>
-                                                                                    <input type="number" class="form-control" id="value8" placeholder="Value 8">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-lg-2">
-                                                                                <div class="mb-3">
-                                                                                    <label for="value9" class="form-label">Value 9</label>
-                                                                                    <input type="number" class="form-control" id="value9" placeholder="Value 9">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-lg-2">
-                                                                                <div class="mb-3">
-                                                                                    <label for="value10" class="form-label">Value 10</label>
-                                                                                    <input type="number" class="form-control" id="value10" placeholder="Value 10">
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    <button type="button" class="btn btn-primary"
-                                                                    onclick="addMoistureEntry()">Add Moisture
-                                                                    Entry</button>
-  <div class="col-sm-12 col-lg-12">
-                                                                <details>
-                                                                    <summary>Moisture Entries</summary>
-                                                                      <div class="table-responsive transparent-bg">
-                                                                    <table class="table table-bordered mt-2"
-                                                                        id="moistureTable">
-                                                                        <thead class="table-dark">
-                                                                            <tr>
-                                                                                <th>Date</th>
-                                                                                <th>Time</th>
-                                                                                <th>Value 1</th>
-                                                                                <th>Value 2</th>
-                                                                                <th>Value 3</th>
-                                                                                <th>Value 4</th>
-                                                                                <th>Value 5</th>
-                                                                                <th>Value 6</th>
-                                                                                <th>Value 7</th>
-                                                                                <th>Value 8</th>
-                                                                                <th>Value 9</th>
-                                                                                <th>Value 10</th>
-                                                                                <th>Action</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody></tbody>
-                                                                    </table>
-
-                                                                    <input type="hidden" name="moisture_entries_json"
-                                                                        id="moisture_entries_json">
-                                                                      </div>
-                                                                </details>
+                                                                    </details>
 
 
-                                                            </div> -->
+                                                                </div>
+                                                                            </div>
 
-                                                                     </fieldset>
-                                                                     </details>
+                                                                        </fieldset>
+                                                                    
+                                                </details>
+                                            </div>
                                                              
                                                              
-                                                                    </div>
-                                                                     </div>
+                                        </div>
+                                    </div>
                                  </div>
                                             </div>
 
@@ -1220,254 +1126,7 @@
 
                                 <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
 
-                                    
-                                    <!-- <div class="form-group border mt-4 text-dark p-3" style="background-color:#7dcfb6">
-                                        <legend class="w-auto px-2">Outfield Entries</legend>
-                                        <div class="row">
-                                            <div class="col-sm-12 col-lg-6">
-                                                <fieldset class="form-group border mt-4 text-white p-3" style="background-color:#1d4e89">
-                                                    <legend class="w-auto px-2">Watering</legend>
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <label for="out_last_watering_on" class="form-label">Watering On:</label>
-                                                            <input type="date" id="out_last_watering_on" value="{{match.41}}" name="out_last_watering_on" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <label for="out_time_of_application" class="form-label">Time of Watering:</label>
-                                                            <input type="time" id="out_time_of_application" value="{{match.43}}" name="out_time_of_application" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <label for="out_quantity_of_water" class="form-label">Quantity of Water:</label>
-                                                            <input type="text" id="out_quantity_of_water" value="{{match.42}}" name="out_quantity_of_water" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                </fieldset>
-                                            </div>
-                                            <div class="col-sm-12 col-lg-6">
-                                                <fieldset class="form-group border mt-4 text-white p-3" style="background-color:#1d4e89">
-                                                    <legend class="w-auto px-2">Rolling</legend>
-                                                    <div>
-                                                        <label for="out_roller_machine_type" class="form-label">Select Machine Type</label>
-                                                        <select class="form-select" id="out_roller_machine_type" name="out_roller_machine_type">
-                                                            <option selected>Select Type</option>
-                                                            <option value="passes">Maunal</option>
-                                                            <option value="time">Machenized</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-lg-12 col-sm-12">
-                                                            <label id="out_machinery_id_label"></label>
-                                                            <br>
-                                                            <label for="out_machinery_id" class="form-label">Select Roller</label>
-                                                            <input type="hidden" value="{{match.38}}" name="out_machinery_id" id="out_machinery_id">
-                                                            <input type="text" name="out_machinery_name" id="out_machinery_name" class="form-control" readonly placeholder="Click to select machinery">
-                                                        </div>
-                                                        <div class="col-lg-12 col-sm-12 d-flex">
-                                                            <button type="button" class="btn btn-dark mt-2 align-self-end" style="font-size:70%" onclick="openMachineryModal('out_roller')">Select Machinery</button>
-                                                        </div>
-                                                        <label for="out_roller_machinery_name_operator" class="form-label">Operator Name:</label>
-                                                        <input type="text" name="out_roller_machinery_name_operator" id="out_roller_machinery_name_operator" class="form-control">
-                                                    </div>
-                                                    <div class="col-md-12">
-                                                        <label for="out_time_of_application" class="form-label">Time of Rolling:</label>
-                                                        <input type="time" id="out_time_of_application_roller" value="{{match.44}}" name="out_time_roller" class="form-control">
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <label for="out_rolling_speed" class="form-label">Rolling Speed:</label>
-                                                            <input type="number" id="out_rolling_speed" value="{{match.40}}" name="out_rolling_speed" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <label for="out_passes-unit" class="form-label">Select Unit:</label>
-                                                            <select class="form-select" id="out_passes_unit" name="out_passes_unit">
-                                                                <option selected>Select Unit</option>
-                                                                <option value="passes">Passes</option>
-                                                                <option value="time">Time</option>
-                                                                <option value="hours">Hours</option>
-                                                                <option value="minutes">Minutes</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <label for="out_no_of_passes" class="form-label">Number of Passes:</label>
-                                                            <input type="number" id="out_no_of_passes" value="{{match.39}}" name="out_no_of_passes" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                </fieldset>
-                                            </div>
-                                            <div class="col-sm-12 col-lg-4">
-                                                <h5 class="mt-4">Rolling Entries</h5>
-                                                <table class="table table-bordered" id="outrollingTable" style="font-size: 70%;">
-                                                    <thead class="table-dark">
-                                                        <tr>
-                                                            <th>Machine Type</th>
-                                                            <th>Machinery</th>
-                                                            <th>Operator</th>
-                                                            <th>Speed</th>
-                                                            <th>Passes</th>
-                                                            <th>Unit</th>
-                                                            <th>Time</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody></tbody>
-                                                </table>
-                                                <input type="hidden" name="out_rolling_entries_json" id="out_rolling_entries_json">
-                                            </div>
-                                        </div>
-                                        <div class="row mt-4">
-                                            <div>
-                                                <label for="out_mover_machine_type" class="form-label">Select Machine Type</label>
-                                                <select class="form-select" id="out_mover_machine_type" name="out_mover_machine_type">
-                                                    <option selected>Select Type</option>
-                                                    <option value="passes">Maunal</option>
-                                                    <option value="time">Machenized</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-lg-12 col-sm-12">
-                                                <label id="out_mover_machinery_id_label"></label>
-                                                <br>
-                                                <label for="out_mover_machinery_id" class="form-label">Select Machinery/Mover</label>
-                                                <input type="hidden" value="{{match.46}}" name="out_mover_machinery_id" id="out_mover_machinery_id">
-                                                <input type="text" name="out_mover_machinery_name" id="out_mover_machinery_name" class="form-control" readonly placeholder="Click to select machinery">
-                                            </div>
-                                            <div class="col-lg-12 col-sm-12 d-flex">
-                                                <button type="button" class="btn btn-dark mt-2 align-self-end" style="font-size:70%" onclick="openMachineryModal('out_mover')">Select Machinery</button>
-                                            </div>
-                                            <label for="out_mover_machinery_name_operator" class="form-label">Operator Name:</label>
-                                            <input type="text" name="out_mover_machinery_name_operator" id="out_mover_machinery_name_operator" class="form-control">
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <label for="out_date_mowing_done_last" class="form-label">Last Mowing Date:</label>
-                                                <input type="date" id="out_date_mowing_done_last" value="{{match.47}}" name="out_date_mowing_done_last" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <label for="out_time_of_application_mover" class="form-label">Time of Application Mover:</label>
-                                                <input type="time" id="out_time_of_application_mover" value="{{match.48}}" name="out_time_of_application_mover" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <label for="out_mowing_done_at_mm" class="form-label">Mowing Height (mm):</label>
-                                                <input type="number" id="out_mowing_done_at_mm" value="{{match.49}}" name="out_mowing_done_at_mm" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label for="out_moving_passes_unit" class="form-label">Select Unit:</label>
-                                                <select class="form-select" id="out_moving_passes_unit" name="out_moving_passes_unit">
-                                                    <option selected>Select Unit</option>
-                                                    <option value="time">Time</option>
-                                                    <option value="hours">Hours</option>
-                                                    <option value="minutes">Minutes</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label for="out_mowing_duration" class="form-label">Mowing Duration :</label>
-                                                <input type="number" id="out_mowing_duration" name="out_mowing_duration" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-12 col-lg-6">
-                                            <h5 class="mt-4">Mover Entries</h5>
-                                            <table class="table table-bordered" id="outmoverTable" style="font-size: 70%;">
-                                                <thead class="table-dark">
-                                                    <tr>
-                                                        <th>Machine Type</th>
-                                                        <th>Machinery</th>
-                                                        <th>Operator</th>
-                                                        <th>Height (mm)</th>
-                                                        <th>Duration</th>
-                                                        <th>Unit</th>
-                                                        <th>Time</th>
-                                                        <th>Date</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody></tbody>
-                                            </table>
-                                            <input type="hidden" name="out_mover_entries_json" id="out_mover_entries_json">
-                                        </div>
-                                        <div class="row mt-3">
-                                            <div class="col-sm-12 col-lg-6">
-                                                <div class="input-group mb-3 border rounded">
-                                                    <div class="input-group-text bg-light border-0" style="background-color:white !important;">
-                                                        <input class="form-check-input mt-0 border-left" type="checkbox" aria-label="Checkbox for following text input" name="out_is_fertilizers_used" {% if match.50 == "1" %}checked{% endif %} id="out_is_fertilizers_used">
-                                                    </div>
-                                                    <input type="text" class="form-control border-0 mt-2" value="Is Fertilizers Used" style="background-color:white" readonly aria-label="Text input with checkbox">
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-12 col-lg-6">
-                                                <div class="row">
-                                                    <div class="col-sm-12 col-lg-6">
-                                                        <label for="out_time_of_application_chemical" class="form-label">Time of Application Chemical:</label>
-                                                    </div>
-                                                    <div class="col-sm-12 col-lg-6">
-                                                        <input type="time" id="out_time_of_application_chemical" name="out_time_of_application_chemical" class="form-control" value="{{match.56}}">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <label for="out_fertilizers_details" class="form-label">Chemical Details:</label>
-                                                <div class="row">
-                                                    <div class="col">
-                                                        <select id="out_fertilizers_details" name="out_fertilizers_details" class="form-control">
-                                                            <option value="">Select Any Chemical</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col">
-                                                        <input type="text" id="out_chemical_weight" placeholder="Weight" name="out_chemical_weight" class="form-control" value="{{match.61}}">
-                                                    </div>
-                                                    <div class="col">
-                                                        <select id="out_fertilizers_unit" name="out_fertilizers_unit" class="form-control">
-                                                            <option value="">Select Any Unit</option>
-                                                            <option value="kg">KG</option>
-                                                            <option value="gm">GM</option>
-                                                            <option value="ltr">Liters</option>
-                                                            <option value="ml">Milli Liters</option>
-                                                            <option value="NA">NA</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col">
-                                                        <input type="text" id="out_chemical_details_remark" placeholder="Remarks" name="out_chemical_details_remark" class="form-control" value="{{match.52}}">
-                                                    </div>
-                                                </div>
-                                                <div class="text-end">
-                                                    <button type="button" class="btn btn-sm btn-primary" id="outaddChemicalBtn">+ Add Chemical Entry</button>
-                                                </div>
-                                                <table class="table table-bordered mt-3" id="outchemicalTable">
-                                                    <thead class="table-dark">
-                                                        <tr>
-                                                            <th>Used</th>
-                                                            <th>Time</th>
-                                                            <th>Chemical</th>
-                                                            <th>Weight</th>
-                                                            <th>Unit</th>
-                                                            <th>Remark</th>
-                                                            <th>Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody></tbody>
-                                                </table>
-                                                <input type="hidden" name="out_chemical_entries" id="out_chemical_entries">
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <label for="out_remark_by_groundsman" class="form-label">Remark by Groundsman:</label>
-                                                <textarea id="out_remark_by_groundsman" placeholder="Remarks" name="out_remark_by_groundsman" class="form-control">{{match.53}}</textarea>
-                                            </div>
-                                        </div>
-                                    </div> -->
-                                
-                                
+                             
                                   <div class="form-group daily-form mt-4 text-dark p-3">
                                             <legend class="w-auto px-2">Outfield Entries</legend>
                                             <div class="row">
@@ -2088,175 +1747,268 @@ updateClaggHammerTable();
 
 
 
-    function renderTable(finalJSON) {
-        const data = finalJSON.data;
-        const tbody=document.querySelector("#moistureTableTbody")
-        const mDate=finalJSON.date
-        const mTime=finalJSON.time
-        tbody.innerHTML=`<tr><th colspan="3">${mDate}</th><th colspan="3">${mTime}</th></tr>`
-         data.forEach(row => {
-            const tr=document.createElement("tr")
-                tr.innerHTML= `
-                <td>${row.SubCollectionName}</td>
-                <td>${row.AreaName}</td>
-                <td>${row.GpsLatitude}</td>
-                <td>${row.GpsLongitude}</td>
-                <td>${row.DataNote}</td>
-                <td>${row.RodLength}</td>
-                <td>${row.SoilType}</td>
-                <td>${row.Satellites}</td>
-                <td>${row.Fix}</td>
-                <td>${row.ec}</td>
-                <td>${row.period}</td>
-                <td>${row.salidx}</td>
-                <td>${row.temp}</td>
-                <td>${row.vwc}</td>`;
-                tbody.appendChild(tr)
-    });
+//     function renderTable(finalJSON) {
+//         const data = finalJSON.data;
+//         const tbody=document.querySelector("#moistureTableTbody")
+//         const mDate=finalJSON.date
+//         const mTime=finalJSON.time
+//         tbody.innerHTML=`<tr><th colspan="3">${mDate}</th><th colspan="3">${mTime}</th></tr>`
+//          data.forEach(row => {
+//             const tr=document.createElement("tr")
+//                 tr.innerHTML= `
+//                 <td>${row.SubCollectionName}</td>
+//                 <td>${row.AreaName}</td>
+//                 <td>${row.GpsLatitude}</td>
+//                 <td>${row.GpsLongitude}</td>
+//                 <td>${row.DataNote}</td>
+//                 <td>${row.RodLength}</td>
+//                 <td>${row.SoilType}</td>
+//                 <td>${row.Satellites}</td>
+//                 <td>${row.Fix}</td>
+//                 <td>${row.ec}</td>
+//                 <td>${row.period}</td>
+//                 <td>${row.salidx}</td>
+//                 <td>${row.temp}</td>
+//                 <td>${row.vwc}</td>`;
+//                 tbody.appendChild(tr)
+//     });
 
-}
-let moistureId
- function renderMoisture() {
-    //event.preventDefault()
-       
-        axios.get(`/usr_admin/get-moisture/{{match.0}}/m/m/`)
-                .then(function (response) {
-        const data = JSON.parse(response.data.data);
-        const tbody= $("#moistureTableTbody");
-        
-        const mDate=response.data.date
-        moistureId=response.data.id
-        const mTime=response.data.time
-         $(tbody).html(`<tr><th colspan="3">${mDate}</th><th colspan="3">${mTime}</th><th colspan="8"></th></tr>`)
-         if(data.length>0)
-        {
-         data.forEach(row => {
-            const tr=document.createElement("tr")
-        tr.innerHTML= `
-                <td>${row.SubCollectionName}</td>
-                <td>${row.AreaName}</td>
-                <td>${row.GpsLatitude}</td>
-                <td>${row.GpsLongitude}</td>
-                <td>${row.DataNote}</td>
-                <td>${row.RodLength}</td>
-                <td>${row.SoilType}</td>
-                <td>${row.Satellites}</td>
-                <td>${row.Fix}</td>
-                <td>${row.ec}</td>
-                <td>${row.period}</td>
-                <td>${row.salidx}</td>
-                <td>${row.temp}</td>
-                <td>${row.vwc}</td>`;
-                $(tbody).append(tr)
-    });
-    console.log(response.data)
-        document.querySelector("#moisture_entries_json").value=response.data
+// }
 
-    }
-    else
-    {
-    alert("Data not found")
-    }
-    }) .catch(function (error) {
-                        console.error('Error deleting Match:', error);
-                        document.querySelector("#main-moisture-no-data-span").innerHTML=("Data not found")
-                    });
 
-}
 
-renderMoisture()
 
-    function deleteMainMoisture(event){
-        event.preventDefault()
-    document.querySelector("#moistureTableTbody").innerHTML=""
-    document.querySelector("#moisture_entries_json").value=""
+//     function deleteMainMoisture(event){
+//         event.preventDefault()
+//     document.querySelector("#moistureTableTbody").innerHTML=""
+//     document.querySelector("#moisture_entries_json").value=""
     
-}
+// }
 
-    function addMainMoistureData() 
-    {
+//     function addMainMoistureData() 
+//     {
 
-        const file = document.getElementById("fileInput").files[0];
-        const reader = new FileReader();
+//         const file = document.getElementById("fileInput").files[0];
+//         const reader = new FileReader();
 
-        reader.onload = function(event) {
+//         reader.onload = function(event) {
 
-        const data = new Uint8Array(event.target.result);
-        const workbook = XLSX.read(data, { type: "array" });
+//         const data = new Uint8Array(event.target.result);
+//         const workbook = XLSX.read(data, { type: "array" });
 
-        const sheetName = workbook.SheetNames[0];
-        const sheet = workbook.Sheets[sheetName];
+//         const sheetName = workbook.SheetNames[0];
+//         const sheet = workbook.Sheets[sheetName];
 
-        // 👉 A1 value
-        const A1 = sheet["A1"] ? sheet["A1"].v : null;
+//         // 👉 A1 value
+//         const A1 = sheet["A1"] ? sheet["A1"].v : null;
 
-        // 👉 Convert to JSON (array of arrays)
-        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+//         // 👉 Convert to JSON (array of arrays)
+//         const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
-        let result = [];
+//         let result = [];
 
-        // Column indexes (0 based)
-        const colMap = {
-             A: 0,
-            B: 1,
-            C: 2,
-            D: 3,
-            E: 4,
-            F: 5,
-            G: 6,
-            H: 7,
-            I: 8,
-            J: 9,
-            K: 10,
-            L: 11,
-            M: 12,
-            N: 13
-        };
+//         // Column indexes (0 based)
+//         const colMap = {
+//              A: 0,
+//             B: 1,
+//             C: 2,
+//             D: 3,
+//             E: 4,
+//             F: 5,
+//             G: 6,
+//             H: 7,
+//             I: 8,
+//             J: 9,
+//             K: 10,
+//             L: 11,
+//             M: 12,
+//             N: 13
+//         };
 
-        // Skip header (row 0)
-        for (let i = 2; i < rows.length; i++) {
-            let row = rows[i];
+//         // Skip header (row 0)
+//         for (let i = 2; i < rows.length; i++) {
+//             let row = rows[i];
 
-            if (!row || row.length === 0) continue;
+//             if (!row || row.length === 0) continue;
 
-            result.push({
-                SubCollectionName: row[colMap.A] || "",
-                AreaName: row[colMap.B] || "",
-                GpsLatitude: row[colMap.C] || "",
-                GpsLongitude: row[colMap.D] || "",
-                DataNote: row[colMap.E] || "",
-                RodLength: row[colMap.F] || "",
-                SoilType: row[colMap.G] || "",
-                Satellites: row[colMap.H] || "",
-                Fix: row[colMap.I] || "",
-                ec: row[colMap.J] || "",
-                period: row[colMap.K] || "",
-                salidx: row[colMap.L] || "",
-                temp: row[colMap.M] || "",
-                vwc: row[colMap.N] || ""
-            });
-        }
+//             result.push({
+//                 SubCollectionName: row[colMap.A] || "",
+//                 AreaName: row[colMap.B] || "",
+//                 GpsLatitude: row[colMap.C] || "",
+//                 GpsLongitude: row[colMap.D] || "",
+//                 DataNote: row[colMap.E] || "",
+//                 RodLength: row[colMap.F] || "",
+//                 SoilType: row[colMap.G] || "",
+//                 Satellites: row[colMap.H] || "",
+//                 Fix: row[colMap.I] || "",
+//                 ec: row[colMap.J] || "",
+//                 period: row[colMap.K] || "",
+//                 salidx: row[colMap.L] || "",
+//                 temp: row[colMap.M] || "",
+//                 vwc: row[colMap.N] || ""
+//             });
+//         }
 
-        const finalJSON = {
-            date: document.querySelector("#date").value,
-            time: document.querySelector("#time").value,
-            match_details: A1,
-            data: result,
-            id:moistureId
+//         const finalJSON = {
+//             date: document.querySelector("#date").value,
+//             time: document.querySelector("#time").value,
+//             match_details: A1,
+//             data: result,
+//             id:moistureId
             
-        };
+//         };
 
-        renderTable(finalJSON);
-        console.log(finalJSON)
-        document.querySelector("#moisture_entries_json").value=JSON.stringify(finalJSON)
+//         renderTable(finalJSON);
+//         console.log(finalJSON)
+//         document.querySelector("#moisture_entries_json").value=JSON.stringify(finalJSON)
 
-    };
+//     };
 
-    reader.readAsArrayBuffer(file);
+//     reader.readAsArrayBuffer(file);
+// }
+
+
+
+
+
+// ----------Start Moisture-------------
+
+
+const SIZES = ["1.5", "3", "4.8"];
+const COUNT = 10;
+// internal store: positional raw values so table cells stay in V1..V10 slots
+const store = { "1.5": [], "3": [], "4.8": [] };
+const editing = {};   // size -> id of the row being edited
+let nextId = 1;
+let moistureId;
+const tbodies = {};
+
+const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+const toVal = v => (isNaN(v) ? v : Number(v));
+
+// JSON is always derived from the store: only filled values, no nulls
+function buildJSON() {
+  const out = {};
+  SIZES.forEach(s => {
+    out[s] = store[s].map(r => ({
+      date: r.date,
+      values: r.vals.filter(v => v !== "").map(toVal)
+    }));
+  });
+  return out;
 }
 
+// keeps the hidden input (submitted with the form) in sync with the tables
+function renderJSON() {
+  document.querySelector("#moisture_entries_json").value = JSON.stringify(buildJSON());
+}
+
+function renderTable(size) {
+  const tb = tbodies[size];
+  tb.innerHTML = "";
+  if (!store[size].length) {
+    tb.innerHTML = `<tr><td colspan="${COUNT + 2}" class="empty">No rows yet</td></tr>`;
+    return;
+  }
+  store[size].forEach(row => {
+    const tr = document.createElement("tr");
+    if (editing[size] === row.id) {
+      tr.innerHTML = `<td><input type="date" value="${esc(row.date)}" data-k="date"></td>` +
+        row.vals.map((v, i) => `<td><input type="text" value="${esc(v)}" data-k="${i}"></td>`).join("") +
+        `<td><button type="button" class="save">Save</button> <button type="button" class="can">Cancel</button></td>`;
+      tr.querySelector(".save").onclick = () => {
+        const date = tr.querySelector('[data-k="date"]').value;
+        const vals = row.vals.map((_, i) => tr.querySelector(`[data-k="${i}"]`).value.trim());
+        if (!date || !vals.some(v => v !== "")) { alert("Fill date and atleast one value"); return; }
+        row.date = date; row.vals = vals;
+        delete editing[size];
+        renderTable(size); renderJSON();
+      };
+      tr.querySelector(".can").onclick = () => { delete editing[size]; renderTable(size); };
+    } else {
+      tr.innerHTML = `<td>${esc(row.date)}</td>` +
+        row.vals.map(v => `<td>${esc(v)}</td>`).join("") +
+        `<td><button type="button" class="upd">Update</button> <button type="button" class="del">Delete</button></td>`;
+      tr.querySelector(".upd").onclick = () => { editing[size] = row.id; renderTable(size); };
+      tr.querySelector(".del").onclick = () => {
+        store[size] = store[size].filter(r => r.id !== row.id);
+        if (editing[size] === row.id) delete editing[size];
+        renderTable(size); renderJSON();
+      };
+    }
+    tb.appendChild(tr);
+  });
+}
+
+// build one form + one table per size
+SIZES.forEach(size => {
+  const card = document.createElement("div");
+  card.className = "card";
+  let inputs = "";
+  for (let i = 1; i <= COUNT; i++) inputs += `<input type="text" inputmode="decimal" placeholder="V${i}">`;
+  card.innerHTML = `<h3>${size} inches</h3>
+    <input type="date" class="date" aria-label="Working Date">
+    <div class="fields">${inputs}</div>
+    <div class="err"></div>
+    <button type="button" class="add">ADD</button>`;
+  document.getElementById("forms").appendChild(card);
+
+  const t = document.createElement("div");
+  t.className = "card";
+  let head = "<th>Date</th>";
+  for (let i = 1; i <= COUNT; i++) head += `<th>V${i}</th>`;
+  head += "<th>Action</th>";
+  t.innerHTML = `<h3>${size}</h3><div class="scroll"><table><thead><tr>${head}</tr></thead><tbody></tbody></table></div>`;
+  document.getElementById("tables").appendChild(t);
+  tbodies[size] = t.querySelector("tbody");
+
+  
+
+  renderTable(size);
+});
+
+// Fill tables from incoming JSON: { "1.5": [{date, values:[...]}], "3": [], "4.8": [] }
+// Values are placed in V1, V2, ... in order; empty/null values are skipped.
+function loadIncomingMoisture(json) {
+  SIZES.forEach(size => {
+    delete editing[size];
+    const list = Array.isArray(json && json[size]) ? json[size] : [];
+    store[size] = [];
+    list.forEach(item => {
+      const date = item && item.date ? String(item.date) : "";
+      const incoming = Array.isArray(item && item.values) ? item.values : [];
+      const clean = incoming
+        .filter(v => v !== null && v !== undefined && String(v).trim() !== "")
+        .slice(0, COUNT)
+        .map(v => String(v).trim());
+      if (!date || !clean.length) return;
+      while (clean.length < COUNT) clean.push("");
+      store[size].push({ id: nextId++, date, vals: clean });
+    });
+    renderTable(size);
+  });
+  renderJSON();
+}
+
+// axios response -> incoming data
+function renderMoisture() {
+  axios.get(`/usr_admin/get-moisture/{{match.0}}/m/m/`)
+    .then(function (response) {
+      moistureId = response.data.id;
+      const raw = response.data.data;
+      loadIncomingMoisture(raw ? JSON.parse(raw) : {});
+    })
+    .catch(function (error) {
+      console.error("Error loading moisture data:", error);
+      document.querySelector("#main-moisture-no-data-span").innerHTML = "Data not found";
+    });
+}
+
+renderMoisture();
 
 
+
+// ----------End Moisture-------------
 
 
 </script>
@@ -3409,3 +3161,103 @@ renderMoisture()
 
 </script>
 
+
+
+
+<style>
+/* ===== Sab kuch .mw ke andar scoped hai, baahar ka design disturb nahi hoga ===== */
+.mw{
+  --mw-bg:transparent;
+  --mw-fg:white;
+  /* --mw-card:#f5f7fb; */
+  --mw-bd:#4285f4;
+  box-sizing:border-box;
+  color:var(--mw-fg);
+  font-family:system-ui,sans-serif;
+  /* padding:14px; */
+  background:var(--mw-bg);
+  border-radius:8px;
+}
+
+
+
+.mw *,
+.mw *::before,
+.mw *::after{box-sizing:border-box}
+
+.mw h2{margin:18px 0 8px;font-size:18px;color:var(--mw-fg);background:none;padding:0;border-radius:0}
+
+.mw .card{
+  background:var(--mw-card);
+  border:2px solid var(--mw-bd);
+  border-radius:8px;
+  padding:10px;
+  margin-bottom:12px;
+  box-shadow:none;
+  color:var(--mw-fg);
+}
+.mw .card h3{margin:0 0 8px;font-size:15px;color:var(--mw-fg)}
+
+.mw .fields{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(70px,1fr));
+  gap:6px;
+}
+
+.mw input{
+  width:100%;
+  padding:6px;
+  border:1.5px solid var(--mw-bd);
+  border-radius:5px;
+
+  font-size:14px;
+  height:auto;
+}
+.mw .date{max-width:200px;margin-bottom:8px;display:block}
+
+.mw button{
+  padding:6px 12px;
+  border:0;
+  border-radius:6px;
+  background:var(--mw-bd);
+  color:#fff;
+  font-size:13px;
+  cursor:pointer;
+}
+.mw .add{margin-top:8px;padding:8px 18px;font-size:14px}
+.mw .del{background:#d93025}
+.mw .can{background:#777}
+.mw td button{margin:1px}
+
+.mw .scroll{overflow-x:auto}
+.mw table{
+  border-collapse:collapse;
+  width:100%;
+  min-width:760px;
+  font-size:13px;
+  background:transparent;
+  color:var(--mw-fg);
+}
+.mw th,
+.mw td{
+  border:1px solid var(--mw-bd);
+  padding:4px 6px;
+  text-align:center;
+  white-space:nowrap;
+}
+.mw td input{min-width:56px;padding:3px;font-size:13px}
+.mw th{background:var(--mw-card);color:var(--mw-fg) !important}
+
+.mw pre{
+  background:var(--mw-card);
+  border:2px solid var(--mw-bd);
+  border-radius:8px;
+  padding:10px;
+  overflow:auto;
+  font-size:12px;
+  max-height:320px;
+  color:var(--mw-fg);
+}
+.mw .err{color:#d93025;font-size:13px;min-height:16px}
+.mw .empty{color:#888;padding:6px}
+</style>

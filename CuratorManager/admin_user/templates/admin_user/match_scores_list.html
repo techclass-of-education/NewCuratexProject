@@ -323,125 +323,247 @@
       });
   }
 
+  // function generateResultTable(scores, matchData, ground) {
+  //   const resultTableBody = document.getElementById("result-table-body");
+  //   resultTableBody.innerHTML = "";
+
+  //   const summary = {};
+  //   const isMulti = (scores[0]?.match_type || "").trim().toLowerCase() === "multidays";
+  //   const t1Key = normName(firstScore.team1);
+  //   const t2Key = normName(firstScore.team2);
+
+  //   winnerFinal = "";
+  //   let lastRemark = "";
+
+  //   if (!isMulti) {
+  //     // dono teams ke liye pehle se entry, taaki undefined na aaye
+  //     summary[t1Key] = { runs: 0, wickets: 0, overs: 0 };
+  //     summary[t2Key] = { runs: 0, wickets: 0, overs: 0 };
+
+  //     scores.forEach(score => {
+  //       const key = normName(score.team);
+  //       if (!summary[key]) summary[key] = { runs: 0, wickets: 0, overs: 0 };
+  //       summary[key].runs += parseInt(score.runs) || 0;
+  //       summary[key].wickets += parseInt(score.wickets) || 0;
+  //       summary[key].overs = addOvers(summary[key].overs, parseFloat(score.overs) || 0);
+  //       winnerFinal = getWinner(score.winner, score.team1, score.team2);
+  //       if ((score.remark || "").trim()) lastRemark = score.remark.trim();
+  //     });
+  //   } else {
+  //     scores.forEach(score => {
+  //       const innKey = `Inn${score.inning}`;
+  //       if (!summary[innKey]) {
+  //         summary[innKey] = [
+  //           { runs: 0, wickets: 0, overs: 0 },
+  //           { runs: 0, wickets: 0, overs: 0 }
+  //         ];
+  //       }
+  //       const index = normName(score.team) === t1Key ? 0 : 1;
+  //       summary[innKey][index].runs += parseInt(score.runs) || 0;
+  //       summary[innKey][index].wickets += parseInt(score.wickets) || 0;
+  //       summary[innKey][index].overs = addOvers(summary[innKey][index].overs, parseFloat(score.overs) || 0);
+  //       winnerFinal = getWinner(score.winner, score.team1, score.team2);
+  //       if ((score.remark || "").trim()) lastRemark = score.remark.trim();
+  //     });
+  //   }
+
+  //   // Team names row
+  //   let row = document.createElement("tr");
+  //   row.innerHTML = `
+  //     <td colspan=2 class='border-end-0'><span class="badge text-bg-light fs-2">${firstScore.team1}</span></td>
+  //     <td colspan=2 class='border-0'></td>
+  //     <td colspan=2 class='border-start-0'><span class="badge text-bg-light fs-2">${firstScore.team2}</span></td>
+  //   `;
+  //   resultTableBody.appendChild(row);
+
+  //   if (isMulti) {
+  //     const innsKey = Object.keys(summary);
+  //     Object.values(summary).forEach((s, index) => {
+  //       row = document.createElement("tr");
+  //       row.innerHTML = `
+  //         <td colspan=2 class='border-end-0'>
+  //           <div class="alert alert-warning mx-auto" style='width:fit-content;'>
+  //             <span class="d-block fw-bold fs-3">${s[0].runs}</span>
+  //             <span class="fs-6 pe-3">(${s[0].overs.toFixed(1)} Ov)</span>
+  //             <span class="fs-6">(${s[0].wickets} W)</span>
+  //           </div>
+  //         </td>
+  //         <td colspan=2 class='border-0'>
+  //           <span class="badge text-bg-secondary fs-6 mt-4">${innsKey[index]}</span>
+  //         </td>
+  //         <td colspan=2 class='border-start-0'>
+  //           <div class="alert alert-light mx-auto" style='width:fit-content;'>
+  //             <span class="d-block fw-bold fs-3">${s[1].runs}</span>
+  //             <span class="fs-6 pe-3">(${s[1].overs.toFixed(1)} Ov)</span>
+  //             <span class="fs-6">(${s[1].wickets} W)</span>
+  //           </div>
+  //         </td>
+  //       `;
+  //       resultTableBody.appendChild(row);
+  //     });
+  //   } else {
+  //     const s1 = summary[t1Key];
+  //     const s2 = summary[t2Key];
+  //     row = document.createElement("tr");
+  //     row.innerHTML = `
+  //       <td colspan=2 class='border-end-0'>
+  //         <div class="alert alert-warning mx-auto" style='width:fit-content;'>
+  //           <span class="d-block fw-bold fs-3">${s1.runs}</span>
+  //           <span class="fs-6 pe-3">(${s1.overs.toFixed(1)} Ov)</span>
+  //           <span class="fs-6">(${s1.wickets} W)</span>
+  //         </div>
+  //       </td>
+  //       <td colspan=2 class='border-0'></td>
+  //       <td colspan=2 class='border-start-0'>
+  //         <div class="alert alert-light mx-auto" style='width:fit-content;'>
+  //           <span class="d-block fw-bold fs-3">${s2.runs}</span>
+  //           <span class="fs-6 pe-3">(${s2.overs.toFixed(1)} Ov)</span>
+  //           <span class="fs-6">(${s2.wickets} W)</span>
+  //         </div>
+  //       </td>
+  //     `;
+  //     resultTableBody.appendChild(row);
+  //   }
+
+  //   displayMatchResult(scores, matchData, ground);
+
+  //   // Final summary
+  //   const finalEl = document.getElementById("finalSummery");
+  //   const w = (winnerFinal || "").toString().trim();
+
+  //   if (w !== "Not Yet" && w !== "Draw" && w !== "") {
+  //     finalEl.innerHTML = `<span class="badge text-dark text-uppercase text-bg-light fw-bold fs-4 me-1">WINNER</span><span class="badge text-white text-uppercase text-bg-success fw-bold fs-4">${w}</span>`;
+  //   } else if (w === "Draw") {
+  //     finalEl.innerHTML = `<span class="badge text-white text-uppercase text-bg-success fw-bold fs-4">Match Drawn</span>`;
+  //   } else if (lastRemark) {
+  //     // winner "Not Yet" hai, par remark likha hai (e.g. "VCA WON BY 6 RUNS") to wahi dikhao
+  //     finalEl.innerHTML = `<span class="badge text-white text-uppercase text-bg-success fw-bold fs-4">${lastRemark}</span>`;
+  //   } else {
+  //     finalEl.innerHTML = "";
+  //   }
+  // }
+
+
   function generateResultTable(scores, matchData, ground) {
-    const resultTableBody = document.getElementById("result-table-body");
-    resultTableBody.innerHTML = "";
+  const resultTableBody = document.getElementById("result-table-body");
+  resultTableBody.innerHTML = "";
 
-    const summary = {};
-    const isMulti = (scores[0]?.match_type || "").trim().toLowerCase() === "multidays";
-    const t1Key = normName(firstScore.team1);
-    const t2Key = normName(firstScore.team2);
+  const summary = {};
+  const isMulti = (scores[0]?.match_type || "").trim().toLowerCase() === "multidays";
+  const t1Key = normName(firstScore.team1);
+  const t2Key = normName(firstScore.team2);
 
-    winnerFinal = "";
-    let lastRemark = "";
+  winnerFinal = "";
+  let lastRemark = "";
 
-    if (!isMulti) {
-      // dono teams ke liye pehle se entry, taaki undefined na aaye
-      summary[t1Key] = { runs: 0, wickets: 0, overs: 0 };
-      summary[t2Key] = { runs: 0, wickets: 0, overs: 0 };
+  if (!isMulti) {
+    // dono teams ke liye pehle se entry, taaki undefined na aaye
+    summary[t1Key] = { runs: 0, wickets: 0, overs: 0 };
+    summary[t2Key] = { runs: 0, wickets: 0, overs: 0 };
 
-      scores.forEach(score => {
-        const key = normName(score.team);
-        if (!summary[key]) summary[key] = { runs: 0, wickets: 0, overs: 0 };
-        summary[key].runs += parseInt(score.runs) || 0;
-        summary[key].wickets += parseInt(score.wickets) || 0;
-        summary[key].overs = addOvers(summary[key].overs, parseFloat(score.overs) || 0);
-        winnerFinal = getWinner(score.winner, score.team1, score.team2);
-        if ((score.remark || "").trim()) lastRemark = score.remark.trim();
-      });
-    } else {
-      scores.forEach(score => {
-        const innKey = `Inn${score.inning}`;
-        if (!summary[innKey]) {
-          summary[innKey] = [
-            { runs: 0, wickets: 0, overs: 0 },
-            { runs: 0, wickets: 0, overs: 0 }
-          ];
-        }
-        const index = normName(score.team) === t1Key ? 0 : 1;
-        summary[innKey][index].runs += parseInt(score.runs) || 0;
-        summary[innKey][index].wickets += parseInt(score.wickets) || 0;
-        summary[innKey][index].overs = addOvers(summary[innKey][index].overs, parseFloat(score.overs) || 0);
-        winnerFinal = getWinner(score.winner, score.team1, score.team2);
-        if ((score.remark || "").trim()) lastRemark = score.remark.trim();
-      });
-    }
+    scores.forEach(score => {
+      const key = normName(score.team);
+      if (!summary[key]) summary[key] = { runs: 0, wickets: 0, overs: 0 };
+      summary[key].runs += parseInt(score.runs) || 0;
+      summary[key].wickets += parseInt(score.wickets) || 0;
+      summary[key].overs = addOvers(summary[key].overs, parseFloat(score.overs) || 0);
+      winnerFinal = getWinner(score.winner, score.team1, score.team2);
+      if ((score.remark || "").trim()) lastRemark = score.remark.trim();
+    });
+  } else {
+    scores.forEach(score => {
+      const innKey = `Inn${score.inning}`;
+      if (!summary[innKey]) {
+        summary[innKey] = [
+          { runs: 0, wickets: 0, overs: 0 },
+          { runs: 0, wickets: 0, overs: 0 }
+        ];
+      }
+      const index = normName(score.team) === t1Key ? 0 : 1;
+      summary[innKey][index].runs += parseInt(score.runs) || 0;
+      summary[innKey][index].wickets += parseInt(score.wickets) || 0;
+      summary[innKey][index].overs = addOvers(summary[innKey][index].overs, parseFloat(score.overs) || 0);
+      winnerFinal = getWinner(score.winner, score.team1, score.team2);
+      if ((score.remark || "").trim()) lastRemark = score.remark.trim();
+    });
+  }
 
-    // Team names row
-    let row = document.createElement("tr");
-    row.innerHTML = `
-      <td colspan=2 class='border-end-0'><span class="badge text-bg-light fs-2">${firstScore.team1}</span></td>
-      <td colspan=2 class='border-0'></td>
-      <td colspan=2 class='border-start-0'><span class="badge text-bg-light fs-2">${firstScore.team2}</span></td>
-    `;
-    resultTableBody.appendChild(row);
+  // Team names row (3 equal columns)
+  let row = document.createElement("tr");
+  row.innerHTML = `
+    <td><span class="badge text-bg-light team-name-badge">${firstScore.team1}</span></td>
+    <td></td>
+    <td><span class="badge text-bg-light team-name-badge">${firstScore.team2}</span></td>
+  `;
+  resultTableBody.appendChild(row);
 
-    if (isMulti) {
-      const innsKey = Object.keys(summary);
-      Object.values(summary).forEach((s, index) => {
-        row = document.createElement("tr");
-        row.innerHTML = `
-          <td colspan=2 class='border-end-0'>
-            <div class="alert alert-warning mx-auto" style='width:fit-content;'>
-              <span class="d-block fw-bold fs-3">${s[0].runs}</span>
-              <span class="fs-6 pe-3">(${s[0].overs.toFixed(1)} Ov)</span>
-              <span class="fs-6">(${s[0].wickets} W)</span>
-            </div>
-          </td>
-          <td colspan=2 class='border-0'>
-            <span class="badge text-bg-secondary fs-6 mt-4">${innsKey[index]}</span>
-          </td>
-          <td colspan=2 class='border-start-0'>
-            <div class="alert alert-light mx-auto" style='width:fit-content;'>
-              <span class="d-block fw-bold fs-3">${s[1].runs}</span>
-              <span class="fs-6 pe-3">(${s[1].overs.toFixed(1)} Ov)</span>
-              <span class="fs-6">(${s[1].wickets} W)</span>
-            </div>
-          </td>
-        `;
-        resultTableBody.appendChild(row);
-      });
-    } else {
-      const s1 = summary[t1Key];
-      const s2 = summary[t2Key];
+  if (isMulti) {
+    const innsKey = Object.keys(summary);
+    Object.values(summary).forEach((s, index) => {
       row = document.createElement("tr");
       row.innerHTML = `
-        <td colspan=2 class='border-end-0'>
-          <div class="alert alert-warning mx-auto" style='width:fit-content;'>
-            <span class="d-block fw-bold fs-3">${s1.runs}</span>
-            <span class="fs-6 pe-3">(${s1.overs.toFixed(1)} Ov)</span>
-            <span class="fs-6">(${s1.wickets} W)</span>
+        <td>
+          <div class="alert alert-warning score-box mb-0">
+            <span class="d-block fw-bold fs-3">${s[0].runs}</span>
+            <span class="fs-6 pe-3">(${s[0].overs.toFixed(1)} Ov)</span>
+            <span class="fs-6">(${s[0].wickets} W)</span>
           </div>
         </td>
-        <td colspan=2 class='border-0'></td>
-        <td colspan=2 class='border-start-0'>
-          <div class="alert alert-light mx-auto" style='width:fit-content;'>
-            <span class="d-block fw-bold fs-3">${s2.runs}</span>
-            <span class="fs-6 pe-3">(${s2.overs.toFixed(1)} Ov)</span>
-            <span class="fs-6">(${s2.wickets} W)</span>
+        <td>
+          <span class="badge text-bg-secondary fs-6">${innsKey[index]}</span>
+        </td>
+        <td>
+          <div class="alert alert-light score-box mb-0">
+            <span class="d-block fw-bold fs-3">${s[1].runs}</span>
+            <span class="fs-6 pe-3">(${s[1].overs.toFixed(1)} Ov)</span>
+            <span class="fs-6">(${s[1].wickets} W)</span>
           </div>
         </td>
       `;
       resultTableBody.appendChild(row);
-    }
-
-    displayMatchResult(scores, matchData, ground);
-
-    // Final summary
-    const finalEl = document.getElementById("finalSummery");
-    const w = (winnerFinal || "").toString().trim();
-
-    if (w !== "Not Yet" && w !== "Draw" && w !== "") {
-      finalEl.innerHTML = `<span class="badge text-dark text-uppercase text-bg-light fw-bold fs-4 me-1">WINNER</span><span class="badge text-white text-uppercase text-bg-success fw-bold fs-4">${w}</span>`;
-    } else if (w === "Draw") {
-      finalEl.innerHTML = `<span class="badge text-white text-uppercase text-bg-success fw-bold fs-4">Match Drawn</span>`;
-    } else if (lastRemark) {
-      // winner "Not Yet" hai, par remark likha hai (e.g. "VCA WON BY 6 RUNS") to wahi dikhao
-      finalEl.innerHTML = `<span class="badge text-white text-uppercase text-bg-success fw-bold fs-4">${lastRemark}</span>`;
-    } else {
-      finalEl.innerHTML = "";
-    }
+    });
+  } else {
+    const s1 = summary[t1Key];
+    const s2 = summary[t2Key];
+    row = document.createElement("tr");
+    row.innerHTML = `
+      <td>
+        <div class="alert alert-warning score-box mb-0">
+          <span class="d-block fw-bold fs-3">${s1.runs}</span>
+          <span class="fs-6 pe-3">(${s1.overs.toFixed(1)} Ov)</span>
+          <span class="fs-6">(${s1.wickets} W)</span>
+        </div>
+      </td>
+      <td></td>
+      <td>
+        <div class="alert alert-light score-box mb-0">
+          <span class="d-block fw-bold fs-3">${s2.runs}</span>
+          <span class="fs-6 pe-3">(${s2.overs.toFixed(1)} Ov)</span>
+          <span class="fs-6">(${s2.wickets} W)</span>
+        </div>
+      </td>
+    `;
+    resultTableBody.appendChild(row);
   }
+
+  displayMatchResult(scores, matchData, ground);
+
+  // Final summary
+  const finalEl = document.getElementById("finalSummery");
+  const w = (winnerFinal || "").toString().trim();
+
+  if (w !== "Not Yet" && w !== "Draw" && w !== "") {
+    finalEl.innerHTML = `<span class="badge text-dark text-uppercase text-bg-light fw-bold fs-4 me-1">WINNER</span><span class="badge text-white text-uppercase text-bg-success fw-bold fs-4">${w}</span>`;
+  } else if (w === "Draw") {
+    finalEl.innerHTML = `<span class="badge text-white text-uppercase text-bg-success fw-bold fs-4">Match Drawn</span>`;
+  } else if (lastRemark) {
+    // winner "Not Yet" hai, par remark likha hai (e.g. "VCA WON BY 6 RUNS") to wahi dikhao
+    finalEl.innerHTML = `<span class="badge text-white text-uppercase text-bg-success fw-bold fs-4">${lastRemark}</span>`;
+  } else {
+    finalEl.innerHTML = "";
+  }
+}
+
 
   function displayMatchResult(scores, matchData, ground) {
     const s = scores[0];
@@ -477,5 +599,66 @@
 </script>
 
 </body>
+
+<style>
+  /* Match result table: container yahan banaya hai (td pe kaam nahi karta) */
+#result-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  container-type: inline-size;
+}
+
+#result-table td {
+  vertical-align: middle;
+  text-align: center;
+  padding: 0.75rem;
+}
+
+/* Team columns zyada chaude, beech wala blank chhota */
+#result-table td:first-child,
+#result-table td:last-child {
+  width: 40%;
+}
+#result-table td:nth-child(2) {
+  width: 20%;
+  border: 0 !important;
+}
+
+/* Beech wale column ke paas ki side borders hata do */
+#result-table td:first-child {
+  border-right: 0 !important;
+}
+#result-table td:last-child {
+  border-left: 0 !important;
+}
+
+/* Team name: zarurat pade to 2 line mein wrap, kabhi cut nahi hoga */
+#result-table .team-name-badge {
+  display: block;
+  width: 100%;
+  white-space: normal;          /* wrap allowed */
+  overflow: visible;            /* kuch bhi hide nahi hoga */
+  word-break: break-word;       /* bahut lamba shabd ho to bhi bahar na jaye */
+  font-size: clamp(0.7rem, 1.5cqw, 1.3rem);  /* chhota font */
+  line-height: 1.25;
+  padding: 0.5rem 0.4rem;
+}
+
+#result-table .score-box {
+  width: fit-content;
+  min-width: 140px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  #result-table td {
+    padding: 0.4rem;
+  }
+  #result-table .score-box {
+    min-width: 90px;
+  }
+}
+</style>
 
 </html>

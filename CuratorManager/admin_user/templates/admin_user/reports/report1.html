@@ -35,8 +35,9 @@
     font-weight: 700;
   }
 </style>
-
+<!-- 
 <style>
+
   h2 {
     background-color: #0d6efd;
     color: white;
@@ -113,6 +114,224 @@
   }
 
   
+</style> -->
+
+
+<style>
+  h2 {
+    background-color: #0d6efd;
+    color: white;
+    padding: 12px;
+    border-radius: 5px;
+    margin-top: 20px;
+  }
+
+  th {
+    background-color: #0d6efd;
+    color: rgb(250, 249, 249) !important;
+  }
+
+  .pdf-mode {
+    font-size: 10px !important;
+    line-height: 1.2;
+    width: 100vw;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .a4-sheet {
+    background: white;
+    width: 21cm;
+    /* min-height: 29.7cm; */
+    padding: 0;
+    margin: 0 auto;
+    box-shadow: none;
+
+    transition: none !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  .a4-sheet-inner-div {
+    padding: 0 !important;
+    margin: 0 !important;
+    font-size: 10px !important;
+  }
+
+  input[type='checkbox'] {
+    transform: scale(1.5);
+  }
+
+
+
+/* ===== Match Summary: result table ===== */
+#result-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  container-type: inline-size;
+}
+
+#result-table td {
+  vertical-align: middle;
+  text-align: center;
+  padding: 0.75rem;
+}
+
+/* Team columns zyada chaude, beech wala blank chhota */
+#result-table td:first-child,
+#result-table td:last-child {
+  width: 40%;
+}
+#result-table td:nth-child(2) {
+  width: 20%;
+  border: 0 !important;
+}
+#result-table td:first-child {
+  border-right: 0 !important;
+}
+#result-table td:last-child {
+  border-left: 0 !important;
+}
+
+/* Team name: zarurat pade to 2 line mein wrap, kabhi cut nahi hoga */
+#result-table .team-name-badge {
+  display: block;
+  width: 100%;
+  white-space: normal;
+  overflow: visible;
+  word-break: break-word;
+  font-size: clamp(0.7rem, 1.5cqw, 1.3rem);
+  line-height: 1.25;
+  padding: 0.5rem 0.4rem;
+}
+
+#result-table .score-box {
+  width: fit-content;
+  min-width: 140px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  #result-table td {
+    padding: 0.4rem;
+  }
+  #result-table .score-box {
+    min-width: 90px;
+  }
+}
+
+  /* ===== PRINT ===== */
+
+  /* Browser ki default badi margin hatao, sirf thodi si rakho */
+  @page {
+    margin: 4mm;
+  }
+
+  @media print {
+
+    /* Safari (iPad / Mac) + Chrome: background colors zaroor print karo */
+    html, body, *, *::before, *::after {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
+
+    #sidebar, nav, #form-div {
+      display: none !important;
+    }
+
+    body {
+      margin: 0 !important;
+      padding: 0 !important;
+      background: white !important;
+    }
+
+    #a4-sheet {
+      margin-top: 0 !important;
+    }
+
+    /* White sheet / white side padding poori hata do */
+    .a4-sheet,
+    #content,
+    .a4-inner-div,
+    #a4-inner-div {
+      margin: 0 !important;
+      padding: 0 !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      background: transparent !important;
+    }
+
+    /* px-5 wali bahut badi side padding hata do */
+    .a4-sheet .col-md-12.px-5,
+    .a4-sheet .col-md-12 {
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+
+    .a4-sheet .row {
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+
+    /* Report ke andar text border se chipke nahi, isliye thodi padding */
+    .a4-sheet .card-header {
+      padding: 4px 10px !important;
+    }
+
+    .a4-sheet .card-body {
+      padding: 4px 10px !important;
+    }
+
+    .a4-sheet .card-body table th,
+    .a4-sheet .card-body table td {
+      padding-left: 6px !important;
+      padding-right: 6px !important;
+    }
+
+    /* Match Scores table: Update / Delete buttons aur "Actions" column hide */
+    .update-btn,
+    .delete-btn {
+      display: none !important;
+    }
+
+    #score-table-body td:last-child,
+    .chemical-remport-table thead tr:nth-child(2) th:last-child {
+      display: none !important;
+    }
+
+    /* Scroll hatao: table-responsive ka scroll print mein nahi chahiye */
+    .table-responsive {
+      overflow: visible !important;
+    }
+
+    /* Clagg Hammer + Moisture: poori width mein fit, chhota font, koi number cut nahi */
+    .clagg-table,
+    .moistureTable {
+      width: 100% !important;
+      max-width: 100% !important;
+      table-layout: auto !important;
+      font-size: 8px !important;
+    }
+
+    .clagg-table th,
+    .clagg-table td,
+    .moistureTable th,
+    .moistureTable td {
+      font-size: 8px !important;
+      padding: 2px 3px !important;
+      white-space: nowrap !important;   /* ek hi line, do line mein nahi jayega */
+      overflow: visible !important;
+      text-align: center;
+    }
+
+    /* Date wala cell bhi cut na ho */
+    .clagg-table td.px-0 {
+      padding-left: 2px !important;
+      padding-right: 2px !important;
+    }
+  }
 </style>
 
 
@@ -133,6 +352,77 @@
     {% include "admin_user/menu_top.html" %}
 
     {% load admin_user_filters %}
+
+    
+<script>
+  
+
+function renderMoisture(id) {
+  const SIZES = ["1.5", "3", "4.8"];
+  const COUNT = 10;
+  const esc = s => String(s === null || s === undefined ? "" : s)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+ 
+  // jis button par click hua, usi ki table ka tbody (list me kai matches ho sakte hain)
+  // const btn = event.currentTarget || event.target;
+  const tbody = document.querySelector(".moistureTableTbody");
+ 
+  const showMessage = msg => {
+    tbody.innerHTML = `<tr><td colspan="${COUNT + 1}" class="text-center text-danger">${esc(msg)}</td></tr>`;
+  };
+ 
+  axios.get(`/usr_admin/get-moisture/${id}/m/m/`)
+    .then(function (response) {
+      let data = response.data.data;
+      if (typeof data === "string") data = data.trim() ? JSON.parse(data) : {};
+      data = data || {};
+ 
+      let html = "";
+      let totalRows = 0;
+ 
+      // record ki date / time (agar view se aa rahi hai)
+      if (response.data.date || response.data.time) {
+        html += `<tr>
+          <th colspan="5">Date: ${esc(response.data.date)}</th>
+          <th colspan="6">Time: ${esc(response.data.time)}</th>
+        </tr>`;
+      }
+ 
+      SIZES.forEach(size => {
+        const rows = Array.isArray(data[size]) ? data[size] : [];
+        totalRows += rows.length;
+ 
+        html += `<tr class="table-secondary text-dark"><th class="text-dark" colspan="${COUNT + 1}">${size} inches</th></tr>`;
+        html += "<tr><th>Date</th>";
+        for (let i = 1; i <= COUNT; i++) html += `<th>V${i}</th>`;
+        html += "</tr>";
+ 
+        if (!rows.length) {
+          html += `<tr><td colspan="${COUNT + 1}" class="text-muted text-center">No data</td></tr>`;
+          return;
+        }
+ 
+        rows.forEach(row => {
+          const vals = Array.isArray(row.values) ? row.values : [];
+          html += `<tr><td class="text-nowrap">${esc(row.date)}</td>`;
+          for (let i = 0; i < COUNT; i++) {
+            html += `<td>${i < vals.length ? esc(vals[i]) : ""}</td>`;
+          }
+          html += "</tr>";
+        });
+      });
+ 
+      if (!totalRows) { showMessage("Data not found"); return; }
+      tbody.innerHTML = html;
+    })
+    .catch(function (error) {
+      console.error("Error loading moisture:", error);
+      showMessage("Data not found");
+    });
+}
+
+</script>
+
 
     <div class="container mt-5" id="form-div">
       <div class="card w-75 mx-auto transparent-bg">
@@ -297,8 +587,8 @@
                                     <th>Soil Type</th>
                                     <th>Pitch Condition</th>
                                     <th>Grass Height</th>
-                                    <th>Class Hammer</th>
-                                    <th>Moisture</th>
+                                    <!-- <th>Class Hammer</th>
+                                    <th>Moisture</th> -->
                                    
                                   
                                 </tr>
@@ -324,8 +614,8 @@
                                         </td>
                                       
                                         <td>{{ records.0.lawn_height }} mm</td>
-                                        <td>{{ records.0.clagg_hammer|default:"-" }} </td>
-                                        <td>{{ records.0.moisture|default:"-" }} </td>
+                                        <!-- <td>{{ records.0.clagg_hammer|default:"-" }} </td>
+                                        <td>{{ records.0.moisture|default:"-" }} </td> -->
                                        
                                     </tr>
                                
@@ -346,7 +636,7 @@
                      
                         <div class="table-responsive">
                         
-                        <table class="table table-bordered table-striped">
+                        <table class="table table-bordered table-striped clagg-table">
     
         <thead class="table-dark">
     
@@ -414,132 +704,47 @@
                  {% endif %}
                  {% endif %}
 
+                  <div class="card  mx-auto transparent-bg mt-1 a4-inner-div">
+                    <div class="card-header box-bg text-white">
+
+                    <i class="bi bi-person-check me-2 text-info"></i>Moisture
+                </div>
+                    <div class="card-body box-bg px-3 py-1">
+                     
+                        <div class="table-responsive">
+
+                            <table class="table table-bordered mt-2 moistureTable">
+                                                    <!-- <thead class="table-dark">
+                                                        <tr>
+                                                        <th colspan="11" class="d-flex justify-content-center">
+                                                            <button type="button" class="btn btn-sm btn-primary me-2 colspan-3" 
+                                                            onclick="renderMoisture(event,'{{records.0.match_id}}')">Fetch Moisture</button>
+                                                             <b class="d-block">Moisture</b> 
+                                                        </th>
+                                                        </tr>
+                                                    </thead> -->
+                                                    <tbody class="moistureTableTbody"></tbody>
+                                                    </table>
+
+
+                          </div>
+                          </div>
+                          </div>
+
 
             </div>
         </div>
+
+        {% if records.0.match_id != "none" %}
+                <script>
+                  renderMoisture('{{records.0.match_id}}')
+                </script>
+        {% endif %}
         
       <div class="admin-info rounded">
-        <!-- <h4 class="display-6">Admin Information</h4>
-        <ul class="list-group w-50">
-           <li class="list-group-item">
-            <p><strong>Admin ID:</strong> {{ records.0.admin_id }}</p>
-          </li> 
-          <li class="list-group-item">
-            <p><strong>Name:</strong> {{ records.0.admin_name }}</p>
 
-          </li>
-          <li class="list-group-item">
-            <p><strong>Email:</strong> {{ records.0.admin_email }}</p>
-
-          </li>
-          <li class="list-group-item">
-            <p><strong>Username:</strong> {{ records.0.admin_username }}</p>
-
-          </li>
-          <li class="list-group-item">
-            <p><strong>Mobile:</strong> {{ records.0.admin_mobile }}</p>
-
-          </li>
-          <li class="list-group-item">
-            <p><strong>Address:</strong> {{ records.0.admin_address }}</p>
-
-
-          </li>
-        </ul> -->
-
-        <!-- <h3 class="display-6">Tournament Information</h3>
-        <ul class="list-group w-50">
-          <li class="list-group-item">
-            <p><strong>Match ID:</strong> {{ records.0.match_id }}</p>
-          </li>
-          <li class="list-group-item">
-            <p><strong>Tournament:</strong> {{ records.0.name_tournament }}</p>
-          </li>
-
-          <li class="list-group-item">
-            <p><strong>Match Type:</strong> {{ records.0.match_type }}</p>
-
-          </li>
-
-          {% if records.0.match_type == "Multidays" %}
-          <li class="list-group-item text-dark">
-            <strong>Match Date :</strong>
-            <div class="text-dark"> From :{{ records.0.from_date }}</div>
-            <div class="text-dark"> To :{{ records.0.to_date }}</div>
-
-
-          </li>
-          {% else %}
-          <li class="list-group-item">
-            <p><strong>Match Date:</strong> {{ records.0.match_date }}</p>
-          </li>
-          {% endif %}
-
-          <li class="list-group-item">
-            <p><strong>Teams :</strong> {{ records.0.team1 }} <span>VS</span> {{ records.0.team2 }} </p>
-
-          </li>
-          <li class="list-group-item">
-            <p><strong>Neutral Curator :</strong> {{ records.0.nuteral_curator }} </p>
-
-          </li>
-
-
-
-        </ul>
-
-        <h3 class="display-6">Ground Information</h3>
-        <ul class="list-group w-50">
-          <li class="list-group-item">
-            <p><strong>Ground:</strong> {{ records.0.ground_name }}</p>
-          </li>
-          <li class="list-group-item">
-            <p><strong>State:</strong> {{ records.0.state_name }}</p>
-
-          </li>
-          <li class="list-group-item">
-            <p><strong>City:</strong> {{ records.0.city_name }}</p>
-
-          </li>
-          <li class="list-group-item">
-            <p><strong>Main Pitches:</strong> {{ records.0.count_main_pitches }}</p>
-
-          </li>
-          <li class="list-group-item">
-            <p><strong>Practice Pitches:</strong> {{ records.0.count_practice_pitches }}</p>
-
-          </li>
-
-        </ul>
-
-        <h3 class="display-6">Pitch Information</h3>
-        <ul class="list-group w-50">
-          <li class="list-group-item">
-             <p><strong>Pitch ID:</strong> {{ records.0.id }}</p>
-            <p><strong style="text-transform: uppercase;">Pitch :</strong> <strong style="text-transform: uppercase;"></strong> {{ records.0.pitch_placement }}</p>
-          </li>
-
-          <li class="list-group-item">
-            <p><strong>Soil Type:</strong> {{ records.0.soil_type }}</p>
-
-          </li>
-          <li class="list-group-item">
-            <p><strong>Pitch Condition (Is Pitch Level?):</strong> {% if records.0.is_pitch_level == "1" %}
-              Yes
-              {% else %}
-              No
-              {% endif %}</p>
-
-          </li>
-          <li class="list-group-item">
-            <p><strong>Grass Height:</strong> {{ records.0.lawn_height }} mm
-
-            </p>
-
-          </li>
-
-        </ul> -->
-<div class="col-md-12 px-5">
+     
+        <div class="col-md-12 px-5">
         <div class="table-responsive mt-5">
           {% if records.0.last_watering_on %}
          
@@ -901,53 +1106,9 @@
 
           </table>
           {% endif %}
-          <!-- <h1>Outfield Rollers</h1>
-          <table class="table table-bordered table-striped" id="recordsTable">
-            <thead class="table-dark">
-              <tr>
-                <th>Date</th>
-                <th>Machinery</th>
-                <th>Type</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for row in records %}
-              <tr>
-                {% for key, value in row.items %}
-                {% if 'out_machinery_name' == key %}
-                <td>{{ row.preparation_date }}</td>
-                <td>{{ value }}</td>
-                <td>{{ row.print_details }}</td>
-                {% endif %}
-                {% endfor %}
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-          <hr>
-          <h1>Outfield Mover</h1>
-          <table class="table table-bordered table-striped" id="recordsTable">
-            <thead class="table-dark">
-              <tr>
-                <th>Date</th>
-                <th>Machinery</th>
-                <th>Type</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for row in records %}
-              <tr>
-                {% for key, value in row.items %}
-                {% if 'out_mover_machinery_name' == key %}
-                <td>{{ row.preparation_date }}</td>
-                <td>{{ value }}</td>
-                <td>{{ row.print_details }}</td>
-                {% endif %}
-                {% endfor %}
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table> -->
+
+         
+     
           {% else %}
           <p>No records found.</p>
           {% endif %}
@@ -958,46 +1119,46 @@
 
       </div>
      
-<div class="py-2" style="overflow-x: auto;">
-    <table class="table align-middle mb-0 w-75 mx-auto chemical-remport-table">
-      <thead class="bg-light fs-5 box-bg report-table-title">
-        <tr>
-          <th colspan="10">
+      <div class="py-2" style="overflow-x: auto;">
+          <table class="table align-middle mb-0 w-75 mx-auto chemical-remport-table">
+            <thead class="bg-light fs-5 box-bg report-table-title">
+              <tr>
+                <th colspan="10">
 
-            <h2>Match Scores List</h2>
-              <h3 class="p-2 grass-bg shadow-sm text-light rounded"
-                  style="width: fit-content;text-transform: uppercase;"><small> Toss</small> <span id="wonby-span"
-                    class="badge text-light bg-dark me-4"></span>
+                  <h2>Match Scores List</h2>
+                    <h3 class="p-2 grass-bg shadow-sm text-light rounded"
+                        style="width: fit-content;text-transform: uppercase;"><small> Toss</small> <span id="wonby-span"
+                          class="badge text-light bg-dark me-4"></span>
 
-                  <small> Elected</small> <span id="elected-span" class="badge text-light bg-dark"></span>
-                </h3>
-          </th>
-          <!-- <th colspan="3">
+                        <small> Elected</small> <span id="elected-span" class="badge text-light bg-dark"></span>
+                      </h3>
+                </th>
+                <!-- <th colspan="3">
 
-          </th>
+                </th>
 
-          <th colspan="3">
-          </th> -->
-          <!-- <a class="btn btn-warning mb-2 text-left" href="{% url 'fertilizer_add' %}">Add New Chemical</a> -->
-        </tr>
-        <tr>
-          <th>#</th>
-          <th>Day</th>
-          <th>Inning</th>
-          <th>Team</th>
-          <th>Session</th>
-          <th>Runs</th>
-          <th>Wickets</th>
-          <th>Overs</th>
-          <th>Winner</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="score-table-body">
-        <!-- Scores will be dynamically inserted here -->
-      </tbody>
-    </table>
-</div>
+                <th colspan="3">
+                </th> -->
+                <!-- <a class="btn btn-warning mb-2 text-left" href="{% url 'fertilizer_add' %}">Add New Chemical</a> -->
+              </tr>
+              <tr>
+                <th>#</th>
+                <th>Day</th>
+                <th>Inning</th>
+                <th>Team</th>
+                <th>Session</th>
+                <th>Runs</th>
+                <th>Wickets</th>
+                <th>Overs</th>
+                <th>Winner</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="score-table-body">
+              <!-- Scores will be dynamically inserted here -->
+            </tbody>
+          </table>
+      </div>
       <!-- match summary -->
       <div class="container mt-4 transparent-bg p-4 w-75 mx-auto">
         <h3 class="text-dark text-center text-uppercase mb-0 py-3 fw-bold rounded-top" style="background-color: rgba(255, 255, 255, 0.891);">Match Summary</h3>
@@ -1510,6 +1671,39 @@
 {% include "admin_user/footertags.html" %}
 
 
+<script>
+(function () {
+  // ⚠️ Is URL ko apne urls.py ke `get_machinery_details` wale path se match karo.
+  //    Final URL aisa banega:  MACHINERY_URL + <id> + "/"
+  const MACHINERY_URL = "/usr_admin/machinery/";
+ 
+  const machineryNames = {};                       // { "3": "Heavy Roller", ... }
+  window.mName = id => machineryNames[String(id).trim()] || id;   // CSV ke liye bhi chahiye
+ 
+  function loadMachineryNames() {
+    // Rolling aur Mower dono tables me <tr class="machinery-id"><td>ID</td></tr> already hai
+    const cells = Array.from(document.querySelectorAll(".machinery-id td"));
+    const ids = [...new Set(cells.map(td => td.textContent.trim()).filter(Boolean))];
+    if (!ids.length) return;
+ 
+    Promise.all(ids.map(id =>
+      axios.get(`${MACHINERY_URL}${id}/`)
+        .then(res => { machineryNames[id] = res.data.machinery.print_details; })
+        .catch(err => console.error("Machinery name load failed for id", id, err))
+    )).then(() => {
+      cells.forEach(td => {
+        const id = td.textContent.trim();
+        if (machineryNames[id]) td.textContent = machineryNames[id];   // ID -> Name
+      });
+    });
+  }
+ 
+  loadMachineryNames();
+})();
+</script>
+
+
+
 
 <script>
   $(document).ready(function () {
@@ -1935,7 +2129,7 @@ let firstScore={}
   function fetchScores(matchId) {
     axios.get(`/usr_admin/get_match_scores/${matchId}/`)
       .then(function (response) {
-        console.log(response.data);
+        // console.log(response.data);
         const scores = response.data.scores;
         const matchData = response.data.match;
         const ground = response.data.ground;
@@ -2013,180 +2207,138 @@ let firstScore={}
   });
 }
 
-  let winnerFinal = "";
-  let remark = "";
-  let lastSummery = ""
-  function generateResultTable(scores,matchData,ground) {
+  // "CCA  U-19" aur "CCA U-19" ko same treat karne ke liye
+  function normName(n) {
+    return (n || '').toString().replace(/\s+/g, ' ').trim().toLowerCase();
+  }
+
+  function generateResultTable(scores, matchData, ground) {
     const resultTableBody = document.getElementById("result-table-body");
     resultTableBody.innerHTML = "";
 
-
-    // Group data by team and day
     const summary = {};
-    let matchType=scores[0]?.match_type.trim() || ""
-if(matchType.toLowerCase()!=="multidays"){
+    let matchType = scores[0]?.match_type.trim() || "";
+    const isMulti = matchType.toLowerCase() === "multidays";
+    const t1Key = normName(firstScore.team1);
+    const t2Key = normName(firstScore.team2);
 
+    if (!isMulti) {
+      // dono teams ke liye pehle se entry, taaki undefined na aaye
+      summary[t1Key] = { runs: 0, wickets: 0, overs: 0 };
+      summary[t2Key] = { runs: 0, wickets: 0, overs: 0 };
 
-scores.forEach(score => {
+      scores.forEach(score => {
+        const key = normName(score.team);
+        if (!summary[key]) summary[key] = { runs: 0, wickets: 0, overs: 0 };
 
-    const team = score.team.trim(); // playing team
+        summary[key].runs += parseInt(score.runs) || 0;
+        summary[key].wickets += parseInt(score.wickets) || 0;
+        summary[key].overs = addOvers(summary[key].overs, parseFloat(score.overs) || 0);
 
-    // Agar pehli baar update ho raha hai to object create karo
-    if (!summary[team]) {
-        summary[team] = { team, runs: 0, wickets: 0, overs: 0 };
+        winnerFinal = getWinner(score.winner, score.team1, score.team2);
+      });
+    } else {
+      scores.forEach(score => {
+        const innKey = `Inn${score.inning}`;
+
+        if (!summary[innKey]) {
+          summary[innKey] = [
+            { team: score.team1.trim(), runs: 0, wickets: 0, overs: 0, inn: score.inning },
+            { team: score.team2.trim(), runs: 0, wickets: 0, overs: 0, inn: score.inning }
+          ];
+        }
+
+        // check karo ki score kis team ka hai
+        let index = (normName(score.team) === t1Key) ? 0 : 1;
+
+        summary[innKey][index].runs += parseInt(score.runs) || 0;
+        summary[innKey][index].wickets += parseInt(score.wickets) || 0;
+        summary[innKey][index].overs = addOvers(summary[innKey][index].overs, parseFloat(score.overs) || 0);
+
+        winnerFinal = getWinner(score.winner, score.team1, score.team2);
+      });
     }
 
-    // Totals add karo
-    summary[team].runs += parseInt(score.runs);
-    summary[team].wickets += parseInt(score.wickets);
-    // summary[team].overs += parseFloat(score.overs);
-    summary[team].overs = addOvers(summary[team].overs, parseFloat(score.overs));
-
-
-    // Winner track karte rehna hai
-    winnerFinal = getWinner(score.winner,score.team1,score.team2);
-
-});
-
-  }
-  else
-{
-    // const summary = {};
-scores.forEach(score => {
-
-    const innKey = `Inn${score.inning}`;
-
-  
-    if (!summary[innKey]) {
-
-        summary[innKey] = [
-            { team: score.team1.trim(), runs: 0, wickets: 0, overs: 0,inn:score.inning },
-            { team: score.team2.trim(), runs: 0, wickets: 0, overs: 0,inn:score.inning }
-        ];
-    }
-
-    // अब check करो की score किस team का है
-    let index = (score.team.trim().toLowerCase() === score.team1.trim().toLowerCase()) ? 0 : 1;
-
-    summary[innKey][index].runs += parseInt(score.runs);
-    summary[innKey][index].wickets += parseInt(score.wickets);
-    // summary[innKey][index].overs += parseFloat(score.overs);
-    summary[innKey][index].overs = addOvers(summary[innKey][index].overs, parseFloat(score.overs));
-
-
-    winnerFinal = getWinner(score.winner,score.team1,score.team2);
-
-});
-}
-
-
-
-console.log("Summery",summary)
-
-    // Create rows
+    // Team names row (3 equal columns)
     let row = document.createElement("tr");
+    row.innerHTML = `
+      <td><span class="badge text-bg-light team-name-badge">${firstScore.team1}</span></td>
+      <td></td>
+      <td><span class="badge text-bg-light team-name-badge">${firstScore.team2}</span></td>
+    `;
+    resultTableBody.appendChild(row);
+
+    if (isMulti) {
+      const innsKey = Object.keys(summary);
+
+      Object.values(summary).forEach((s, index) => {
+        row = document.createElement("tr");
+
+        row.innerHTML = `
+          <td>
+            <div class="alert alert-warning score-box mb-0">
+              <span class="d-block fw-bold fs-3">${s[0].runs}</span>
+              <span class="fs-6 pe-3">(${s[0].overs.toFixed(1)} Ov)</span>
+              <span class="fs-6">(${s[0].wickets} W)</span>
+            </div>
+          </td>
+          <td>
+            <span class="badge text-bg-secondary fs-6">${innsKey[index]}</span>
+          </td>
+          <td>
+            <div class="alert alert-light score-box mb-0">
+              <span class="d-block fw-bold fs-3">${s[1].runs}</span>
+              <span class="fs-6 pe-3">(${s[1].overs.toFixed(1)} Ov)</span>
+              <span class="fs-6">(${s[1].wickets} W)</span>
+            </div>
+          </td>
+        `;
+        resultTableBody.appendChild(row);
+      });
+    } else {
+      let s1 = summary[t1Key];
+      let s2 = summary[t2Key];
+      row = document.createElement("tr");
+
       row.innerHTML = `
-       <td colspan=2 class='border-end-0'>
-        <span class="badge text-bg-light fs-2">${firstScore.team1}</span>
+        <td>
+          <div class="alert alert-warning score-box mb-0">
+            <span class="d-block fw-bold fs-3">${s1.runs}</span>
+            <span class="fs-6 pe-3">(${s1.overs.toFixed(1)} Ov)</span>
+            <span class="fs-6">(${s1.wickets} W)</span>
+          </div>
         </td>
-      <td colspan=2 class='border-0'></td>
-      <td colspan=2 class='border-start-0'>
-         <span class="badge text-bg-light fs-2">${firstScore.team2}</span>
+        <td></td>
+        <td>
+          <div class="alert alert-light score-box mb-0">
+            <span class="d-block fw-bold fs-3">${s2.runs}</span>
+            <span class="fs-6 pe-3">(${s2.overs.toFixed(1)} Ov)</span>
+            <span class="fs-6">(${s2.wickets} W)</span>
+          </div>
         </td>
-     
-    `;
+      `;
       resultTableBody.appendChild(row);
-      if(matchType.toLowerCase()==="multidays"){
-     const innsKey=Object.keys(summary)
-
-    Object.values(summary).forEach((s, index) => {
-      // console.log(s)
-       row = document.createElement("tr");
-      
-      row.innerHTML = `
-      <td colspan=2 class='border-end-0'>
-        <div class="alert alert-warning mx-auto" style='width:fit-content;'>
-          <span class="d-block fw-bold fs-3">${s[0].runs}</span>
-          <span class="fs-6 pe-3">(${s[0].overs.toFixed(1)} Ov)</span>
-          <span class="fs-6">(${s[0].wickets} W)</span> 
-        </div>
-      </td>
-
-      <td colspan=2 class='border-0'>
-        <span class="badge text-bg-secondary fs-6 mt-4">${innsKey[index]}</span>
-      </td>
-
-      <td colspan=2 class='border-start-0'>
-        <div class="alert alert-light mx-auto" style='width:fit-content;'>
-          <span class="d-block fw-bold fs-3">${s[1].runs}</span>
-          <span class="fs-6 pe-3">(${s[1].overs.toFixed(1)} Ov)</span>
-          <span class="fs-6">(${s[1].wickets} W)</span> 
-        </div>
-      </td> 
-    `;
-      resultTableBody.appendChild(row);
-    });
-  }else
-  {
-      // const innsKey=Object.keys(summary)
-
- 
-      let s1=summary[firstScore.team1.trim()]
-      let s2=summary[firstScore.team2.trim()]
-       row = document.createElement("tr");
-      
-      row.innerHTML = `
-      <td colspan=2 class='border-end-0'>
-        <div class="alert alert-warning mx-auto" style='width:fit-content;'>
-          <span class="d-block fw-bold fs-3">${s1.runs}</span>
-          <span class="fs-6 pe-3">(${s1.overs.toFixed(1)} Ov)</span>
-          <span class="fs-6">(${s1.wickets} W)</span> 
-        </div>
-      </td>
-
-      <td colspan=2 class='border-0'>
-      </td>
-
-      <td colspan=2 class='border-start-0'>
-        <div class="alert alert-light mx-auto" style='width:fit-content;'>
-          <span class="d-block fw-bold fs-3">${s2.runs}</span>
-          <span class="fs-6 pe-3">(${s2.overs.toFixed(1)} Ov)</span>
-          <span class="fs-6">(${s2.wickets} W)</span> 
-        </div>
-      </td> 
-    `;
-      resultTableBody.appendChild(row);
-      
-          
-    
-  }
+    }
 
     // --- Calculate and display match summary ---
-    displayMatchResult(scores,matchData,ground);
-    // console.log("Winner Final: " + winnerFinal)
+    displayMatchResult(scores, matchData, ground);
 
     if (winnerFinal.trim() !== "Not Yet" && winnerFinal.trim() !== "Draw" && winnerFinal.trim() !== "") {
-      // setLastSummery(scores)
-      document.getElementById("finalSummery").innerHTML = `<span class="badge text-dark text-uppercase text-bg-light fw-bold fs-4 me-1">WINNER</span><span class="badge text-white text-uppercase text-bg-success fw-bold fs-4">${winnerFinal}</span>`
-
+      document.getElementById("finalSummery").innerHTML = `<span class="badge text-dark text-uppercase text-bg-light fw-bold fs-4 me-1">WINNER</span><span class="badge text-white text-uppercase text-bg-success fw-bold fs-4">${winnerFinal}</span>`;
     }
     else if (winnerFinal.trim() == "Not Yet") {
-      lastSummery = ""
-      document.getElementById("finalSummery").innerHTML = `<span class="badge text-white text-uppercase text-bg-success fw-bold fs-4">${lastSummery}</span>`
-      // document.getElementById("divRemark").innerHTML = lastSummery
-      // document.getElementById("divWinner").innerHTML = "Winner: " + lastSummery
+      lastSummery = "";
+      document.getElementById("finalSummery").innerHTML = `<span class="badge text-white text-uppercase text-bg-success fw-bold fs-4">${lastSummery}</span>`;
     }
     else if (winnerFinal.trim() == "Draw") {
-      lastSummery = "Match Drawn"
-      document.getElementById("finalSummery").innerHTML = `<span class="badge text-white text-uppercase text-bg-success fw-bold fs-4">${lastSummery}</span>`
-      // document.getElementById("divWinner").innerHTML = "NO Winner"
+      lastSummery = "Match Drawn";
+      document.getElementById("finalSummery").innerHTML = `<span class="badge text-white text-uppercase text-bg-success fw-bold fs-4">${lastSummery}</span>`;
     } else {
-      lastSummery = ""
-      document.getElementById("finalSummery").innerHTML = `<span class="badge text-white text-uppercase text-bg-success fw-bold fs-4">${lastSummery}</span>`
-      // document.getElementById("divWinner").innerHTML = ""
+      lastSummery = "";
+      document.getElementById("finalSummery").innerHTML = `<span class="badge text-white text-uppercase text-bg-success fw-bold fs-4">${lastSummery}</span>`;
     }
-
   }
+
 
   function setLastSummery(scores) {
     const winningTeamArray = scores.filter(t => t.team.trim().toLowerCase() === winnerFinal.trim().toLowerCase())
@@ -2466,7 +2618,6 @@ console.log("Summery",summary)
   loadReport("{{records.0.match_id}}");
 
 </script>
-
 
 
 

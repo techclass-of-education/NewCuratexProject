@@ -453,6 +453,8 @@
                                             </table>
                                         </tr>
                                         <tr>
+
+
                             <!-- <table class="table table-bordered caption-top">
 
                                                 <caption
@@ -614,34 +616,26 @@
                                            
                                            
 
+                                              <!-- ================= HTML (har match ki row me) =================
+                                                    Table <tr> ke andar direct nahi rakhte; <td colspan> ke andar rakho.
+                                                    id hata di (list me har match ke liye duplicate ho jaati), ab class se kaam hota hai. -->
                                                 <tr>
-                                                    
-                                                    <table class="table table-bordered caption-top">
-
-                                                      
+                                                <td colspan="20">
+                                                    <table class="table table-bordered mt-2 moistureTable">
+                                                    <thead class="table-dark">
                                                         <tr>
-                                                            <table class="table table-bordered mt-2"
-                                                                        id="moistureTable">
-                                                                        <thead class="table-dark">
-                                                                            <tr>
-                                                                                <button class="me-2" onclick="renderMoisture(event,'{{match.id}}')">Fetch Moisture</button> <b>Moisture</b>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <th colspan="3">Date</th>
-                                                                                <th colspan="3">Time</th>
-                                                                                <th colspan="8"></th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody id="moistureTableTbody"></tbody>
-                                                                    </table>
-
+                                                        <th colspan="11" class="d-flex justify-content-center">
+                                                            <button type="button" class="btn btn-sm btn-primary me-2 colspan-3" 
+                                                            onclick="renderMoisture(event,'{{match.id}}')">Fetch Moisture</button>
+                                                            <!-- <b class="d-block">Moisture</b> -->
+                                                        </th>
                                                         </tr>
-
-                                                       
-
-
+                                                    </thead>
+                                                    <tbody class="moistureTableTbody"></tbody>
                                                     </table>
+                                                </td>
                                                 </tr>
+ 
                                            
 
                                                 <tr>
@@ -1060,66 +1054,11 @@
 {% include "admin_user/footertags.html" %}
 <script>
 
-//     function handleSubmit(event)
-//     {
-//         event.preventDefault()
-//         // action="/usr_admin/matches_filter"
-//         const formData = new FormData(event.target);
-// const values = Object.fromEntries(formData);
-
-//  axios.post(`/usr_admin/match_list_filter_by_date/`,values)
-//                 .then(function (response) {
-//                     console.log(response.data)
-//                     const tableBody = $(event.target).parentsUntil("table").parent().find("tbody");
-//                     // console.log($(event.target).parentsUntil("table"))
-//                     // console.log(tableBody)
-//         $(tableBody).html("");
-
-//         response.data.data.forEach(entry => {
-//             const row = document.createElement("tr");
-//             row.innerHTML = `
-//                 <td>${entry[2]}</td>
-//                 <td>${entry[3]}</td>
-//                 <td>${entry[4]}</td>
-//                 <td>${entry[5]}</td>
-//                 <td>${entry[6]}</td>
-//                 <td>${entry[7]}</td>
-//                 <td>${entry[8]}</td>
-//                 <td>${entry[9]}</td>
-//                 <td>${entry[10]}</td>
-//                 <td>${entry[11]}</td>
-//                 <td>${entry[12]}</td>
-//                 <td>${entry[13]}</td>
-              
-                
-//             `;
-//             $(tableBody).append(row);
-//         });
-
-//                 }).catch(function (error) {
-//                     console.error('Error deleting Match:', error);
-//                     myModal.hide()
-//                 });
-//     }
- 
  
     const myModal= new bootstrap.Modal('#exampleModal')
 
 
- // Source - https://stackoverflow.com/a/32070987
-// Posted by Arun P Johny
-// Retrieved 2026-05-20, License - CC BY-SA 3.0
 
-// $(function() {
-//   $(".collapse").on('show.bs.collapse', function(e) {
-   
-//     setTimeout(function()
-// {
-//     myModal.hide()
-// },1000)
-//       myModal.show()
-//   })
-// });
 
 
 
@@ -1193,53 +1132,53 @@ if( response.data.data.length>0)
 
 
     
-    function renderMoisture(event,id) {
+//     function renderMoisture(event,id) {
        
-        axios.get(`/usr_admin/get-moisture/${id}/m/m/`)
-                .then(function (response) {
-        const data = JSON.parse(response.data.data);
-        const tbody= $(event.target).parentsUntil("table").parent().find("tbody");
+//         axios.get(`/usr_admin/get-moisture/${id}/m/m/`)
+//                 .then(function (response) {
+//         const data = JSON.parse(response.data.data);
+//         const tbody= $(event.target).parentsUntil("table").parent().find("tbody");
         
-        const mDate=response.data.date
-        const mTime=response.data.time
-         $(tbody).html(`
-        <tr><th colspan="3">${mDate}</th><th colspan="3">${mTime}</th><th colspan="8">
+//         const mDate=response.data.date
+//         const mTime=response.data.time
+//          $(tbody).html(`
+//         <tr><th colspan="3">${mDate}</th><th colspan="3">${mTime}</th><th colspan="8">
            
-            </th></tr>
-        <tr><th colspan="7">Moisture Data</th></tr>
-        `)
-         if(data.length>0)
-        {
-         data.forEach(row => {
-            const tr=document.createElement("tr")
-        tr.innerHTML= `
-                   <td>${row.SubCollectionName}</td>
-                <td>${row.AreaName}</td>
-                <td>${row.GpsLatitude}</td>
-                <td>${row.GpsLongitude}</td>
-                 <td>${row.DataNote}</td>
-               <td>${row.RodLength}</td>
-              <td>${row.SoilType}</td>
-              <td>${row.Satellites}</td>
-                <td>${row.Fix}</td>
-                <td>${row.ec}</td>
-                <td>${row.period}</td>
-                <td>${row.salidx}</td>
-                <td>${row.temp}</td>
-                <td>${row.vwc}</td>`;
-                $(tbody).append(tr)
-    });
-}
-else
-{
-    alert("Data not found")
-}
-}) .catch(function (error) {
-                    console.error('Error deleting Match:', error);
-                     alert("Data not found")
-                });
+//             </th></tr>
+//         <tr><th colspan="7">Moisture Data</th></tr>
+//         `)
+//          if(data.length>0)
+//         {
+//          data.forEach(row => {
+//             const tr=document.createElement("tr")
+//         tr.innerHTML= `
+//                    <td>${row.SubCollectionName}</td>
+//                 <td>${row.AreaName}</td>
+//                 <td>${row.GpsLatitude}</td>
+//                 <td>${row.GpsLongitude}</td>
+//                  <td>${row.DataNote}</td>
+//                <td>${row.RodLength}</td>
+//               <td>${row.SoilType}</td>
+//               <td>${row.Satellites}</td>
+//                 <td>${row.Fix}</td>
+//                 <td>${row.ec}</td>
+//                 <td>${row.period}</td>
+//                 <td>${row.salidx}</td>
+//                 <td>${row.temp}</td>
+//                 <td>${row.vwc}</td>`;
+//                 $(tbody).append(tr)
+//     });
+// }
+// else
+// {
+//     alert("Data not found")
+// }
+// }) .catch(function (error) {
+//                     console.error('Error deleting Match:', error);
+//                      alert("Data not found")
+//                 });
 
-}
+// }
 
 
 
@@ -1296,20 +1235,7 @@ else
     }
 
 
-    // $(document).ready(function () {
-
-    //     $(".del-btn").on('click', function (event) {
-    //         event.preventDefault();
-    //         alert($(this).attr('dataid').trim())
-    //         deleteMatch($(this).attr('dataid').trim());
-    //     })
-
-    // })
-
-    // newRow.querySelector('.del-btn').addEventListener('click', function () {
-
-    // });
-
+   
 
     function getGround() {
         const tdGround = document.querySelectorAll(".td-ground")
@@ -1380,30 +1306,7 @@ else
 //edit button disabled for Curator and Groundman
 
 <script>
-    // document.addEventListener("DOMContentLoaded", function () {
-    //     setTimeout(() => {
-    //         const today = new Date().toISOString().split("T")[0];  // Get current date in yyyy-mm-dd format
-
-    //         document.querySelectorAll(".edit-btn").forEach(btn => {
-    //             const type=btn.getAttribute("data-match-type");
-    //             const startTime=btn.getAttribute("data-start-time");
-    //             const matchDate = btn.getAttribute("data-match-date");
-    //             const fromDate = btn.getAttribute("data-from-date");
-    //             const mDateStr= type==="Multidays"?fromDate:matchDate;
-
-    //             const matchDateTime=new Date(`${mDateStr}T${startTime}`)
-    //             // alert(matchDateTime)
-    //             if (matchDateTime.getTime()< new Date().getTime() && "{{request.session.user.role }}"!="admin" ) {
-    //                 btn.classList.add("disabled");
-    //                 btn.classList.remove("btn-success");
-    //                 btn.classList.add("btn-secondary");
-    //                 btn.setAttribute("title", "Cannot edit match with today’s date.");
-    //                 btn.href = "javascript:void(0)";
-    //             }
-    //         });
-    //     }, 3000)
-
-    // });
+   
 
     $(document).ready(function () {
         axios.get("/usr_admin/get_grounds").then((result) => {
@@ -1518,6 +1421,74 @@ function loadChemicalTable(
 
   
 }
+
+
+
+
+function renderMoisture(event, id) {
+  const SIZES = ["1.5", "3", "4.8"];
+  const COUNT = 10;
+  const esc = s => String(s === null || s === undefined ? "" : s)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+ 
+  // jis button par click hua, usi ki table ka tbody (list me kai matches ho sakte hain)
+  const btn = event.currentTarget || event.target;
+  const tbody = btn.closest("table").querySelector("tbody");
+ 
+  const showMessage = msg => {
+    tbody.innerHTML = `<tr><td colspan="${COUNT + 1}" class="text-center text-danger">${esc(msg)}</td></tr>`;
+  };
+ 
+  axios.get(`/usr_admin/get-moisture/${id}/m/m/`)
+    .then(function (response) {
+      let data = response.data.data;
+      if (typeof data === "string") data = data.trim() ? JSON.parse(data) : {};
+      data = data || {};
+ 
+      let html = "";
+      let totalRows = 0;
+ 
+      // record ki date / time (agar view se aa rahi hai)
+      if (response.data.date || response.data.time) {
+        html += `<tr>
+          <th colspan="5">Date: ${esc(response.data.date)}</th>
+          <th colspan="6">Time: ${esc(response.data.time)}</th>
+        </tr>`;
+      }
+ 
+      SIZES.forEach(size => {
+        const rows = Array.isArray(data[size]) ? data[size] : [];
+        totalRows += rows.length;
+ 
+        html += `<tr class="table-secondary text-dark"><th class="text-dark" colspan="${COUNT + 1}">${size} inches</th></tr>`;
+        html += "<tr><th>Date</th>";
+        for (let i = 1; i <= COUNT; i++) html += `<th>V${i}</th>`;
+        html += "</tr>";
+ 
+        if (!rows.length) {
+          html += `<tr><td colspan="${COUNT + 1}" class="text-muted text-center">No data</td></tr>`;
+          return;
+        }
+ 
+        rows.forEach(row => {
+          const vals = Array.isArray(row.values) ? row.values : [];
+          html += `<tr><td class="text-nowrap">${esc(row.date)}</td>`;
+          for (let i = 0; i < COUNT; i++) {
+            html += `<td>${i < vals.length ? esc(vals[i]) : ""}</td>`;
+          }
+          html += "</tr>";
+        });
+      });
+ 
+      if (!totalRows) { showMessage("Data not found"); return; }
+      tbody.innerHTML = html;
+    })
+    .catch(function (error) {
+      console.error("Error loading moisture:", error);
+      showMessage("Data not found");
+    });
+}
+
       
 
 {% for recording in recordings %}
