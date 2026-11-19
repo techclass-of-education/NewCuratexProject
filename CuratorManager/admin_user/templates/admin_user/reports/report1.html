@@ -817,7 +817,7 @@ function renderMoisture(id) {
                 <td>Machinery</td>
                 <td>Date</td>
                 <td>Time</td>
-                <td>No. of Passes</td>
+                <td id="passes-header">Passes / Minutes / Hours</td>
                 <td>Type / Speed</td>
               </tr>
             </thead>
@@ -826,7 +826,9 @@ function renderMoisture(id) {
               <td>
 
                 <table>
+                  
                   {% for item in records.0.machinery_id|split_by_delimiter %}
+                  
                   {% if item.strip %}
                   <tr class="machinery-id">
                     <td>
@@ -868,7 +870,12 @@ function renderMoisture(id) {
                 </table>
 
               </td>
-              <td>
+
+              <td id="passes-cell"
+    data-values="{{ records.0.no_of_passes|escape }}"
+    data-units="{{ records.0.passes_unit|escape }}">
+</td>
+              <!-- <td>
 
                 <table>
                   {% for item in records.0.no_of_passes|split_by_delimiter %}
@@ -882,7 +889,7 @@ function renderMoisture(id) {
                   {% endfor %}
                 </table>
 
-              </td>
+              </td> -->
               <td>
 
                 <table>
@@ -1672,6 +1679,12 @@ function renderMoisture(id) {
 
 
 <script>
+
+
+
+
+
+
 (function () {
   // ⚠️ Is URL ko apne urls.py ke `get_machinery_details` wale path se match karo.
   //    Final URL aisa banega:  MACHINERY_URL + <id> + "/"
@@ -1703,7 +1716,36 @@ function renderMoisture(id) {
 </script>
 
 
+<script>
+  function renderPassesWithUnit() {
+  const cell = document.getElementById("passes-cell");
+  if (!cell) return;
 
+  const clean = str => (str || "")
+    .split("__####__")
+    .map(s => s.replace(/^[_#]+|[_#]+$/g, "").trim());
+
+  const values = clean(cell.dataset.values);
+  const units  = clean(cell.dataset.units);
+
+  const unitName = u => {
+    u = (u || "").toLowerCase();
+    if (u.startsWith("min")) return "Minutes";
+    if (u.startsWith("h"))   return "Hours";
+    return "Passes";
+  };
+
+  let html = "<table>";
+  values.forEach((v, i) => {
+    if (!v) return;
+    html += `<tr><td>${v} ${unitName(units[i])}</td></tr>`;
+  });
+  html += "</table>";
+  cell.innerHTML = html;
+}
+
+document.addEventListener("DOMContentLoaded", renderPassesWithUnit);
+</script>
 
 <script>
   $(document).ready(function () {
@@ -1864,6 +1906,7 @@ document.addEventListener("DOMContentLoaded", function () {
     rollDate: "{{ records.0.rolling_date|escapejs }}",
     rollTime: "{{ records.0.time_roller|escapejs }}",
     rollPasses: "{{ records.0.no_of_passes|escapejs }}",
+    rollUnit: "{{ records.0.rolling_unit|escapejs }}",
     rollSpeed: "{{ records.0.rolling_speed|escapejs }}",
 
     mowerMachinery: "{{ records.0.mover_machinery_id|escapejs }}",
@@ -1933,6 +1976,17 @@ function alignedRows(...columns) {
 }
 
 // ---------- main builder ----------
+
+function withUnit(values, units) {
+  const split = s => (s ? s.split("__####__").map(x => x.replace(/^[_#]+|[_#]+$/g, "").trim()) : []);
+  const v = split(values), u = split(units);
+  return v.map((x, i) => {
+    if (!x) return "";
+    const t = (u[i] || "").toLowerCase();
+    const unit = t.startsWith("min") ? "Minutes" : t.startsWith("h") ? "Hours" : "Passes";
+    return `${x} ${unit}`;
+  }).filter(x => x !== "");
+}
 function generateCsv(d) {
   let csv = "";
 
@@ -1969,15 +2023,28 @@ function generateCsv(d) {
     csv += "\n";
   }
 
-  const rRows = alignedRows(splitDelim(d.rollMachinery), splitDelim(d.rollDate).map(toDDMMYYYY),
-    splitDelim(d.rollTime), splitDelim(d.rollPasses), splitDelim(d.rollSpeed));
-  if (rRows.length) {
-    csv += csvRow("ROLLING");
-    csv += csvRow("Machinery", "Date", "Time", "No. of Passes", "Type / Speed");
-    rRows.forEach(row => { csv += csvRow(...row); });
-    csv += "\n";
-  }
+  // const rRows = alignedRows(splitDelim(d.rollMachinery), splitDelim(d.rollDate).map(toDDMMYYYY),
+  //   splitDelim(d.rollTime), splitDelim(d.rollPasses), splitDelim(d.rollSpeed));
+  // if (rRows.length) {
+  //   csv += csvRow("ROLLING");
+  //   csv += csvRow("Machinery", "Date", "Time", "No. of Passes", "Type / Speed");
+  //   rRows.forEach(row => { csv += csvRow(...row); });
+  //   csv += "\n";
+  // }
 
+  const rRows = alignedRows(
+  splitDelim(d.rollMachinery),
+  splitDelim(d.rollDate).map(toDDMMYYYY),
+  splitDelim(d.rollTime),
+  withUnit(d.rollPasses, d.rollUnit),
+  splitDelim(d.rollSpeed)
+);
+if (rRows.length) {
+  csv += csvRow("ROLLING");
+  csv += csvRow("Machinery", "Date", "Time", "Passes / Minutes / Hours", "Type / Speed");
+  rRows.forEach(row => { csv += csvRow(...row); });
+  csv += "\n";
+}
   const mRows = alignedRows(splitDelim(d.mowerMachinery), splitDelim(d.mowerDate).map(toDDMMYYYY),
     splitDelim(d.mowerTime), splitDelim(d.mowerHeight));
   if (mRows.length) {

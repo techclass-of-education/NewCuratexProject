@@ -500,7 +500,7 @@
                                                                 <label for="mowing_done_at_mm" class="form-label">Mowing
                                                                     Height (mm):</label>
                                                                 <input type="number" id="mowing_done_at_mm"
-                                                                    class="form-control">
+                                                                    class="form-control" step="any">
                                                             </div>
                                                             <div class="col-lg-2 col-sm-12 mt-4">
                                                                 <label for="moving_passes_unit"
@@ -1028,7 +1028,7 @@
                                                                 <label for="pp_mowing_done_at_mm"
                                                                     class="form-label">Mowing Height (mm):</label>
                                                                 <input type="number" id="pp_mowing_done_at_mm"
-                                                                    name="pp_mowing_done_at_mm" class="form-control">
+                                                                    name="pp_mowing_done_at_mm" step="any" class="form-control">
                                                             </div>
 
                                                             <div class="col-lg-4 col-sm-12">
@@ -1771,7 +1771,7 @@
                         </div>
                         <div class="col-lg-2 col-sm-12 mt-4">
                             <label for="out_mowing_done_at_mm" class="form-label">Mowing Height (mm):</label>
-                            <input type="number" id="out_mowing_done_at_mm" name="out_mowing_done_at_mm" class="form-control">
+                            <input type="number" id="out_mowing_done_at_mm" name="out_mowing_done_at_mm" step="any" class="form-control">
                         </div>
                         <div class="col-lg-2 col-sm-12 mt-4">
                             <label for="out_clipping" class="form-label">Clipping:</label>
@@ -2355,7 +2355,11 @@
                                     </div>
                                     <div class="col-lg-2 col-sm-12 mt-4">
                                         <label for="practice_mowing_done_at_mm" class="form-label">Mowing Height (mm):</label>
-                                        <input type="number" id="practice_mowing_done_at_mm" name="practice_mowing_done_at_mm" class="form-control">
+                                        <input type="number" id="practice_mowing_done_at_mm" name="practice_mowing_done_at_mm" step="any" class="form-control">
+                                    </div>
+                                    <div class="col-lg-2 col-sm-12 mt-4">
+                                        <label for="practice_clipping" class="form-label">Clipping:</label>
+                                        <input type="number" id="practice_clipping" name="practice_clipping" class="form-control">
                                     </div>
                                     <div class="col-lg-2 col-sm-12 mt-4">
                                         <label for="practice_moving_passes_unit" class="form-label">Passes Unit:</label>
@@ -2385,6 +2389,7 @@
                                                             <th>Machinery</th>
                                                             <th>Operator</th>
                                                             <th>Height (mm)</th>
+                                                            <th>Clipping (mm)</th>
                                                             <th>Duration</th>
                                                             <th>Unit</th>
                                                             <th>Time</th>
@@ -5539,6 +5544,7 @@ function outDelRollingEntry(event) {
                                 const machineryId = document.getElementById("practice_mover_machinery_id").value;
                                 const operator = document.getElementById("practice_mover_machinery_name_operator").value;
                                 const mowHeight = document.getElementById("practice_mowing_done_at_mm").value;
+                                const mowClipping = document.getElementById("practice_clipping").value;
                                 const unit = document.getElementById("practice_moving_passes_unit").value;
                                 const duration = document.getElementById("practice_mowing_duration").value;
                                 const time = document.getElementById("practice_time_of_application_mover").value;
@@ -5555,6 +5561,7 @@ function outDelRollingEntry(event) {
                                     machineryName,
                                     operator,
                                     mowHeight,
+                                    mowClipping,
                                     unit,
                                     duration,
                                     time,
@@ -5582,6 +5589,7 @@ function outDelRollingEntry(event) {
                     <td>${e.machineryName}</td>
                     <td>${e.operator}</td>
                     <td>${e.mowHeight}</td>
+                    <td>${e.mowClipping}</td>
                     <td>${e.duration}</td>
                     <td>${e.unit}</td>
                     <td>${e.time}</td>

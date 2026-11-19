@@ -3223,6 +3223,7 @@ def curator_daily_recording_form(request):
                     practice_area_chemical_weight=""
                     # practice_area_chemical_unit=(request.POST.get("practice_fertilizers_unit"+str(index)) or '').strip() or None
                     practice_area_chemical_unit=""
+                    mowClipping=""
                    
                    
                     practice_watering_entries_json = (request.POST.get("practice_watering_entries_json"+str(index)) or '').strip() or None
@@ -3282,6 +3283,7 @@ def curator_daily_recording_form(request):
                             practice_mover_machine_type+=str(mov["type"])+"__####__"
                             practice_mover_machinery_name_operator+=str(mov["operator"])+"__####__"
                             practice_mowing_done_at_mm+=str(mov["mowHeight"])+"__####__"
+                            mowClipping+=str(mov["mowClipping"])+"__####__"
                             # print(practice_mover_machinery_id+" "+practice_moving_passes_unit)
                         # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
                     else:
@@ -3313,6 +3315,7 @@ def curator_daily_recording_form(request):
                     practice_area_chemical_weight=request.POST.get("practice_chemical_weight")
                     practice_area_chemical_unit=request.POST.get("practice_fertilizers_unit")
                     practice_passes_unit=request.POST.get("practice_passes_unit")
+                    mowClipping=request.POST.get("mowClipping")
 
                 practice_remark_by_groundsman = request.POST.get("practice_remark_by_groundsman")
                 
@@ -3531,7 +3534,8 @@ def curator_daily_recording_form(request):
                             out_passes_unit,
                             pp_passes_unit,
                             practice_passes_unit,
-                            out_clipping
+                            out_clipping,
+                            mow_clipping
 
                             ) 
                             
@@ -3541,7 +3545,7 @@ def curator_daily_recording_form(request):
                                     %s, %s, %s, %s, %s, %s,%s,%s, %s, %s, %s, %s, %s, %s, %s,
                         %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s,%s, %s, %s,
                         %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
-                        %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s,%s, %s, %s, %s,%s, %s, %s,%s,%s)
+                        %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s,%s, %s, %s, %s,%s, %s, %s,%s,%s,%s)
                             """
                     values = [
                         pitch_id, recording_type, ground_id,pitch_location, rolling_start_date, min_temp, max_temp, forecast, clagg_hammer, moisture,
@@ -3592,7 +3596,8 @@ def curator_daily_recording_form(request):
                         out_passes_unit,
                         pp_passes_unit,
                         practice_passes_unit,
-                        out_clipping
+                        out_clipping,
+                        mowClipping
 
 
                     ]
@@ -3967,6 +3972,7 @@ def update_daily(request,daily_id):
             pitch_practice_chemical_weight=""
         
             pitch_practice_chemical_unit=""
+            mowClipping=""
             
              # total_records = int(request.POST.get("rolling_entries_json", "0"))
             watering_entries_json = (request.POST.get("watering_entries_json") or '').strip() or None
@@ -4276,6 +4282,8 @@ def update_daily(request,daily_id):
                     practice_mover_machine_type+=str(mov.get("type", ""))+"__####__"
                     practice_mover_machinery_name_operator+=str(mov.get("operator", ""))+"__####__"
                     practice_mowing_done_at_mm+=str(mov.get("mowHeight", ""))+"__####__"
+                    mowClipping+=str(mov["mowClipping"])+"__####__"
+                    
                     # print(practice_mover_machinery_id+" "+practice_moving_passes_unit)
                     # print(time_of_application_chemical+"\n"+pitch_main_chemical_weight+"\n"+pitch_main_chemical_unit+"\n"+chemical_details_remark+"\n"+fertilizers_details)
             else:
@@ -4380,7 +4388,8 @@ def update_daily(request,daily_id):
                             out_passes_unit=%s,
                             pp_passes_unit=%s,
                             practice_passes_unit=%s,
-                            out_clipping=%s
+                            out_clipping=%s,
+                            mow_clipping=%s
                         
                             WHERE `id`=%s"""
                     values = [
@@ -4461,6 +4470,7 @@ def update_daily(request,daily_id):
                         pp_passes_unit,
                         practice_passes_unit ,
                         out_clipping ,
+                        mowClipping ,
                     id
                 ]
 
@@ -4550,14 +4560,15 @@ def update_daily(request,daily_id):
                             out_passes_unit,
                             pp_passes_unit,
                             practice_passes_unit,
-                            out_clipping
+                            out_clipping,
+                            mow_clipping
                         
                         ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
                         %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
                                 %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
                                 %s, %s, %s, %s, %s, %s,%s,%s, %s, %s, %s, %s, %s, %s, %s,
                       %s, %s, %s, %s, %s, %s, %s,%s, %s, %s,%s,%s, %s, %s,%s,%s, %s, %s,%s,%s, %s, %s,%s,%s, %s, %s,%s,%s,%s,%s,%s,%s,%s,%s
-                      ,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                      ,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                         """
                     values = [
                     pitch_id_text, 
@@ -4637,7 +4648,8 @@ def update_daily(request,daily_id):
                         out_passes_unit,
                         pp_passes_unit,
                         practice_passes_unit,
-                        out_clipping
+                        out_clipping,
+                        mowClipping
                         
                     
                 ]
@@ -5157,7 +5169,8 @@ def curator_daily_recording_list_filter(request):
                         cdr.outfield_chemical_weight,
                         cdr.outfield_chemical_unit,
                         cdr.practice_area_chemical_weight,
-                        cdr.practice_area_chemical_unit
+                        cdr.practice_area_chemical_unit,
+                        cdr.mow_clipping
                     FROM 
                         {org_id}_curator_daily_recording_master cdr
                     INNER JOIN 
@@ -5190,6 +5203,8 @@ def curator_daily_recording_list_filter(request):
             print(e)
             messages.error(request, e)
         return render(request, 'admin_user/curator_daily_recording_list.html', {'recordings': recordings, "flag": True})
+
+
 
 @role_required("admin","Curator","Groundman") 
 def curator_daily_recording_list_filter_by_date(request):
@@ -5306,7 +5321,8 @@ def curator_daily_recording_list_filter_by_date(request):
                             cdr.outfield_chemical_weight,
                             cdr.outfield_chemical_unit,
                             cdr.practice_area_chemical_weight,
-                            cdr.practice_area_chemical_unit
+                            cdr.practice_area_chemical_unit,
+                            cdr.mow_clipping
                         FROM 
                             {org_id}_curator_daily_recording_master cdr
                         INNER JOIN 
@@ -5370,6 +5386,8 @@ def curator_daily_recording_list_filter_by_date(request):
         return render(request, 'admin_user/curator_daily_recording_list.html', {'recordings': recordings, "flag": True})
     except Exception as e:
         print(e)
+
+
 
 @role_required("admin","Curator","Groundman") 
 def curator_daily_recording_list(request):
@@ -5479,7 +5497,8 @@ def curator_daily_recording_list(request):
                         cdr.outfield_chemical_weight,
                         cdr.outfield_chemical_unit,
                         cdr.practice_area_chemical_weight,
-                        cdr.practice_area_chemical_unit
+                        cdr.practice_area_chemical_unit,
+                        cdr.mow_clipping
                     FROM 
                         {org_id}_curator_daily_recording_master cdr
                     INNER JOIN 
@@ -5590,7 +5609,8 @@ def curator_daily_recording_list(request):
                         m7.print_details AS pp_machinery,
                         m8.print_details AS pp_mover_machinery,
                         cdr.pitch_main_chemical_unit,
-                        cdr.pitch_main_chemical_weight
+                        cdr.pitch_main_chemical_weight,
+                        cdr.mow_clipping
                     FROM 
                         {org_id}_curator_daily_recording_master cdr
                     INNER JOIN 
@@ -5628,6 +5648,8 @@ def curator_daily_recording_list(request):
             print(e)
             messages.error(request, e)
         return render(request, 'admin_user/curator_daily_recording_list.html', {'recordings': recordings, "flag": True})
+
+
 
 @role_required("admin")
 # Fetch All Machinery
@@ -7774,7 +7796,7 @@ def match_list_filter_by_date(request):
                 # 5. Order by aur Limit jodein
         query_base += " ORDER BY g.ground_name ASC, cdr.created_at DESC"
 
-        print(query_base)
+        # print(query_base)
                 # 6. Query Execute karein
         with connection.cursor() as cursor:
             cursor.execute(query_base, params)

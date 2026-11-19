@@ -716,6 +716,7 @@
                                     <td>Date</td>
                                     <td>Time of Application Mower</td>
                                     <td>Mowing Done at MM</td>
+                                    
                                   
                                 </tr>
                                 <tr>
@@ -1377,6 +1378,7 @@
                                     <td>Date</td>
                                     <td>Time of Application</td>
                                     <td>Mowing Done at MM</td>
+                                    <td>Clipping</td>
                                   
                                 </tr>
                                 <tr>
@@ -1429,6 +1431,21 @@
                                           
                                           <table>
                                               {% for item in recording.practice_mowing_done_at_mm|split_by_delimiter %}
+                                                {% if item.strip %}
+                                              <tr>
+                                                  <td>
+                                                      {{ item }}
+                                                  </td>
+                                              </tr>
+                                                {% endif %}
+                                              {% endfor %}
+                                          </table>
+                                          
+                                      </td>
+                                      <td>
+                                          
+                                          <table>
+                                              {% for item in recording.mow_clipping|split_by_delimiter %}
                                                 {% if item.strip %}
                                               <tr>
                                                   <td>

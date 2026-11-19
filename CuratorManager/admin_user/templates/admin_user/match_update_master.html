@@ -690,74 +690,24 @@
 
                                         <div class="col-lg-12 col-sm-12">
                                             <div class="mw">
-                                                <details class="summary-shadow box-bg rounded">
-
-                                                                        <summary class="rounded-0">Moisture [<small>Volumetric Water Content (VWC)</small>] <span id="main-moisture-no-data-span" class="text-danger"></span></summary>
-                                                                    
-                                                                        <fieldset class="form-group text-dark p-3 rounded">
-                                                                            <div class="row">
-                                                                                <!-- <div class="col-lg-6">
-                                                                                    <div class="mb-3">
-                                                                                        <label for="value1" class="form-label">Date</label>
-                                                                                        <input type="date" class="form-control" id="date" placeholder="Value 1">
-                                                                                    </div> 
-                                                                                </div>
-                                                                                <div class="col-lg-6">
-                                                                                    <div class="mb-3">
-                                                                                        <label for="value1" class="form-label">Time</label>
-                                                                                        <input type="time" class="form-control" id="time" placeholder="Value 1">
-                                                                                    </div>
-                                                                                </div> -->
-                                                                                <!-- <details class="card">
-                                                                                    <summary>Incoming JSON (test / reload)</summary>
-                                                                                    <textarea id="incoming" spellcheck="false"></textarea>
-                                                                                    <div class="err" id="inErr"></div>
-                                                                                    <button type="button" class="add" id="loadBtn">Load JSON</button>
-                                                                                    </details> -->
-                                                                                    <div id="forms"></div>
-                                                                                
-
-
-
-
-                                                                                
-                                                                                
-                                                                                {% if request.session.user.role != "Groundman" %}
-                                                                                <!-- <div class="col-lg-12">
-                                                                                    <div class="mb-3">
-                                                                                        <label for="fileInput" class="form-label">Browse CSV File</label>
-                                                                                        <input type="file" class="form-control" id="fileInput" />
-                                                                                        
-                                                                                    </div>
-                                                                                    <button type="button" class="btn btn-primary" onclick="addMainMoistureData()">Add Moisture Entry</button>
-
-                                                                                </div> -->
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                {% endif %}
-                                                                                
-                                                                <div class="col-sm-12 col-lg-12">
-                                                                    <details>
-                                                                        <summary>Moisture Entries</summary>
-                                                                        <div class="table-responsive transparent-bg">
-                                                                            
-                                                                    
-                                                                        </table> 
-                                                                        <div id="tables"></div>
-                                                                        <input type="hidden" name="moisture_entries_json"
-                                                                            id="moisture_entries_json">
-                                                                        </div>
-                                                                    </details>
-
-
-                                                                </div>
-                                                                            </div>
-
-                                                                        </fieldset>
-                                                                    
-                                                </details>
+                                               <details class="summary-shadow box-bg rounded">
+    <summary class="rounded-0">Moisture [<small>Volumetric Water Content (VWC)</small>] <span id="main-moisture-no-data-span" class="text-danger"></span></summary>
+    <fieldset class="form-group text-dark p-3 rounded">
+        <div class="row">
+            <div class="col-12" id="moisture_forms"></div>
+ 
+            <div class="col-sm-12 col-lg-12">
+                <details>
+                    <summary>Moisture Entries</summary>
+                    <div class="table-responsive transparent-bg">
+                        <div id="moisture_tables"></div>
+                    </div>
+                </details>
+            </div>
+        </div>
+        <input type="hidden" name="moisture_entries_json" id="moisture_entries_json">
+    </fieldset>
+</details>
                                             </div>
                                                              
                                                              
@@ -977,7 +927,7 @@
                                                             </div>
                                                             <div class="col-lg-2 col-sm-12 mt-4">
                                                                 <label for="mowing_done_at_mm" class="form-label">Mowing Height (mm):</label>
-                                                                <input type="number" id="mowing_done_at_mm" name="mowing_done_at_mm" class="form-control">
+                                                                <input type="number" id="mowing_done_at_mm" step="any" name="mowing_done_at_mm" class="form-control">
                                                             </div>
                                                             <div class="col-lg-2 col-sm-12 mt-4">
                                                                 <label for="moving_passes_unit" class="form-label">Unit:</label>
@@ -1326,7 +1276,7 @@
                                                             </div>
                                                             <div class="col-lg-2 col-sm-12 mt-4">
                                                                 <label for="out_mowing_done_at_mm" class="form-label">Mowing Height (mm):</label>
-                                                                <input type="number" id="out_mowing_done_at_mm" name="out_mowing_done_at_mm" class="form-control">
+                                                                <input type="number" id="out_mowing_done_at_mm" step="any" name="out_mowing_done_at_mm" class="form-control">
                                                             </div>
                                                             <div class="col-lg-2 col-sm-12 mt-4">
                                                                 <label for="out_moving_passes_unit" class="form-label">Unit:</label>
@@ -1874,138 +1824,161 @@ updateClaggHammerTable();
 // ----------Start Moisture-------------
 
 
-const SIZES = ["1.5", "3", "4.8"];
-const COUNT = 10;
-// internal store: positional raw values so table cells stay in V1..V10 slots
-const store = { "1.5": [], "3": [], "4.8": [] };
-const editing = {};   // size -> id of the row being edited
-let nextId = 1;
-let moistureId;
-const tbodies = {};
 
-const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
-const toVal = v => (isNaN(v) ? v : Number(v));
-
-// JSON is always derived from the store: only filled values, no nulls
-function buildJSON() {
-  const out = {};
-  SIZES.forEach(s => {
-    out[s] = store[s].map(r => ({
-      date: r.date,
-      values: r.vals.filter(v => v !== "").map(toVal)
-    }));
-  });
-  return out;
-}
-
-// keeps the hidden input (submitted with the form) in sync with the tables
-function renderJSON() {
-  document.querySelector("#moisture_entries_json").value = JSON.stringify(buildJSON());
-}
-
-function renderTable(size) {
-  const tb = tbodies[size];
-  tb.innerHTML = "";
-  if (!store[size].length) {
-    tb.innerHTML = `<tr><td colspan="${COUNT + 2}" class="empty">No rows yet</td></tr>`;
-    return;
-  }
-  store[size].forEach(row => {
-    const tr = document.createElement("tr");
-    if (editing[size] === row.id) {
-      tr.innerHTML = `<td><input type="date" value="${esc(row.date)}" data-k="date"></td>` +
-        row.vals.map((v, i) => `<td><input type="text" value="${esc(v)}" data-k="${i}"></td>`).join("") +
-        `<td><button type="button" class="save">Save</button> <button type="button" class="can">Cancel</button></td>`;
-      tr.querySelector(".save").onclick = () => {
-        const date = tr.querySelector('[data-k="date"]').value;
-        const vals = row.vals.map((_, i) => tr.querySelector(`[data-k="${i}"]`).value.trim());
-        if (!date || !vals.some(v => v !== "")) { alert("Fill date and atleast one value"); return; }
-        row.date = date; row.vals = vals;
-        delete editing[size];
-        renderTable(size); renderJSON();
-      };
-      tr.querySelector(".can").onclick = () => { delete editing[size]; renderTable(size); };
-    } else {
-      tr.innerHTML = `<td>${esc(row.date)}</td>` +
-        row.vals.map(v => `<td>${esc(v)}</td>`).join("") +
-        `<td><button type="button" class="upd">Update</button> <button type="button" class="del">Delete</button></td>`;
-      tr.querySelector(".upd").onclick = () => { editing[size] = row.id; renderTable(size); };
-      tr.querySelector(".del").onclick = () => {
-        store[size] = store[size].filter(r => r.id !== row.id);
-        if (editing[size] === row.id) delete editing[size];
-        renderTable(size); renderJSON();
-      };
-    }
-    tb.appendChild(tr);
-  });
-}
-
-// build one form + one table per size
-SIZES.forEach(size => {
-  const card = document.createElement("div");
-  card.className = "card";
-  let inputs = "";
-  for (let i = 1; i <= COUNT; i++) inputs += `<input type="text" inputmode="decimal" placeholder="V${i}">`;
-  card.innerHTML = `<h3>${size} inches</h3>
-    <input type="date" class="date" aria-label="Working Date">
-    <div class="fields">${inputs}</div>
-    <div class="err"></div>
-    <button type="button" class="add">ADD</button>`;
-  document.getElementById("forms").appendChild(card);
-
-  const t = document.createElement("div");
-  t.className = "card";
-  let head = "<th>Date</th>";
-  for (let i = 1; i <= COUNT; i++) head += `<th>V${i}</th>`;
-  head += "<th>Action</th>";
-  t.innerHTML = `<h3>${size}</h3><div class="scroll"><table><thead><tr>${head}</tr></thead><tbody></tbody></table></div>`;
-  document.getElementById("tables").appendChild(t);
-  tbodies[size] = t.querySelector("tbody");
-
-  
-
-  renderTable(size);
-});
-
-// Fill tables from incoming JSON: { "1.5": [{date, values:[...]}], "3": [], "4.8": [] }
-// Values are placed in V1, V2, ... in order; empty/null values are skipped.
-function loadIncomingMoisture(json) {
-  SIZES.forEach(size => {
-    delete editing[size];
-    const list = Array.isArray(json && json[size]) ? json[size] : [];
-    store[size] = [];
-    list.forEach(item => {
-      const date = item && item.date ? String(item.date) : "";
-      const incoming = Array.isArray(item && item.values) ? item.values : [];
-      const clean = incoming
-        .filter(v => v !== null && v !== undefined && String(v).trim() !== "")
-        .slice(0, COUNT)
-        .map(v => String(v).trim());
-      if (!date || !clean.length) return;
-      while (clean.length < COUNT) clean.push("");
-      store[size].push({ id: nextId++, date, vals: clean });
+(function () {
+  const SIZES = ["1.5", "3", "4.8"];
+  const COUNT = 10;
+  // positional store: table me V1..V10 ke slots fix rehte hain
+  const store = { "1.5": [], "3": [], "4.8": [] };
+  const editing = {};   // size -> id of the row being edited
+  const tbodies = {};
+  let nextId = 1;
+ 
+  const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+  const toVal = v => (isNaN(v) ? v : Number(v));
+ 
+  // JSON hamesha store se banta hai: sirf bhari hui values, null/empty nahi
+  function buildJSON() {
+    const out = {};
+    SIZES.forEach(s => {
+      out[s] = store[s].map(r => ({
+        date: r.date,
+        values: r.vals.filter(v => v !== "").map(toVal)
+      }));
     });
+    return out;
+  }
+ 
+  // hidden input ki .value set karni hai (textContent se form submit me kuch nahi jaata)
+  function renderJSON() {
+    document.getElementById("moisture_entries_json").value = JSON.stringify(buildJSON());
+  }
+ 
+  function renderTable(size) {
+    const tb = tbodies[size];
+    tb.innerHTML = "";
+    if (!store[size].length) {
+      tb.innerHTML = `<tr><td colspan="${COUNT + 2}" class="text-muted">No rows yet</td></tr>`;
+      return;
+    }
+    store[size].forEach(row => {
+      const tr = document.createElement("tr");
+      if (editing[size] === row.id) {
+        tr.innerHTML = `<td><input type="date" class="form-control form-control-sm" style="min-width:140px" value="${esc(row.date)}" data-k="date"></td>` +
+          row.vals.map((v, i) => `<td><input type="text" class="form-control form-control-sm" style="min-width:70px" value="${esc(v)}" data-k="${i}"></td>`).join("") +
+          `<td class="text-nowrap"><button type="button" class="btn btn-sm btn-success m-save">Save</button> <button type="button" class="btn btn-sm btn-secondary m-cancel">Cancel</button></td>`;
+        tr.querySelector(".m-save").onclick = () => {
+          const date = tr.querySelector('[data-k="date"]').value;
+          const vals = row.vals.map((_, i) => tr.querySelector(`[data-k="${i}"]`).value.trim());
+          if (!date || !vals.some(v => v !== "")) { alert("Fill date and atleast one value"); return; }
+          row.date = date; row.vals = vals;
+          delete editing[size];
+          renderTable(size); renderJSON();
+        };
+        tr.querySelector(".m-cancel").onclick = () => { delete editing[size]; renderTable(size); };
+      } else {
+        tr.innerHTML = `<td class="text-nowrap">${esc(row.date)}</td>` +
+          row.vals.map(v => `<td>${esc(v)}</td>`).join("") +
+          `<td class="text-nowrap"><button type="button" class="btn btn-sm btn-primary m-upd">Update</button> <button type="button" class="btn btn-sm btn-danger m-del">Delete</button></td>`;
+        tr.querySelector(".m-upd").onclick = () => { editing[size] = row.id; renderTable(size); };
+        tr.querySelector(".m-del").onclick = () => {
+          store[size] = store[size].filter(r => r.id !== row.id);
+          if (editing[size] === row.id) delete editing[size];
+          renderTable(size); renderJSON();
+        };
+      }
+      tb.appendChild(tr);
+    });
+  }
+ 
+  // har size ke liye ek form + ek table
+  SIZES.forEach(size => {
+    const card = document.createElement("div");
+    card.className = "border rounded p-3 mb-3";
+    let inputs = "";
+    for (let i = 1; i <= COUNT; i++) {
+      inputs += `<input type="text" inputmode="decimal" class="form-control form-control-sm" placeholder="V${i}">`;
+    }
+    card.innerHTML = `<h6 class="mb-2">${size} inches</h6>
+      <input type="date" class="form-control form-control-sm mb-2" style="max-width:200px" aria-label="Working Date">
+      <div class="m-fields" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:6px">${inputs}</div>
+      <div class="text-danger small mt-1 m-err"></div>
+      <button type="button" class="btn btn-primary btn-sm mt-2 m-add">ADD</button>`;
+    document.getElementById("moisture_forms").appendChild(card);
+ 
+    const t = document.createElement("div");
+    t.className = "border rounded p-2 mb-3";
+    let head = "<th>Date</th>";
+    for (let i = 1; i <= COUNT; i++) head += `<th>V${i}</th>`;
+    head += "<th>Action</th>";
+    t.innerHTML = `<h6 class="mb-2">${size} inches</h6>
+      <div class="table-responsive">
+        <table class="table table-bordered table-sm text-center align-middle mb-0" style="min-width:760px">
+          <thead><tr>${head}</tr></thead><tbody></tbody>
+        </table>
+      </div>`;
+    document.getElementById("moisture_tables").appendChild(t);
+    tbodies[size] = t.querySelector("tbody");
+ 
+    card.querySelector(".m-add").addEventListener("click", () => {
+      const dateInput = card.querySelector('input[type="date"]');
+      const err = card.querySelector(".m-err");
+      const fields = [...card.querySelectorAll(".m-fields input")];
+      const vals = fields.map(f => f.value.trim());
+      if (!dateInput.value) { err.textContent = "Select Working Date"; return; }
+      if (!vals.some(v => v !== "")) { err.textContent = "Atleast fill one value"; return; }
+      err.textContent = "";
+      store[size].push({ id: nextId++, date: dateInput.value, vals });
+      renderTable(size); renderJSON();
+      fields.forEach(f => f.value = "");
+      dateInput.value = "";
+    });
+ 
     renderTable(size);
   });
-  renderJSON();
-}
-
-// axios response -> incoming data
-function renderMoisture() {
-  axios.get(`/usr_admin/get-moisture/{{match.0}}/m/m/`)
-    .then(function (response) {
-      moistureId = response.data.id;
-      const raw = response.data.data;
-      loadIncomingMoisture(raw ? JSON.parse(raw) : {});
-    })
-    .catch(function (error) {
-      console.error("Error loading moisture data:", error);
-      document.querySelector("#main-moisture-no-data-span").innerHTML = "Data not found";
+ 
+  // ---- incoming data (axios) ----
+  // { "1.5": [{date, values:[...]}], "3": [], "4.8": [] }  ->  tables
+  // Values V1, V2, ... ke order me bharti hain; empty/null skip hoti hain.
+  function loadIncomingMoisture(json) {
+    SIZES.forEach(size => {
+      delete editing[size];
+      const list = Array.isArray(json && json[size]) ? json[size] : [];
+      store[size] = [];
+      list.forEach(item => {
+        const date = item && item.date ? String(item.date) : "";
+        const incoming = Array.isArray(item && item.values) ? item.values : [];
+        const clean = incoming
+          .filter(v => v !== null && v !== undefined && String(v).trim() !== "")
+          .slice(0, COUNT)
+          .map(v => String(v).trim());
+        if (!date || !clean.length) return;
+        while (clean.length < COUNT) clean.push("");
+        store[size].push({ id: nextId++, date, vals: clean });
+      });
+      renderTable(size);
     });
-}
-
-renderMoisture();
-
+    renderJSON();
+  }
+ 
+  function renderMoisture() {
+    axios.get(`/usr_admin/get-moisture/{{match.0}}/m/m/`)
+      .then(function (response) {
+        window.moistureId = response.data.id;
+        let raw = response.data.data;
+        if (typeof raw === "string") raw = raw.trim() ? JSON.parse(raw) : {};
+        loadIncomingMoisture(raw || {});
+      })
+      .catch(function (error) {
+        // load fail hua -> hidden input khali rehta hai, view DB ko nahi chhedta
+        console.error("Error loading moisture data:", error);
+        document.querySelector("#main-moisture-no-data-span").innerHTML = "Data not found";
+      });
+  }
+  window.renderMoisture = renderMoisture;
+ 
+  renderMoisture();
+})();
 
 
 // ----------End Moisture-------------
@@ -3219,7 +3192,7 @@ renderMoisture();
   padding:6px 12px;
   border:0;
   border-radius:6px;
-  background:var(--mw-bd);
+  /* background:var(--mw-bd); */
   color:#fff;
   font-size:13px;
   cursor:pointer;

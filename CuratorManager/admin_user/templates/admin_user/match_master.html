@@ -784,7 +784,7 @@
                                         <div class="col-lg-3 col-sm-12">
                                             <label for="mowing_done_at_mm" class="form-label">Mowing Height
                                                 (mm):</label>
-                                            <input type="number" id="mowing_done_at_mm" name="mowing_done_at_mm"
+                                            <input type="number" id="mowing_done_at_mm" step="any" name="mowing_done_at_mm"
                                                 class="form-control">
                                         </div>
 
@@ -1266,7 +1266,7 @@
 
         <div class="col-lg-3 col-sm-12">
             <label for="out_mowing_done_at_mm" class="form-label">Mowing Height (mm):</label>
-            <input type="number" id="out_mowing_done_at_mm" name="out_mowing_done_at_mm" class="form-control">
+            <input type="number" id="out_mowing_done_at_mm" name="out_mowing_done_at_mm" step="any" class="form-control">
         </div>
 
         <div class="col-lg-3 col-sm-12">
@@ -3799,8 +3799,8 @@ renderJSON();
 /* ===== Sab kuch .mw ke andar scoped hai, baahar ka design disturb nahi hoga ===== */
 .mw{
   --mw-bg:transparent;
-  --mw-fg:transparent;
-  --mw-card:#f5f7fb;
+  --mw-fg:white;
+  --mw-card:transparent;
   --mw-bd:#4285f4;
   box-sizing:border-box;
   color:var(--mw-fg);
@@ -3850,7 +3850,7 @@ renderJSON();
   padding:6px 12px;
   border:0;
   border-radius:6px;
-  background:var(--mw-bd);
+  /* background:var(--mw-bd); */
   color:#fff;
   font-size:13px;
   cursor:pointer;
